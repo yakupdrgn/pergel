@@ -151,6 +151,18 @@ bir projeye ait; o adlar kullanılmaz.
   ve ayar değerleri vardır; çünkü Site Editor pattern'i bir kez çözüp şablona gömebilir.
 - **`.pot` dosyaları depoda:** `composer pot` ile üretilir (`--no-location`, satır numarası
   değişince fark oluşmasın diye). CI, tarih satırı dışında farkı hata sayar.
+- **Erişilebilirlik bütçede:** `@axe-core/playwright` her bütçe sayfasında WCAG 2.0/2.1/2.2
+  A ve AA kurallarını çalıştırır. Limit `axe = 0` ihlaldir; ihlaller rapora kural, etki ve ilk
+  seçiciyle yazılır. Masaüstü genişliğinde (1440 px) ölçülür; mobil görünüm 6. adımda header'larla
+  eklenecek. **Elenen:** ayrı bir pa11y/Lighthouse işi (aynı tarayıcı oturumunu kullanmak daha hızlı).
+- **CSS ve font bütçesi:** `cssKB` harici stil dosyaları ile satır içi `<style>` toplamıdır
+  (blok temalarda çekirdek CSS'in çoğu satır içidir). İlk ölçüm 45–51 KB, limit 60 KB.
+  `fontKB` varsayılan temada 0'dır (sistem fontu); web fontları getiren variation'lar için limit
+  4. adımda konur.
+- **Navigation yedeği:** Menüsü olmayan Navigation bloğu çekirdekte `ul > ul > li` üretiyor (axe
+  `list` ihlali). Tema, `block_core_navigation_render_fallback` filtresiyle Page List yedeğini üst
+  düzey sayfalar için Navigation Link bloklarına çevirir (en çok 12). Menüsü olan siteler
+  etkilenmez. Çekirdek düzeltilince filtre kaldırılır.
 
 ### Değişiklik (15 Ekim 2026)
 

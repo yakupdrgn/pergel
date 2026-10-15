@@ -18,8 +18,11 @@
 			"htmlKB": 100,
 			"requests": 30,
 			"jsKB": 30,
+			"cssKB": 60,
+			"fontKB": 0,
 			"bodyCssLinks": 0,
-			"h1": [ 1, 1 ]
+			"h1": [ 1, 1 ],
+			"axe": 0
 		}
 	}
 }
