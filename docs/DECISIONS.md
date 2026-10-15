@@ -341,6 +341,13 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   Dışa aktarılan görsel alanları ek kimliğidir; başka sitede anlamsız olduğu için `import` onları
   uyarıyla sıfırlar. CLI testi PHPUnit içinde sahte WP_CLI yerine gerçek WP-CLI ile koşar
   (`tools/ci/cli-smoke.sh`): argüman ayrıştırma, `--format` ve çıkış kodları da denenmiş olur.
+- **PHPUnit CI'da JIT kapalı koşar:** setup-php `opcache.enable_cli` ile PHP 8.4 JIT'ini açıyor
+  (`opcache.jit=1235`). Bu ayarla PHPUnit 10.5 çöküyor (segfault) ya da takılıyor; Pergel kodu
+  içermeyen yalın bir data-provider testi de aynı şekilde çöküyor, `tracing` modu ise geçiyor.
+  Sorun JIT ile PHPUnit arasında, Pergel'de değil. Bu yüzden yalnızca entegrasyon adımı
+  `-d opcache.jit=disable` ile koşar; WP-CLI, PHP sunucusu ve bütçe ölçümü JIT açıkken çalışmaya
+  devam eder ve denendiği kadarıyla sorunsuzdur. İşlerde 20 dakikalık süre sınırı var; takılan
+  bir adım CI'ı saatlerce meşgul etmez.
 
 ## Aşamalar ve bitti tanımları
 

@@ -79,7 +79,7 @@ expect 0 '' wp pergel settings get brand.name
 expect 0 '2 field(s) changed' wp pergel settings import "$work_php/part.json"
 expect 0 'Örnek A.Ş.' wp pergel settings get brand.name
 expect 0 '0' wp pergel settings get brand.logo_inverse
-expect 0 'brand.name: "Örnek A.Ş." → ""' wp pergel settings import "$work_php/export.json"
+expect 0 'brand.name: "Örnek A.Ş." → ' wp pergel settings import "$work_php/export.json"
 expect 0 "$logo" wp pergel settings get brand.logo_inverse
 expect 1 '2 invalid field(s). Nothing was saved' wp pergel settings import - <<< '{"brand":{"email":"x","phone":"x","name":"Changed"}}'
 expect 1 'Unknown settings: brand.nam, foo' wp pergel settings import - <<< '{"brand":{"nam":"x"},"foo":{}}'

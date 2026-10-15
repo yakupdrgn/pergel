@@ -54,6 +54,7 @@ jobs:
     name: Smoke + performance budget (WP latest, PHP 8.4, MariaDB 11.8)
     runs-on: ubuntu-24.04
     needs: [lint, syntax]
+    timeout-minutes: 20
     services:
       mariadb:
         image: mariadb:11.8
@@ -88,7 +89,10 @@ jobs:
       - name: Install WordPress + Pergel
         run: bash tools/ci/setup-wp.sh
       - name: Integration tests (WordPress)
-        run: PERGEL_WP_DIR="$WP_DIR" composer test:integration
+        # PHPUnit itself crashes or hangs under PHP 8.4's JIT, which setup-php turns
+        # on with opcache.enable_cli (a bare PHPUnit test does it too). WP-CLI, the
+        # server and the budget below keep the JIT.
+        run: PERGEL_WP_DIR="$WP_DIR" php -d opcache.jit=disable vendor/bin/phpunit -c phpunit-integration.xml.dist
       - name: WP-CLI commands
         run: bash tools/ci/cli-smoke.sh
       - name: Start PHP server
@@ -130,6 +134,7 @@ jobs:
     name: SEO matrix (Pergel alone + 5 free SEO plugins)
     runs-on: ubuntu-24.04
     needs: [lint, syntax]
+    timeout-minutes: 20
     services:
       mariadb:
         image: mariadb:11.8
