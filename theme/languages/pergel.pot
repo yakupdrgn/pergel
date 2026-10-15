@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T13:03:44+03:00\n"
+"POT-Creation-Date: 2026-10-15T14:28:26+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -34,7 +34,46 @@ msgstr ""
 msgid "https://ariumlab.com/"
 msgstr ""
 
-msgid "Sections and full pages from the Pergel library."
+msgctxt "pattern category"
+msgid "Numbers"
+msgstr ""
+
+msgid "Counters and key figures."
+msgstr ""
+
+msgctxt "pattern category"
+msgid "Process"
+msgstr ""
+
+msgid "Steps, timelines and how-it-works sections."
+msgstr ""
+
+msgctxt "pattern category"
+msgid "Clients"
+msgstr ""
+
+msgid "Client and partner logos."
+msgstr ""
+
+msgctxt "pattern category"
+msgid "Pricing"
+msgstr ""
+
+msgid "Plans, prices and comparisons."
+msgstr ""
+
+msgctxt "pattern category"
+msgid "FAQ"
+msgstr ""
+
+msgid "Frequently asked questions."
+msgstr ""
+
+msgctxt "pattern category"
+msgid "Full pages"
+msgstr ""
+
+msgid "Whole pages made of Pergel sections."
 msgstr ""
 
 #: patterns/footer-centered.php
@@ -399,6 +438,10 @@ msgstr ""
 
 msgctxt "Shadow name"
 msgid "Medium"
+msgstr ""
+
+msgctxt "Custom template name"
+msgid "Landing page (no title)"
 msgstr ""
 
 msgctxt "Template part name"

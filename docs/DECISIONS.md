@@ -450,6 +450,26 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   içeriği hemen gösterir. Animasyon bir süsleme olduğu için bu kayıp kabul edildi.
 - **Animasyon blok tamamen görününce biter:** Aralık `entry 0%–90%`. `entry 0%–100%` blok tam
   girdiğinde opaklığı 0,98'de bırakıyor ve sayfanın son bloğu hiç tamamlanmıyordu.
+- **Ekleyicide yalnızca Pergel kütüphanesi:** Çekirdeğin hazır pattern'leri ve uzak Pattern
+  Directory kapatıldı. Çekirdek pattern'leri Pergel token'larını ve kurallarını bilmez (sabit
+  renk, H1, dış görsel); uzak dizin de editörden wordpress.org'a istek atar. Eklenti ve site
+  pattern'leri açık kaldı.
+- **Çekirdek kategoriler + `pergel-*`:** Kullanıcı ekleyicide tanıdık kategorileri görür; yalnızca
+  çekirdekte karşılığı olmayan altı kategori (Numbers, Process, Clients, Pricing, FAQ, Full pages)
+  eklendi. Kullanılmayan tek `pergel` kategorisi kaldırıldı.
+- **Bölüm başına tek kök blok:** WordPress 7.1 tek köklü pattern'i bölüm olarak ekleyip yalnızca
+  içerik modunda açar; müşteri metni ve görseli değiştirir, yerleşimi kazara bozmaz. Bu yüzden
+  kural CI'da zorunlu; tam sayfalar bölümlere `core/pattern` referansıyla bağlanır, aynı bölüm iki
+  yerde kopyalanmaz.
+- **Hero H1'i için başlıksız sayfa şablonu:** Hero kendi H1'ini taşır; normal sayfa şablonu da
+  başlığı H1 bastığı için iki H1 olurdu. `page-landing` şablonu başlığı basmaz. Hero dışındaki
+  pattern'lerde H1 yasak.
+- **Yer tutucular kendi ürettiğimiz nötr SVG'ler** (kullanıcı kararı): Lisans riski sıfır, toplam
+  birkaç KB, her variation'da nötr görünür. Gerçek fotoğraflar ilk projede gelir.
+- **Editör kontrolü sıkı doğrulama ile:** Çekirdeğin ayrıştırıcısı eksik `wp-block-heading` gibi
+  farkları deprecation ile sessizce düzeltir; ama şablonda `wp:pattern` ile çağrılan pattern ön
+  yüzde dosyadaki işaretlemeyle basılır. Bu
+  yüzden her blok `validateBlock` ile bugünkü `save` çıktısına karşı denetlenir.
 
 ## Aşamalar ve bitti tanımları
 

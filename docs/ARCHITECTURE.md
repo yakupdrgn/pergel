@@ -363,6 +363,45 @@ yalnızca kaydırma animasyonunu kendisi ekler.
   Styles sekmesinde Position → Sticky. Header'ın yapışkan davranışı ise template part
   özniteliğidir (yukarıda).
 
+## Pattern'ler (F3c)
+
+Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığından kaydeder. Metinler
+`esc_html_e( '…', 'pergel' )` ile çevrilir, görseller `get_theme_file_uri()` ile temadan gelir.
+
+- **Kurallar** (`Pergel\Patterns\Rules`, `php tools/patterns.php --check`, CI'da): Title, Slug
+  (`pergel/<dosya adı>`), Categories ve Description zorunlu (`Inserter: no` olan gizli
+  pattern'lerde son ikisi değil); kategori bilinen listeden; `ABSPATH` koruması; yalnızca çekirdek
+  ve Pergel blokları, `core/html`, `freeform`, `shortcode` yok; metinde, `alt`/`title`/
+  `aria-label`/`placeholder`/`value` özniteliklerinde ve blok JSON'undaki metin alanlarında sabit
+  harf yok; çeviri alan adı `pergel`; en fazla bir H1, o da yalnızca hero (`banner`) ve tam sayfa
+  (`pergel-pages`) pattern'lerinde; bölüm pattern'inde tek kök blok (tam sayfalar yalnızca
+  `core/pattern` bloklarından oluşur); `src`/`href`/`srcset`/`poster` ve JSON `url`'lerinde dış
+  adres yok; `<script>`, `<style>`, `<link>`, `<iframe>` yok; her `<img>` `alt` taşır.
+- **Kategoriler:** Çekirdeğin kategorileri yeniden kullanılır (`banner`, `services`, `about`,
+  `team`, `testimonials`, `call-to-action`, `contact`, `posts`, `portfolio`, `gallery`, `header`,
+  `footer`); eksikler Pergel'den gelir: `pergel-stats` (Numbers), `pergel-process` (Process),
+  `pergel-logos` (Clients), `pergel-pricing` (Pricing), `pergel-faq` (FAQ), `pergel-pages`
+  (Full pages).
+- **Kaynaklar:** Çekirdeğin hazır pattern'leri (`core-block-patterns` desteği kaldırılır) ve
+  wordpress.org Pattern Directory (`should_load_remote_block_patterns`) yüklenmez. Eklentilerin ve
+  sitenin kendi pattern'leri kalır.
+- **Bölüm = tek kök blok:** WordPress 7.1, tek kök bloklu senkronsuz bir pattern eklendiğinde köke
+  `metadata.patternName` yazar ve bölümü "yalnızca içerik" modunda açar: metin ve görseller
+  düzenlenir, yerleşim kilitli kalır ("Edit pattern" ile açılır). Tam sayfa pattern'leri
+  `<!-- wp:pattern {"slug":"pergel/…"} /-->` listesidir; eklenince her biri kendi bölümüne açılır.
+- **Başlıksız sayfa şablonu:** `page-landing` ("Landing page (no title)", `customTemplates`) sayfa
+  başlığını basmaz; hero veya tam sayfa pattern'i ile kurulan sayfada tek H1 hero'nunkidir.
+- **Yer tutucu görseller:** `theme/assets/images/placeholders/` içinde nötr gri, yazısız SVG'ler
+  (wide 16:9, landscape 3:2, portrait 4:5, square, avatar, logo-1…6), her biri 330 bayttan küçük.
+  Süs oldukları için `alt=""` taşırlar; gerçek görseller projede değiştirilir.
+- **Editör kontrolü** (`tools/patterns/editor-check.mjs`, CI'da bütçeden sonra): geçici bir yönetici
+  ile sayfa editörünü açar, her Pergel pattern'ini `wp.blocks.parse` ile çözer ve her bloğu
+  `wp.blocks.validateBlock` ile sıkı denetler (çekirdeğin sessizce kabul ettiği eski işaretleme ve
+  deprecation'lar da hata sayılır). Sonra pattern'i ekleyiciyle aynı yoldan ekler ve her kökün
+  `patternName` taşıdığını, yalnızca içerik modunda düzenlenecek bir şey kaldığını doğrular.
+  Header/footer (yalnızca Site Editor) ve gizli pattern'ler yalnızca çözümleme denetiminden geçer.
+  Konsol hatası da başarısızlıktır.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.

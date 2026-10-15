@@ -16,18 +16,41 @@ namespace Pergel\Theme;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers the pattern categories that the theme's patterns/ use.
+ * Registers the pattern categories that core does not have. The library
+ * also files patterns under core's own categories (banner, services, about,
+ * team, testimonials, call-to-action, contact, posts, portfolio, gallery).
  */
 function register_pattern_categories(): void {
-	register_block_pattern_category(
-		'pergel',
-		array(
-			'label'       => __( 'Pergel', 'pergel' ),
-			'description' => __( 'Sections and full pages from the Pergel library.', 'pergel' ),
-		)
+	$categories = array(
+		'pergel-stats'   => array( _x( 'Numbers', 'pattern category', 'pergel' ), __( 'Counters and key figures.', 'pergel' ) ),
+		'pergel-process' => array( _x( 'Process', 'pattern category', 'pergel' ), __( 'Steps, timelines and how-it-works sections.', 'pergel' ) ),
+		'pergel-logos'   => array( _x( 'Clients', 'pattern category', 'pergel' ), __( 'Client and partner logos.', 'pergel' ) ),
+		'pergel-pricing' => array( _x( 'Pricing', 'pattern category', 'pergel' ), __( 'Plans, prices and comparisons.', 'pergel' ) ),
+		'pergel-faq'     => array( _x( 'FAQ', 'pattern category', 'pergel' ), __( 'Frequently asked questions.', 'pergel' ) ),
+		'pergel-pages'   => array( _x( 'Full pages', 'pattern category', 'pergel' ), __( 'Whole pages made of Pergel sections.', 'pergel' ) ),
 	);
+	foreach ( $categories as $slug => $category ) {
+		register_block_pattern_category(
+			$slug,
+			array(
+				'label'       => $category[0],
+				'description' => $category[1],
+			)
+		);
+	}
 }
 add_action( 'init', __NAMESPACE__ . '\register_pattern_categories' );
+
+/**
+ * Leaves the inserter to the theme's library: core's bundled patterns and
+ * the remote Pattern Directory (a request to wordpress.org from the editor)
+ * are not loaded. Patterns from plugins and the site's own are kept.
+ */
+function limit_pattern_sources(): void {
+	remove_theme_support( 'core-block-patterns' );
+}
+add_action( 'after_setup_theme', __NAMESPACE__ . '\limit_pattern_sources' );
+add_filter( 'should_load_remote_block_patterns', '__return_false' );
 
 /**
  * Loads the theme's per-block styles. Core prints each one only on pages

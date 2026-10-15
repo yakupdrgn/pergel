@@ -30,6 +30,8 @@ jobs:
         run: php tools/tokens.php --check
       - name: Block rules and manifest
         run: php tools/blocks.php --check
+      - name: Pattern rules
+        run: php tools/patterns.php --check
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -119,6 +121,11 @@ jobs:
           diff -I '^"POT-Creation-Date' engine/languages/pergel-engine.pot /tmp/pergel-engine.pot
       - name: Performance budget
         run: npm run budget -- --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label ci
+      - name: Patterns in the block editor
+        run: |
+          export PERGEL_QA_PASSWORD="$(head -c 18 /dev/urandom | base64)"
+          wp --path="$WP_DIR" user create pergel-qa qa@example.invalid --role=administrator --user_pass="$PERGEL_QA_PASSWORD" --porcelain > /dev/null
+          node tools/patterns/editor-check.mjs --base "$SITE_URL"
       - name: PHP notices
         if: always()
         run: |

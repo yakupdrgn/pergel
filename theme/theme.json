@@ -322,6 +322,15 @@
 			}
 		}
 	},
+	"customTemplates": [
+		{
+			"name": "page-landing",
+			"title": "Landing page (no title)",
+			"postTypes": [
+				"page"
+			]
+		}
+	],
 	"templateParts": [
 		{
 			"name": "header",
