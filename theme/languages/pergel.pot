@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T14:28:26+03:00\n"
+"POT-Creation-Date: 2026-10-15T14:49:38+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -74,6 +74,208 @@ msgid "Full pages"
 msgstr ""
 
 msgid "Whole pages made of Pergel sections."
+msgstr ""
+
+#: patterns/cta-accent.php
+msgctxt "Pattern title"
+msgid "Call to action on the accent color"
+msgstr ""
+
+#: patterns/cta-accent.php
+msgctxt "Pattern description"
+msgid "Centered heading and button on the brand accent color."
+msgstr ""
+
+msgid "Let us take this off your plate"
+msgstr ""
+
+msgid "Send us the details today. An engineer will call you back."
+msgstr ""
+
+msgid "Get in touch"
+msgstr ""
+
+#: patterns/cta-banner-slim.php
+msgctxt "Pattern title"
+msgid "Slim call-to-action bar"
+msgstr ""
+
+#: patterns/cta-banner-slim.php
+msgctxt "Pattern description"
+msgid "A narrow bar with one line of text and a button, for use between sections."
+msgstr ""
+
+msgid "Planning a project this year? Get a free first survey."
+msgstr ""
+
+msgid "Book a survey"
+msgstr ""
+
+#: patterns/cta-card.php
+msgctxt "Pattern title"
+msgid "Call to action in a card"
+msgstr ""
+
+#: patterns/cta-card.php
+msgctxt "Pattern description"
+msgid "A bordered card with a heading, text and two buttons in the middle of the page."
+msgstr ""
+
+msgid "Not sure where to start?"
+msgstr ""
+
+msgid "Book a free 30-minute call. We will listen, ask a few questions and suggest the next step."
+msgstr ""
+
+msgid "Book a call"
+msgstr ""
+
+msgid "Send an email"
+msgstr ""
+
+#: patterns/cta-centered.php
+msgctxt "Pattern title"
+msgid "Call to action, centered"
+msgstr ""
+
+#: patterns/cta-centered.php
+msgctxt "Pattern description"
+msgid "Centered heading, one line of text and two buttons."
+msgstr ""
+
+msgid "Ready to start your project?"
+msgstr ""
+
+msgid "Tell us what you need and we will send a clear plan and price within two working days."
+msgstr ""
+
+msgid "Request a quote"
+msgstr ""
+
+msgid "Contact us"
+msgstr ""
+
+#: patterns/cta-cover.php
+msgctxt "Pattern title"
+msgid "Call to action on an image"
+msgstr ""
+
+#: patterns/cta-cover.php
+msgctxt "Pattern description"
+msgid "Centered heading and button over a darkened full-width image."
+msgstr ""
+
+msgid "See what we can build together"
+msgstr ""
+
+msgid "Visit us or invite us to your site. The first survey is on us."
+msgstr ""
+
+msgid "Book a visit"
+msgstr ""
+
+#: patterns/cta-inverse.php
+msgctxt "Pattern title"
+msgid "Call to action on a dark background"
+msgstr ""
+
+#: patterns/cta-inverse.php
+msgctxt "Pattern description"
+msgid "Short label, heading, text and two buttons on a dark background."
+msgstr ""
+
+msgid "Service and support"
+msgstr ""
+
+msgid "Your systems, looked after by people who know them"
+msgstr ""
+
+msgid "Maintenance contracts with fixed response times and one point of contact."
+msgstr ""
+
+msgid "Ask about contracts"
+msgstr ""
+
+msgid "Our services"
+msgstr ""
+
+#: patterns/cta-phone.php
+msgctxt "Pattern title"
+msgid "Call to action with phone number"
+msgstr ""
+
+#: patterns/cta-phone.php
+msgctxt "Pattern description"
+msgid "Heading with a call button filled from the brand settings."
+msgstr ""
+
+msgid "Prefer to talk it through?"
+msgstr ""
+
+msgid "Call us on weekdays between 9:00 and 18:00."
+msgstr ""
+
+#: patterns/cta-split.php
+msgctxt "Pattern title"
+msgid "Call to action with buttons on the right"
+msgstr ""
+
+#: patterns/cta-split.php
+msgctxt "Pattern description"
+msgid "Heading and text on the left, buttons on the right, on a light background."
+msgstr ""
+
+msgid "Need a reliable partner for your next job?"
+msgstr ""
+
+msgid "One team for planning, delivery and support."
+msgstr ""
+
+msgid "Call us"
+msgstr ""
+
+#: patterns/cta-two-options.php
+msgctxt "Pattern title"
+msgid "Two calls to action side by side"
+msgstr ""
+
+#: patterns/cta-two-options.php
+msgctxt "Pattern description"
+msgid "Two cards, each with its own heading, text and button."
+msgstr ""
+
+msgid "Start a new project"
+msgstr ""
+
+msgid "Tell us about your plans and get a proposal with a fixed price."
+msgstr ""
+
+msgid "Get support"
+msgstr ""
+
+msgid "Already a client? Reach the support team and track your request."
+msgstr ""
+
+msgid "Contact support"
+msgstr ""
+
+#: patterns/cta-with-image.php
+msgctxt "Pattern title"
+msgid "Call to action with image"
+msgstr ""
+
+#: patterns/cta-with-image.php
+msgctxt "Pattern description"
+msgid "Image on one side, heading, text and a button on the other."
+msgstr ""
+
+msgid "Let us visit your site"
+msgstr ""
+
+msgid "We look at the space, listen to your plans and leave you with a written proposal."
+msgstr ""
+
+msgid "Arrange a visit"
 msgstr ""
 
 #: patterns/footer-centered.php
@@ -245,6 +447,258 @@ msgctxt "Pattern description"
 msgid "A dark top bar with the tagline and a contact link above the classic header. The top bar is hidden on phones."
 msgstr ""
 
+#: patterns/hero-accent.php
+msgctxt "Pattern title"
+msgid "Hero in the accent color"
+msgstr ""
+
+#: patterns/hero-accent.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons on the accent color, for campaign and landing pages."
+msgstr ""
+
+msgid "New this season"
+msgstr ""
+
+msgid "Everything your project needs, from one team"
+msgstr ""
+
+msgid "We plan, deliver and support the systems your daily work depends on, with clear prices and one team you can call."
+msgstr ""
+
+#: patterns/hero-centered.php
+msgctxt "Pattern title"
+msgid "Hero, centered"
+msgstr ""
+
+#: patterns/hero-centered.php
+msgctxt "Pattern description"
+msgid "Page title, short introduction and two buttons, centered."
+msgstr ""
+
+msgid "Since 2009"
+msgstr ""
+
+msgid "Precise work for teams that cannot afford mistakes"
+msgstr ""
+
+#: patterns/hero-checklist.php
+msgctxt "Pattern title"
+msgid "Hero with benefits list"
+msgstr ""
+
+#: patterns/hero-checklist.php
+msgctxt "Pattern description"
+msgid "Page title, a short list of benefits and buttons beside a tall image."
+msgstr ""
+
+msgid "Less downtime, fewer surprises, one point of contact"
+msgstr ""
+
+msgid "From the first survey to yearly maintenance, our engineers keep your systems running."
+msgstr ""
+
+msgid "Certified engineers on every job"
+msgstr ""
+
+msgid "Spare parts kept in stock"
+msgstr ""
+
+msgid "Same-day response for contract clients"
+msgstr ""
+
+msgid "Talk to an engineer"
+msgstr ""
+
+msgid "See our work"
+msgstr ""
+
+#: patterns/hero-contact.php
+msgctxt "Pattern title"
+msgid "Hero with phone and email"
+msgstr ""
+
+#: patterns/hero-contact.php
+msgctxt "Pattern description"
+msgid "Page title with buttons that call or email the company, filled from the brand settings."
+msgstr ""
+
+msgid "We answer within one working day"
+msgstr ""
+
+msgid "Talk to the people who will do the work"
+msgstr ""
+
+msgid "Call or write to us. You will speak with an engineer, not a call center."
+msgstr ""
+
+msgctxt "sample email address"
+msgid "hello@example.com"
+msgstr ""
+
+#: patterns/hero-cover-left.php
+msgctxt "Pattern title"
+msgid "Hero on an image, left aligned"
+msgstr ""
+
+#: patterns/hero-cover-left.php
+msgctxt "Pattern description"
+msgid "Page title and buttons on the left over a darkened full-width image."
+msgstr ""
+
+msgid "Installation, service, training"
+msgstr ""
+
+#: patterns/hero-cover.php
+msgctxt "Pattern title"
+msgid "Hero on a full-width image"
+msgstr ""
+
+#: patterns/hero-cover.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons over a darkened full-width image."
+msgstr ""
+
+#: patterns/hero-form.php
+msgctxt "Pattern title"
+msgid "Hero with quote form"
+msgstr ""
+
+#: patterns/hero-form.php
+msgctxt "Pattern description"
+msgid "Page title and benefits beside a quote request form."
+msgstr ""
+
+msgid "Free site visit"
+msgstr ""
+
+msgid "Get a clear quote within two working days"
+msgstr ""
+
+msgid "Tell us what you need. An engineer reviews every request and replies with a fixed price."
+msgstr ""
+
+msgid "No obligation, no sales calls"
+msgstr ""
+
+msgid "Fixed price before work starts"
+msgstr ""
+
+msgid "Two-year warranty on our work"
+msgstr ""
+
+#: patterns/hero-image-below.php
+msgctxt "Pattern title"
+msgid "Hero with wide image below"
+msgstr ""
+
+#: patterns/hero-image-below.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons above a wide image."
+msgstr ""
+
+msgid "See the whole picture before you decide"
+msgstr ""
+
+#: patterns/hero-inverse.php
+msgctxt "Pattern title"
+msgid "Hero, dark"
+msgstr ""
+
+#: patterns/hero-inverse.php
+msgctxt "Pattern description"
+msgid "Page title, introduction and buttons beside an image on a dark background."
+msgstr ""
+
+msgid "Built to last"
+msgstr ""
+
+msgid "Reliable systems, delivered on time and looked after for years"
+msgstr ""
+
+#: patterns/hero-logos.php
+msgctxt "Pattern title"
+msgid "Hero with client logos"
+msgstr ""
+
+#: patterns/hero-logos.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons, then a row of client logos."
+msgstr ""
+
+msgid "Trusted by teams at"
+msgstr ""
+
+#: patterns/hero-minimal.php
+msgctxt "Pattern title"
+msgid "Hero, text only"
+msgstr ""
+
+#: patterns/hero-minimal.php
+msgctxt "Pattern description"
+msgid "A large page title with a short line and a link, without images."
+msgstr ""
+
+msgid "We make complex projects simple to run"
+msgstr ""
+
+msgid "Planning, delivery and support under one roof."
+msgstr ""
+
+msgid "Read how we work"
+msgstr ""
+
+#: patterns/hero-split-reverse.php
+msgctxt "Pattern title"
+msgid "Hero with image on the left"
+msgstr ""
+
+#: patterns/hero-split-reverse.php
+msgctxt "Pattern description"
+msgid "Large image on the left, page title and buttons on the right, on a light background."
+msgstr ""
+
+msgid "Who we are"
+msgstr ""
+
+msgid "A partner for the long run, not a supplier for one job"
+msgstr ""
+
+#: patterns/hero-split.php
+msgctxt "Pattern title"
+msgid "Hero with image"
+msgstr ""
+
+#: patterns/hero-split.php
+msgctxt "Pattern description"
+msgid "Page title, introduction and buttons beside a large image."
+msgstr ""
+
+msgid "Engineering and support"
+msgstr ""
+
+#: patterns/hero-stats.php
+msgctxt "Pattern title"
+msgid "Hero with key figures"
+msgstr ""
+
+#: patterns/hero-stats.php
+msgctxt "Pattern description"
+msgid "Page title and buttons with three counting figures underneath."
+msgstr ""
+
+msgid "Trusted since 2009"
+msgstr ""
+
+msgid "Projects delivered"
+msgstr ""
+
+msgid "Clients who come back"
+msgstr ""
+
+msgid "Support line"
+msgstr ""
+
 #: patterns/hidden-404.php
 msgctxt "Pattern title"
 msgid "404 content"
@@ -361,7 +815,7 @@ msgid "Muted"
 msgstr ""
 
 msgctxt "Color name"
-msgid "Border"
+msgid "Line"
 msgstr ""
 
 msgctxt "Color name"
