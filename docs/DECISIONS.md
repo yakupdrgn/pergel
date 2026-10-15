@@ -108,7 +108,9 @@ bir projeye ait; o adlar kullanılmaz.
 - **CI ortamı:** Plan wp-env (Docker) diyordu. F0'da CI, Ubuntu üzerinde PHP 8.4 + MariaDB 11.8
   servis konteyneri + WP-CLI + `php -S` ile kurulur (`tools/ci/`). Daha az hareketli parça,
   yerel kurulumla aynı adımlar. wp-env, Docker gerektiren testler (görsel regresyon, SEO matrisi)
-  gelince yeniden değerlendirilir.
+  gelince yeniden değerlendirilir. CI kurulumu, yönetici sayfalarının api.wordpress.org'a
+  güncelleme sorgusu atmasını bir must-use eklentiyle kapatır (F3c): runner'da DNS yavaşken bu
+  sorgular tek iş parçacıklı `php -S`'i kilitliyor ve editör kontrolünü zaman aşımına düşürüyordu.
 - **Repo konumu:** `D:\dev\pergel` (önce `C:\dev\pergel`, kullanıcı isteğiyle taşındı).
 
 ## F1 kararları (15 Ekim 2026)

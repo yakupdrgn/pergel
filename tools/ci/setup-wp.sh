@@ -5,7 +5,8 @@
 #
 # The same steps as the local site: Pergel theme and engine active, the
 # performance probe as a must-use plugin, fixed content from
-# tools/fixtures/seed.php, pretty permalinks, no WP-Cron. Serve it with
+# tools/fixtures/seed.php, pretty permalinks, no WP-Cron, no update checks
+# from admin pages. Serve it with
 #   php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php
 set -euo pipefail
 
@@ -55,6 +56,16 @@ cat > "$WP_DIR/wp-content/mu-plugins/pergel-perf-probe.php" <<PHP
 <?php
 // Pergel CI: performance probe from the repo (tools/ci/setup-wp.sh).
 require '$REPO_PHP/tools/budget/perf-probe.php';
+PHP
+# Admin pages would otherwise ask api.wordpress.org for updates on every
+# visit while the update transients are empty; with slow DNS on the runner
+# that holds up the single-threaded php -S and the block editor check.
+cat > "$WP_DIR/wp-content/mu-plugins/pergel-ci-offline.php" <<'PHP'
+<?php
+// Pergel CI: no update checks from admin pages (tools/ci/setup-wp.sh).
+remove_action( 'admin_init', '_maybe_update_core' );
+remove_action( 'admin_init', '_maybe_update_plugins' );
+remove_action( 'admin_init', '_maybe_update_themes' );
 PHP
 wp theme activate pergel
 wp plugin activate pergel-engine
