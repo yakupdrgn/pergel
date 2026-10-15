@@ -31,7 +31,7 @@ pergel/
 │  ├─ blocks/<blok>/      block.json + render.php (sunucuda çizilen bloklar)
 │  ├─ build/              derlenmiş editör JS'i (repoya girer, K6)
 │  └─ languages/
-├─ starters/              kurumsal / e-ticaret / editoryal starter paketleri (F3–F4)
+├─ starters/<ad>/         starter paketleri: starter.json (dağıtılmaz; F3: corporate, F4: e-ticaret)
 ├─ tools/
 │  ├─ budget/             perf-probe.php (mu-plugin) + measure.mjs (Playwright)
 │  ├─ ci/                 CI'da WordPress kurulumu ve php -S router'ı
@@ -42,6 +42,7 @@ pergel/
 ├─ tests/php/             birim testleri (WordPress olmadan)
 ├─ tests/integration/     WordPress gerektiren testler (PERGEL_WP_DIR)
 ├─ tests/budget/          performans bütçesi (K11)
+├─ tests/visual/          pattern erişilebilirlik ve görsel regresyon testleri (Playwright)
 └─ docs/
 ```
 
@@ -257,8 +258,9 @@ script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
 - **Sayaç** (`pergel/counter`): sayı ve etiket paragrafı. Sunucu son sayıyı basar; script blok
   görünür olunca sıfırdan sayar (binlik ayırıcı, ondalık ve çevresindeki metin korunur: `250+`,
   `%98`, `1.200`). `prefers-reduced-motion`'da ve süre 0 iken sayı hiç değişmez. Süre 0–10000 ms.
-- **Zaman çizelgesi** (`pergel/timeline` > `pergel/timeline-item`): `<ol>`/`<li>`; dar ekranda tek
-  sütun, 48rem'den geniş ekranda çizginin iki yanında sırayla.
+- **Zaman çizelgesi** (`pergel/timeline` > `pergel/timeline-item`): `<ol>`/`<li>`; blok 40rem'den
+  darsa tek sütun, genişse çizginin iki yanında sırayla. Ölçü ekran değil bloğun kendi genişliğidir
+  (container query); dar bir sütundaki zaman çizelgesi tek tarafta kalır.
 - **Logo şeridi** (`pergel/logo-marquee`): Image blokları iki kez basılır, ikinci kopya
   `aria-hidden` ve `inert`'tir ve id'leri silinir. Kayma saf CSS'tir (süre 5–120 sn), üzerine
   gelince, logolara odaklanınca ve "Duraklat" düğmesiyle durur (WCAG 2.2.2); düğmeyi script
@@ -277,7 +279,8 @@ script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
   Editör önizlemesi kayıtlı içerikten gelir.
 - **Harita** (`pergel/map`): adres/yer ve yakınlık. Önce statik görsel (ya da adresli bir yer
   tutucu) ve Google Maps'e giden bir bağlantı basılır; iframe yalnızca "Show the map"e basınca
-  oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez.
+  oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez. Adres boş
+  bırakılırsa marka ayarlarındaki adres kullanılır; ikisi de boşsa blok hiçbir şey basmaz.
 
 ### Etkileşimli bloklar (F3b)
 
@@ -363,6 +366,96 @@ yalnızca kaydırma animasyonunu kendisi ekler.
   Styles sekmesinde Position → Sticky. Header'ın yapışkan davranışı ise template part
   özniteliğidir (yukarıda).
 
+## Pattern'ler (F3c)
+
+Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığından kaydeder. Metinler
+`esc_html_e( '…', 'pergel' )` ile çevrilir, görseller `get_theme_file_uri()` ile temadan gelir.
+
+- **Kurallar** (`Pergel\Patterns\Rules`, `php tools/patterns.php --check`, CI'da): Title, Slug
+  (`pergel/<dosya adı>`), Categories ve Description zorunlu (`Inserter: no` olan gizli
+  pattern'lerde son ikisi değil); kategori bilinen listeden; `ABSPATH` koruması; yalnızca çekirdek
+  ve Pergel blokları, `core/html`, `freeform`, `shortcode` yok; metinde, `alt`/`title`/
+  `aria-label`/`placeholder`/`value` özniteliklerinde ve blok JSON'undaki metin alanlarında sabit
+  harf yok; çeviri alan adı `pergel`; en fazla bir H1, o da yalnızca hero (`banner`) ve tam sayfa
+  (`pergel-pages`) pattern'lerinde; bölüm pattern'inde tek kök blok (tam sayfalar yalnızca
+  `core/pattern` bloklarından oluşur); `src`/`href`/`srcset`/`poster` ve JSON `url`'lerinde dış
+  adres yok; `<script>`, `<style>`, `<link>`, `<iframe>` yok; her `<img>` `alt` taşır; başvurulan
+  her renk, yazı boyutu, yazı ailesi, boşluk ve gölge preset'i `theme.json`'da tanımlı.
+- **Kategoriler:** Çekirdeğin kategorileri yeniden kullanılır (`banner`, `services`, `about`,
+  `team`, `testimonials`, `call-to-action`, `contact`, `posts`, `portfolio`, `gallery`, `header`,
+  `footer`); eksikler Pergel'den gelir: `pergel-stats` (Numbers), `pergel-process` (Process),
+  `pergel-logos` (Clients), `pergel-pricing` (Pricing), `pergel-faq` (FAQ), `pergel-pages`
+  (Full pages).
+- **Kaynaklar:** Çekirdeğin hazır pattern'leri (`core-block-patterns` desteği kaldırılır) ve
+  wordpress.org Pattern Directory (`should_load_remote_block_patterns`) yüklenmez. Eklentilerin ve
+  sitenin kendi pattern'leri kalır.
+- **Bölüm = tek kök blok:** WordPress 7.1, tek kök bloklu senkronsuz bir pattern eklendiğinde köke
+  `metadata.patternName` yazar ve bölümü "yalnızca içerik" modunda açar: metin ve görseller
+  düzenlenir, yerleşim kilitli kalır ("Edit pattern" ile açılır). Tam sayfa pattern'leri
+  `<!-- wp:pattern {"slug":"pergel/…"} /-->` listesidir; eklenince her biri kendi bölümüne açılır.
+- **Başlıksız sayfa şablonu:** `page-landing` ("Landing page (no title)", `customTemplates`) sayfa
+  başlığını basmaz; hero veya tam sayfa pattern'i ile kurulan sayfada tek H1 hero'nunkidir.
+- **Tam sayfalar** (`pergel-pages`, yalnızca `page` yazı tipinde, yeni sayfa açılırken önerilir):
+  Home, About, Services, Contact, Pricing, Team, Quote landing ve Portfolio. Bölümlerin arka planı
+  sırayla değişir (base, surface, contrast veya accent; aynı ton art arda gelmez); bir sayfada
+  aynı başlık veya paragraf iki kez geçmez. Her tam sayfanın hero'su farklıdır, böylece bir
+  starter'ın sayfaları aynı H1'i taşımaz.
+- **Yer tutucu görseller:** `theme/assets/images/placeholders/` içinde nötr gri, yazısız SVG'ler
+  (wide 16:9, landscape 3:2, portrait 4:5, square, avatar, logo-1…6), her biri 330 bayttan küçük.
+  Süs oldukları için `alt=""` taşırlar; gerçek görseller projede değiştirilir.
+- **Editör kontrolü** (`tools/patterns/editor-check.mjs`, CI'da bütçeden sonra): geçici bir yönetici
+  ile sayfa editörünü açar, her Pergel pattern'ini `wp.blocks.parse` ile çözer ve her bloğu
+  `wp.blocks.validateBlock` ile sıkı denetler (çekirdeğin sessizce kabul ettiği eski işaretleme ve
+  deprecation'lar da hata sayılır). Sonra pattern'i ekleyiciyle aynı yoldan ekler ve her kökün
+  `patternName` taşıdığını, yalnızca içerik modunda düzenlenecek bir şey kaldığını doğrular.
+  Header/footer (yalnızca Site Editor) ve gizli pattern'ler yalnızca çözümleme denetiminden geçer.
+  Konsol hatası da başarısızlıktır.
+- **Erişilebilirlik ve görsel regresyon** (`tests/visual/patterns.spec.mjs`, CI'da `visual` işi):
+  Pattern'ler örnek sayfada perf probe'un `X-Pergel-Pattern: <ad>[,<ad>…]` başlığıyla, hiçbir şey
+  kaydedilmeden ve `page-landing` şablonuyla çizilir. Varsayılan stil ve her variation için bölüm
+  pattern'leri kategori başına bir sayfada, tam sayfalar tek tek 1280 ve 360 piksel genişlikte axe
+  (WCAG 2.2 A/AA) ve yana kaydırma denetiminden geçer. Tam sayfaların variation'lardaki ekran
+  görüntüleri (1280/800/360) `tests/visual/baselines/` ile karşılaştırılır; referanslar yalnızca
+  CI'da (Linux) üretilir. Eksik referans `visual-report` artifact'ına yazılır; hepsini yenilemek
+  için iş `update-baselines` girdisiyle elle çalıştırılır. Yerelde `npm run test:a11y` (ekran
+  görüntüsüz) çalışır.
+
+## Starter'lar (F3c)
+
+Starter, tam sayfa pattern'lerinden kurulan hazır bir site iskeletidir: sayfalar, ana menü ve
+okuma ayarları (ön sayfa, yazılar sayfası). `starters/<ad>/starter.json` paketi tanımlar:
+
+```json
+{
+  "format": 1,
+  "title": "Corporate",
+  "pages": [
+    { "key": "about", "title": { "en": "About us", "tr": "Hakkımızda" },
+      "slug": { "en": "about", "tr": "hakkimizda" }, "pattern": "pergel/page-about" },
+    { "key": "blog", "title": "Blog", "slug": "blog", "posts_page": true }
+  ],
+  "menu": { "title": { "en": "Main menu", "tr": "Ana menü" }, "pages": [ "about", "blog" ] }
+}
+```
+
+- **Dil:** Başlık ve adresler düz metin veya dil haritasıdır; site dili (`tr_TR`, sonra `tr`,
+  sonra `en`) seçer.
+- **Sayfa içeriği:** Tam sayfa pattern'inin `core/pattern` referansları açılır ve her bölümün
+  kökü ekleyicinin verdiği `metadata`'yı (`patternName`, ad, açıklama, kategoriler) taşır;
+  sayfa editörde ekleyiciden kurulmuş gibi içerik modunda açılır. Pattern'li sayfalar
+  `page-landing` şablonunu alır (tek H1 hero'da).
+- **Menü:** `wp_navigation` yazısı, sayfa bağlantılarıyla. Header'lardaki Navigation bloğu bir
+  menüye bağlı olmadığı için en yeni menüyü, yani starter'ınkini gösterir.
+- **İşaretleme ve tekrar:** Starter'ın yaptığı her sayfa ve menü `_pergel_starter` (starter adı)
+  ve `_pergel_starter_key` (öğe anahtarı) meta'sını taşır. Kurulum tekrar çalışınca bunları
+  bulur ve dokunmaz (`keep`); `--reset` başlık, içerik ve şablonu starter'ınkine döndürür.
+  Adresi dolu bir sayfa varsa WordPress yeni bir adres seçer, rapor bunu söyler.
+- **Kaldırma:** Meta'sı olan sayfa ve menüler kalıcı silinir; okuma ayarları yalnızca silinen
+  bir sayfayı gösteriyorsa "son yazılar"a döner. Başka içerik etkilenmez.
+- **Yer:** `Starter::dir()` eklentinin yanındaki `starters/` klasörüdür; yerelde junction ile
+  depoya bakar (CI'da symlink). Kopyalanmış eklentide (`LINK_MODE=copy`, zip kurulumu) paket klasör yoluyla verilir:
+  `wp pergel starter install /yol/starters/corporate`.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.
@@ -377,12 +470,15 @@ yalnızca kaydırma animasyonunu kendisi ekler.
 | `wp pergel settings import <dosya\|-> [--dry-run]` | JSON'dan okur; dosyada olmayan alanlar korunur, değişen alanlar listelenir |
 | `wp pergel modules list` | Modül, anahtar (`on`/`off`/`always`), bu komutta yüklendi mi |
 | `wp pergel modules enable\|disable <id>...` | Anahtarı olan modülleri açar/kapatır |
+| `wp pergel starter list` | Pergel'le gelen starter'lar |
+| `wp pergel starter install <ad\|klasör> [--dry-run] [--reset]` | Starter'ın sayfalarını, menüsünü ve okuma ayarlarını kurar; tekrar çalışınca bir şey değiştirmez |
+| `wp pergel starter remove <ad> [--dry-run] [--yes]` | Starter'ın yaptığı sayfa ve menüleri kalıcı siler, okuma ayarlarını düzeltir |
 
 Ayar komutları ekranla aynı şemadan geçer: geçersiz veya bilinmeyen bir alan varsa hiçbir şey
 kaydedilmez ve komut 1 ile çıkar (ekran ise geçerli kısmı kaydeder). Görsel alanları ek olarak
 bu sitede görsel olan bir ekin kimliğini ister: `set` başka bir değeri reddeder, `import` başka
 siteden gelen kimlikleri uyarıyla sıfırlar. `tools/ci/cli-smoke.sh` tüm komutları CI'da gerçek
-WP-CLI ile dener ve ayarları sonunda geri yükler.
+WP-CLI ile dener (starter'ı kurar, tekrar kurar ve kaldırır) ve ayarları sonunda geri yükler.
 
 ## Ölçüm
 

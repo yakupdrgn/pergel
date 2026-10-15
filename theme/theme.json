@@ -38,8 +38,8 @@
 					"color": "#5b6270"
 				},
 				{
-					"slug": "border",
-					"name": "Border",
+					"slug": "line",
+					"name": "Line",
 					"color": "#dde0e6"
 				},
 				{
@@ -322,6 +322,15 @@
 			}
 		}
 	},
+	"customTemplates": [
+		{
+			"name": "page-landing",
+			"title": "Landing page (no title)",
+			"postTypes": [
+				"page"
+			]
+		}
+	],
 	"templateParts": [
 		{
 			"name": "header",

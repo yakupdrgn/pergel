@@ -39,5 +39,6 @@ final class Module implements Core\Module {
 		WP_CLI::add_command( 'pergel tokens', Tokens::class );
 		WP_CLI::add_command( 'pergel settings', SettingsCommand::class );
 		WP_CLI::add_command( 'pergel modules', ModulesCommand::class );
+		WP_CLI::add_command( 'pergel starter', StarterCommand::class );
 	}
 }

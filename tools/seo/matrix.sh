@@ -35,7 +35,8 @@ PHONE='+90 212 555 00 00'
 SOCIAL='https://www.linkedin.com/company/pergel-matrix'
 
 if [ "$INSTALL" = 1 ]; then
-	wp plugin install "${SLUG[@]}" --quiet
+	# wordpress.org downloads fail now and then on CI runners; try three times.
+	for i in 1 2 3; do wp plugin install "${SLUG[@]}" --quiet && break; [ "$i" = 3 ] && exit 1; sleep 15; done
 fi
 
 backup="$(mktemp)"

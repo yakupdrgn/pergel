@@ -1,4 +1,6 @@
 .wp-block-pergel-form {
+	/* Full width inside vertical flex groups (cards) too. */
+	align-self: stretch;
 	display: grid;
 	gap: 1rem 1.5rem;
 	grid-template-columns: minmax(0, 1fr);

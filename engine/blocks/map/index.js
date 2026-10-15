@@ -21,7 +21,7 @@
 						__next40pxDefaultSize: true,
 						__nextHasNoMarginBottom: true,
 						label: __( 'Address or place', 'pergel-engine' ),
-						help: __( 'Searched on Google Maps. The block shows nothing until this is filled in.', 'pergel-engine' ),
+						help: __( 'Searched on Google Maps. Leave empty to use the address from the brand settings.', 'pergel-engine' ),
 						value: props.attributes.query,
 						onChange: function ( value ) {
 							props.setAttributes( { query: value } );

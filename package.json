@@ -9,7 +9,9 @@
 	},
 	"scripts": {
 		"validate:json": "node tools/validate-json.mjs",
-		"budget": "node tools/budget/measure.mjs"
+		"budget": "node tools/budget/measure.mjs",
+		"test:a11y": "playwright test --grep-invert @visual",
+		"test:visual": "playwright test"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.13.0",

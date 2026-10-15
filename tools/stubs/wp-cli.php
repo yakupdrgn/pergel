@@ -30,6 +30,14 @@ namespace {
 		public static function warning( $message ): void {}
 
 		/**
+		 * Asks yes/no; exits on no, skips the question with --yes.
+		 *
+		 * @param string               $question   Question.
+		 * @param array<string, mixed> $assoc_args Associative arguments.
+		 */
+		public static function confirm( $question, $assoc_args = array() ): void {}
+
+		/**
 		 * @param string|\WP_Error|\Exception $message
 		 * @return never
 		 */

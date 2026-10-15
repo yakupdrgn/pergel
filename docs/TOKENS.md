@@ -124,6 +124,8 @@ Derleme aşağıdakilerden biri bulunduğunda hiçbir dosya yazmaz. Bulunan soru
 listeler.
 
 - Zorunlu slug eksik, `$type` yanlış veya preset grubu iç içe yazılmış.
+- Renk adı `text`, `link` veya `border`: `.has-{slug}-color` sınıfı WordPress'in her bloğa eklediği
+  genel sınıfla çakışır (ayırıcı rengi bu yüzden `line`).
 - Alias hedefi yok, türü uyuşmuyor ya da alias'lar döngü oluşturuyor.
 - Değer okunamıyor (renk, boyut, gölge biçimi).
 - `fontFace` dosyası temada yok.

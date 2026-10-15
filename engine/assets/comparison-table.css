@@ -12,7 +12,7 @@
 
 .wp-block-table.is-style-pergel-comparison :is(th, td) {
 	border: 0;
-	border-bottom: 1px solid var(--wp--preset--color--border, currentcolor);
+	border-bottom: 1px solid var(--wp--preset--color--line, currentcolor);
 	padding: 0.75em 1em;
 	text-align: center;
 	vertical-align: middle;

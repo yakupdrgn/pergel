@@ -108,7 +108,15 @@ bir projeye ait; o adlar kullanılmaz.
 - **CI ortamı:** Plan wp-env (Docker) diyordu. F0'da CI, Ubuntu üzerinde PHP 8.4 + MariaDB 11.8
   servis konteyneri + WP-CLI + `php -S` ile kurulur (`tools/ci/`). Daha az hareketli parça,
   yerel kurulumla aynı adımlar. wp-env, Docker gerektiren testler (görsel regresyon, SEO matrisi)
-  gelince yeniden değerlendirilir.
+  gelince yeniden değerlendirilir. CI kurulumu, yönetici sayfalarının api.wordpress.org'a
+  güncelleme sorgusu atmasını bir must-use eklentiyle kapatır (F3c), böylece CI ağa bağlı kalmaz.
+  setup-php, PHP 8.4'te JIT'i açık getirir. JIT, PHPUnit'i ve `wp-admin/post-new.php` isteğinde
+  `php -S`'i çökertiyor: veritabanı "aborted connection" yazıyor, istek hiç bitmiyor. Bu yüzden
+  PHPUnit ve blok editörü kontrolü JIT kapalı çalışır. Bütçe ölçümü JIT açık kalır. JIT
+  kapalıyken de bir sayfa isteği ara sıra 30 saniyelik sınırı aşıp `php -S`'i sonlandırıyor
+  (yerelde yeniden üretilemedi). Bu yüzden sunucu `tools/ci/serve.sh` ile çalışır ve ölürse
+  yeniden başlar. Her istek `/tmp/pergel-requests.log`'a yazılır, böylece suçlu istek CI
+  çıktısından bulunabilir.
 - **Repo konumu:** `D:\dev\pergel` (önce `C:\dev\pergel`, kullanıcı isteğiyle taşındı).
 
 ## F1 kararları (15 Ekim 2026)
@@ -400,6 +408,18 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   bölüm bloksuz da bağlantılanabilir. HTML çapası olan başlığa dokunulmaz.
 - **Harita tıklayınca yüklenir:** Gizlilik (sayfa açılışında Google'a istek ve çerez yok) ve
   performans (iframe ~1 MB). Bağlantı JavaScript olmadan da Google Maps'i açar.
+- **Boş harita marka adresini kullanır:** Desenlerdeki harita bloklarına örnek adres yazılmaz;
+  site sahibi adresi bir kez marka ayarlarına girer, bütün haritalar onu gösterir. Bloğa adres
+  yazılırsa o geçerlidir (ikinci şube gibi).
+- **Zaman çizelgesi kendi genişliğine bakar:** İki yanlı düzen ekran genişliğine (media query)
+  bağlıyken dar bir sütundaki çizelge de iki yana açılıyordu. Artık container query ile blok
+  40rem'den darsa tek sütundur. Kapsayıcı dikey flex içinde içeriğe göre büzülmesin diye
+  `align-self`/`justify-self: stretch` taşır.
+- **Görsel referanslar yalnızca CI'da:** Yazı tipi çizimi işletim sistemine göre değiştiği için
+  ekran görüntüsü referansları Linux CI'da üretilip repoya girer; yerelde yalnızca axe ve taşma
+  denetimi çalışır. Testler için sayfa oluşturulmaz (menü yedeği, bütçe ve veritabanı etkilenirdi);
+  pattern'ler `X-Pergel-Pattern` başlığıyla mevcut örnek sayfaya çizilir. Yalnızca 8 tam sayfanın
+  ekran görüntüsü alınır; bölümleri onlar ve axe kapsar.
 - **İletişim/teklif formu gönderimleri:** yöneticiye e-posta ve panelde gizli bir yazı türünde
   kayıt; e-posta kaybolsa da talep kaybolmaz (kullanıcı kararı). Yalnızca yerelde, `pre_wp_mail`
   ile yakalanarak test edilir.
@@ -450,6 +470,62 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   içeriği hemen gösterir. Animasyon bir süsleme olduğu için bu kayıp kabul edildi.
 - **Animasyon blok tamamen görününce biter:** Aralık `entry 0%–90%`. `entry 0%–100%` blok tam
   girdiğinde opaklığı 0,98'de bırakıyor ve sayfanın son bloğu hiç tamamlanmıyordu.
+- **Ekleyicide yalnızca Pergel kütüphanesi:** Çekirdeğin hazır pattern'leri ve uzak Pattern
+  Directory kapatıldı. Çekirdek pattern'leri Pergel token'larını ve kurallarını bilmez (sabit
+  renk, H1, dış görsel); uzak dizin de editörden wordpress.org'a istek atar. Eklenti ve site
+  pattern'leri açık kaldı.
+- **Çekirdek kategoriler + `pergel-*`:** Kullanıcı ekleyicide tanıdık kategorileri görür; yalnızca
+  çekirdekte karşılığı olmayan altı kategori (Numbers, Process, Clients, Pricing, FAQ, Full pages)
+  eklendi. Kullanılmayan tek `pergel` kategorisi kaldırıldı.
+- **Bölüm başına tek kök blok:** WordPress 7.1 tek köklü pattern'i bölüm olarak ekleyip yalnızca
+  içerik modunda açar; müşteri metni ve görseli değiştirir, yerleşimi kazara bozmaz. Bu yüzden
+  kural CI'da zorunlu; tam sayfalar bölümlere `core/pattern` referansıyla bağlanır, aynı bölüm iki
+  yerde kopyalanmaz.
+- **Hero H1'i için başlıksız sayfa şablonu:** Hero kendi H1'ini taşır; normal sayfa şablonu da
+  başlığı H1 bastığı için iki H1 olurdu. `page-landing` şablonu başlığı basmaz. Hero dışındaki
+  pattern'lerde H1 yasak.
+- **Yer tutucular kendi ürettiğimiz nötr SVG'ler** (kullanıcı kararı): Lisans riski sıfır, toplam
+  birkaç KB, her variation'da nötr görünür. Gerçek fotoğraflar ilk projede gelir.
+- **Editör kontrolü sıkı doğrulama ile:** Çekirdeğin ayrıştırıcısı eksik `wp-block-heading` gibi
+  farkları deprecation ile sessizce düzeltir; ama şablonda `wp:pattern` ile çağrılan pattern ön
+  yüzde dosyadaki işaretlemeyle basılır. Bu
+  yüzden her blok `validateBlock` ile bugünkü `save` çıktısına karşı denetlenir.
+- **Ayırıcı rengi `line`, `border` değil:** Renk preset'inin metin sınıfı `.has-{slug}-color`'dır;
+  WordPress kenarlık rengi verilen her bloğa `.has-border-color` ekler. `border` adlı renk bu
+  yüzden kenarlıklı her kartın yazısını ayırıcı rengine boyuyordu. Renk `line` oldu; derleyici
+  çekirdeğin genel sınıflarıyla çakışan `text`, `link` ve `border` adlarını reddeder.
+- **Pattern'ler yalnızca var olan preset'lere başvurur:** `tools/patterns.php --check`
+  `var:preset|…`, `var(--wp--preset--…)` ve `backgroundColor`/`textColor`/`borderColor`/
+  `overlayColor`/`fontSize`/`fontFamily` adlarını `theme.json`'daki preset'lerle karşılaştırır;
+  yeniden adlandırılan bir preset tarayıcıda sessizce boş kalır.
+- **Izgara içeren bölümler akış düzeninde:** Dikey flex yığını (`stack`) içinde
+  `container-type: inline-size` taşıyan bir çocuk (zaman çizelgesi, kart ızgarası) genişliğini
+  içeriğinden alamıyor, dar sütunda yüksekliği şişiyordu. Izgara veya zaman çizelgesi saran
+  yığınlar varsayılan akış düzenine (`flow`, aralık blok boşluğuyla) geçti; flex yığın yalnızca
+  metin ve buton gruplarında kaldı.
+- **Zaman çizelgesi öğeleri `box-sizing: border-box`:** İki yanlı düzende çift öğeler dolgu
+  yüzünden 8 piksel taşıyor, tek öğelerin noktası çizginin yanına düşüyordu.
+- **Sabit rakamlar sayılmaz:** Kuruluş yılı ("2009") ve "0 gün kapalı" gibi rakamlarda sayaç
+  süresi 0'dır; yıl binlik ayırıcıyla sayılmaz, sıfır da boşuna canlandırılmaz.
+- **Sütun içindeki ızgara `wide` hizası taşımaz:** Hizalama yalnızca bölüm kökündeki ızgarada
+  anlamlıdır; sütun içinde `align` özniteliği tamamen kaldırılır (boş değerle bırakılan
+  `"align":null` blok doğrulamasında hata verir).
+- **Koyu bölümde tarih rengi açıkça verilir:** `theme.json` yazı tarihini `muted` yapar; koyu
+  zeminde bu okunmuyordu. Tarihler koyu tonlarda `base`, açık tonlarda `muted` rengini taşır.
+- **Starter'lar eklenti zip'ine girmez:** `starters/` geliştirme ve demo içindir (`export-ignore`);
+  zip ile kurulan sitede paket klasör yoluyla kurulur. Starter içeriği pattern'leri kopyalar,
+  sayfa editörde ekleyiciden kurulmuş gibi açılır; pattern sonradan değişse de müşterinin sayfası
+  değişmez.
+- **Starter'ın yaptığı her şey meta ile işaretli:** Tekrar kurulum aynı sayfaları bulur (kopya
+  yapmaz), kaldırma yalnızca onları siler. Okuma ayarları silmeden önce okunur, çünkü WordPress
+  ön sayfa silinince ayarı kendisi sıfırlar ve rapor değişikliği göstermezdi.
+- **Starter içeriği kses'siz kaydedilir:** WP-CLI'da oturum açmış kullanıcı yoktur, bu yüzden
+  içerik `unfiltered_html` yetkisi olmayan kullanıcının HTML süzgecinden geçerdi. İçerik temanın
+  kendi pattern dosyalarından gelir, şablonlar kadar güvenilirdir; süzgeç yalnızca
+  `wp_insert_post` çağrısı boyunca kapatılır.
+- **Starter sayfalarında farklı hero'lar:** About, Pricing ve Portfolio aynı hero'yu, Services ve
+  Team de bir başkasını paylaşıyordu; kurulan sitede beş sayfa iki H1 tekrar ediyordu. Her tam
+  sayfa artık kendi hero'sunu kullanır ve ton sırası korunur.
 
 ## Aşamalar ve bitti tanımları
 

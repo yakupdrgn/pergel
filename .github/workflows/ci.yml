@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      update-baselines:
+        description: Regenerate every visual baseline (download them from the visual-report artifact)
+        type: boolean
+        default: false
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -24,12 +29,20 @@ jobs:
           php-version: '8.4'
           coverage: none
           tools: composer:v2
-      - run: composer install --no-interaction --no-progress
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+      - name: Composer install (retried; codeload.github.com answers 429 at times)
+        run: for i in 1 2 3; do composer install --no-interaction --no-progress && exit 0; sleep 20; done; exit 1
       - run: composer check
       - name: theme.json in sync with design tokens
         run: php tools/tokens.php --check
       - name: Block rules and manifest
         run: php tools/blocks.php --check
+      - name: Pattern rules
+        run: php tools/patterns.php --check
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -87,19 +100,25 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: composer install --no-interaction --no-progress
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+      - name: Composer install (retried; codeload.github.com answers 429 at times)
+        run: for i in 1 2 3; do composer install --no-interaction --no-progress && exit 0; sleep 20; done; exit 1
       - name: Install WordPress + Pergel
         run: bash tools/ci/setup-wp.sh
       - name: Integration tests (WordPress)
         # PHPUnit itself crashes or hangs under PHP 8.4's JIT, which setup-php turns
         # on with opcache.enable_cli (a bare PHPUnit test does it too). WP-CLI, the
-        # server and the budget below keep the JIT.
+        # server and the budget below keep the JIT; the block editor step does not.
         run: PERGEL_WP_DIR="$WP_DIR" php -d opcache.jit=disable vendor/bin/phpunit -c phpunit-integration.xml.dist
       - name: WP-CLI commands
         run: bash tools/ci/cli-smoke.sh
       - name: Start PHP server
         run: |
-          php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: Smoke
@@ -119,6 +138,18 @@ jobs:
           diff -I '^"POT-Creation-Date' engine/languages/pergel-engine.pot /tmp/pergel-engine.pot
       - name: Performance budget
         run: npm run budget -- --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label ci
+      - name: Patterns in the block editor
+        # The JIT crashes php -S on wp-admin/post-new.php (the database logs an
+        # aborted connection and the request never ends), so the server is
+        # restarted without it once the budget is measured.
+        run: |
+          pkill -f tools/ci/serve.sh || true
+          pkill -f 'php.* -S 127.0.0.1:8080' || true
+          bash tools/ci/serve.sh -d opcache.jit=disable >> /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && break; sleep 1; done
+          export PERGEL_QA_PASSWORD="$(head -c 18 /dev/urandom | base64)"
+          wp --path="$WP_DIR" user create pergel-qa qa@example.invalid --role=administrator --user_pass="$PERGEL_QA_PASSWORD" --porcelain > /dev/null
+          node tools/patterns/editor-check.mjs --base "$SITE_URL"
       - name: PHP notices
         if: always()
         run: |
@@ -130,6 +161,67 @@ jobs:
           path: |
             reports/
             /tmp/php-server.log
+            /tmp/pergel-requests.log
+          if-no-files-found: ignore
+
+  visual:
+    name: Pattern accessibility + visual regression
+    runs-on: ubuntu-24.04
+    needs: [lint, syntax]
+    timeout-minutes: 30
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wordpress
+          MARIADB_PASSWORD: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_DIR: /tmp/pergel-wp
+      SITE_URL: http://127.0.0.1:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: mysqli, gd, intl, zip, zlib
+          tools: wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Install WordPress + Pergel
+        run: bash tools/ci/setup-wp.sh
+      - name: Start PHP server
+        run: |
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
+          cat /tmp/php-server.log; exit 1
+      - name: axe, overflow and screenshots
+        # Baselines are made here on Linux only. A missing one is written to the
+        # visual-report artifact, to be downloaded and committed.
+        env:
+          PERGEL_BASE: ${{ env.SITE_URL }}
+          UPDATE: ${{ inputs.update-baselines && 'all' || 'missing' }}
+        run: npx playwright test --update-snapshots="$UPDATE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-report
+          path: |
+            tests/visual/baselines/
+            test-results/
+            playwright-report/
+            /tmp/php-server.log
+            /tmp/pergel-requests.log
           if-no-files-found: ignore
 
   seo-matrix:
@@ -167,7 +259,7 @@ jobs:
         run: bash tools/ci/setup-wp.sh
       - name: Start PHP server
         run: |
-          php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: SEO matrix (latest plugin versions from wordpress.org)
@@ -178,5 +270,6 @@ jobs:
           name: seo-matrix-logs
           path: |
             /tmp/php-server.log
+            /tmp/pergel-requests.log
             /tmp/pergel-wp/wp-content/debug.log
           if-no-files-found: ignore

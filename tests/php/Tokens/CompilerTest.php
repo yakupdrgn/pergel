@@ -163,6 +163,13 @@ final class CompilerTest extends TestCase {
 		$this->assertStringContainsString( 'alias target {font-family.nope} does not exist', $problems );
 	}
 
+	public function test_color_slug_that_clashes_with_core_classes_is_reported(): void {
+		$tree                    = self::minimal();
+		$tree['color']['border'] = array( '$value' => '#dde0e6' );
+
+		$this->assertStringContainsString( 'color.border clashes with the .has-border-color class', implode( "\n", self::problems( $tree ) ) );
+	}
+
 	public function test_alias_cycle_is_reported(): void {
 		$tree                     = self::minimal();
 		$tree['radius']           = array(

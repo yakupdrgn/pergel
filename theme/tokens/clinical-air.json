@@ -8,7 +8,7 @@
 		"surface": { "$value": "#f1f6f9" },
 		"contrast": { "$value": "#0f2a5c" },
 		"muted": { "$value": "#4d5b72" },
-		"border": { "$value": "#0f2a5c1f" },
+		"line": { "$value": "#0f2a5c1f" },
 		"accent": { "$value": "#00787a" },
 		"on-accent": { "$value": "#ffffff" }
 	},

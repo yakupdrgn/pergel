@@ -1,0 +1,66 @@
+{
+	"format": 1,
+	"title": "Corporate",
+	"description": "A company site: home, about, services, portfolio, pricing, team and contact pages built from Pergel's full-page patterns, a blog page and a main menu.",
+	"pages": [
+		{
+			"key": "home",
+			"title": { "en": "Home", "tr": "Ana sayfa" },
+			"slug": { "en": "home", "tr": "ana-sayfa" },
+			"pattern": "pergel/page-home",
+			"front_page": true
+		},
+		{
+			"key": "about",
+			"title": { "en": "About us", "tr": "Hakkımızda" },
+			"slug": { "en": "about", "tr": "hakkimizda" },
+			"pattern": "pergel/page-about"
+		},
+		{
+			"key": "services",
+			"title": { "en": "Services", "tr": "Hizmetler" },
+			"slug": { "en": "services", "tr": "hizmetler" },
+			"pattern": "pergel/page-services"
+		},
+		{
+			"key": "portfolio",
+			"title": { "en": "Projects", "tr": "Projeler" },
+			"slug": { "en": "projects", "tr": "projeler" },
+			"pattern": "pergel/page-portfolio"
+		},
+		{
+			"key": "pricing",
+			"title": { "en": "Pricing", "tr": "Fiyatlar" },
+			"slug": { "en": "pricing", "tr": "fiyatlar" },
+			"pattern": "pergel/page-pricing"
+		},
+		{
+			"key": "team",
+			"title": { "en": "Our team", "tr": "Ekibimiz" },
+			"slug": { "en": "team", "tr": "ekibimiz" },
+			"pattern": "pergel/page-team"
+		},
+		{
+			"key": "quote",
+			"title": { "en": "Get a quote", "tr": "Teklif alın" },
+			"slug": { "en": "quote", "tr": "teklif" },
+			"pattern": "pergel/page-landing-quote"
+		},
+		{
+			"key": "contact",
+			"title": { "en": "Contact", "tr": "İletişim" },
+			"slug": { "en": "contact", "tr": "iletisim" },
+			"pattern": "pergel/page-contact"
+		},
+		{
+			"key": "blog",
+			"title": { "en": "Blog", "tr": "Blog" },
+			"slug": { "en": "blog", "tr": "blog" },
+			"posts_page": true
+		}
+	],
+	"menu": {
+		"title": { "en": "Main menu", "tr": "Ana menü" },
+		"pages": [ "about", "services", "portfolio", "pricing", "team", "blog", "contact" ]
+	}
+}

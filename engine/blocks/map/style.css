@@ -32,8 +32,8 @@
 .wp-block-pergel-map__placeholder {
 	align-items: center;
 	background-image:
-		linear-gradient(var(--wp--preset--color--border, #ccc) 1px, transparent 1px),
-		linear-gradient(90deg, var(--wp--preset--color--border, #ccc) 1px, transparent 1px);
+		linear-gradient(var(--wp--preset--color--line, #ccc) 1px, transparent 1px),
+		linear-gradient(90deg, var(--wp--preset--color--line, #ccc) 1px, transparent 1px);
 	background-size: 2.5rem 2.5rem;
 	display: flex;
 	justify-content: center;
