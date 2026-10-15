@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace Pergel\Seo;
 
 use Pergel\Brand\Brand;
+use Pergel\Core\Svg;
 use Pergel\Settings\Settings;
 
 /**
@@ -81,7 +82,7 @@ final class Head {
 		}
 		$page  = self::page();
 		$tags  = array();
-		$image = $page['image'];
+		$image = self::share_image( $page['image'] );
 
 		if ( '' !== $page['description'] ) {
 			$tags[] = array( 'name', 'description', $page['description'] );
@@ -422,7 +423,27 @@ final class Head {
 		if ( '' !== $alt ) {
 			$image['alt'] = $alt;
 		}
+		if ( Svg::is( $id ) ) {
+			$image['svg'] = true;
+		}
 		return $image;
+	}
+
+	/**
+	 * The page image when social networks can show it. They show no SVG,
+	 * so an SVG gives way to the default share image, or to none.
+	 *
+	 * @param array<string, mixed> $image Page image.
+	 * @phpstan-param Image $image
+	 * @phpstan-return Image
+	 * @return array<string, mixed>
+	 */
+	private static function share_image( array $image ): array {
+		if ( empty( $image['svg'] ) ) {
+			return $image;
+		}
+		$fallback = self::attachment( (int) Settings::get( 'seo.og_image' ) );
+		return empty( $fallback['svg'] ) ? $fallback : array();
 	}
 
 	/**

@@ -17,7 +17,7 @@ namespace Pergel\Settings;
  * labels and error messages live in the settings screen; here a problem is
  * only a field path and an error code.
  *
- * @phpstan-type Field array{type: string, default?: mixed, max?: int, min?: int, options?: list<string>}
+ * @phpstan-type Field array{type: string, default?: mixed, max?: int, min?: int, options?: list<string>, svg?: bool}
  * @phpstan-type Problem array{field: string, code: string}
  */
 final class Schema {
@@ -98,7 +98,11 @@ final class Schema {
 			),
 			// Used only when no SEO plugin is active.
 			'seo'         => array(
-				'og_image'      => array( 'type' => 'image' ),
+				// Social networks show no SVG.
+				'og_image'      => array(
+					'type' => 'image',
+					'svg'  => false,
+				),
 				'twitter_site'  => array(
 					'type' => 'text',
 					'max'  => 16,

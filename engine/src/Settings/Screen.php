@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Settings;
 
+use Pergel\Core\Svg;
 use Pergel\Seo\Detect;
 
 use const Pergel\FILE;
@@ -233,12 +234,21 @@ final class Screen {
 		$name  = Settings::OPTION . "[$group][$key]";
 		$label = $text['label'] ?? $key;
 
+		$svg = 'image' === $field['type'] && ( $field['svg'] ?? true );
+		if ( '' === $error && ! $svg && 'image' === $field['type'] && Svg::is( (int) $value ) ) {
+			$error = Labels::problem( 'svg' );
+		}
+		$svg_hint = $svg && isset( $text['svg'] ) && ! Svg::uploads();
+
 		$describedby = array();
 		if ( '' !== $error ) {
 			$describedby[] = "$id-error";
 		}
 		if ( isset( $text['help'] ) ) {
 			$describedby[] = "$id-help";
+		}
+		if ( $svg_hint ) {
+			$describedby[] = "$id-svg";
 		}
 		$aria = ( $describedby ? ' aria-describedby="' . esc_attr( implode( ' ', $describedby ) ) . '"' : '' )
 			. ( '' !== $error && 'image' !== $field['type'] ? ' aria-invalid="true"' : '' );
@@ -252,6 +262,12 @@ final class Screen {
 		}
 		if ( isset( $text['help'] ) ) {
 			echo '<p class="description" id="' . esc_attr( "$id-help" ) . '">' . esc_html( $text['help'] ) . '</p>';
+		}
+		if ( $svg_hint ) {
+			$link = current_user_can( 'install_plugins' )
+				? ' <a href="' . esc_url( admin_url( 'plugin-install.php?s=safe-svg&tab=search&type=term' ) ) . '">' . esc_html__( 'Install Safe SVG', 'pergel-engine' ) . '</a>'
+				: '';
+			echo '<p class="description" id="' . esc_attr( "$id-svg" ) . '">' . esc_html( (string) $text['svg'] ) . $link . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $link is escaped above.
 		}
 		echo '</td></tr>';
 	}
@@ -317,7 +333,7 @@ final class Screen {
 			case 'image':
 				$image = (int) $value > 0 ? wp_get_attachment_image( (int) $value, 'medium', false, array( 'alt' => '' ) ) : '';
 				printf(
-					'<div class="pergel-image" data-title="%1$s" data-button="%2$s">'
+					'<div class="pergel-image" data-title="%1$s" data-button="%2$s"%11$s>'
 					. '<div class="pergel-image__preview">%3$s</div>'
 					. '<input type="hidden" id="%4$s" name="%9$s" value="%5$s">'
 					. '<button type="button" class="button pergel-image__choose"%10$s>%6$s</button> '
@@ -332,7 +348,8 @@ final class Screen {
 					'' === $image ? ' hidden' : '',
 					esc_html__( 'Remove', 'pergel-engine' ),
 					esc_attr( $name ),
-					$aria // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in row().
+					$aria, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in row().
+					( $field['svg'] ?? true ) ? '' : ' data-types="' . esc_attr( implode( ',', Svg::SHAREABLE ) ) . '"'
 				);
 				return;
 		}

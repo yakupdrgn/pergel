@@ -18,7 +18,8 @@
 				frame = window.wp.media( {
 					title: field.dataset.title,
 					button: { text: field.dataset.button },
-					library: { type: 'image' },
+					// data-types: the only image types the field takes, e.g. no SVG for share images.
+					library: { type: field.dataset.types ? field.dataset.types.split( ',' ) : 'image' },
 					multiple: false,
 				} );
 				frame.on( 'select', function () {

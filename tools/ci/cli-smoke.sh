@@ -20,9 +20,11 @@ work_php="$work"
 if command -v cygpath > /dev/null; then work_php="$(cygpath -m "$work")"; fi
 wp option get pergel_settings --format=json > "$work/backup.json"
 logo=""
+svg=""
 previous_logo="$(wp option get site_logo 2> /dev/null || true)"
 restore() {
 	[ -z "$logo" ] || wp eval-file "$REPO_PHP/tools/seo/logo.php" remove "$logo" "$previous_logo"
+	[ -z "$svg" ] || wp post delete "$svg" --force --quiet
 	wp option delete pergel_settings --quiet
 	wp option add pergel_settings --format=json --autoload=yes < "$work/backup.json" > /dev/null
 	rm -rf "$work"
@@ -63,6 +65,11 @@ expect 1 'wrong type' wp pergel settings set performance.preload_fonts maybe
 expect 1 'Invalid JSON' wp pergel settings set brand.social '[nope' --format=json
 expect 1 'Unknown setting: brand' wp pergel settings set brand x
 expect 1 'not an image on this site' wp pergel settings set brand.logo_inverse 999999
+svg="$(wp eval-file "$REPO_PHP/tools/seo/logo.php" svg)"
+expect 0 "brand.logo_inverse = $svg" wp pergel settings set brand.logo_inverse "$svg"
+expect 1 'Social networks do not show SVG images' wp pergel settings set seo.og_image "$svg"
+expect 0 'is an SVG' wp pergel settings import - <<< "{\"seo\":{\"og_image\":$svg}}"
+expect 0 '0' wp pergel settings get seo.og_image
 logo="$(wp eval-file "$REPO_PHP/tools/seo/logo.php" add)"
 expect 0 "brand.logo_inverse = $logo" wp pergel settings set brand.logo_inverse "$logo"
 expect 0 '' wp pergel settings get brand.email

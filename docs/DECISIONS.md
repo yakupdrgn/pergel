@@ -348,6 +348,16 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   `-d opcache.jit=disable` ile koşar; WP-CLI, PHP sunucusu ve bütçe ölçümü JIT açıkken çalışmaya
   devam eder ve denendiği kadarıyla sorunsuzdur. İşlerde 20 dakikalık süre sınırı var; takılan
   bir adım CI'ı saatlerce meşgul etmez.
+- **SVG logo Safe SVG eklentisiyle (15 Ekim 2026):** WordPress SVG yüklemeyi kapalı tutar, çünkü
+  bir SVG dosyası script taşıyabilir. Yükleme ve temizlik wp.org'daki ücretsiz Safe SVG
+  eklentisine bırakıldı; Pergel kendi temizleyicisini taşımaz (bakımı ağır, güvenlik açığı
+  doğurma riski yüksek). `Pergel\Core\Svg` yalnızca bir ekin SVG olup olmadığını ve sitede SVG
+  yüklemenin açık olup olmadığını söyler. Sosyal ağlar SVG göstermediği için `og:image` ve
+  `twitter:image` SVG öne çıkan görseli atlayıp varsayılan paylaşım görseline düşer (o da SVG
+  ise görsel basılmaz); JSON-LD'de SVG kalır, Google kabul ediyor. Varsayılan paylaşım görseli
+  alanı SVG almaz: ortam penceresi yalnızca JPG/PNG/GIF/WebP listeler, ekran SVG'yi hata olarak
+  gösterir, `wp pergel settings set` reddeder, `import` uyarıyla sıfırlar. SVG yükleme kapalıyken
+  Marka sekmesindeki ters logo alanı Safe SVG'yi önerir (eklenti kurma yetkisi olana bağlantıyla).
 
 ## Aşamalar ve bitti tanımları
 
