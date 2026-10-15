@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T22:55:15+03:00\n"
+"POT-Creation-Date: 2026-10-16T00:41:46+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -312,6 +312,42 @@ msgstr ""
 msgid "Kept in the admin area: %s"
 msgstr ""
 
+msgid "Product suggestions"
+msgstr ""
+
+msgid "Search suggestions"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Products"
+msgstr ""
+
+msgid "Results"
+msgstr ""
+
+msgid "See the result on the search page"
+msgstr ""
+
+#. translators: %d: number of results, more than one.
+#, php-format
+msgid "See all %d results"
+msgstr ""
+
+#. translators: %s: search text.
+#, php-format
+msgid "Nothing found for “%s”."
+msgstr ""
+
+msgid "One suggestion. Use the down arrow key to reach it."
+msgstr ""
+
+#. translators: %d: number of suggestions, more than one.
+#, php-format
+msgid "%d suggestions. Use the up and down arrow keys to browse them."
+msgstr ""
+
 #. translators: %s: search terms.
 #, php-format
 msgid "Search results for “%s”"
@@ -347,6 +383,12 @@ msgstr ""
 msgid "Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive."
 msgstr ""
 
+msgid "Search"
+msgstr ""
+
+msgid "Pergel keeps its own search index: it finds words as you type them, with or without Turkish letters and accents, and ranks titles, SKUs and categories above the text. It is updated whenever content is saved."
+msgstr ""
+
 msgid "Shop"
 msgstr ""
 
@@ -377,6 +419,9 @@ msgstr ""
 msgid "Delivery"
 msgstr ""
 
+msgid "Suggestions while typing"
+msgstr ""
+
 msgid "Selling"
 msgstr ""
 
@@ -399,6 +444,9 @@ msgid "Removes front-end assets that most sites do not need."
 msgstr ""
 
 msgid "The contact and quote Form block: messages are emailed and kept in the admin area."
+msgstr ""
+
+msgid "Own search index for the search page, the product search and the suggestions while typing. Off: WordPress searches the texts itself, more slowly and without Turkish letter matching."
 msgstr ""
 
 msgid "WooCommerce support. It loads only while WooCommerce is active."
@@ -498,6 +546,18 @@ msgid "Send messages to"
 msgstr ""
 
 msgid "Leave empty to use the administration email address of the site."
+msgstr ""
+
+msgid "Suggest results under the search field"
+msgstr ""
+
+msgid "Every Search block shows matching categories, the first results with a small image (and the price, where products are sold) and a link to all results. A Search block for products suggests products only."
+msgstr ""
+
+msgid "Results in the suggestions"
+msgstr ""
+
+msgid "From 3 to 12."
 msgstr ""
 
 msgid "Sales mode"

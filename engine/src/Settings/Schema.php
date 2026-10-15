@@ -69,6 +69,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				'search'      => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
 				'woo'         => array(
 					'type'    => 'bool',
 					'default' => true,
@@ -142,6 +146,19 @@ final class Schema {
 			// Contact and quote forms.
 			'forms'       => array(
 				'recipient' => array( 'type' => 'email' ),
+			),
+			// Own search index and live suggestions.
+			'search'      => array(
+				'live'       => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'live_limit' => array(
+					'type'    => 'int',
+					'min'     => 3,
+					'max'     => 12,
+					'default' => 6,
+				),
 			),
 			// WooCommerce; the tab is shown only while it is active.
 			'woo'         => array(

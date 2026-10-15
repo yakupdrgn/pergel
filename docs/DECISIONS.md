@@ -655,6 +655,27 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   WooCommerce yoksa onları atlar ve adlarını yazar. WooCommerce'li CI işi F4c'de gelir; o zamana
   kadar yerel mağaza sitesinde çalıştırılır.
 
+- **F4b arama (16 Ekim 2026, kullanıcı kararları):** Arama ayrı bir `search` modülüdür ve
+  kendi anahtarıyla açılıp kapanır. Yazı, sayfa ve herkese açık tüm türler indekslenir; ürünler
+  SKU, kategori, etiket ve öznitelikleriyle girer. Öneriler çekirdek Search bloğuna eklenir;
+  pattern'ler değişmez, JS yoksa düz form olarak çalışır. `?s=` araması ve ürün araması aynı
+  indeksi kullanır ve `LIKE '%x%'` kalkar. Önerilerde küçük görsel, fiyat (yalnızca `sale`
+  modunda), kategori eşleşmeleri ve "tüm sonuçlar" bağlantısı gösterilir.
+  - Eşleşme kelimenin başından yapılır. Türkçe ek kökleme yok: "masalar" sorgusu "masa"yı bulmaz.
+    Türkçe harfler ve aksanlar her iki tarafta da katlanır (Işık = isik).
+  - Bir arama en fazla 1000 sonuç döndürür. İlk kurulum bitene kadar WordPress'in kendi araması
+    çalışır. Kurulum cron'da 20 saniyelik partilerle yapılır; `wp pergel search reindex` hemen
+    kurar.
+  - Hız sınırı (dakikada 120) yalnızca kalıcı object cache varken uygulanır, çünkü sayaç
+    olmadan her tuş vuruşunda DB'ye yazmak gerekirdi. Yanıt herkese aynıdır, çerez gönderilmez
+    ve 5 dakika önbelleğe alınabilir.
+  - Görünüm betiği Interactivity API değil, düz bir script modülüdür: çekirdek Search bloğu
+    formda kendi `core/search` store'unu çalıştırdığı için ikisi çakışırdı.
+  - Modül kapalıyken kaydedilen içerik indekse girmez; modül yeniden açılınca indeks yeniden
+    kurulur (`Core\Plugin::switched` → `enabled()`).
+  - Eklenti kaldırıldığında tablo silinmez, çünkü motorda henüz `uninstall.php` yok. Bu iş
+    F6'ya, diğer seçeneklerle birlikte yapılmak üzere bırakıldı.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

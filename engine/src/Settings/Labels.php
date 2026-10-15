@@ -42,6 +42,10 @@ final class Labels {
 				'title'       => __( 'Forms', 'pergel-engine' ),
 				'description' => __( 'Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive.', 'pergel-engine' ),
 			),
+			'search'      => array(
+				'title'       => __( 'Search', 'pergel-engine' ),
+				'description' => __( 'Pergel keeps its own search index: it finds words as you type them, with or without Turkish letters and accents, and ranks titles, SKUs and categories above the text. It is updated whenever content is saved.', 'pergel-engine' ),
+			),
 			'woo'         => array(
 				'title'       => __( 'Shop', 'pergel-engine' ),
 				'description' => __( 'How Pergel works with WooCommerce. This tab is shown while WooCommerce is active.', 'pergel-engine' ),
@@ -60,7 +64,7 @@ final class Labels {
 			'modules'     => array(
 				'modules' => array(
 					'title'  => __( 'Modules', 'pergel-engine' ),
-					'fields' => array( 'brand', 'seo', 'performance', 'forms', 'woo' ),
+					'fields' => array( 'brand', 'seo', 'performance', 'forms', 'search', 'woo' ),
 				),
 			),
 			'brand'       => array(
@@ -111,6 +115,12 @@ final class Labels {
 					'fields' => array( 'recipient' ),
 				),
 			),
+			'search'      => array(
+				'live' => array(
+					'title'  => __( 'Suggestions while typing', 'pergel-engine' ),
+					'fields' => array( 'live', 'live_limit' ),
+				),
+			),
 			'woo'         => array(
 				'selling'   => array(
 					'title'  => __( 'Selling', 'pergel-engine' ),
@@ -155,6 +165,10 @@ final class Labels {
 				'forms'       => array(
 					'label' => __( 'Forms', 'pergel-engine' ),
 					'help'  => __( 'The contact and quote Form block: messages are emailed and kept in the admin area.', 'pergel-engine' ),
+				),
+				'search'      => array(
+					'label' => __( 'Search', 'pergel-engine' ),
+					'help'  => __( 'Own search index for the search page, the product search and the suggestions while typing. Off: WordPress searches the texts itself, more slowly and without Turkish letter matching.', 'pergel-engine' ),
 				),
 				'woo'         => array(
 					'label' => __( 'Shop', 'pergel-engine' ),
@@ -227,6 +241,16 @@ final class Labels {
 				'recipient' => array(
 					'label' => __( 'Send messages to', 'pergel-engine' ),
 					'help'  => __( 'Leave empty to use the administration email address of the site.', 'pergel-engine' ),
+				),
+			),
+			'search'      => array(
+				'live'       => array(
+					'label' => __( 'Suggest results under the search field', 'pergel-engine' ),
+					'help'  => __( 'Every Search block shows matching categories, the first results with a small image (and the price, where products are sold) and a link to all results. A Search block for products suggests products only.', 'pergel-engine' ),
+				),
+				'live_limit' => array(
+					'label' => __( 'Results in the suggestions', 'pergel-engine' ),
+					'help'  => __( 'From 3 to 12.', 'pergel-engine' ),
 				),
 			),
 			'woo'         => array(
