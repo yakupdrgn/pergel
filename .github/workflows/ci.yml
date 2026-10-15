@@ -89,6 +89,8 @@ jobs:
         run: bash tools/ci/setup-wp.sh
       - name: Integration tests (WordPress)
         run: PERGEL_WP_DIR="$WP_DIR" composer test:integration
+      - name: WP-CLI commands
+        run: bash tools/ci/cli-smoke.sh
       - name: Start PHP server
         run: |
           php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &

@@ -73,7 +73,7 @@ Planlanan modüller ve yüklenme koşulları:
 | Content | Yalnızca açılan içerik türleri |
 | Woo | WooCommerce aktifse |
 | Performance | Ön yüz (`is_admin()` dışı; her parça kendi ayar anahtarıyla) |
-| Import / Cli | Yalnızca WP-CLI (`Cli` şu an var: `wp pergel info`) |
+| Import / Cli | Yalnızca WP-CLI (`Cli` şu an var; bkz. "WP-CLI") |
 
 ## Ayar modeli (F2)
 
@@ -179,6 +179,27 @@ Yalnızca ön yüzde yüklenir; dört anahtarın hepsi varsayılan açıktır (A
 
 Bütçe bunları denetler: `emoji = 0`, `fontPreloads ≤ 2`, `unusedPreloads = 0` (önyüklenip hiçbir
 `@font-face` kuralınca kullanılmayan dosya), `jsonld ≤ 1`.
+
+## WP-CLI (F2)
+
+`Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.
+
+| Komut | İş |
+| --- | --- |
+| `wp pergel info` | Motor, tema, WordPress ve PHP sürümleri, yüklenen modüller |
+| `wp pergel tokens build [--check]` | Tasarım token'larından `theme.json` ve variation'ları üretir; `--check` yalnızca farkı denetler |
+| `wp pergel settings get [<yol>]` | Tüm ayarlar, bir grup (`brand`) veya bir alan (`brand.email`); metin düz, gerisi JSON |
+| `wp pergel settings set <grup.alan> <değer> [--format=json]` | Tek alan; açık/kapalı `true/false`, `1/0`, `yes/no` alır, listeler satır satır veya JSON dizi |
+| `wp pergel settings export [<dosya>]` | Tüm ayarlar JSON olarak (dosyaya veya çıktıya) |
+| `wp pergel settings import <dosya\|-> [--dry-run]` | JSON'dan okur; dosyada olmayan alanlar korunur, değişen alanlar listelenir |
+| `wp pergel modules list` | Modül, anahtar (`on`/`off`/`always`), bu komutta yüklendi mi |
+| `wp pergel modules enable\|disable <id>...` | Anahtarı olan modülleri açar/kapatır |
+
+Ayar komutları ekranla aynı şemadan geçer: geçersiz veya bilinmeyen bir alan varsa hiçbir şey
+kaydedilmez ve komut 1 ile çıkar (ekran ise geçerli kısmı kaydeder). Görsel alanları ek olarak
+bu sitede görsel olan bir ekin kimliğini ister: `set` başka bir değeri reddeder, `import` başka
+siteden gelen kimlikleri uyarıyla sıfırlar. `tools/ci/cli-smoke.sh` tüm komutları CI'da gerçek
+WP-CLI ile dener ve ayarları sonunda geri yükler.
 
 ## Ölçüm
 

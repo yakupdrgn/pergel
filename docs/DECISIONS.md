@@ -334,6 +334,13 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   30 → 20, JS 30 → 25 KB. Ölçülen en yüksek değerler: 23 dosya, 25 sorgu, 73,6 KB HTML, 7 istek,
   16 KB JS; F3 blokları için pay bırakıldı. Yeni sınırlar: `jsonld ≤ 1`, `emoji = 0`,
   `fontPreloads ≤ 2`, `unusedPreloads = 0`.
+- **CLI ayar yazımı ya hep ya hiç:** Ekran geçerli alanları kaydedip hatalıları eski değerinde
+  tutar (formda kullanıcı hatayı yanında görür). Betik ve taşıma işlerinde yarım uygulanmış bir
+  dosya fark edilmeden kalır; bu yüzden `wp pergel settings set/import` tek bir sorunda hiçbir şey
+  yazmaz ve 1 ile çıkar. Bilinmeyen anahtarlar da hata sayılır (yazım hatası sessizce kaybolmasın).
+  Dışa aktarılan görsel alanları ek kimliğidir; başka sitede anlamsız olduğu için `import` onları
+  uyarıyla sıfırlar. CLI testi PHPUnit içinde sahte WP_CLI yerine gerçek WP-CLI ile koşar
+  (`tools/ci/cli-smoke.sh`): argüman ayrıştırma, `--format` ve çıkış kodları da denenmiş olur.
 
 ## Aşamalar ve bitti tanımları
 
