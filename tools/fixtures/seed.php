@@ -34,7 +34,7 @@ function seed_post( array $data ): int {
 }
 
 /**
- * Seeds the fixed post, page and category.
+ * Seeds the fixed post, page, category, front page and posts page.
  */
 function seed(): void {
 	$paragraph = '<!-- wp:paragraph --><p>%s</p><!-- /wp:paragraph -->';
@@ -81,7 +81,37 @@ function seed(): void {
 		)
 	);
 
-	\WP_CLI::success( sprintf( 'Seeded post %d and page %d.', $post, $page ) );
+	// A static front page whose first section carries the H1, and a posts page.
+	$front = seed_post(
+		array(
+			'post_type'    => 'page',
+			'post_name'    => 'pergel-front',
+			'post_title'   => 'Home',
+			'post_content' => implode(
+				"\n\n",
+				array(
+					'<!-- wp:group {"align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|80","bottom":"var:preset|spacing|80"}}},"backgroundColor":"surface","layout":{"type":"constrained"}} --><div class="wp-block-group alignfull has-surface-background-color has-background" style="padding-top:var(--wp--preset--spacing--80);padding-bottom:var(--wp--preset--spacing--80)"><!-- wp:heading {"level":1,"fontSize":"xx-large"} --><h1 class="wp-block-heading has-xx-large-font-size">Pergel front page</h1><!-- /wp:heading -->' . sprintf( $paragraph, 'A fixed front page used by the Pergel performance budget.' ) . '<!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button --><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="' . esc_url( home_url( '/blog/' ) ) . '">Read the blog</a></div><!-- /wp:button --></div><!-- /wp:buttons --></div><!-- /wp:group -->',
+					'<!-- wp:heading --><h2 class="wp-block-heading">What the budget checks</h2><!-- /wp:heading -->',
+					sprintf( $paragraph, $lorem ),
+				)
+			),
+		)
+	);
+	$blog  = seed_post(
+		array(
+			'post_type'  => 'page',
+			'post_name'  => 'blog',
+			'post_title' => 'Blog',
+		)
+	);
+	update_option( 'show_on_front', 'page' );
+	update_option( 'page_on_front', $front );
+	update_option( 'page_for_posts', $blog );
+
+	// WordPress caches the list of theme pattern files; new files appear only after this.
+	wp_get_theme()->delete_pattern_cache();
+
+	\WP_CLI::success( sprintf( 'Seeded post %d, page %d, front page %d and posts page %d.', $post, $page, $front, $blog ) );
 }
 
 seed();

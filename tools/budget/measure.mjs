@@ -3,7 +3,7 @@
  * Pergel performance budget (plan K11).
  *
  * Measures every page in tests/budget/budget.json on a running site and
- * fails when a limit is exceeded. Server-side numbers come from the perf
+ * fails when a value is outside its limit. Server-side numbers come from the perf
  * probe (tools/budget/perf-probe.php) through its JSON-lines log; browser
  * numbers come from Playwright.
  *
@@ -122,14 +122,21 @@ async function browserMetrics( browser, page ) {
 /* ---- Run, compare, report ----------------------------------------------- */
 const browser = await chromium.launch( opt.channel ? { channel: opt.channel } : {} );
 const results = {};
+const limitText = ( limit ) => {
+	if ( ! Array.isArray( limit ) ) {
+		return `≤ ${ limit }`;
+	}
+	return limit[ 0 ] === limit[ 1 ] ? `= ${ limit[ 0 ] }` : `${ limit[ 0 ] }–${ limit[ 1 ] }`;
+};
 const failures = [];
 for ( const page of budget.pages ) {
 	const m = { ...( await server( page ) ), ...( await browserMetrics( browser, page ) ) };
 	const limits = { ...budget.limits[ '*' ], ...( budget.limits[ page.name ] ?? {} ) };
-	for ( const [ key, max ] of Object.entries( limits ) ) {
+	for ( const [ key, limit ] of Object.entries( limits ) ) {
 		const value = key === 'writes' ? m.writes.length : m[ key ];
-		if ( value > max ) {
-			failures.push( `${ page.name }: ${ key } ${ value } > ${ max }` );
+		const [ min, max ] = Array.isArray( limit ) ? limit : [ -Infinity, limit ];
+		if ( value > max || value < min ) {
+			failures.push( `${ page.name }: ${ key } ${ value } not ${ limitText( limit ) }` );
 		}
 	}
 	results[ page.name ] = m;
@@ -150,7 +157,7 @@ const md = [
 	'',
 	`| page | ${ cols.join( ' | ' ) } |`,
 	`|---|${ cols.map( () => '--:' ).join( '|' ) }|`,
-	`| *limit* | ${ cols.map( ( c ) => ( c in limitRow ? `≤ ${ limitRow[ c ] }` : '' ) ).join( ' | ' ) } |`,
+	`| *limit* | ${ cols.map( ( c ) => ( c in limitRow ? limitText( limitRow[ c ] ) : '' ) ).join( ' | ' ) } |`,
 	...ordered.map( ( [ n, m ] ) => `| ${ n } | ${ cols.map( ( c ) => cell( m, c ) ).join( ' | ' ) } |` ),
 	'',
 	...( failures.length ? [ '## Over budget', '', ...failures.map( ( f ) => `- ${ f }` ), '' ] : [] ),

@@ -1,8 +1,9 @@
 {
-	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. Shop/catalog pages are added with the WooCommerce module (F4).",
+	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. A number is a maximum; [min, max] is a range. Shop/catalog pages are added with the WooCommerce module (F4).",
 	"runs": 3,
 	"pages": [
-		{ "name": "home", "path": "/" },
+		{ "name": "front", "path": "/" },
+		{ "name": "blog", "path": "/blog/" },
 		{ "name": "post", "path": "/pergel-sample-post/" },
 		{ "name": "page", "path": "/pergel-sample-page/" },
 		{ "name": "category", "path": "/category/pergel-test/" },
@@ -18,7 +19,7 @@
 			"requests": 30,
 			"jsKB": 30,
 			"bodyCssLinks": 0,
-			"h1": 1
+			"h1": [ 1, 1 ]
 		}
 	}
 }

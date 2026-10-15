@@ -47,8 +47,9 @@ tools\dev\link.ps1 -Unlink    # bağlantıları kaldır
 ```bash
 composer check                     # PHPCS (WPCS 3 + PHPCompatibilityWP 8.1) + PHPStan seviye 8 + PHPUnit
 php tools/tokens.php               # theme/tokens/*.json → theme.json + styles/ (--check: yalnızca karşılaştır)
+composer pot                       # theme/languages/pergel.pot + engine/languages/pergel-engine.pot
 npm run validate:json              # theme.json ve block.json'u wp/7.1 şemasına göre doğrula
-wp --path=C:/xampp/htdocs/pergel-tema eval-file tools/fixtures/seed.php   # sabit test içeriği
+wp --path=C:/xampp/htdocs/pergel-tema eval-file tools/fixtures/seed.php   # sabit test içeriği; pattern önbelleğini de temizler
 npm run budget -- --base http://localhost/pergel-tema --log C:/xampp/htdocs/pergel-tema/wp-content/pergel-perf.jsonl --channel chrome
 wp --path=C:/xampp/htdocs/pergel-tema pergel info
 ```

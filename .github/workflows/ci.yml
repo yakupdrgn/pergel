@@ -93,13 +93,19 @@ jobs:
           cat /tmp/php-server.log; exit 1
       - name: Smoke
         run: |
-          for path in / /pergel-sample-post/ /pergel-sample-page/ /category/pergel-test/ '/?s=pergel' /feed/ /wp-login.php /wp-json/ /wp-sitemap.xml; do
+          for path in / /blog/ /pergel-sample-post/ /pergel-sample-page/ /category/pergel-test/ '/?s=pergel' /feed/ /wp-login.php /wp-json/ /wp-sitemap.xml; do
             code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL$path")
             echo "$code $path"
             [ "$code" = 200 ] || exit 1
           done
           code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL/pergel-budget-missing/")
           echo "$code /pergel-budget-missing/"; [ "$code" = 404 ]
+      - name: Translation templates up to date
+        run: |
+          wp i18n make-pot theme /tmp/pergel.pot --slug=pergel --domain=pergel --exclude=tokens --no-location
+          wp i18n make-pot engine /tmp/pergel-engine.pot --slug=pergel-engine --domain=pergel-engine --exclude=build --no-location
+          diff -I '^"POT-Creation-Date' theme/languages/pergel.pot /tmp/pergel.pot
+          diff -I '^"POT-Creation-Date' engine/languages/pergel-engine.pot /tmp/pergel-engine.pot
       - name: Performance budget
         run: npm run budget -- --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label ci
       - name: PHP notices

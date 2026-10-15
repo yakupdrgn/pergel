@@ -136,6 +136,22 @@ bir projeye ait; o adlar kullanılmaz.
 - **Varsayılan font sistem yığınıdır:** Ana tema hiç web font indirmez. Web fontları yalnızca
   variation'lar ve child temalar getirir.
 
+- **Şablonlar ve tek H1:** `index`, `home`, `front-page`, `archive`, `search`, `single`, `page`,
+  `404`. Her sayfada tam olarak bir H1 bulunur ve bütçe bunu `h1 = [1, 1]` aralığıyla denetler.
+  Bütçede bir sayı üst sınırdır, `[min, max]` aralıktır.
+- **`front-page.html` yalnızca statik ön sayfada:** Şablon sayfanın içeriğini başlıksız gösterir;
+  H1'i içeriğin ilk bölümü (hero) taşır. Ön sayfa yazıları listeliyorsa `front-page`
+  `frontpage_template_hierarchy` filtresiyle hiyerarşiden çıkarılır ve `home.html` kullanılır.
+  Aynı filtre Site Editor'ün ana sayfa için açtığı şablonu da düzeltir.
+  **Elenen:** `front-page.html` hiç olmaması (statik ön sayfada sayfa başlığı H1 olarak görünür;
+  kurumsal sitelerde istenmez) ve koşulsuz `front-page.html` (yazı listesi olan ön sayfayı bozar).
+- **Şablon metinleri PHP pattern'lerde:** HTML şablonlardaki metinler çevrilemediği için
+  `patterns/hidden-*.php` dosyalarına taşındı (`Inserter: no`). Şablonlar bunları
+  `wp:pattern` ile çağırır. Pattern'lerde koşullu blok yapısı yoktur, yalnızca çevrilen metin
+  ve ayar değerleri vardır; çünkü Site Editor pattern'i bir kez çözüp şablona gömebilir.
+- **`.pot` dosyaları depoda:** `composer pot` ile üretilir (`--no-location`, satır numarası
+  değişince fark oluşmasın diye). CI, tarih satırı dışında farkı hata sayar.
+
 ### Değişiklik (15 Ekim 2026)
 
 F5'teki "organik ürünler provası" plandaki bir örnekti; kullanıcı bu provaya gerek olmadığını
@@ -157,8 +173,6 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 
 ## Bilinen açık işler
 
-- Anasayfa (blog listesi) şu an H1 içermiyor → F1'de `home`/`front-page` şablonu (bütçe `h1 ≤ 1`
-  bunu yakalamıyor; F1'de `h1 = 1` yapılacak).
+- ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
 - Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor → F2 performans modülü kapatacak.
-- HTML şablonlardaki sabit metinler ("Nothing found." vb.) çevrilemiyor → F1'de PHP pattern'lere
-  taşınacak.
+- ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.

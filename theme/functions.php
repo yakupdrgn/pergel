@@ -28,3 +28,22 @@ function register_pattern_categories(): void {
 	);
 }
 add_action( 'init', __NAMESPACE__ . '\register_pattern_categories' );
+
+/**
+ * Uses front-page.html only when a static page is the front page.
+ *
+ * The front-page.html template shows the page's own content without a title, so the
+ * page's first section (a hero) carries the H1. When the front page lists
+ * posts, home.html is the right template; removing front-page from the
+ * hierarchy also makes the Site Editor open home.html as the homepage.
+ *
+ * @param string[] $templates Template candidates.
+ * @return string[]
+ */
+function front_page_hierarchy( array $templates ): array {
+	if ( 'page' === get_option( 'show_on_front' ) ) {
+		return $templates;
+	}
+	return array_values( array_diff( $templates, array( 'front-page.php', 'front-page' ) ) );
+}
+add_filter( 'frontpage_template_hierarchy', __NAMESPACE__ . '\front_page_hierarchy' );
