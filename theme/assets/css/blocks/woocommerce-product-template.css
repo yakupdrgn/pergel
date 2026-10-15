@@ -1,0 +1,46 @@
+/*
+ * Product cards in the shop and in product collections. The title reads as
+ * the product's name, not as a link in the accent color, and the card's
+ * button is an outline, so a grid of products does not turn into a wall of
+ * filled buttons; the product page keeps the filled one. Images sit on
+ * the surface color, so a photo that does not fill the square and the
+ * placeholder both read as a tile.
+ */
+.wc-block-product-template .wp-block-post-title {
+	font-weight: 600;
+	line-height: 1.35;
+	margin-block-start: var(--wp--preset--spacing--30);
+}
+
+.wc-block-product-template .wp-block-post-title a {
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+}
+
+.wc-block-product-template .wp-block-post-title a:hover {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.wc-block-product-template .wc-block-components-product-price {
+	margin-block-start: var(--wp--preset--spacing--20);
+}
+
+/* WooCommerce turns the border off with a stronger selector; an inset
+ * shadow draws the outline without changing the button's size. */
+.wc-block-product-template .wc-block-components-product-button__button {
+	color: var(--wp--preset--color--contrast);
+	background-color: transparent;
+	box-shadow: inset 0 0 0 1px var(--wp--preset--color--muted);
+}
+
+.wc-block-product-template .wc-block-components-product-button__button:hover,
+.wc-block-product-template .wc-block-components-product-button__button:focus-visible {
+	color: var(--wp--preset--color--on-accent);
+	background-color: var(--wp--preset--color--accent);
+	box-shadow: inset 0 0 0 1px var(--wp--preset--color--accent);
+}
+
+.wc-block-product-template .wc-block-components-product-image {
+	background-color: var(--wp--preset--color--surface);
+}

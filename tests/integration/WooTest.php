@@ -274,6 +274,25 @@ final class WooTest extends TestCase {
 		$this->assertCount( min( 3, $attributes ), array_keys( $names, 'woocommerce/product-filter-attribute', true ) );
 	}
 
+	public function test_the_fallback_menu_leaves_out_the_cart_checkout_and_account(): void {
+		$this->needs_woocommerce();
+		$links = \Pergel\Theme\navigation_fallback( array( array( 'blockName' => 'core/page-list' ) ) );
+		$ids   = array_map( static fn ( array $link ): int => (int) $link['attrs']['id'], $links );
+		foreach ( array( 'cart', 'checkout', 'myaccount' ) as $page ) {
+			$this->assertNotContains( wc_get_page_id( $page ), $ids, $page );
+		}
+	}
+
+	public function test_products_without_an_image_show_the_theme_placeholder(): void {
+		$this->needs_woocommerce();
+		$chosen = get_option( 'woocommerce_placeholder_image', 0 );
+		if ( is_numeric( $chosen ) && (int) $chosen > 0 && ! str_starts_with( wp_basename( (string) get_attached_file( (int) $chosen ) ), 'woocommerce-placeholder' ) ) {
+			$this->markTestSkipped( 'The shop has its own placeholder image.' );
+		}
+		$this->assertSame( get_theme_file_uri( 'assets/images/placeholders/product.svg' ), wc_placeholder_img_src() );
+		$this->assertStringContainsString( 'placeholders/product.svg', wc_placeholder_img() );
+	}
+
 	/**
 	 * Runs the main query for the given query vars, as a page view would.
 	 *
