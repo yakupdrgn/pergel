@@ -3,10 +3,14 @@
  * Pergel performance probe (development and CI only, never shipped).
  *
  * Both tools/dev/link.ps1 and tools/ci/setup-wp.sh load this file as a
- * must-use plugin. It does nothing unless the request carries an
- * X-Pergel-Perf header; then, at shutdown, it appends one JSON line with the
- * request's server-side cost to PERGEL_PERF_LOG (default
- * wp-content/pergel-perf.jsonl). tools/budget/measure.mjs reads that log.
+ * must-use plugin. It does nothing unless the request carries one of its
+ * headers:
+ *
+ * - X-Pergel-Perf: at shutdown, appends one JSON line with the request's
+ *   server-side cost to PERGEL_PERF_LOG (default wp-content/pergel-perf.jsonl).
+ *   tools/budget/measure.mjs reads that log.
+ * - X-Pergel-Variation: <slug>: renders the page with styles/<slug>.json
+ *   applied, without saving anything, so each style variation can be measured.
  *
  * @package Pergel
  */
@@ -18,6 +22,18 @@ namespace Pergel\Dev;
 defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.Security.ValidatedSanitizedInput -- dev-only probe; values are written to a local log, never output.
+
+if ( ! empty( $_SERVER['HTTP_X_PERGEL_VARIATION'] ) ) {
+	$pergel_variation = (string) preg_replace( '/[^a-z0-9-]/', '', strtolower( (string) $_SERVER['HTTP_X_PERGEL_VARIATION'] ) );
+	add_filter(
+		'wp_theme_json_data_theme',
+		static function ( \WP_Theme_JSON_Data $data ) use ( $pergel_variation ): \WP_Theme_JSON_Data {
+			$file      = get_theme_file_path( "styles/$pergel_variation.json" );
+			$variation = is_file( $file ) ? wp_json_file_decode( $file, array( 'associative' => true ) ) : null;
+			return is_array( $variation ) ? $data->update_with( $variation ) : $data;
+		}
+	);
+}
 
 if ( empty( $_SERVER['HTTP_X_PERGEL_PERF'] ) ) {
 	return;

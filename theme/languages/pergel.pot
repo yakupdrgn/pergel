@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T06:41:51+03:00\n"
+"POT-Creation-Date: 2026-10-15T07:01:11+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -228,4 +228,36 @@ msgstr ""
 
 msgctxt "Template part name"
 msgid "Footer"
+msgstr ""
+
+msgctxt "Style variation name"
+msgid "Clinical Air"
+msgstr ""
+
+msgctxt "Font family name"
+msgid "Manrope"
+msgstr ""
+
+msgctxt "Style variation name"
+msgid "Graphite Engineering"
+msgstr ""
+
+msgctxt "Font family name"
+msgid "Geist"
+msgstr ""
+
+msgctxt "Font family name"
+msgid "Space Grotesk"
+msgstr ""
+
+msgctxt "Style variation name"
+msgid "Lab Precision"
+msgstr ""
+
+msgctxt "Font family name"
+msgid "Figtree"
+msgstr ""
+
+msgctxt "Font family name"
+msgid "Lexend Exa"
 msgstr ""

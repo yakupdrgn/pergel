@@ -238,6 +238,55 @@ final class CompilerTest extends TestCase {
 		rmdir( $dir );
 	}
 
+	public function test_variation_styles_are_copied_and_font_files_must_exist(): void {
+		$dir = sys_get_temp_dir() . '/pergel-fonts-' . bin2hex( random_bytes( 4 ) );
+		mkdir( "$dir/tokens", 0777, true );
+		mkdir( "$dir/assets/fonts", 0777, true );
+		file_put_contents( "$dir/assets/fonts/a.woff2", 'x' );
+		file_put_contents( "$dir/tokens/default.json", (string) json_encode( self::minimal() ) );
+		$face    = static fn ( string $file ): array => array(
+			'font-family' => array(
+				'body' => array(
+					'$value'      => 'A',
+					'$extensions' => array( Compiler::EXT => array( 'fontFace' => array( array( 'src' => "file:./assets/fonts/$file" ) ) ) ),
+				),
+			),
+		);
+		$variant = array(
+			'$extensions' => array(
+				Compiler::EXT => array(
+					'title'  => 'Caps',
+					'styles' => array( 'elements' => array( 'button' => array( 'typography' => array( 'textTransform' => 'uppercase' ) ) ) ),
+				),
+			),
+		);
+		file_put_contents( "$dir/tokens/caps.json", (string) json_encode( $variant + $face( 'a.woff2' ) ) );
+
+		$caps = json_decode( Compiler::build( $dir )['styles/caps.json'], true );
+		$this->assertSame( 'uppercase', $caps['styles']['elements']['button']['typography']['textTransform'] );
+		$this->assertSame( array( 'file:./assets/fonts/a.woff2' ), $caps['settings']['typography']['fontFamilies'][0]['fontFace'][0]['src'] );
+		$this->assertSame( 'swap', $caps['settings']['typography']['fontFamilies'][0]['fontFace'][0]['fontDisplay'] );
+
+		file_put_contents( "$dir/tokens/caps.json", (string) json_encode( $variant + $face( 'missing.woff2' ) ) );
+		try {
+			Compiler::build( $dir );
+			$this->fail( 'missing font file was accepted' );
+		} catch ( Invalid $e ) {
+			$this->assertStringContainsString( 'tokens/caps.json: font-family.body: file:./assets/fonts/missing.woff2 does not exist', $e->problems[0] );
+		}
+
+		$this->assertStringContainsString( 'local woff2 file', implode( "
+", self::problems( Compiler::merge( self::minimal(), $face( '../../a.woff2' ) ) ) ) );
+
+		unlink( "$dir/assets/fonts/a.woff2" );
+		unlink( "$dir/tokens/default.json" );
+		unlink( "$dir/tokens/caps.json" );
+		rmdir( "$dir/assets/fonts" );
+		rmdir( "$dir/assets" );
+		rmdir( "$dir/tokens" );
+		rmdir( $dir );
+	}
+
 	public function test_child_theme_inherits_parent_tokens(): void {
 		$root = sys_get_temp_dir() . '/pergel-child-' . bin2hex( random_bytes( 4 ) );
 		mkdir( "$root/parent/tokens", 0777, true );

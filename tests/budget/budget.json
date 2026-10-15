@@ -1,5 +1,5 @@
 {
-	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. A number is a maximum; [min, max] is a range. Shop/catalog pages are added with the WooCommerce module (F4).",
+	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. A number is a maximum; [min, max] is a range. A page with \"variation\" is rendered with that style variation; its \"limits\" override the shared ones. Shop/catalog pages are added with the WooCommerce module (F4).",
 	"runs": 3,
 	"pages": [
 		{ "name": "front", "path": "/" },
@@ -8,7 +8,13 @@
 		{ "name": "page", "path": "/pergel-sample-page/" },
 		{ "name": "category", "path": "/category/pergel-test/" },
 		{ "name": "search", "path": "/?s=pergel" },
-		{ "name": "404", "path": "/pergel-budget-missing/", "status": 404 }
+		{ "name": "404", "path": "/pergel-budget-missing/", "status": 404 },
+		{ "name": "front@lab-precision", "path": "/", "variation": "lab-precision", "limits": { "fontKB": 120 } },
+		{ "name": "post@lab-precision", "path": "/pergel-sample-post/", "variation": "lab-precision", "limits": { "fontKB": 120 } },
+		{ "name": "front@graphite", "path": "/", "variation": "graphite", "limits": { "fontKB": 95 } },
+		{ "name": "post@graphite", "path": "/pergel-sample-post/", "variation": "graphite", "limits": { "fontKB": 95 } },
+		{ "name": "front@clinical-air", "path": "/", "variation": "clinical-air", "limits": { "fontKB": 45 } },
+		{ "name": "post@clinical-air", "path": "/pergel-sample-post/", "variation": "clinical-air", "limits": { "fontKB": 45 } }
 	],
 	"limits": {
 		"*": {

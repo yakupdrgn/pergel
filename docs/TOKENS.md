@@ -53,6 +53,7 @@ alt kümesi kullanılır:
 | `name` | token | Editörde görünen preset adı. Yazılmazsa slug'dan türetilir. |
 | `fluid.min` | `font-size`, `spacing` | Küçük ekrandaki değer; `$value` büyük ekrandaki değerdir |
 | `fontFace` | `font-family` | Kendi sunucumuzdan sunulan woff2 dosyaları (aşağıda) |
+| `styles` | kök (variation) | Token'la ifade edilemeyen stil kuralları (ör. büyük harf buton). `theme.json` `styles` biçiminde yazılır ve variation'a olduğu gibi kopyalanır. Renk, font ve boyut için token kullanılır; `styles` yalnızca kalanlar içindir. |
 
 ### Desteklenen `$type`'lar
 
@@ -98,16 +99,24 @@ Pergel'in kullandığı custom gruplar şunlardır. Şablonlar bunlara başvurur
 
 ```json
 "body": {
-	"$value": [ "Inter", "system-ui", "sans-serif" ],
+	"$value": [ "Figtree", "system-ui", "sans-serif" ],
 	"$extensions": { "com.ariumlab.pergel": { "fontFace": [
-		{ "src": "file:./assets/fonts/inter-latin-ext.woff2", "fontWeight": "100 900", "fontStyle": "normal" }
+		{ "src": "file:./assets/fonts/figtree/figtree-latin-wght-normal.woff2", "fontWeight": "300 900", "fontStyle": "normal", "unicodeRange": "U+0000-00FF, U+0131, …" },
+		{ "src": "file:./assets/fonts/figtree/figtree-latin-ext-wght-normal.woff2", "fontWeight": "300 900", "fontStyle": "normal", "unicodeRange": "U+0100-02BA, …" }
 	] } }
 }
 ```
 
-- `src` yalnızca temanın içindeki bir woff2 dosyası olabilir. Uzak font (Google Fonts vb.)
-  kabul edilmez.
+- `src` yalnızca temanın (child temada ana temanın da) içindeki bir woff2 dosyası olabilir. Uzak
+  font (Google Fonts vb.) ve `..` içeren yol kabul edilmez. Dosya yoksa derleme hata verir.
 - `fontFamily` alanı listedeki ilk addan, `fontDisplay: swap` ise varsayılan olarak doldurulur.
+  Diğer alanlar (`fontWeight`, `unicodeRange` vb.) olduğu gibi geçer.
+- Her aile iki alt kümeyle gelir: **latin** ve **latin-ext**. Tarayıcı `unicodeRange` sayesinde
+  latin-ext dosyasını yalnızca sayfada ğ, ş, İ gibi karakterler varsa indirir. Türkçe sitede
+  ikisi de iner. Dosyalar [Fontsource](https://fontsource.org) `@fontsource-variable/*`
+  paketlerindeki `wght` alt kümeleridir. Aralıklar paketin `index.css` dosyasından alınır.
+- Font klasörü `assets/fonts/<aile>/` biçimindedir. Lisans metni yanında `OFL.txt` olarak durur
+  ve `readme.txt` dosyasının Copyright bölümüne yazılır.
 
 ## Denetimler
 
@@ -117,6 +126,7 @@ listeler.
 - Zorunlu slug eksik, `$type` yanlış veya preset grubu iç içe yazılmış.
 - Alias hedefi yok, türü uyuşmuyor ya da alias'lar döngü oluşturuyor.
 - Değer okunamıyor (renk, boyut, gölge biçimi).
+- `fontFace` dosyası temada yok.
 - **Kontrast (WCAG AA, 4.5:1)** sağlanmıyor. Her token setinde şu çiftler denetlenir:
 
 | Metin | Zemin |

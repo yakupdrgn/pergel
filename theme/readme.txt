@@ -25,3 +25,14 @@ Pergel Engine plugin, so changing the theme never loses content.
 
 Pergel WordPress Theme, (C) 2026 Ariumlab.
 Pergel is distributed under the terms of the GNU GPL v2 or later.
+
+Pergel bundles the following fonts in assets/fonts/, used only by its style
+variations. Each is licensed under the SIL Open Font License 1.1 (OFL.txt in
+each font folder, https://openfontlicense.org). Files are the latin and
+latin-ext subsets from Fontsource (https://fontsource.org).
+
+Figtree, Copyright 2022 The Figtree Project Authors (https://github.com/erikdkennedy/figtree)
+Geist, Copyright 2024 The Geist Project Authors (https://github.com/vercel/geist-font)
+Lexend Exa, Copyright 2019 The Lexend Project Authors (https://github.com/googlefonts/lexend)
+Manrope, Copyright 2019 The Manrope Project Authors (https://github.com/sharanda/manrope)
+Space Grotesk, Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)

@@ -157,12 +157,46 @@ bir projeye ait; o adlar kullanılmaz.
   eklenecek. **Elenen:** ayrı bir pa11y/Lighthouse işi (aynı tarayıcı oturumunu kullanmak daha hızlı).
 - **CSS ve font bütçesi:** `cssKB` harici stil dosyaları ile satır içi `<style>` toplamıdır
   (blok temalarda çekirdek CSS'in çoğu satır içidir). İlk ölçüm 45–51 KB, limit 60 KB.
-  `fontKB` varsayılan temada 0'dır (sistem fontu); web fontları getiren variation'lar için limit
-  4. adımda konur.
+  `fontKB` varsayılan temada 0'dır (sistem fontu). Variation'ların limitleri aşağıdadır.
 - **Navigation yedeği:** Menüsü olmayan Navigation bloğu çekirdekte `ul > ul > li` üretiyor (axe
   `list` ihlali). Tema, `block_core_navigation_render_fallback` filtresiyle Page List yedeğini üst
   düzey sayfalar için Navigation Link bloklarına çevirir (en çok 12). Menüsü olan siteler
   etkilenmez. Çekirdek düzeltilince filtre kaldırılır.
+- **Üç style variation (ariumlab.com yönleri):** Hepsi `tokens/<slug>.json` dosyasından üretilir
+  ve beş kontrast çiftinin hepsini geçer. Font KB, Türkçe metin içeren sayfada ölçülmüştür.
+
+| Variation | Zemin / metin / vurgu | Fontlar (gövde / başlık) | Biçim | Font KB |
+| --- | --- | --- | --- | --: |
+| Lab Precision | `#F5F7F8` / `#242424` / `#1E64E6` | Figtree / Lexend Exa | 5 px buton, 12 px kart, büyük harf buton ve menü | 110,9 |
+| Graphite Engineering | `#191919` / `#EEF1F5` / `#4C8DFF` | Geist / Space Grotesk | Koyu, 4 px buton, 10 px kart | 85,1 |
+| Clinical Air | `#FFFFFF` / `#0F2A5C` / `#00787A` | Manrope / Manrope | Hap buton, 16 px kart | 39,0 |
+
+- **Lab Precision** bugünkü siteye en yakın olanıdır. Satoshi'nin yerine Figtree, Preospe'nin yerine
+  geniş ve teknik görünümlü Lexend Exa kullanılır. İkincil metin `#5E6672` olduğu için bugünkü
+  `#767676` / `#F5F7F8` çiftinin 4,23:1'lik sorunu kalkar (5,40:1).
+- **Graphite**'ta marka mavisi `#1E64E6` koyu zeminde yaklaşık 3:1 kalır. Bu yüzden vurgu rengi
+  `#4C8DFF`, buton metni koyudur.
+- **Clinical Air**'deki teal `#00A3A3` beyaz üzerinde 3,10:1'de kalır. Bu yüzden vurgu rengi koyu
+  teal `#00787A`'dır (5,29:1).
+- **Font seçimi Türkçe kapsam ve boyuta göre:** ğĞşŞıİçÇöÖüÜâÂîÎûÛ glifleri fontTools ile
+  denetlendi. ₺ işareti Figtree ve Geist'te yok; tarayıcı onu sistem fontundan gösterir.
+  İtalik dosyaları paketlenmez; italik metni (ör. alıntı) tarayıcı eğerek üretir.
+  **Elenen:** Unbounded (latin-ext 116 KB, kırpılınca bile 66 KB) ve Inter (latin-ext 83 KB). Türkçe
+  sayfada font yükünü 150–195 KB'a çıkarıyorlardı.
+- **Font bütçesi Türkçe metinle ölçülür:** Fixture'daki örnek yazıya ve ön sayfaya Türkçe bir
+  başlık ve paragraf eklendi. Böylece İngilizce kurulan CI sitesi de latin-ext dosyalarını indirir
+  ve yerel Türkçe siteyle aynı sonucu verir. Limitler ölçümün yaklaşık %10 üstündedir: Lab
+  Precision 120, Graphite 95, Clinical Air 45 KB.
+- **Variation'lar bütçede veritabanına yazmadan ölçülür:** Geliştirme probe'u
+  `X-Pergel-Variation: <slug>` başlığıyla gelen istekte `styles/<slug>.json` dosyasını
+  `wp_theme_json_data_theme` filtresiyle uygular. Bütçe sayfası `"variation"` ve sayfaya özel
+  `"limits"` alabilir. Her variation için ön sayfa ve yazı sayfası ölçülür (axe dahil).
+  **Elenen:** ölçüm sırasında global styles'ı kaydetmek (veritabanına yazar, paralel ölçümü
+  bozar). Site Editor'de seçip kaydetme yolu ayrıca elle denendi: ön yüz doğru font ve renkleri
+  yükledi.
+- **Variation'a özel stil kuralları:** Token'la ifade edilemeyen kurallar (Lab Precision'daki
+  büyük harf buton ve menü gibi) token dosyasındaki `$extensions."com.ariumlab.pergel".styles`
+  alanına yazılır ve variation'a olduğu gibi kopyalanır.
 
 ### Değişiklik (15 Ekim 2026)
 

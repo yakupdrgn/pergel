@@ -44,11 +44,14 @@ const median = ( a ) => {
 };
 
 /* ---- Server side: probe log, median of N warm runs ---------------------- */
+// A page with "variation" is rendered with styles/<slug>.json applied (perf probe header).
+const variationHeaders = ( page ) => ( page.variation ? { 'X-Pergel-Variation': page.variation } : {} );
+
 async function server( page ) {
 	const url = base + page.path;
-	await fetch( url ); // Warm OPcache and object caches.
+	await fetch( url, { headers: variationHeaders( page ) } ); // Warm OPcache and object caches.
 	for ( let i = 0; i < budget.runs; i++ ) {
-		const res = await fetch( url, { headers: { 'X-Pergel-Perf': `${ runId }:${ page.name }:${ i }` } } );
+		const res = await fetch( url, { headers: { ...variationHeaders( page ), 'X-Pergel-Perf': `${ runId }:${ page.name }:${ i }` } } );
 		await res.arrayBuffer();
 		const expected = page.status ?? 200;
 		if ( res.status !== expected ) {
@@ -96,7 +99,7 @@ new PerformanceObserver(l=>{for(const e of l.getEntries())if(!e.hadRecentInput)w
 const AXE_TAGS = [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa' ];
 
 async function browserMetrics( browser, page ) {
-	const ctx = await browser.newContext( { viewport: { width: 1440, height: 900 } } );
+	const ctx = await browser.newContext( { viewport: { width: 1440, height: 900 }, extraHTTPHeaders: variationHeaders( page ) } );
 	await ctx.addInitScript( INIT );
 	const tab = await ctx.newPage();
 	const finished = [];
@@ -148,7 +151,7 @@ const limitText = ( limit ) => {
 const failures = [];
 for ( const page of budget.pages ) {
 	const m = { ...( await server( page ) ), ...( await browserMetrics( browser, page ) ) };
-	const limits = { ...budget.limits[ '*' ], ...( budget.limits[ page.name ] ?? {} ) };
+	const limits = { ...budget.limits[ '*' ], ...( budget.limits[ page.name ] ?? {} ), ...( page.limits ?? {} ) };
 	for ( const [ key, limit ] of Object.entries( limits ) ) {
 		const value = key === 'writes' ? m.writes.length : m[ key ];
 		const [ min, max ] = Array.isArray( limit ) ? limit : [ -Infinity, limit ];
@@ -176,6 +179,7 @@ const md = [
 	`|---|${ cols.map( () => '--:' ).join( '|' ) }|`,
 	`| *limit* | ${ cols.map( ( c ) => ( c in limitRow ? limitText( limitRow[ c ] ) : '' ) ).join( ' | ' ) } |`,
 	...ordered.map( ( [ n, m ] ) => `| ${ n } | ${ cols.map( ( c ) => cell( m, c ) ).join( ' | ' ) } |` ),
+	...( budget.pages.some( ( p ) => p.limits ) ? [ '', `Page-specific limits: ${ budget.pages.filter( ( p ) => p.limits ).map( ( p ) => `${ p.name } ${ Object.entries( p.limits ).map( ( [ k, v ] ) => `${ k } ${ limitText( v ) }` ).join( ', ' ) }` ).join( '; ' ) }.` ] : [] ),
 	'',
 	...( failures.length ? [ '## Over budget', '', ...failures.map( ( f ) => `- ${ f }` ), '' ] : [] ),
 	...ordered

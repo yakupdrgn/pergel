@@ -1,0 +1,235 @@
+{
+	"$schema": "https://schemas.wp.org/wp/7.1/theme.json",
+	"version": 3,
+	"title": "Graphite Engineering",
+	"styles": {
+		"elements": {
+			"heading": {
+				"typography": {
+					"letterSpacing": "-0.01em"
+				}
+			}
+		}
+	},
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"name": "Base",
+					"color": "#191919"
+				},
+				{
+					"slug": "surface",
+					"name": "Surface",
+					"color": "#242424"
+				},
+				{
+					"slug": "contrast",
+					"name": "Contrast",
+					"color": "#eef1f5"
+				},
+				{
+					"slug": "muted",
+					"name": "Muted",
+					"color": "#a4abb6"
+				},
+				{
+					"slug": "border",
+					"name": "Border",
+					"color": "#ffffff1f"
+				},
+				{
+					"slug": "accent",
+					"name": "Accent",
+					"color": "#4c8dff"
+				},
+				{
+					"slug": "on-accent",
+					"name": "On accent",
+					"color": "#0b0d10"
+				}
+			]
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"slug": "body",
+					"name": "Geist",
+					"fontFamily": "Geist, system-ui, sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Geist",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/geist/geist-latin-wght-normal.woff2"
+							],
+							"fontWeight": "100 900",
+							"fontStyle": "normal",
+							"unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+						},
+						{
+							"fontFamily": "Geist",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/geist/geist-latin-ext-wght-normal.woff2"
+							],
+							"fontWeight": "100 900",
+							"fontStyle": "normal",
+							"unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+						}
+					]
+				},
+				{
+					"slug": "heading",
+					"name": "Space Grotesk",
+					"fontFamily": "\"Space Grotesk\", system-ui, sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Space Grotesk",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/space-grotesk/space-grotesk-latin-wght-normal.woff2"
+							],
+							"fontWeight": "300 700",
+							"fontStyle": "normal",
+							"unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+						},
+						{
+							"fontFamily": "Space Grotesk",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/space-grotesk/space-grotesk-latin-ext-wght-normal.woff2"
+							],
+							"fontWeight": "300 700",
+							"fontStyle": "normal",
+							"unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF"
+						}
+					]
+				},
+				{
+					"slug": "mono",
+					"name": "System mono",
+					"fontFamily": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+				}
+			],
+			"fontSizes": [
+				{
+					"slug": "small",
+					"name": "Small",
+					"size": "0.875rem",
+					"fluid": false
+				},
+				{
+					"slug": "medium",
+					"name": "Medium",
+					"size": "1.0625rem",
+					"fluid": false
+				},
+				{
+					"slug": "large",
+					"name": "Large",
+					"size": "1.375rem",
+					"fluid": {
+						"min": "1.25rem",
+						"max": "1.375rem"
+					}
+				},
+				{
+					"slug": "x-large",
+					"name": "Extra large",
+					"size": "2rem",
+					"fluid": {
+						"min": "1.625rem",
+						"max": "2rem"
+					}
+				},
+				{
+					"slug": "xx-large",
+					"name": "Huge",
+					"size": "3rem",
+					"fluid": {
+						"min": "2.125rem",
+						"max": "3rem"
+					}
+				}
+			]
+		},
+		"spacing": {
+			"spacingSizes": [
+				{
+					"slug": "20",
+					"name": "2XS",
+					"size": "0.5rem"
+				},
+				{
+					"slug": "30",
+					"name": "XS",
+					"size": "0.75rem"
+				},
+				{
+					"slug": "40",
+					"name": "S",
+					"size": "1rem"
+				},
+				{
+					"slug": "50",
+					"name": "M",
+					"size": "clamp(1.25rem, 1.1477rem + 0.4545vw, 1.5rem)"
+				},
+				{
+					"slug": "60",
+					"name": "L",
+					"size": "clamp(1.75rem, 1.4432rem + 1.3636vw, 2.5rem)"
+				},
+				{
+					"slug": "70",
+					"name": "XL",
+					"size": "clamp(2.5rem, 1.8864rem + 2.7273vw, 4rem)"
+				},
+				{
+					"slug": "80",
+					"name": "2XL",
+					"size": "clamp(3.5rem, 2.2727rem + 5.4545vw, 6.5rem)"
+				}
+			]
+		},
+		"shadow": {
+			"presets": [
+				{
+					"slug": "small",
+					"name": "Small",
+					"shadow": "0 1px 2px 0 #00000066"
+				},
+				{
+					"slug": "medium",
+					"name": "Medium",
+					"shadow": "0 2px 4px 0 #0000004d, 0 12px 32px -6px #00000066"
+				}
+			],
+			"defaultPresets": false
+		},
+		"layout": {
+			"contentSize": "720px",
+			"wideSize": "1240px"
+		},
+		"custom": {
+			"radius": {
+				"small": "4px",
+				"medium": "10px",
+				"large": "16px",
+				"button": "4px",
+				"card": "10px"
+			},
+			"font-weight": {
+				"body": 400,
+				"heading": 600,
+				"button": 600
+			},
+			"line-height": {
+				"body": 1.6,
+				"heading": 1.2
+			}
+		}
+	}
+}

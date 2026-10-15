@@ -86,8 +86,12 @@ final class Compiler {
 				'version' => 3,
 			);
 
+		$dirs = null !== $parent_dir ? array( $theme_dir, rtrim( $parent_dir, '/\\' ) ) : array( $theme_dir );
+
+		$settings = self::compile( $base, 'tokens/default.json' );
+		self::check_font_files( $settings, 'tokens/default.json', $dirs );
 		$out = array(
-			'theme.json' => self::encode( self::apply( $theme_json, self::compile( $base, 'tokens/default.json' ) ) ),
+			'theme.json' => self::encode( self::apply( $theme_json, $settings ) ),
 		);
 
 		$files = glob( $theme_dir . '/tokens/*.json' );
@@ -106,8 +110,18 @@ final class Compiler {
 				'version' => 3,
 				'title'   => $title,
 			);
+			// Style rules a token cannot express (e.g. uppercase buttons) are copied as written.
+			$styles = $raw['$extensions'][ self::EXT ]['styles'] ?? null;
+			if ( null !== $styles ) {
+				if ( ! is_array( $styles ) || array_is_list( $styles ) ) {
+					throw new Invalid( array( "tokens/$slug.json: \$extensions.\"" . self::EXT . '".styles must be a theme.json styles object' ) );
+				}
+				$variation['styles'] = $styles;
+			}
 
-			$out[ "styles/$slug.json" ] = self::encode( self::apply( $variation, self::compile( self::merge( $base, $raw ), "tokens/$slug.json" ) ) );
+			$settings = self::compile( self::merge( $base, $raw ), "tokens/$slug.json" );
+			self::check_font_files( $settings, "tokens/$slug.json", $dirs );
+			$out[ "styles/$slug.json" ] = self::encode( self::apply( $variation, $settings ) );
 		}
 
 		return $out;
@@ -408,7 +422,7 @@ final class Compiler {
 			}
 			$src = (array) $face['src'];
 			foreach ( $src as $url ) {
-				if ( ! is_string( $url ) || ! str_starts_with( $url, 'file:./' ) || ! str_ends_with( $url, '.woff2' ) ) {
+				if ( ! is_string( $url ) || ! str_starts_with( $url, 'file:./' ) || ! str_ends_with( $url, '.woff2' ) || str_contains( $url, '..' ) ) {
 					throw new \InvalidArgumentException( 'fontFace src must be a local woff2 file ("file:./assets/fonts/name.woff2")' );
 				}
 			}
@@ -422,6 +436,37 @@ final class Compiler {
 			);
 		}
 		return $out;
+	}
+
+	/**
+	 * Checks that every fontFace file exists in the theme or, for child themes,
+	 * in the parent (WordPress resolves `file:./` the same way).
+	 *
+	 * @param array<string, mixed> $settings Compiled settings.
+	 * @param string               $label    File name for messages.
+	 * @param string[]             $dirs     Theme directory first, then the parent.
+	 * @throws Invalid When a file is missing.
+	 */
+	private static function check_font_files( array $settings, string $label, array $dirs ): void {
+		$problems = array();
+		$families = $settings['typography']['fontFamilies'] ?? array();
+		foreach ( is_array( $families ) ? $families : array() as $family ) {
+			foreach ( $family['fontFace'] ?? array() as $face ) {
+				foreach ( $face['src'] as $src ) {
+					$relative = substr( $src, strlen( 'file:./' ) );
+					$found    = false;
+					foreach ( $dirs as $dir ) {
+						$found = $found || is_file( "$dir/$relative" );
+					}
+					if ( ! $found ) {
+						$problems[] = "$label: font-family.{$family['slug']}: $src does not exist in the theme";
+					}
+				}
+			}
+		}
+		if ( array() !== $problems ) {
+			throw new Invalid( $problems );
+		}
 	}
 
 	/**
