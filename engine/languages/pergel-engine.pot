@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T08:28:08+03:00\n"
+"POT-Creation-Date: 2026-10-15T08:56:14+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -88,6 +88,12 @@ msgstr ""
 msgid "Used only while no SEO plugin is active. With Rank Math, Yoast SEO, All in One SEO, SEOPress or The SEO Framework, Pergel hands over and only adds the brand details to its data."
 msgstr ""
 
+msgid "Performance"
+msgstr ""
+
+msgid "Front-end changes made while the Performance module is on. The admin area is not affected."
+msgstr ""
+
 msgid "Company"
 msgstr ""
 
@@ -109,13 +115,16 @@ msgstr ""
 msgid "Sitemap"
 msgstr ""
 
+msgid "Remove"
+msgstr ""
+
+msgid "Load early"
+msgstr ""
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr ""
 
 msgid "Hands over to an active SEO plugin and adds the brand details to its data. Without one, Pergel prints the meta tags and structured data itself."
-msgstr ""
-
-msgid "Performance"
 msgstr ""
 
 msgid "Removes front-end assets that most sites do not need."
@@ -190,6 +199,30 @@ msgstr ""
 msgid "Off for most company sites: author pages repeat the blog."
 msgstr ""
 
+msgid "Remove the emoji script"
+msgstr ""
+
+msgid "Browsers draw emoji themselves. Feeds and emails keep the image fallback."
+msgstr ""
+
+msgid "Remove oEmbed discovery links"
+msgstr ""
+
+msgid "Other sites can no longer turn a pasted page address into an embed card. Embeds within this site keep working."
+msgstr ""
+
+msgid "No Dashicons for visitors"
+msgstr ""
+
+msgid "For visitors who are not logged in. A plugin style that needs the icon font still loads it."
+msgstr ""
+
+msgid "Preload the style variation fonts"
+msgstr ""
+
+msgid "The basic Latin files of the body and heading fonts start downloading with the page."
+msgstr ""
+
 msgid "The value is too long."
 msgstr ""
 
@@ -246,9 +279,6 @@ msgid "Use this image"
 msgstr ""
 
 msgid "Choose image"
-msgstr ""
-
-msgid "Remove"
 msgstr ""
 
 #. translators: 1: characters typed, 2: recommended maximum.

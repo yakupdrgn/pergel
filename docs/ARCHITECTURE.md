@@ -72,7 +72,7 @@ Planlanan modüller ve yüklenme koşulları:
 | Ai | İsteğe bağlı |
 | Content | Yalnızca açılan içerik türleri |
 | Woo | WooCommerce aktifse |
-| Performance | Ön yüz |
+| Performance | Ön yüz (`is_admin()` dışı; her parça kendi ayar anahtarıyla) |
 | Import / Cli | Yalnızca WP-CLI (`Cli` şu an var: `wp pergel info`) |
 
 ## Ayar modeli (F2)
@@ -80,8 +80,7 @@ Planlanan modüller ve yüklenme koşulları:
 Tek option (`pergel_settings`), autoload ≤ 20 KB, REST şemasıyla doğrulanır. Tasarım ayarları bu
 option'da değil Global Styles'tadır (K5).
 
-- `Settings\Schema` — gruplar ve alanlar (`modules`, `brand`, `seo`; performans grubu kendi adımında
-  eklenir). Varsayılanlar, temizleme ve REST JSON Schema bu tek tanımdan üretilir.
+- `Settings\Schema` — gruplar ve alanlar (`modules`, `brand`, `seo`, `performance`). Varsayılanlar, temizleme ve REST JSON Schema bu tek tanımdan üretilir.
 - `Settings\Settings` — okuma: `all()`, `get( 'brand.email' )`, `module_enabled( 'seo' )`,
   yazma: `update( $değişiklikler )`. Değerler istek başına bir kez şemaya göre normalize edilir;
   önbellek option her değiştiğinde düşer.
@@ -162,13 +161,32 @@ wordpress.org'daki son sürümlerini kurar (`INSTALL=1`). Yerelde:
 WP_DIR=/c/xampp/htdocs/pergel-tema SITE_URL=http://localhost/pergel-tema bash tools/seo/matrix.sh
 ```
 
+## Performans modülü (F2)
+
+Yalnızca ön yüzde yüklenir; dört anahtarın hepsi varsayılan açıktır (Ayarlar → Performance).
+
+- **Emoji:** çekirdeğin emoji algılama script'i, stilleri ve `s.w.org` DNS prefetch'i sayfadan ve
+  embed'lerden kalkar. Akışlar ve e-postalar çekirdeğin görsel yedeğini korur.
+- **oEmbed keşif bağlantıları:** `<head>`'deki iki `alternate` bağlantısı kalkar. Başka siteler
+  sayfa adresinden embed kartı üretemez; site içi embed'ler çalışır (çekirdek onları HTTP'siz çözer).
+- **Dashicons:** giriş yapmamış ziyaretçide kuyruktan çıkar (`wp_enqueue_scripts` 100 ve `wp_footer` 1).
+  Dashicons'a bağımlı bir stil onu yine getirir.
+- **Font önyükleme:** `Performance\Fonts` (saf PHP, birim testli) birleşik Global Styles'tan kök ve
+  başlık (`heading`, `h1`–`h6`) font preset'lerini bulur; bu fontların düz (italik olmayan),
+  temel Latin'i kapsayan woff2 dosyaları `wp_preload_resources` ile önyüklenir. URL'ler çekirdeğin
+  `@font-face` adresiyle birebir aynıdır (`file:./` → `get_theme_file_uri()`). Sistem fontlu temel
+  temada hiçbir şey önyüklenmez. `pergel/performance/font_preloads` filtresi listeyi değiştirir.
+
+Bütçe bunları denetler: `emoji = 0`, `fontPreloads ≤ 2`, `unusedPreloads = 0` (önyüklenip hiçbir
+`@font-face` kuralınca kullanılmayan dosya), `jsonld ≤ 1`.
+
 ## Ölçüm
 
 `tools/budget/perf-probe.php` yalnızca `X-Pergel-Perf` başlığı taşıyan isteklerde çalışır ve
 istek sonunda bir JSON satırı yazar: süre, sorgu sayısı ve süresi, DB yazmaları, yüklenen dosya
 sayısı (toplam ve Pergel'e ait), bellek. `measure.mjs` her sayfayı 3 kez sıcak ölçer (medyan),
 Playwright ile tarayıcı tarafını (HTML KB, istek sayısı, JS KB, gövdedeki CSS bağlantıları, DOM,
-H1, JSON-LD, LCP, CLS) toplar ve `tests/budget/budget.json` ile karşılaştırır.
+H1, JSON-LD, emoji yükleyicisi, font önyüklemeleri ve kullanılmayanları, LCP, CLS) toplar ve `tests/budget/budget.json` ile karşılaştırır.
 
 ## Geliştirme ortamı
 

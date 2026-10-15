@@ -22,17 +22,21 @@ final class Labels {
 	 */
 	public static function tabs(): array {
 		return array(
-			'modules' => array(
+			'modules'     => array(
 				'title'       => __( 'Modules', 'pergel-engine' ),
 				'description' => __( 'Switch off what this site does not use. A switched-off module loads no code.', 'pergel-engine' ),
 			),
-			'brand'   => array(
+			'brand'       => array(
 				'title'       => __( 'Brand', 'pergel-engine' ),
 				'description' => __( 'Company details, entered once. Blocks show them through the Pergel Brand source, and search engines receive them as Organization data.', 'pergel-engine' ),
 			),
-			'seo'     => array(
+			'seo'         => array(
 				'title'       => __( 'SEO', 'pergel-engine' ),
 				'description' => __( 'Used only while no SEO plugin is active. With Rank Math, Yoast SEO, All in One SEO, SEOPress or The SEO Framework, Pergel hands over and only adds the brand details to its data.', 'pergel-engine' ),
+			),
+			'performance' => array(
+				'title'       => __( 'Performance', 'pergel-engine' ),
+				'description' => __( 'Front-end changes made while the Performance module is on. The admin area is not affected.', 'pergel-engine' ),
 			),
 		);
 	}
@@ -45,13 +49,13 @@ final class Labels {
 	 */
 	public static function sections(): array {
 		return array(
-			'modules' => array(
+			'modules'     => array(
 				'modules' => array(
 					'title'  => __( 'Modules', 'pergel-engine' ),
 					'fields' => array( 'brand', 'seo', 'performance' ),
 				),
 			),
-			'brand'   => array(
+			'brand'       => array(
 				'company' => array(
 					'title'  => __( 'Company', 'pergel-engine' ),
 					'fields' => array( 'name', 'legal_name', 'vat_id' ),
@@ -73,7 +77,7 @@ final class Labels {
 					'fields' => array( 'logo_inverse' ),
 				),
 			),
-			'seo'     => array(
+			'seo'         => array(
 				'sharing' => array(
 					'title'  => __( 'Sharing', 'pergel-engine' ),
 					'fields' => array( 'og_image', 'twitter_site' ),
@@ -81,6 +85,16 @@ final class Labels {
 				'sitemap' => array(
 					'title'  => __( 'Sitemap', 'pergel-engine' ),
 					'fields' => array( 'sitemap_users' ),
+				),
+			),
+			'performance' => array(
+				'remove' => array(
+					'title'  => __( 'Remove', 'pergel-engine' ),
+					'fields' => array( 'disable_emoji', 'remove_oembed_links', 'dequeue_dashicons' ),
+				),
+				'load'   => array(
+					'title'  => __( 'Load early', 'pergel-engine' ),
+					'fields' => array( 'preload_fonts' ),
 				),
 			),
 		);
@@ -93,7 +107,7 @@ final class Labels {
 	 */
 	public static function fields(): array {
 		return array(
-			'modules' => array(
+			'modules'     => array(
 				'brand'       => array(
 					'label' => __( 'Brand', 'pergel-engine' ),
 					'help'  => __( 'Brand details in blocks (Block Bindings) and in structured data.', 'pergel-engine' ),
@@ -107,7 +121,7 @@ final class Labels {
 					'help'  => __( 'Removes front-end assets that most sites do not need.', 'pergel-engine' ),
 				),
 			),
-			'brand'   => array(
+			'brand'       => array(
 				'name'         => array(
 					'label' => __( 'Brand name', 'pergel-engine' ),
 					'help'  => __( 'The name customers know. Leave empty to use the site title.', 'pergel-engine' ),
@@ -136,7 +150,7 @@ final class Labels {
 					'help'  => __( 'The main logo is the Site Logo in the Site Editor.', 'pergel-engine' ),
 				),
 			),
-			'seo'     => array(
+			'seo'         => array(
 				'og_image'      => array(
 					'label' => __( 'Default share image', 'pergel-engine' ),
 					'help'  => __( 'Shown when a shared page has no featured image. 1200 × 630 pixels works everywhere.', 'pergel-engine' ),
@@ -148,6 +162,24 @@ final class Labels {
 				'sitemap_users' => array(
 					'label' => __( 'List author pages in the sitemap', 'pergel-engine' ),
 					'help'  => __( 'Off for most company sites: author pages repeat the blog.', 'pergel-engine' ),
+				),
+			),
+			'performance' => array(
+				'disable_emoji'       => array(
+					'label' => __( 'Remove the emoji script', 'pergel-engine' ),
+					'help'  => __( 'Browsers draw emoji themselves. Feeds and emails keep the image fallback.', 'pergel-engine' ),
+				),
+				'remove_oembed_links' => array(
+					'label' => __( 'Remove oEmbed discovery links', 'pergel-engine' ),
+					'help'  => __( 'Other sites can no longer turn a pasted page address into an embed card. Embeds within this site keep working.', 'pergel-engine' ),
+				),
+				'dequeue_dashicons'   => array(
+					'label' => __( 'No Dashicons for visitors', 'pergel-engine' ),
+					'help'  => __( 'For visitors who are not logged in. A plugin style that needs the icon font still loads it.', 'pergel-engine' ),
+				),
+				'preload_fonts'       => array(
+					'label' => __( 'Preload the style variation fonts', 'pergel-engine' ),
+					'help'  => __( 'The basic Latin files of the body and heading fonts start downloading with the page.', 'pergel-engine' ),
 				),
 			),
 		);

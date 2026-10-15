@@ -97,7 +97,7 @@ bir projeye ait; o adlar kullanılmaz.
 
 - **Autoload:** Plan "Composer classmap" diyordu. Engine kendi küçük PSR-4 `spl_autoload_register`
   yükleyicisini kullanır; `vendor/` dağıtıma girmez. Sebep: çalışma zamanı bağımlılığı yok, ek
-  dosya yok, yalnızca gereken sınıf yüklenir (bütçe: istek başına ≤ 60 Pergel dosyası). Üçüncü
+  dosya yok, yalnızca gereken sınıf yüklenir (bütçe: istek başına ≤ 60 Pergel dosyası, F2'de ≤ 45). Üçüncü
   taraf bir çalışma zamanı kütüphanesi gerekirse classmap'e geçilir.
 - **Yerel PHP:** Plan "XAMPP'in 8.2'si kalır, yalnızca CLI ve testler 8.4" diyordu. Uygulamada
   geliştirme sitesi de PHP 8.4'te çalışıyor: Apache yalnızca `pergel-tema` dizini için FastCGI ile
@@ -320,6 +320,20 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 - **"Tek site haritası" içerikle ölçülür:** Aynı haritayı iki adreste sunmak (TSF
   `sitemap_index.xml` ve `sitemap.xml`) tek harita sayılır; AIOSEO'nun robots.txt'teki RSS
   haritası XML haritası değildir.
+- **Performans anahtarları varsayılan açık:** Emoji, oEmbed keşif bağlantıları, ziyaretçiye
+  Dashicons ve font önyükleme ayrı ayrı kapatılabilir; modül anahtarı hepsini birden kapatır.
+  Dashicons yalnızca kuyruktan çıkarılır, kaydı silinmez: ona bağımlı bir eklenti stili bozulmaz.
+- **Yalnızca temel Latin fontu önyüklenir:** Variation'lar her fontu latin ve latin-ext olarak
+  böler. Her sayfada kesin kullanılan latin dosyasıdır; latin-ext'i önyüklemek İngilizce bir
+  sayfada boşa indirme olur. Türkçe metindeki ş/ğ/İ latin-ext'i normal yoldan indirir (bütçe
+  Türkçe fixture'la ölçer, `fontKB` sınırları bunu içerir). Çoğunlukla Türkçe bir site
+  `pergel/performance/font_preloads` filtresiyle latin-ext dosyalarını ekleyebilir. Önyükleme
+  gövde ve başlık fontlarıyla sınırlıdır (en fazla iki dosya); mono gibi alt öğe fontları
+  önyüklenmez.
+- **Bütçe sıkılaştırıldı (F2):** Pergel dosyası 60 → 45, sorgu 75 → 50, HTML 100 → 90 KB, istek
+  30 → 20, JS 30 → 25 KB. Ölçülen en yüksek değerler: 23 dosya, 25 sorgu, 73,6 KB HTML, 7 istek,
+  16 KB JS; F3 blokları için pay bırakıldı. Yeni sınırlar: `jsonld ≤ 1`, `emoji = 0`,
+  `fontPreloads ≤ 2`, `unusedPreloads = 0`.
 
 ## Aşamalar ve bitti tanımları
 
@@ -337,6 +351,6 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 ## Bilinen açık işler
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
-- Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor → F2 performans modülü kapatacak.
+- ~~Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor~~ → F2'de performans modülüyle çözüldü (bütçe `emoji = 0`).
 - K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi) → F3'te breadcrumb bloğuyla.
 - ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.

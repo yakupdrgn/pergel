@@ -41,7 +41,7 @@ final class Schema {
 	private const MAX_ITEMS = 10;
 
 	/**
-	 * Every group and field. A later step adds the performance group.
+	 * Every group and field.
 	 *
 	 * Types: bool, text, textarea, email, url, tel, country (ISO 3166-1
 	 * alpha-2), enum (options), int (min, max), image (attachment id, 0 =
@@ -52,7 +52,7 @@ final class Schema {
 	public static function groups(): array {
 		return array(
 			// Module switches. Modules that are not listed always load.
-			'modules' => array(
+			'modules'     => array(
 				'brand'       => array(
 					'type'    => 'bool',
 					'default' => true,
@@ -67,7 +67,7 @@ final class Schema {
 				),
 			),
 			// Company details: block bindings and Organization schema.
-			'brand'   => array(
+			'brand'       => array(
 				'name'         => array(
 					'type' => 'text',
 					'max'  => 120,
@@ -97,7 +97,7 @@ final class Schema {
 				'social'       => array( 'type' => 'urls' ),
 			),
 			// Used only when no SEO plugin is active.
-			'seo'     => array(
+			'seo'         => array(
 				'og_image'      => array( 'type' => 'image' ),
 				'twitter_site'  => array(
 					'type' => 'text',
@@ -106,6 +106,25 @@ final class Schema {
 				'sitemap_users' => array(
 					'type'    => 'bool',
 					'default' => false,
+				),
+			),
+			// Front-end trimming, used while the performance module is on.
+			'performance' => array(
+				'disable_emoji'       => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'remove_oembed_links' => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'dequeue_dashicons'   => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'preload_fonts'       => array(
+					'type'    => 'bool',
+					'default' => true,
 				),
 			),
 		);

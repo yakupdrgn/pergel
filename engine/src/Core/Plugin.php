@@ -11,6 +11,7 @@ namespace Pergel\Core;
 
 use Pergel\Brand;
 use Pergel\Cli;
+use Pergel\Performance;
 use Pergel\Seo;
 use Pergel\Settings;
 
@@ -37,6 +38,7 @@ final class Plugin {
 			Settings\Module::class,
 			Brand\Module::class,
 			Seo\Module::class,
+			Performance\Module::class,
 			Cli\Module::class,
 		);
 

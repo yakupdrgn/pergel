@@ -95,6 +95,28 @@ const COLLECT = () => {
 		inlineCss: [ ...document.querySelectorAll( 'style' ) ].reduce( ( n, el ) => n + new TextEncoder().encode( el.textContent ).length, 0 ),
 		jsonld: ld.length,
 		jquery: !! window.jQuery,
+		// Core's emoji loader: its settings script and its inline styles.
+		emoji: document.querySelectorAll( '#wp-emoji-settings, #wp-emoji-styles-inline-css' ).length,
+		fontPreloads: document.querySelectorAll( 'link[rel="preload"][as="font"]' ).length,
+		// Preloaded font files no @font-face rule of the page loaded: wasted bytes.
+		unusedPreloads: ( () => {
+			const rules = [ ...document.styleSheets ].flatMap( ( s ) => {
+				try {
+					return [ ...s.cssRules ];
+				} catch {
+					return [];
+				}
+			} ).filter( ( r ) => r instanceof CSSFontFaceRule );
+			const loaded = [ ...document.fonts ].filter( ( f ) => 'loaded' === f.status );
+			const clean = ( s ) => s.replace( /["']/g, '' ).replace( /\s+/g, '' ).toLowerCase();
+			return [ ...document.querySelectorAll( 'link[rel="preload"][as="font"]' ) ].filter( ( link ) => {
+				const path = new URL( link.href ).pathname;
+				return ! rules.some( ( r ) => r.style.getPropertyValue( 'src' ).includes( path ) && loaded.some( ( f ) =>
+					clean( f.family ) === clean( r.style.getPropertyValue( 'font-family' ) )
+					&& clean( f.unicodeRange ) === clean( r.style.getPropertyValue( 'unicode-range' ) || 'U+0-10FFFF' )
+				) );
+			} ).length;
+		} )(),
 		lcp: Math.round( window.__lcp || 0 ),
 		cls: +( window.__cls || 0 ).toFixed( 3 ),
 	};
@@ -190,7 +212,7 @@ for ( const page of budget.pages ) {
 await browser.close();
 
 const ordered = budget.pages.map( ( p ) => [ p.name, results[ p.name ] ] );
-const cols = [ 'pergel_files', 'queries', 'writes', 'ms', 'htmlKB', 'requests', 'jsKB', 'cssKB', 'fontKB', 'totalKB', 'bodyCssLinks', 'dom', 'h1', 'axe', 'overflowX', 'lcp', 'cls' ];
+const cols = [ 'pergel_files', 'queries', 'writes', 'ms', 'htmlKB', 'requests', 'jsKB', 'cssKB', 'fontKB', 'totalKB', 'bodyCssLinks', 'dom', 'h1', 'jsonld', 'emoji', 'fontPreloads', 'unusedPreloads', 'axe', 'overflowX', 'lcp', 'cls' ];
 const cell = ( m, c ) => ( c === 'writes' ? m.writes.length : m[ c ] );
 const limitRow = budget.limits[ '*' ];
 const md = [
