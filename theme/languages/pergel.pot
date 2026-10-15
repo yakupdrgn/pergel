@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T14:49:38+03:00\n"
+"POT-Creation-Date: 2026-10-15T15:02:13+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -74,6 +74,177 @@ msgid "Full pages"
 msgstr ""
 
 msgid "Whole pages made of Pergel sections."
+msgstr ""
+
+#: patterns/about-centered.php
+msgctxt "Pattern title"
+msgid "About, centered text"
+msgstr ""
+
+#: patterns/about-centered.php
+msgctxt "Pattern description"
+msgid "A centered label, heading and two short paragraphs."
+msgstr ""
+
+msgid "About us"
+msgstr ""
+
+msgid "Careful work, explained in plain words"
+msgstr ""
+
+msgid "We started as a two-person workshop and grew into a team of engineers, planners and support staff."
+msgstr ""
+
+msgid "What has not changed is how we work: we listen first, explain our choices and stay for the long run."
+msgstr ""
+
+#: patterns/about-image-grid.php
+msgctxt "Pattern title"
+msgid "About with image grid"
+msgstr ""
+
+#: patterns/about-image-grid.php
+msgctxt "Pattern description"
+msgid "Heading and text above a row of three images."
+msgstr ""
+
+msgid "Where the work happens"
+msgstr ""
+
+msgid "Our workshop, our team on site and the systems we look after every day."
+msgstr ""
+
+#: patterns/about-inverse.php
+msgctxt "Pattern title"
+msgid "About on a dark background"
+msgstr ""
+
+#: patterns/about-inverse.php
+msgctxt "Pattern description"
+msgid "Company story and a button on a dark background, with an image."
+msgstr ""
+
+msgid "A team that stays after the job is done"
+msgstr ""
+
+msgid "We started as a two-person workshop and grew into a team of engineers, planners and support staff. What has not changed is how we work: we listen first, explain our choices and stay for the long run."
+msgstr ""
+
+msgid "Today we look after hundreds of sites, from small offices to large production halls, and most of our new work comes from people our clients recommend."
+msgstr ""
+
+msgid "Meet the team"
+msgstr ""
+
+#: patterns/about-mission-values.php
+msgctxt "Pattern title"
+msgid "Mission and values"
+msgstr ""
+
+#: patterns/about-mission-values.php
+msgctxt "Pattern description"
+msgid "A mission statement followed by three values."
+msgstr ""
+
+msgid "Our mission"
+msgstr ""
+
+msgid "Make technical work simple to buy and easy to live with"
+msgstr ""
+
+msgid "Every decision we make starts with one question: will this still make sense for the client in five years?"
+msgstr ""
+
+msgid "Honest advice"
+msgstr ""
+
+msgid "We recommend what you need, even when it is the smaller job."
+msgstr ""
+
+msgid "Clean work"
+msgstr ""
+
+msgid "Tidy sites, labelled systems and documents you can actually use."
+msgstr ""
+
+msgid "Long-term care"
+msgstr ""
+
+msgid "We plan for the years after handover, not just the day of it."
+msgstr ""
+
+#: patterns/about-quote.php
+msgctxt "Pattern title"
+msgid "About with founder quote"
+msgstr ""
+
+#: patterns/about-quote.php
+msgctxt "Pattern description"
+msgid "Company story beside a quote from the founder."
+msgstr ""
+
+msgid "Built on recommendations"
+msgstr ""
+
+msgid "We would rather lose a sale than sell something a client does not need. That is how we have kept the clients we have."
+msgstr ""
+
+msgctxt "job title"
+msgid "Founder"
+msgstr ""
+
+#: patterns/about-split-image.php
+msgctxt "Pattern title"
+msgid "About with image"
+msgstr ""
+
+#: patterns/about-split-image.php
+msgctxt "Pattern description"
+msgid "Short story about the company beside an image, with a button."
+msgstr ""
+
+#: patterns/about-story-stats.php
+msgctxt "Pattern title"
+msgid "Story with key figures"
+msgstr ""
+
+#: patterns/about-story-stats.php
+msgctxt "Pattern description"
+msgid "Company story on the left and four counting figures on the right."
+msgstr ""
+
+msgid "Our story"
+msgstr ""
+
+msgid "Fifteen years of steady growth"
+msgstr ""
+
+msgid "Founded"
+msgstr ""
+
+msgid "Team members"
+msgstr ""
+
+msgid "Projects delivered"
+msgstr ""
+
+msgid "Offices"
+msgstr ""
+
+#: patterns/about-two-columns-text.php
+msgctxt "Pattern title"
+msgid "About in two text columns"
+msgstr ""
+
+#: patterns/about-two-columns-text.php
+msgctxt "Pattern description"
+msgid "A large heading on the left and two paragraphs on the right."
+msgstr ""
+
+msgid "Engineers, planners and people who pick up the phone"
+msgstr ""
+
+msgid "Read our story"
 msgstr ""
 
 #: patterns/cta-accent.php
@@ -690,9 +861,6 @@ msgstr ""
 msgid "Trusted since 2009"
 msgstr ""
 
-msgid "Projects delivered"
-msgstr ""
-
 msgid "Clients who come back"
 msgstr ""
 
@@ -796,6 +964,576 @@ msgstr ""
 #: patterns/hidden-search.php
 msgctxt "Pattern description"
 msgid "Search form with translated label and button text."
+msgstr ""
+
+#: patterns/process-inverse.php
+msgctxt "Pattern title"
+msgid "Process on a dark background"
+msgstr ""
+
+#: patterns/process-inverse.php
+msgctxt "Pattern description"
+msgid "Four numbered steps on a dark background."
+msgstr ""
+
+msgid "How we work"
+msgstr ""
+
+msgid "From first call to long-term care"
+msgstr ""
+
+msgid "A simple process with no surprises. You always know the next step."
+msgstr ""
+
+msgid "Call and survey"
+msgstr ""
+
+msgid "We talk through your needs and visit the site to see the space."
+msgstr ""
+
+msgid "Plan and price"
+msgstr ""
+
+msgid "You get a written plan with a fixed price and a clear schedule."
+msgstr ""
+
+msgid "Delivery"
+msgstr ""
+
+msgid "Our engineers do the work, keeping the site tidy and you informed."
+msgstr ""
+
+msgid "Handover and care"
+msgstr ""
+
+msgid "We hand over the documents, train your team and stay on call."
+msgstr ""
+
+#: patterns/process-numbered-list.php
+msgctxt "Pattern title"
+msgid "Process as a numbered list"
+msgstr ""
+
+#: patterns/process-numbered-list.php
+msgctxt "Pattern description"
+msgid "Steps in rows, each with a number, a name and a short text."
+msgstr ""
+
+#: patterns/process-steps-four.php
+msgctxt "Pattern title"
+msgid "Four-step process"
+msgstr ""
+
+#: patterns/process-steps-four.php
+msgctxt "Pattern description"
+msgid "Four numbered steps in cards on a light background."
+msgstr ""
+
+#: patterns/process-steps-three.php
+msgctxt "Pattern title"
+msgid "Three-step process"
+msgstr ""
+
+#: patterns/process-steps-three.php
+msgctxt "Pattern description"
+msgid "Centered heading and three numbered steps."
+msgstr ""
+
+#: patterns/process-timeline-split.php
+msgctxt "Pattern title"
+msgid "Timeline with introduction"
+msgstr ""
+
+#: patterns/process-timeline-split.php
+msgctxt "Pattern description"
+msgid "Introduction and a button on the left, a timeline on the right."
+msgstr ""
+
+msgid "A clear path from idea to handover"
+msgstr ""
+
+msgid "Most projects take six to eight weeks from the first call."
+msgstr ""
+
+msgid "Start with a call"
+msgstr ""
+
+msgid "Week 1"
+msgstr ""
+
+msgid "Week 2"
+msgstr ""
+
+msgid "Weeks 3 to 6"
+msgstr ""
+
+msgid "Week 7 and after"
+msgstr ""
+
+#: patterns/process-timeline.php
+msgctxt "Pattern title"
+msgid "Process as a timeline"
+msgstr ""
+
+#: patterns/process-timeline.php
+msgctxt "Pattern description"
+msgid "Centered heading and the steps on a vertical timeline."
+msgstr ""
+
+#: patterns/services-alternating.php
+msgctxt "Pattern title"
+msgid "Services with alternating images"
+msgstr ""
+
+#: patterns/services-alternating.php
+msgctxt "Pattern description"
+msgid "Two services shown as image and text rows, the image switching sides."
+msgstr ""
+
+msgid "What we do"
+msgstr ""
+
+msgid "Services that keep your work moving"
+msgstr ""
+
+msgid "From the first plan to years of support, one team takes care of every step."
+msgstr ""
+
+msgid "Step one"
+msgstr ""
+
+msgid "Installation"
+msgstr ""
+
+msgid "Planned, tidy installation by certified engineers, handed over with full documentation."
+msgstr ""
+
+msgid "Site survey and plan"
+msgstr ""
+
+msgid "Clean, labelled installation"
+msgstr ""
+
+msgid "Full handover documents"
+msgstr ""
+
+msgid "Step two"
+msgstr ""
+
+msgid "Maintenance"
+msgstr ""
+
+msgid "Scheduled checks that catch problems early and keep your warranty valid."
+msgstr ""
+
+msgid "Visits on a fixed schedule"
+msgstr ""
+
+msgid "Written report after every visit"
+msgstr ""
+
+msgid "Priority response for contract clients"
+msgstr ""
+
+#: patterns/services-cards.php
+msgctxt "Pattern title"
+msgid "Service cards"
+msgstr ""
+
+#: patterns/services-cards.php
+msgctxt "Pattern description"
+msgid "Three services in bordered cards on a light background."
+msgstr ""
+
+msgid "Learn more"
+msgstr ""
+
+msgid "Consulting"
+msgstr ""
+
+msgid "An honest look at your needs before you spend, with options at three price levels."
+msgstr ""
+
+#: patterns/services-carousel.php
+msgctxt "Pattern title"
+msgid "Services carousel"
+msgstr ""
+
+#: patterns/services-carousel.php
+msgctxt "Pattern description"
+msgid "Services with images in a carousel showing three at a time."
+msgstr ""
+
+msgid "Training"
+msgstr ""
+
+msgid "Hands-on sessions so your own team can run the daily work with confidence."
+msgstr ""
+
+msgid "Repairs"
+msgstr ""
+
+msgid "Fast diagnosis and repair, with common spare parts kept in stock."
+msgstr ""
+
+msgid "Project management"
+msgstr ""
+
+msgid "One contact who plans the work, keeps the schedule and reports every week."
+msgstr ""
+
+#: patterns/services-checklist.php
+msgctxt "Pattern title"
+msgid "Services as a checklist"
+msgstr ""
+
+#: patterns/services-checklist.php
+msgctxt "Pattern description"
+msgid "Heading and text beside two lists of what is included."
+msgstr ""
+
+msgid "What is included"
+msgstr ""
+
+msgid "Every contract covers the essentials. Nothing is hidden in the small print."
+msgstr ""
+
+msgid "Yearly safety inspection"
+msgstr ""
+
+msgid "Software and firmware updates"
+msgstr ""
+
+msgid "Spare parts at cost"
+msgstr ""
+
+msgid "Phone support on weekdays"
+msgstr ""
+
+msgid "Written report after each visit"
+msgstr ""
+
+msgid "Named engineer for your site"
+msgstr ""
+
+msgid "Response within one working day"
+msgstr ""
+
+msgid "Training for new staff"
+msgstr ""
+
+#: patterns/services-details.php
+msgctxt "Pattern title"
+msgid "Services as an accordion"
+msgstr ""
+
+#: patterns/services-details.php
+msgctxt "Pattern description"
+msgid "Introduction on the left, services that open for more detail on the right."
+msgstr ""
+
+msgid "Services in detail"
+msgstr ""
+
+msgid "Open a service to see what it covers."
+msgstr ""
+
+#: patterns/services-four-columns.php
+msgctxt "Pattern title"
+msgid "Services in four columns"
+msgstr ""
+
+#: patterns/services-four-columns.php
+msgctxt "Pattern description"
+msgid "Heading on the left and four short services in a row."
+msgstr ""
+
+#: patterns/services-image-cards.php
+msgctxt "Pattern title"
+msgid "Services with images"
+msgstr ""
+
+#: patterns/services-image-cards.php
+msgctxt "Pattern description"
+msgid "Three services, each with an image, a short text and a link."
+msgstr ""
+
+#: patterns/services-intro-grid.php
+msgctxt "Pattern title"
+msgid "Services grid with an introduction"
+msgstr ""
+
+#: patterns/services-intro-grid.php
+msgctxt "Pattern description"
+msgid "A short introduction beside a two by two grid of services."
+msgstr ""
+
+msgid "Four ways we help"
+msgstr ""
+
+msgid "Most clients start with one service and add the others when they see the difference."
+msgstr ""
+
+msgid "See all services"
+msgstr ""
+
+#: patterns/services-inverse.php
+msgctxt "Pattern title"
+msgid "Services on a dark background"
+msgstr ""
+
+#: patterns/services-inverse.php
+msgctxt "Pattern description"
+msgid "Three services in outlined cards on a dark background."
+msgstr ""
+
+#: patterns/services-numbered.php
+msgctxt "Pattern title"
+msgid "Numbered services"
+msgstr ""
+
+#: patterns/services-numbered.php
+msgctxt "Pattern description"
+msgid "Three services with large numbers above their names."
+msgstr ""
+
+#: patterns/services-six-grid.php
+msgctxt "Pattern title"
+msgid "Six services grid"
+msgstr ""
+
+#: patterns/services-six-grid.php
+msgctxt "Pattern description"
+msgid "Centered heading and six services in a three-column grid."
+msgstr ""
+
+#: patterns/services-split-image.php
+msgctxt "Pattern title"
+msgid "Services beside a tall image"
+msgstr ""
+
+#: patterns/services-split-image.php
+msgctxt "Pattern description"
+msgid "A tall image on the left and three services stacked on the right."
+msgstr ""
+
+msgid "Built around your site"
+msgstr ""
+
+#: patterns/services-three-columns.php
+msgctxt "Pattern title"
+msgid "Services in three columns"
+msgstr ""
+
+#: patterns/services-three-columns.php
+msgctxt "Pattern description"
+msgid "Centered heading and three services with a short text and a link."
+msgstr ""
+
+#: patterns/services-two-column-list.php
+msgctxt "Pattern title"
+msgid "Services list beside an introduction"
+msgstr ""
+
+#: patterns/services-two-column-list.php
+msgctxt "Pattern description"
+msgid "Introduction and button on the left, a list of services with dividers on the right."
+msgstr ""
+
+msgid "Everything under one contract"
+msgstr ""
+
+msgid "Choose a single service or let us look after the whole system."
+msgstr ""
+
+#: patterns/stats-accent.php
+msgctxt "Pattern title"
+msgid "Key figures on the accent color"
+msgstr ""
+
+#: patterns/stats-accent.php
+msgctxt "Pattern description"
+msgid "Four counting figures on the brand accent color."
+msgstr ""
+
+msgid "Years of experience"
+msgstr ""
+
+#: patterns/stats-cards.php
+msgctxt "Pattern title"
+msgid "Key figures in cards"
+msgstr ""
+
+#: patterns/stats-cards.php
+msgctxt "Pattern description"
+msgid "Four counting figures, each in a card, on a light background."
+msgstr ""
+
+msgid "In numbers"
+msgstr ""
+
+msgid "Fifteen years of steady work"
+msgstr ""
+
+#: patterns/stats-inverse.php
+msgctxt "Pattern title"
+msgid "Key figures on a dark background"
+msgstr ""
+
+#: patterns/stats-inverse.php
+msgctxt "Pattern description"
+msgid "Centered heading and four counting figures on a dark background."
+msgstr ""
+
+msgid "Numbers we are proud of"
+msgstr ""
+
+#: patterns/stats-row.php
+msgctxt "Pattern title"
+msgid "Key figures in a row"
+msgstr ""
+
+#: patterns/stats-row.php
+msgctxt "Pattern description"
+msgid "Four counting figures in a row under a short heading."
+msgstr ""
+
+#: patterns/stats-split.php
+msgctxt "Pattern title"
+msgid "Key figures with introduction"
+msgstr ""
+
+#: patterns/stats-split.php
+msgctxt "Pattern description"
+msgid "Heading and text on the left, a two by two grid of figures on the right."
+msgstr ""
+
+msgid "Results you can check"
+msgstr ""
+
+msgid "We keep a record of every job, so these figures come from our own books."
+msgstr ""
+
+#: patterns/stats-with-image.php
+msgctxt "Pattern title"
+msgid "Key figures with image"
+msgstr ""
+
+#: patterns/stats-with-image.php
+msgctxt "Pattern description"
+msgid "An image on one side, heading and four figures on the other."
+msgstr ""
+
+msgid "Most of our new work comes from people our clients recommend."
+msgstr ""
+
+#: patterns/team-cards.php
+msgctxt "Pattern title"
+msgid "Team cards"
+msgstr ""
+
+#: patterns/team-cards.php
+msgctxt "Pattern description"
+msgid "Four cards with a round photo, name, role and a short line."
+msgstr ""
+
+msgid "Our team"
+msgstr ""
+
+msgid "The people you will work with"
+msgstr ""
+
+msgid "A small, experienced team. You will know who is coming and who to call."
+msgstr ""
+
+msgctxt "sample person name"
+msgid "Alex Morgan"
+msgstr ""
+
+msgid "Fifteen years in the trade and still enjoys a difficult site."
+msgstr ""
+
+msgctxt "sample person name"
+msgid "Sam Taylor"
+msgstr ""
+
+msgctxt "job title"
+msgid "Head of engineering"
+msgstr ""
+
+msgctxt "sample person name"
+msgid "Jordan Lee"
+msgstr ""
+
+msgctxt "job title"
+msgid "Project manager"
+msgstr ""
+
+msgctxt "sample person name"
+msgid "Robin Clarke"
+msgstr ""
+
+msgctxt "job title"
+msgid "Support lead"
+msgstr ""
+
+#: patterns/team-carousel.php
+msgctxt "Pattern title"
+msgid "Team carousel"
+msgstr ""
+
+#: patterns/team-carousel.php
+msgctxt "Pattern description"
+msgid "People with photo, name and role in a carousel showing three at a time."
+msgstr ""
+
+#: patterns/team-grid-four.php
+msgctxt "Pattern title"
+msgid "Team in four columns"
+msgstr ""
+
+#: patterns/team-grid-four.php
+msgctxt "Pattern description"
+msgid "Centered heading and four people with photo, name and role."
+msgstr ""
+
+#: patterns/team-grid-three.php
+msgctxt "Pattern title"
+msgid "Team in three columns"
+msgstr ""
+
+#: patterns/team-grid-three.php
+msgctxt "Pattern description"
+msgid "Heading on the left and three people with tall photos."
+msgstr ""
+
+#: patterns/team-list.php
+msgctxt "Pattern title"
+msgid "Team as a list"
+msgstr ""
+
+#: patterns/team-list.php
+msgctxt "Pattern description"
+msgid "People listed in rows with a small photo, name and role."
+msgstr ""
+
+#: patterns/team-split-intro.php
+msgctxt "Pattern title"
+msgid "Team with introduction"
+msgstr ""
+
+#: patterns/team-split-intro.php
+msgctxt "Pattern description"
+msgid "Introduction and a hiring link on the left, a two by two grid of people on the right."
+msgstr ""
+
+msgid "Small team, long experience"
+msgstr ""
+
+msgid "Every client has a named engineer and a project manager who knows the site."
+msgstr ""
+
+msgid "We are hiring"
 msgstr ""
 
 msgctxt "Color name"
