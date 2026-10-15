@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T15:27:27+03:00\n"
+"POT-Creation-Date: 2026-10-15T15:37:34+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -360,7 +360,28 @@ msgstr ""
 
 #: patterns/contact-map-full.php
 msgctxt "Pattern description"
-msgid "A wide map of the brand address with contact details in a row below."
+msgid "A wide map of the brand address with the address, directions and opening hours in a row below."
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Find us"
+msgstr ""
+
+msgid "We are easy to reach by car or public transport."
+msgstr ""
+
+msgid "By car"
+msgstr ""
+
+msgid "Free parking in front of the building."
+msgstr ""
+
+msgid "By public transport"
+msgstr ""
+
+msgid "The nearest bus stop is a two-minute walk away."
 msgstr ""
 
 #: patterns/contact-map-split.php
@@ -1362,6 +1383,86 @@ msgstr ""
 msgid "From local shops to national chains."
 msgstr ""
 
+#: patterns/page-about.php
+msgctxt "Pattern title"
+msgid "About page"
+msgstr ""
+
+#: patterns/page-about.php
+msgctxt "Pattern description"
+msgid "Heading, company story with figures, a client quote, mission and values, team, clients and a call to action."
+msgstr ""
+
+#: patterns/page-contact.php
+msgctxt "Pattern title"
+msgid "Contact page"
+msgstr ""
+
+#: patterns/page-contact.php
+msgctxt "Pattern description"
+msgid "Heading with phone and email buttons, a contact form, questions and a map of the brand address with directions."
+msgstr ""
+
+#: patterns/page-home.php
+msgctxt "Pattern title"
+msgid "Home page"
+msgstr ""
+
+#: patterns/page-home.php
+msgctxt "Pattern description"
+msgid "Hero, clients, services, figures, about, testimonials, process, latest posts and a call to action."
+msgstr ""
+
+#: patterns/page-landing-quote.php
+msgctxt "Pattern title"
+msgid "Quote landing page"
+msgstr ""
+
+#: patterns/page-landing-quote.php
+msgctxt "Pattern description"
+msgid "A campaign page that leads to a quote form: hero, clients, services, figures, testimonials, questions and the form."
+msgstr ""
+
+#: patterns/page-portfolio.php
+msgctxt "Pattern title"
+msgid "Portfolio page"
+msgstr ""
+
+#: patterns/page-portfolio.php
+msgctxt "Pattern description"
+msgid "Heading, project grid, a client quote, a case study and a call to action."
+msgstr ""
+
+#: patterns/page-pricing.php
+msgctxt "Pattern title"
+msgid "Pricing page"
+msgstr ""
+
+#: patterns/page-pricing.php
+msgctxt "Pattern description"
+msgid "Heading, three plans, testimonials, a plan comparison, questions and a call to action."
+msgstr ""
+
+#: patterns/page-services.php
+msgctxt "Pattern title"
+msgid "Services page"
+msgstr ""
+
+#: patterns/page-services.php
+msgctxt "Pattern description"
+msgid "Heading, three services, how we work, what is included, questions and a call to action."
+msgstr ""
+
+#: patterns/page-team.php
+msgctxt "Pattern title"
+msgid "Team page"
+msgstr ""
+
+#: patterns/page-team.php
+msgctxt "Pattern description"
+msgid "Heading, team members, values, figures and a call to action."
+msgstr ""
+
 #: patterns/portfolio-cards.php
 msgctxt "Pattern title"
 msgid "Project cards"
@@ -1419,6 +1520,9 @@ msgid "One project in detail: image, challenge, result and three key figures."
 msgstr ""
 
 msgid "Case study"
+msgstr ""
+
+msgid "From three heating systems to one"
 msgstr ""
 
 msgid "The building had three heating systems from three decades and no one who knew all of them. We replaced them with one system the staff can run from a phone."
@@ -2273,7 +2377,7 @@ msgctxt "sample person name"
 msgid "Alex Morgan"
 msgstr ""
 
-msgid "Fifteen years in the trade and still enjoys a difficult site."
+msgid "Started the company and still visits every new site."
 msgstr ""
 
 msgctxt "sample person name"
@@ -2284,6 +2388,9 @@ msgctxt "job title"
 msgid "Head of engineering"
 msgstr ""
 
+msgid "Fifteen years in the trade and still enjoys a difficult site."
+msgstr ""
+
 msgctxt "sample person name"
 msgid "Jordan Lee"
 msgstr ""
@@ -2292,12 +2399,18 @@ msgctxt "job title"
 msgid "Project manager"
 msgstr ""
 
+msgid "Keeps the plan, the budget and you up to date."
+msgstr ""
+
 msgctxt "sample person name"
 msgid "Robin Clarke"
 msgstr ""
 
 msgctxt "job title"
 msgid "Support lead"
+msgstr ""
+
+msgid "Answers the phone when something stops working."
 msgstr ""
 
 #: patterns/team-carousel.php

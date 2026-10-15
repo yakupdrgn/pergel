@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:paragraph -->
 
 <!-- wp:heading -->
-<h2 class="wp-block-heading"><?php esc_html_e( 'Harbour office renovation', 'pergel' ); ?></h2>
+<h2 class="wp-block-heading"><?php esc_html_e( 'From three heating systems to one', 'pergel' ); ?></h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"textColor":"muted"} -->

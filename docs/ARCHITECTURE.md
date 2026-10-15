@@ -394,6 +394,10 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   `<!-- wp:pattern {"slug":"pergel/…"} /-->` listesidir; eklenince her biri kendi bölümüne açılır.
 - **Başlıksız sayfa şablonu:** `page-landing` ("Landing page (no title)", `customTemplates`) sayfa
   başlığını basmaz; hero veya tam sayfa pattern'i ile kurulan sayfada tek H1 hero'nunkidir.
+- **Tam sayfalar** (`pergel-pages`, yalnızca `page` yazı tipinde, yeni sayfa açılırken önerilir):
+  Home, About, Services, Contact, Pricing, Team, Quote landing ve Portfolio. Bölümlerin arka planı
+  sırayla değişir (base, surface, contrast veya accent; aynı ton art arda gelmez); bir sayfada
+  aynı başlık veya paragraf iki kez geçmez.
 - **Yer tutucu görseller:** `theme/assets/images/placeholders/` içinde nötr gri, yazısız SVG'ler
   (wide 16:9, landscape 3:2, portrait 4:5, square, avatar, logo-1…6), her biri 330 bayttan küçük.
   Süs oldukları için `alt=""` taşırlar; gerçek görseller projede değiştirilir.

@@ -46,7 +46,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:group -->
 
 <!-- wp:paragraph {"textColor":"muted"} -->
-<p class="has-muted-color has-text-color"><?php esc_html_e( 'Fifteen years in the trade and still enjoys a difficult site.', 'pergel' ); ?></p>
+<p class="has-muted-color has-text-color"><?php esc_html_e( 'Started the company and still visits every new site.', 'pergel' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -86,7 +86,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:group -->
 
 <!-- wp:paragraph {"textColor":"muted"} -->
-<p class="has-muted-color has-text-color"><?php esc_html_e( 'Fifteen years in the trade and still enjoys a difficult site.', 'pergel' ); ?></p>
+<p class="has-muted-color has-text-color"><?php esc_html_e( 'Keeps the plan, the budget and you up to date.', 'pergel' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -106,7 +106,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:group -->
 
 <!-- wp:paragraph {"textColor":"muted"} -->
-<p class="has-muted-color has-text-color"><?php esc_html_e( 'Fifteen years in the trade and still enjoys a difficult site.', 'pergel' ); ?></p>
+<p class="has-muted-color has-text-color"><?php esc_html_e( 'Answers the phone when something stops working.', 'pergel' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group --></div>
 <!-- /wp:group --></section>

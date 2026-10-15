@@ -5,7 +5,7 @@
  * Categories: contact
  * Keywords: map, location, address
  * Viewport Width: 1400
- * Description: A wide map of the brand address with contact details in a row below.
+ * Description: A wide map of the brand address with the address, directions and opening hours in a row below.
  *
  * @package Pergel
  */
@@ -17,15 +17,15 @@ defined( 'ABSPATH' ) || exit;
 <!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|80","bottom":"var:preset|spacing|80"},"blockGap":"var:preset|spacing|60"}},"layout":{"type":"constrained"}} -->
 <section class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--80);padding-bottom:var(--wp--preset--spacing--80)"><!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|30"}},"layout":{"type":"constrained","contentSize":"720px"}} -->
 <div class="wp-block-group"><!-- wp:paragraph {"style":{"typography":{"textTransform":"uppercase","letterSpacing":"0.08em","fontWeight":"600","textAlign":"center"}},"textColor":"accent","fontSize":"small"} -->
-<p class="has-text-align-center has-accent-color has-text-color has-small-font-size" style="font-weight:600;letter-spacing:0.08em;text-transform:uppercase"><?php esc_html_e( 'Contact', 'pergel' ); ?></p>
+<p class="has-text-align-center has-accent-color has-text-color has-small-font-size" style="font-weight:600;letter-spacing:0.08em;text-transform:uppercase"><?php esc_html_e( 'Location', 'pergel' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"style":{"typography":{"textAlign":"center"}}} -->
-<h2 class="wp-block-heading has-text-align-center"><?php esc_html_e( 'Talk to our team', 'pergel' ); ?></h2>
+<h2 class="wp-block-heading has-text-align-center"><?php esc_html_e( 'Find us', 'pergel' ); ?></h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"typography":{"textAlign":"center"}},"textColor":"muted","fontSize":"large"} -->
-<p class="has-text-align-center has-muted-color has-text-color has-large-font-size"><?php esc_html_e( 'Tell us what you need. We reply within one working day.', 'pergel' ); ?></p>
+<p class="has-text-align-center has-muted-color has-text-color has-large-font-size"><?php esc_html_e( 'We are easy to reach by car or public transport.', 'pergel' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
@@ -38,31 +38,31 @@ defined( 'ABSPATH' ) || exit;
 <!-- wp:group {"align":"wide","style":{"spacing":{"blockGap":"var:preset|spacing|50"}},"layout":{"type":"grid","columnCount":4,"minimumColumnWidth":"12rem"}} -->
 <div class="wp-block-group alignwide"><!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical"}} -->
 <div class="wp-block-group"><!-- wp:paragraph {"textColor":"muted","fontSize":"small"} -->
-<p class="has-muted-color has-text-color has-small-font-size"><?php esc_html_e( 'Phone', 'pergel' ); ?></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"pergel/brand","args":{"key":"phone"}}}}} -->
-<p>+90 212 000 00 00</p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:group -->
-
-<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical"}} -->
-<div class="wp-block-group"><!-- wp:paragraph {"textColor":"muted","fontSize":"small"} -->
-<p class="has-muted-color has-text-color has-small-font-size"><?php esc_html_e( 'Email', 'pergel' ); ?></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"pergel/brand","args":{"key":"email"}}}}} -->
-<p><?php echo esc_html_x( 'hello@example.com', 'sample email address', 'pergel' ); ?></p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:group -->
-
-<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical"}} -->
-<div class="wp-block-group"><!-- wp:paragraph {"textColor":"muted","fontSize":"small"} -->
 <p class="has-muted-color has-text-color has-small-font-size"><?php esc_html_e( 'Address', 'pergel' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"pergel/brand","args":{"key":"address"}}}}} -->
 <p><?php echo esc_html_x( '1 Sample Street, 34000 Istanbul', 'sample address', 'pergel' ); ?></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group"><!-- wp:paragraph {"textColor":"muted","fontSize":"small"} -->
+<p class="has-muted-color has-text-color has-small-font-size"><?php esc_html_e( 'By car', 'pergel' ); ?></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p><?php esc_html_e( 'Free parking in front of the building.', 'pergel' ); ?></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group"><!-- wp:paragraph {"textColor":"muted","fontSize":"small"} -->
+<p class="has-muted-color has-text-color has-small-font-size"><?php esc_html_e( 'By public transport', 'pergel' ); ?></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p><?php esc_html_e( 'The nearest bus stop is a two-minute walk away.', 'pergel' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 
