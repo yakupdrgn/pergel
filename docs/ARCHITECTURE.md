@@ -39,6 +39,8 @@ pergel/
 │  ├─ fixtures/seed.php   sabit test içeriği (idempotent)
 │  ├─ stubs/              statik analiz için WP-CLI stub'ları
 │  └─ validate-json.mjs   theme.json / block.json şema doğrulaması
+├─ tests/php/             birim testleri (WordPress olmadan)
+├─ tests/integration/     WordPress gerektiren testler (PERGEL_WP_DIR)
 ├─ tests/budget/          performans bütçesi (K11)
 └─ docs/
 ```
@@ -63,7 +65,7 @@ Planlanan modüller ve yüklenme koşulları:
 | Modül | Yüklenme |
 | --- | --- |
 | Core | Her zaman |
-| Settings | Yalnızca admin |
+| Settings | Her zaman (hafif: hook'lar; ekran yalnızca admin) |
 | Blocks | Blok sayfadaysa CSS/JS |
 | Brand | Her zaman (hafif) |
 | Seo | Ön yüz |
@@ -77,6 +79,18 @@ Planlanan modüller ve yüklenme koşulları:
 
 Tek option (`pergel_settings`), autoload ≤ 20 KB, REST şemasıyla doğrulanır. Tasarım ayarları bu
 option'da değil Global Styles'tadır (K5).
+
+- `Settings\Schema` — gruplar ve alanlar (`modules`, `brand`; SEO ve performans grupları kendi
+  adımlarında eklenir). Varsayılanlar, temizleme ve REST JSON Schema bu tek tanımdan üretilir.
+- `Settings\Settings` — okuma: `all()`, `get( 'brand.email' )`, `module_enabled( 'seo' )`,
+  yazma: `update( $değişiklikler )`. Değerler istek başına bir kez şemaya göre normalize edilir;
+  önbellek option her değiştiğinde düşer.
+- `Settings\Module` — her zaman yüklenir; `sanitize_option_pergel_settings` filtresi, önbellek
+  hook'ları ve `admin_init` / `rest_api_init` üzerinde `register_setting` (`/wp/v2/settings`,
+  yalnızca `manage_options`).
+- `Core\Plugin::boot` bir modülü yalnızca `modules.<id>` anahtarı açıksa (veya hiç yoksa) ve
+  `should_load()` doğruysa yükler.
+- Eklenti etkinleştirilirken varsayılanlar autoload ile yazılır; böylece okuma sorgu yapmaz.
 
 ## Ölçüm
 

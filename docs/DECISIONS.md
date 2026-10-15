@@ -248,6 +248,29 @@ F5'teki "organik ürünler provası" plandaki bir örnekti; kullanıcı bu prova
 söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek seferde ve tekrar
 üretilebilen bir site) aynı kalır.
 
+## F2 kararları (15 Ekim 2026)
+
+- **Tek şema:** `Settings\Schema` her alanı bir kez tanımlar; varsayılanlar, temizleme ve REST
+  JSON Schema buradan üretilir. Saf PHP'dir, WordPress olmadan birim testlenir. Alan etiketleri
+  ve hata metinleri şemada değil ayar ekranındadır; şema yalnızca alan yolu ve hata kodu döndürür.
+- **Birleştirerek yazma:** Girdide olmayan grup ve alanlar kayıtlı değerini korur, bilinmeyen
+  anahtarlar atılır, geçersiz bir değer de kayıtlı değerinde kalır ve
+  `pergel/settings/invalid` eylemiyle bildirilir. Form, REST, CLI ve doğrudan `update_option`
+  aynı yoldan geçer (`sanitize_option_pergel_settings` filtresi her zaman bağlıdır).
+- **Uzunluk sınırı:** Metin alanlarında karakter, URL / e-posta / telefonda bayt olarak ölçülür.
+  En kötü durum (her alan en uzun hâlinde, metinler 4 baytlık karakterle) birim testte 20 KB
+  autoload sınırına karşı denetlenir; sonraki gruplar da aynı teste otomatik girer.
+- **Boş değer geçerlidir:** REST şemasında e-posta ve URL alanları `anyOf` ile boş dizeyi de kabul
+  eder; boş alan "ayarlanmamış" demektir.
+- **Modül anahtarları ayarın içinde:** `modules.brand|seo|performance`. Anahtarı olmayan
+  modüller (settings, cli, `pergel/modules` ile eklenenler) her zaman yüklenir.
+- **Etkinleştirmede varsayılanlar yazılır:** Seçenek yoksa `get_option` her istekte bir sorgu
+  yapar. Eklenti etkinleştirilirken varsayılanlar autoload ile kaydedilir (`Settings::install`).
+- **WordPress testleri wp-phpunit ile değil:** Çekirdek test kütüphanesi ayrı bir test veritabanı
+  ister ve PHPUnit 10'u desteklemez. `tests/integration/` kurulu bir siteyi (`PERGEL_WP_DIR`)
+  `wp-load.php` ile yükler; testler değiştirdiklerini geri koyar. CI'da kurulumdan sonra
+  `composer test:integration` çalışır; yerelde `PERGEL_WP_DIR=C:/xampp/htdocs/pergel-tema`.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

@@ -77,15 +77,18 @@ jobs:
           coverage: none
           extensions: mysqli, gd, intl, zip, zlib
           ini-values: opcache.enable_cli=1
-          tools: wp-cli
+          tools: composer:v2, wp-cli
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: composer install --no-interaction --no-progress
       - name: Install WordPress + Pergel
         run: bash tools/ci/setup-wp.sh
+      - name: Integration tests (WordPress)
+        run: PERGEL_WP_DIR="$WP_DIR" composer test:integration
       - name: Start PHP server
         run: |
           php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &

@@ -6,8 +6,9 @@
 	failOnWarning="true"
 	failOnRisky="true"
 	cacheDirectory=".phpunit.cache">
-	<!-- Unit tests for code that runs without WordPress (token compiler).
-	     Tests that need a site run against the CI WordPress install. -->
+	<!-- Unit tests for code that runs without WordPress (token compiler,
+	     settings schema). Tests that need a site are in tests/integration
+	     and run with phpunit-integration.xml.dist (composer test:integration). -->
 	<testsuites>
 		<testsuite name="unit">
 			<directory>tests/php</directory>

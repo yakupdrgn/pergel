@@ -18,7 +18,8 @@
 	"autoload-dev": {
 		"psr-4": {
 			"Pergel\\": "engine/src/",
-			"Pergel\\Tests\\": "tests/php/"
+			"Pergel\\Tests\\": "tests/php/",
+			"Pergel\\Tests\\Integration\\": "tests/integration/"
 		}
 	},
 	"config": {
@@ -40,6 +41,7 @@
 			"@test"
 		],
 		"test": "phpunit",
+		"test:integration": "phpunit -c phpunit-integration.xml.dist",
 		"pot": [
 			"wp i18n make-pot theme theme/languages/pergel.pot --slug=pergel --domain=pergel --exclude=tokens --no-location",
 			"wp i18n make-pot engine engine/languages/pergel-engine.pot --slug=pergel-engine --domain=pergel-engine --exclude=build --no-location"

@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace Pergel\Core;
 
 use Pergel\Cli;
+use Pergel\Settings;
 
 /**
  * Boots the modules that apply to the current request.
@@ -31,6 +32,7 @@ final class Plugin {
 	 */
 	public static function modules(): array {
 		$modules = array(
+			Settings\Module::class,
 			Cli\Module::class,
 		);
 
@@ -53,16 +55,18 @@ final class Plugin {
 	}
 
 	/**
-	 * Hooked on plugins_loaded.
+	 * Hooked on plugins_loaded. A module loads when its switch in the
+	 * settings (modules.<id>) is on and should_load() agrees.
 	 */
 	public static function boot(): void {
 		foreach ( self::modules() as $class_name ) {
-			if ( isset( self::$loaded[ $class_name::id() ] ) || ! $class_name::should_load() ) {
+			$id = $class_name::id();
+			if ( isset( self::$loaded[ $id ] ) || ! Settings\Settings::module_enabled( $id ) || ! $class_name::should_load() ) {
 				continue;
 			}
 			$module = new $class_name();
 			$module->register();
-			self::$loaded[ $class_name::id() ] = $module;
+			self::$loaded[ $id ] = $module;
 		}
 
 		/**
