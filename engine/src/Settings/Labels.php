@@ -112,15 +112,19 @@ final class Labels {
 				),
 			),
 			'woo'         => array(
-				'selling' => array(
+				'selling'   => array(
 					'title'  => __( 'Selling', 'pergel-engine' ),
 					'fields' => array( 'sales_mode' ),
 				),
-				'header'  => array(
+				'enquiries' => array(
+					'title'  => __( 'Product enquiries', 'pergel-engine' ),
+					'fields' => array( 'whatsapp', 'contact_url' ),
+				),
+				'header'    => array(
 					'title'  => __( 'Header', 'pergel-engine' ),
 					'fields' => array( 'mini_cart' ),
 				),
-				'speed'   => array(
+				'speed'     => array(
 					'title'  => __( 'Speed', 'pergel-engine' ),
 					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
 				),
@@ -235,6 +239,14 @@ final class Labels {
 						'quote'   => __( 'Quote: no prices, customers ask for an offer', 'pergel-engine' ),
 						'catalog' => __( 'Catalog: products only, no prices', 'pergel-engine' ),
 					),
+				),
+				'whatsapp'          => array(
+					'label' => __( 'WhatsApp number', 'pergel-engine' ),
+					'help'  => __( 'With the country code, e.g. +90 532 000 00 00. The Product enquiry block links to a chat with this number. Its phone link uses the phone number of the brand.', 'pergel-engine' ),
+				),
+				'contact_url'       => array(
+					'label' => __( 'Contact page', 'pergel-engine' ),
+					'help'  => __( 'Address of the page the Product enquiry block links to, e.g. the contact page.', 'pergel-engine' ),
 				),
 				'mini_cart'         => array(
 					'label' => __( 'Show the mini cart in the header', 'pergel-engine' ),

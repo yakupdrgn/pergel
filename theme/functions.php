@@ -60,12 +60,13 @@ add_filter( 'should_load_remote_block_patterns', '__return_false' );
  */
 function enqueue_block_styles(): void {
 	$styles = array(
-		'core/site-logo'                 => 'site-logo',
-		'woocommerce/catalog-sorting'    => 'woocommerce-catalog-sorting',
-		'woocommerce/mini-cart'          => 'woocommerce-mini-cart',
-		'woocommerce/product-sale-badge' => 'woocommerce-product-sale-badge',
-		'woocommerce/cart'               => 'woocommerce-forms',
-		'woocommerce/checkout'           => 'woocommerce-forms',
+		'core/site-logo'                  => 'site-logo',
+		'woocommerce/catalog-sorting'     => 'woocommerce-catalog-sorting',
+		'woocommerce/mini-cart'           => 'woocommerce-mini-cart',
+		'woocommerce/product-review-form' => 'woocommerce-product-review-form',
+		'woocommerce/product-sale-badge'  => 'woocommerce-product-sale-badge',
+		'woocommerce/cart'                => 'woocommerce-forms',
+		'woocommerce/checkout'            => 'woocommerce-forms',
 	);
 	foreach ( $styles as $block => $file ) {
 		wp_enqueue_block_style(

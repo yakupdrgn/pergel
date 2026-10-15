@@ -51,6 +51,10 @@ final class Module implements Core\Module {
 		Pages::register();
 		MiniCart::register();
 		Trail::register();
+		// The Product enquiry block's quote form.
+		add_filter( 'pergel/forms/subject_fields', array( Quote::class, 'fields' ), 10, 3 );
+		add_filter( 'pergel/forms/subject_values', array( Quote::class, 'values' ), 10, 3 );
+		add_action( 'pergel/forms/received', array( Quote::class, 'received' ), 10, 4 );
 		if ( ! is_admin() ) {
 			Markup::register();
 			add_filter( 'woocommerce_enqueue_styles', array( Assets::class, 'styles' ) );

@@ -1,0 +1,13 @@
+/*
+ * The review form on a phone. Its comment box asks for 45 columns, which is
+ * wider than a 360px screen, so the right edge was cut off. The fields take
+ * the width of the form instead.
+ */
+.wp-block-woocommerce-product-review-form :is(textarea, input[type="text"], input[type="email"], input[type="url"]) {
+	box-sizing: border-box;
+	max-width: 100%;
+}
+
+.wp-block-woocommerce-product-review-form textarea {
+	width: 100%;
+}

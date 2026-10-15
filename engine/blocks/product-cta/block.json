@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/product-cta",
+	"title": "Product enquiry",
+	"category": "pergel",
+	"icon": "format-chat",
+	"description": "What a visitor can do when a product is not sold to them: log in to see prices, request a quote with the product's options, or get in touch by WhatsApp, phone or the contact page.",
+	"keywords": [ "quote", "whatsapp", "phone", "contact", "lead", "enquiry" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId", "postType" ],
+	"attributes": {
+		"quote": {
+			"type": "boolean",
+			"default": true
+		},
+		"whatsapp": {
+			"type": "boolean",
+			"default": true
+		},
+		"phone": {
+			"type": "boolean",
+			"default": true
+		},
+		"contact": {
+			"type": "boolean",
+			"default": true
+		},
+		"onSale": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"interactivity": true,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

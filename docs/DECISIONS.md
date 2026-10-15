@@ -633,6 +633,22 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   Kapatıldı; mağaza ölçümleri ve axe taramaları oturumsuz gerçek sayfalarda yapılır.
 - **Bilinen ve kabul edilen:** WooCommerce'in bazı metinleri ("Related products" gibi) yerel
   sitede Türkçe çeviri paketi kurulmadığı için İngilizce görünür; tema metinleri `.pot`'ta.
+- **Ürün sorusu bloğu (F4a 4. adım):**
+  - Katalog modu yalnızca iletişim bağlantılarını gösterir; teklif formu yalnızca `quote`
+    modunda. Katalog "fiyat yok, satış yok" demektir, talep toplamak değil.
+  - `generate_lead` yalnızca ürün sorusunda değil, tüm Pergel formlarında ve iletişim
+    bağlantılarında gönderilir; Analytics kurulu değilse hiçbir şey olmaz.
+  - Divit, F7'de `pergel/woo/quote_providers` süzgeciyle bir `QuoteProvider` olarak bağlanır.
+    F4'te arayüz ve testlerdeki sahte sağlayıcı var; Divit'in API'si tahmin edilmedi.
+  - Sağlayıcı çağrıları eşzamanlı: mesaj önce saklanıp e-postalandığı için kaybolmaz; başarısız
+    aktarım mesajın üstünde görünür ve elle izlenir. Kuyruk, gerçek bir sağlayıcıyla gerekirse
+    eklenir.
+  - Blok WooCommerce yoksa hiç kaydedilmez; mağazasız sitenin editöründe ve bütçesinde yok.
+  - Editör ayarları `index.js`'te çevrilebilir ToggleControl'lerle; çekirdeğin otomatik ayar
+    paneli etiketleri çevirmediği için kullanılmadı.
+  - Konu alanları genel Forms modülünde süzgeçlerle; Forms WooCommerce'i bilmez.
+- **Ürün yorumu formu dar ekranda:** WooCommerce'in `cols="45"` yorum kutusu 360 px'te sağdan
+  kesiliyordu (sayfa kaymıyordu, axe'ın taşma denetimi buldu). Alanlar form genişliğini alır.
 
 ## Aşamalar ve bitti tanımları
 

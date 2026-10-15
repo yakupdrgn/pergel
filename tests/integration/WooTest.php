@@ -81,6 +81,8 @@ final class WooTest extends TestCase {
 		$this->assertSame(
 			array(
 				'sales_mode'        => 'sale',
+				'whatsapp'          => '',
+				'contact_url'       => '',
 				'mini_cart'         => true,
 				'shop_assets_only'  => true,
 				'no_cart_fragments' => true,

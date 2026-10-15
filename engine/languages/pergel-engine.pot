@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T20:18:53+03:00\n"
+"POT-Creation-Date: 2026-10-15T22:55:15+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -173,6 +173,15 @@ msgstr ""
 msgid "Consent"
 msgstr ""
 
+msgid "Product"
+msgstr ""
+
+msgid "Option"
+msgstr ""
+
+msgid "Quantity"
+msgstr ""
+
 msgid "Thank you. Your message has been sent; we will get back to you soon."
 msgstr ""
 
@@ -243,6 +252,9 @@ msgstr ""
 msgid "Given on %s"
 msgstr ""
 
+msgid "Passed on to"
+msgstr ""
+
 msgid "Back to the messages"
 msgstr ""
 
@@ -259,6 +271,17 @@ msgid "Yes"
 msgstr ""
 
 msgid "No"
+msgstr ""
+
+#. translators: 1: service name, 2: Sent or Failed.
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "Failed"
 msgstr ""
 
 #. translators: %s: field label.
@@ -355,6 +378,9 @@ msgid "Delivery"
 msgstr ""
 
 msgid "Selling"
+msgstr ""
+
+msgid "Product enquiries"
 msgstr ""
 
 msgid "Header"
@@ -492,6 +518,18 @@ msgstr ""
 msgid "Catalog: products only, no prices"
 msgstr ""
 
+msgid "WhatsApp number"
+msgstr ""
+
+msgid "With the country code, e.g. +90 532 000 00 00. The Product enquiry block links to a chat with this number. Its phone link uses the phone number of the brand."
+msgstr ""
+
+msgid "Contact page"
+msgstr ""
+
+msgid "Address of the page the Product enquiry block links to, e.g. the contact page."
+msgstr ""
+
 msgid "Show the mini cart in the header"
 msgstr ""
 
@@ -574,6 +612,37 @@ msgstr ""
 msgid "Choose image"
 msgstr ""
 
+msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
+msgstr ""
+
+msgid "Prices are shown to registered customers."
+msgstr ""
+
+msgid "Log in to see prices"
+msgstr ""
+
+msgid "Send the request"
+msgstr ""
+
+#. translators: 1: product name, 2: product page address.
+#, php-format
+msgid "Hello, I would like to ask about %1$s: %2$s"
+msgstr ""
+
+msgid "Ask on WhatsApp"
+msgstr ""
+
+#. translators: %s: phone number.
+#, php-format
+msgid "Call %s"
+msgstr ""
+
+msgid "Contact us"
+msgstr ""
+
+msgid "Get in touch about this product"
+msgstr ""
+
 msgid "Same as its categories or the shop"
 msgstr ""
 
@@ -584,6 +653,22 @@ msgid "Applies to the products of this category and its subcategories, unless a 
 msgstr ""
 
 msgid "Same as the parent category or the shop"
+msgstr ""
+
+msgid "Choose an option"
+msgstr ""
+
+msgid "Choose one of the options."
+msgstr ""
+
+#. translators: %s: largest quantity.
+#, php-format
+msgid "Enter a whole number from 1 to %s."
+msgstr ""
+
+#. translators: %s: stock keeping unit.
+#, php-format
+msgid "SKU: %s"
 msgstr ""
 
 msgid "Scroll animation"
@@ -769,6 +854,36 @@ msgid "Highlight this plan"
 msgstr ""
 
 msgid "Gives the plan an accent border. Say why in its text too, for example \"Most popular\"."
+msgstr ""
+
+msgid "Product enquiry"
+msgstr ""
+
+msgid "Quote form"
+msgstr ""
+
+msgid "On products in quote mode. Requests are kept under Pergel → Form messages."
+msgstr ""
+
+msgid "WhatsApp link"
+msgstr ""
+
+msgid "Needs the WhatsApp number under Pergel → Settings → Shop."
+msgstr ""
+
+msgid "The phone number of the brand."
+msgstr ""
+
+msgid "Contact page link"
+msgstr ""
+
+msgid "Needs the contact page under Pergel → Settings → Shop."
+msgstr ""
+
+msgid "Links on products for sale too"
+msgstr ""
+
+msgid "Otherwise the block shows only where a product has no price or cart."
 msgstr ""
 
 msgid "Headings"
@@ -1016,6 +1131,26 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "pricing"
+msgstr ""
+
+msgctxt "block title"
+msgid "Product enquiry"
+msgstr ""
+
+msgctxt "block description"
+msgid "What a visitor can do when a product is not sold to them: log in to see prices, request a quote with the product's options, or get in touch by WhatsApp, phone or the contact page."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "whatsapp"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "phone"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "lead"
 msgstr ""
 
 msgctxt "block title"

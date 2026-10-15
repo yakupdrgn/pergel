@@ -151,6 +151,9 @@ final class Schema {
 					'options' => array( 'sale', 'login', 'quote', 'catalog' ),
 					'default' => 'sale',
 				),
+				// Product enquiry block; the phone number is brand.phone.
+				'whatsapp'          => array( 'type' => 'tel' ),
+				'contact_url'       => array( 'type' => 'url' ),
 				'mini_cart'         => array(
 					'type'    => 'bool',
 					'default' => true,

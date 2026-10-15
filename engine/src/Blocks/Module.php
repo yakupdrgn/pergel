@@ -28,6 +28,11 @@ final class Module implements Core\Module {
 	public const CATEGORY = 'pergel';
 
 	/**
+	 * Blocks that need WooCommerce; without it they are not registered.
+	 */
+	public const SHOP_BLOCKS = array( 'pergel/product-cta' );
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public static function id(): string {
@@ -92,6 +97,11 @@ final class Module implements Core\Module {
 		wp_register_block_types_from_metadata_collection( $dir, $dir . '/' . Manifest::FILE );
 		if ( $lean ) {
 			remove_filter( 'block_type_metadata', array( self::class, 'without_editor_assets' ) );
+		}
+		if ( ! \Pergel\Woo\Module::active() ) {
+			foreach ( self::SHOP_BLOCKS as $name ) {
+				unregister_block_type( $name );
+			}
 		}
 	}
 

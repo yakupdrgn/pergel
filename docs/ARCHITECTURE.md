@@ -331,6 +331,15 @@ bloğunun mesajlarını alır.
 - **Turnstile:** `PERGEL_TURNSTILE_SITE_KEY` ve `PERGEL_TURNSTILE_SECRET_KEY` `wp-config.php`'de
   tanımlıysa (ya da `pergel/forms/turnstile` süzgeciyle) kullanılır; Cloudflare script'i yalnızca
   formlu sayfalarda yüklenir.
+- **Bir yazı hakkındaki form:** bloğun iç ayarı `aboutPost` açıksa formun konusu (`subject`)
+  bulunduğu yazıdır ve belirteçle imzalanır. Konunun alanlarını onu bilen kod verir:
+  `pergel/forms/subject_fields` (mesaj alanından önce basılacak HTML) ve
+  `pergel/forms/subject_values` (`values` + `errors`; formun kendi alanlarının adları
+  kullanılamaz, değerler mesajdan önce saklanır ve e-postaya girer). Saklanan ve gönderilen her
+  mesajdan sonra `pergel/forms/received` (`$entry, $spec, $values, $input`) çalışır.
+- **Analytics:** başarılı her gönderim `generate_lead` olayı verir (`gtag`, yoksa
+  `dataLayer`; `lead_source`: `contact_form` / `quote_form`). Site etiketi yoksa olay hiçbir
+  yere gitmez.
 
 ### Ön yüzde yalın yükleme
 
@@ -524,6 +533,23 @@ görünmez (`Settings\Screen::shown`).
   `woocommerce-forms.css` dar sepette ürün sütununu esnek yapar (WooCommerce 132 px sabitliyor)
   ve satır toplamının altındaki tasarruf rozetinin kırılmasına izin verir; Türkçe metinle sepet
   360 px'te yana taşıyordu.
+  `woocommerce-product-review-form.css` yorum formunun alanlarını form genişliğine sığdırır
+  (45 sütunluk yorum kutusu 360 px'te kesiliyordu).
+- **Ürün sorusu bloğu (`pergel/product-cta`, `Woo\Cta`):** ürün şablonunda sepet formunun
+  altında. Ziyaretçiye satılmayan üründe ne yapabileceğini gösterir: `login` modunda oturumsuz
+  ziyaretçiye "Log in to see prices" bağlantısı; `quote` modunda katlanmış bir teklif formu
+  (`<details>`; script'siz gönderimden dönünce açık); satılmayan her üründe WhatsApp
+  (`woo.whatsapp`), telefon (`brand.phone`) ve iletişim sayfası (`woo.contact_url`)
+  bağlantıları. Satılan üründe yalnızca `onSale` açıksa iletişim bağlantılarını gösterir.
+  Bağlantılar `generate_lead` olayı verir (`lead_source`: `whatsapp`, `phone`,
+  `contact_page`). WooCommerce yoksa blok kaydedilmez (`Blocks\Module::SHOP_BLOCKS`).
+- **Teklif formu (`Woo\Quote`):** Form bloğunu `kind=quote`, `aboutPost` ile çizer. Konu alanları:
+  ürün adı ve SKU, değişken üründe yayımlanmış varyasyonlardan zorunlu seçim (değer
+  varyasyonun SKU'suyla saklanır) ve adet (1–999999). Mesaj saklandıktan sonra istek
+  `QuoteRequest` olarak her kullanılabilir `QuoteProvider`'a verilir
+  (`pergel/woo/quote_providers` süzgeci; varsayılan boş). Çağrılar eşzamanlıdır; hata veren
+  sağlayıcı "gönderilmedi" sayılır. Sonuçlar mesajın `_pergel_handoff` meta'sında tutulur ve
+  "Form messages" ekranında "Passed on to" satırında görünür.
 
 ## WP-CLI (F2)
 

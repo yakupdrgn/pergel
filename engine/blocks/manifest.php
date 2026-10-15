@@ -246,6 +246,11 @@ return array (
         'type' => 'string',
         'default' => '',
       ),
+      'aboutPost' => 
+      array (
+        'type' => 'boolean',
+        'default' => false,
+      ),
     ),
     'supports' => 
     array (
@@ -492,6 +497,73 @@ return array (
       ),
     ),
     'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'product-cta' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/product-cta',
+    'title' => 'Product enquiry',
+    'category' => 'pergel',
+    'icon' => 'format-chat',
+    'description' => 'What a visitor can do when a product is not sold to them: log in to see prices, request a quote with the product\'s options, or get in touch by WhatsApp, phone or the contact page.',
+    'keywords' => 
+    array (
+      0 => 'quote',
+      1 => 'whatsapp',
+      2 => 'phone',
+      3 => 'contact',
+      4 => 'lead',
+      5 => 'enquiry',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'attributes' => 
+    array (
+      'quote' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+      'whatsapp' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+      'phone' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+      'contact' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+      'onSale' => 
+      array (
+        'type' => 'boolean',
+        'default' => false,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => false,
+      'interactivity' => true,
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),

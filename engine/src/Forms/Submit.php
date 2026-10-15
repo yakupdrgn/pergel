@@ -21,7 +21,9 @@ use Pergel\Settings\Settings;
  * when it has keys; then the fields are checked. A message that passes is
  * stored first and mailed second, so a lost email loses nothing. The
  * visitor's IP address is used for the limit only, as a hash, and is not
- * stored with the message.
+ * stored with the message. Code that knows the post a form is about checks
+ * its own fields (pergel/forms/subject_values) and hears about each stored
+ * message (pergel/forms/received), e.g. to pass a quote on.
  *
  * @phpstan-import-type Spec from Form
  * @phpstan-type Result array{code: string, errors: array<string, string>, spec: Spec|null, entry: int}
@@ -188,6 +190,14 @@ final class Submit {
 				$values[ $name ] = (string) $check[0];
 			}
 		}
+		if ( $spec['subject'] > 0 ) {
+			$about            = self::subject_values( $spec['subject'], $input );
+			$result['errors'] = $result['errors'] + $about['errors'];
+			$at               = array_search( 'message', array_keys( $values ), true );
+			$values           = false === $at
+				? $values + $about['values']
+				: array_slice( $values, 0, $at, true ) + $about['values'] + array_slice( $values, $at, null, true );
+		}
 		if ( $spec['consent'] && '1' !== ( $input['consent'] ?? null ) ) {
 			$result['errors']['consent'] = __( 'Tick the box to agree, so we can answer you.', 'pergel-engine' );
 		}
@@ -204,8 +214,54 @@ final class Submit {
 		$result['entry'] = $entry;
 		if ( $entry > 0 ) {
 			update_post_meta( $entry, Inbox::META_MAILED, self::mail( $spec['kind'], $values, $spec['post'], $entry ) ? 1 : 0 );
+
+			/**
+			 * Fires after a message is stored and mailed.
+			 *
+			 * @param int                   $entry  Stored message.
+			 * @param array                 $spec   The form: kind, post, subject and more.
+			 * @param array<string, string> $values Clean field values.
+			 * @param array                 $input  Untrusted input, unslashed.
+			 */
+			do_action( 'pergel/forms/received', $entry, $spec, $values, $input );
 		}
 		return $result;
+	}
+
+	/**
+	 * Checks the fields a form shows about the post it is on.
+	 *
+	 * @param int          $subject Post the form is about.
+	 * @param array<mixed> $input   Untrusted input, unslashed.
+	 * @return array{values: array<string, string>, errors: array<string, string>}
+	 */
+	private static function subject_values( int $subject, array $input ): array {
+		/**
+		 * Filters the checked values of the fields added with
+		 * pergel/forms/subject_fields. Return an array with 'values' (clean
+		 * text by field name, stored and mailed with the message) and
+		 * 'errors' (a message by field name; any error turns the form back).
+		 *
+		 * @param array|null   $checked Null when no code knows the post.
+		 * @param int          $subject Post the form is about.
+		 * @param array<mixed> $input   Untrusted input, unslashed.
+		 */
+		$checked = apply_filters( 'pergel/forms/subject_values', null, $subject, $input );
+		$own     = array_merge( array_keys( Form::fields( 'contact', Form::OPTIONAL ) ), array( 'consent' ) );
+		$clean   = array(
+			'values' => array(),
+			'errors' => array(),
+		);
+		foreach ( array( 'values', 'errors' ) as $part ) {
+			$given = is_array( $checked ) && is_array( $checked[ $part ] ?? null ) ? $checked[ $part ] : array();
+			foreach ( $given as $field => $value ) {
+				// The form's own fields cannot be replaced.
+				if ( is_string( $field ) && sanitize_key( $field ) === $field && ! in_array( $field, $own, true ) && is_string( $value ) ) {
+					$clean[ $part ][ $field ] = $value;
+				}
+			}
+		}
+		return $clean;
 	}
 
 	/**
@@ -301,7 +357,7 @@ final class Submit {
 		$labels = Form::labels( $kind );
 		$lines  = array();
 		foreach ( $values as $field => $value ) {
-			$lines[] = $labels[ $field ] . ":\n" . $value . "\n";
+			$lines[] = ( $labels[ $field ] ?? $field ) . ":\n" . $value . "\n";
 		}
 		$page = $post > 0 ? get_permalink( $post ) : false;
 		if ( is_string( $page ) ) {
