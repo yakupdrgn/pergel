@@ -359,6 +359,18 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   gösterir, `wp pergel settings set` reddeder, `import` uyarıyla sıfırlar. SVG yükleme kapalıyken
   Marka sekmesindeki ters logo alanı Safe SVG'yi önerir (eklenti kurma yetkisi olana bağlantıyla).
 
+## F3 kararları (15 Ekim 2026)
+
+- **F3 üç PR'da:** F3a altyapı, header ve breadcrumb; F3b bloklar ve blok uzantıları; F3c
+  pattern kütüphanesi, görsel testler ve kurumsal starter. Her biri CI yeşilken birleşir.
+- **Dönen video hero F3'ten çıkarıldı:** Tema bittikten sonra, Pergel üzerine kurulan ilk
+  projede gerçek videolarla yapılacak (kullanıcı kararı). F3'ün bitti tanımı değişmedi.
+- **Bloklar manifest'ten kaydedilir:** `engine/blocks/manifest.php` tüm `block.json`'ları tek PHP
+  dizisinde tutar (`tools/blocks.php` üretir, CI denetler). Çekirdek blokları
+  `wp_register_block_types_from_metadata_collection` ile bu dosyadan kaydeder; blok sayısı artsa
+  da istek başına dosya okuma ve JSON çözme maliyeti sabit kalır. Blocks modülünün açma/kapama
+  anahtarı yok: kapatılsaydı Pergel bloklarıyla kurulan pattern'ler ve sayfalar bozulurdu.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
@@ -366,7 +378,7 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 | F0 | Ortam, repo, CI iskeleti, docs, junction'lar, boş tema + eklenti | Boş Pergel etkin, CI yeşil, bütçe ölçümü ilk raporu üretiyor |
 | F1 | Token formatı ve theme.json üreticisi, temel şablonlar, 3 style variation, 6 header + 6 footer | Bütçe içinde, axe temiz, Site Editor'den tüm görünüm değiştirilebiliyor |
 | F2 | Modül sistemi, ayar ekranı, marka + Block Bindings, SEO sözleşmesi, performans modülü, `wp pergel` | SEO matrisi 6 senaryoda temiz |
-| F3 | Pergel blokları ve uzantıları, 120+ pattern, kurumsal starter, dönen video hero | Tüm pattern'ler geçerli, görsel testler oturdu, kurumsal demo kuruluyor |
+| F3 | Pergel blokları ve uzantıları, 120+ pattern, kurumsal starter (dönen video hero ilk projeye kaldı) | Tüm pattern'ler geçerli, görsel testler oturdu, kurumsal demo kuruluyor |
 | F4 | WooCommerce şablonları, hızlı arama, satış modları, P2 özellikleri, ölçek testi | Mağaza bütçesi tutuyor, ödeme akışı test modunda geçiyor |
 | F5 | Proje paketi ve `wp pergel import`, Abilities/MCP, skill'ler, prova sitesi (hedef açık) | Prova sitesi paketten tek seferde ve tekrar üretilebiliyor |
 | F6 | Tam test matrisi, güvenlik incelemesi, çeviriler, WP 7.2 uyumu | Tüm kontroller yeşil, v1.0.0 |

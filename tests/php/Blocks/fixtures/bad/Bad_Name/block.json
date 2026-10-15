@@ -1,0 +1,1 @@
+{ "apiVersion": 3, "name": "pergel/Bad_Name", "title": "X", "category": "pergel", "textdomain": "pergel-engine", "supports": { "autoRegister": true }, "render": "file:./render.php" }

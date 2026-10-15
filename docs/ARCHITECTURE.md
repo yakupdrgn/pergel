@@ -66,7 +66,7 @@ Planlanan modüller ve yüklenme koşulları:
 | --- | --- |
 | Core | Her zaman |
 | Settings | Her zaman (hafif: hook'lar; ekran yalnızca admin) |
-| Blocks | Blok sayfadaysa CSS/JS |
+| Blocks | Her zaman, anahtarsız (pattern'ler bu bloklarla kurulur); blok CSS/JS'i yalnızca blok sayfadaysa |
 | Brand | Her zaman (hafif: `init` + editör script'i yalnızca editörde) |
 | Seo | Her zaman (meta kaydı admin/REST için; `Head` yalnızca ön yüzde, eklenti varsa yalnızca entegrasyon filtreleri) |
 | Ai | İsteğe bağlı |
@@ -179,6 +179,25 @@ Yalnızca ön yüzde yüklenir; dört anahtarın hepsi varsayılan açıktır (A
 
 Bütçe bunları denetler: `emoji = 0`, `fontPreloads ≤ 2`, `unusedPreloads = 0` (önyüklenip hiçbir
 `@font-face` kuralınca kullanılmayan dosya), `jsonld ≤ 1`.
+
+## Bloklar (F3)
+
+Pergel blokları sunucuda çizilir ve `engine/blocks/<slug>/` altında durur:
+
+- `block.json`: ad `pergel/<slug>`, `apiVersion` 3, `textdomain` `pergel-engine`, kategori
+  (`pergel` ekleyicide çekirdek kategorilerin ardından gelir), `render: file:./render.php`.
+- `render.php`: blok çıktısı; `$attributes`, `$content`, `$block` değişkenleriyle çağrılır.
+- `style.css` (isteğe bağlı): çekirdek yalnızca blok sayfada çizildiğinde ekler ve küçükse
+  satır içine alır; ayrı istek oluşmaz.
+- Derlenmiş editör betiği olmayan blok `supports.autoRegister: true` taşır. WP 7.0'dan beri
+  editör böyle bir bloğu sunucu önizlemesiyle kendisi kaydeder ve ayar alanlarını
+  `attributes`'tan üretir (K6: basit bloklar PHP-only). Karmaşık editör arayüzü gereken bloklar
+  `@wordpress/scripts` ile `engine/build/`'e derlenir ve `editorScript` taşır.
+
+`php tools/blocks.php` bu kuralları denetler ve tüm `block.json`'ları `engine/blocks/manifest.php`
+dosyasına yazar. `Blocks\Module` blokları bu dosyadan bir metadata koleksiyonu olarak kaydeder;
+istek başına JSON okunmaz. CI `--check` ile manifest'in güncel olduğunu, `npm run validate:json`
+ile `block.json`'ların WP 7.1 şemasına uyduğunu denetler.
 
 ## WP-CLI (F2)
 

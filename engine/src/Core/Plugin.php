@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Core;
 
+use Pergel\Blocks;
 use Pergel\Brand;
 use Pergel\Cli;
 use Pergel\Performance;
@@ -37,6 +38,7 @@ final class Plugin {
 		$modules = array(
 			Settings\Module::class,
 			Brand\Module::class,
+			Blocks\Module::class,
 			Seo\Module::class,
 			Performance\Module::class,
 			Cli\Module::class,
