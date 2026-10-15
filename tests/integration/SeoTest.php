@@ -215,24 +215,37 @@ final class SeoTest extends TestCase {
 		$this->assertSame( trailingslashit( $link ) . 'page/2/', Head::page()['url'] );
 	}
 
-	public function test_default_share_image_and_twitter_handle(): void {
-		$image         = wp_insert_attachment(
+	/**
+	 * An image attachment with metadata; the file itself is not needed.
+	 *
+	 * @param string $file   File name.
+	 * @param string $mime   Mime type.
+	 * @param int    $width  Width.
+	 * @param int    $height Height.
+	 */
+	private function image( string $file, string $mime, int $width, int $height ): int {
+		$id            = wp_insert_attachment(
 			array(
-				'post_title'     => 'pergel-share.png',
-				'post_mime_type' => 'image/png',
+				'post_title'     => $file,
+				'post_mime_type' => $mime,
 				'post_status'    => 'inherit',
 			)
 		);
-		$this->posts[] = $image;
-		update_post_meta( $image, '_wp_attached_file', 'pergel-test/pergel-share.png' );
+		$this->posts[] = $id;
+		update_post_meta( $id, '_wp_attached_file', "pergel-test/$file" );
 		wp_update_attachment_metadata(
-			$image,
+			$id,
 			array(
-				'width'  => 1200,
-				'height' => 630,
-				'file'   => 'pergel-test/pergel-share.png',
+				'width'  => $width,
+				'height' => $height,
+				'file'   => "pergel-test/$file",
 			)
 		);
+		return $id;
+	}
+
+	public function test_default_share_image_and_twitter_handle(): void {
+		$image = $this->image( 'pergel-share.png', 'image/png', 1200, 630 );
 		Settings::update(
 			array(
 				'seo' => array(
@@ -248,6 +261,27 @@ final class SeoTest extends TestCase {
 		$this->assertStringContainsString( '<meta property="og:image:width" content="1200" />', $meta );
 		$this->assertStringContainsString( '<meta name="twitter:card" content="summary_large_image" />', $meta );
 		$this->assertStringContainsString( '<meta name="twitter:site" content="@ariumlab" />', $meta );
+	}
+
+	public function test_svg_is_not_shared_but_stays_in_the_graph(): void {
+		$svg  = $this->image( 'pergel-logo.svg', 'image/svg+xml', 240, 64 );
+		$png  = $this->image( 'pergel-share.png', 'image/png', 1200, 630 );
+		$post = $this->post( array(), array( '_thumbnail_id' => $svg ) );
+		Settings::update( array( 'seo' => array( 'og_image' => $png ) ) );
+		self::go( array( 'p' => $post ) );
+
+		// Social networks show no SVG: the default share image takes its place.
+		$meta = self::capture( 'print_meta' );
+		$this->assertStringContainsString( '<meta property="og:image" content="' . esc_attr( (string) wp_get_attachment_url( $png ) ) . '" />', $meta );
+		$this->assertStringNotContainsString( 'pergel-logo.svg', $meta );
+		$images = array_column( self::graph(), 'primaryImageOfPage' );
+		$this->assertSame( wp_get_attachment_url( $svg ), $images[0]['url'] ?? null );
+
+		Settings::update( array( 'seo' => array( 'og_image' => $svg ) ) );
+		self::go( array( 'p' => $post ) );
+		$meta = self::capture( 'print_meta' );
+		$this->assertStringNotContainsString( 'og:image', $meta );
+		$this->assertStringContainsString( '<meta name="twitter:card" content="summary" />', $meta );
 	}
 
 	public function test_no_output_on_404(): void {

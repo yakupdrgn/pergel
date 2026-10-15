@@ -16,7 +16,7 @@ namespace Pergel\Seo;
  * Pure PHP (no WordPress calls) so it can be unit tested. Head collects the
  * page data and passes it in.
  *
- * @phpstan-type Image array{url?: string, width?: int, height?: int, alt?: string}
+ * @phpstan-type Image array{url?: string, width?: int, height?: int, alt?: string, svg?: bool}
  * @phpstan-type Site array{url: string, name: string, description: string, language: string, search: string}
  * @phpstan-type Article array{type?: string, headline?: string, published?: string, modified?: string, author?: string}
  * @phpstan-type Crumb array{name: string, url: string}

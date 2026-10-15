@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Pergel\Core\Svg;
 use Pergel\Settings\Labels;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Screen;
@@ -110,6 +111,59 @@ final class ScreenTest extends TestCase {
 		$this->assertStringContainsString( 'aria-describedby="pergel-brand-email-error" aria-invalid="true"', $html );
 		$this->assertStringContainsString( '<p class="pergel-settings__error" id="pergel-brand-email-error">Email was not saved.', $html );
 		$this->assertStringNotContainsString( 'pergel-brand-phone-error', $html );
+	}
+
+	public function test_share_image_takes_no_svg(): void {
+		$svg      = wp_insert_attachment(
+			array(
+				'post_title'     => 'pergel-logo.svg',
+				'post_mime_type' => Svg::MIME,
+				'post_status'    => 'inherit',
+			),
+			'pergel-test/pergel-logo.svg'
+		);
+		wp_update_attachment_metadata(
+			$svg,
+			array(
+				'width'  => 240,
+				'height' => 64,
+				'file'   => 'pergel-test/pergel-logo.svg',
+			)
+		);
+		$settings = Settings::all();
+		// The stored value is replaced for this render only.
+		$settings['seo']['og_image'] = $svg;
+		$stored                      = static fn (): array => $settings;
+		add_filter( 'pre_option_' . Settings::OPTION, $stored );
+		Settings::flush();
+		$html = self::render( 'seo' );
+		remove_filter( 'pre_option_' . Settings::OPTION, $stored );
+		Settings::flush();
+		wp_delete_attachment( $svg, true );
+
+		$this->assertStringContainsString( 'data-types="image/jpeg,image/png,image/gif,image/webp"', $html );
+		$this->assertStringContainsString( '<p class="pergel-settings__error" id="pergel-seo-og_image-error">' . esc_html( Labels::problem( 'svg' ) ) . '</p>', $html );
+		$this->assertStringNotContainsString( 'data-types', self::render( 'brand' ) );
+	}
+
+	public function test_svg_hint_only_while_svg_uploads_are_off(): void {
+		$off = static function ( array $mimes ): array {
+			unset( $mimes['svg'] );
+			return $mimes;
+		};
+		$on  = static fn ( array $mimes ): array => $mimes + array( 'svg' => Svg::MIME );
+
+		add_filter( 'upload_mimes', $off, 99 );
+		$html = self::render( 'brand' );
+		remove_filter( 'upload_mimes', $off, 99 );
+		$this->assertStringContainsString( 'aria-describedby="pergel-brand-logo_inverse-help pergel-brand-logo_inverse-svg"', $html );
+		$this->assertStringContainsString( 'plugin-install.php?s=safe-svg', $html );
+		$this->assertStringNotContainsString( 'pergel-seo-og_image-svg', self::render( 'seo' ) );
+
+		add_filter( 'upload_mimes', $on );
+		$html = self::render( 'brand' );
+		remove_filter( 'upload_mimes', $on );
+		$this->assertStringNotContainsString( 'pergel-brand-logo_inverse-svg', $html );
 	}
 
 	public function test_hidden_from_non_admins(): void {

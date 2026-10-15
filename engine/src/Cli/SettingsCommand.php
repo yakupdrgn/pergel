@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Cli;
 
+use Pergel\Core\Svg;
 use Pergel\Settings\Labels;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
@@ -98,10 +99,16 @@ final class SettingsCommand {
 		if ( ! isset( Schema::groups()[ $group ][ $key ] ) ) {
 			WP_CLI::error( "Unknown setting: $path. See `wp pergel settings get` for the fields." );
 		}
+		$field = Schema::groups()[ $group ][ $key ];
 		$value = 'json' === ( $assoc_args['format'] ?? 'plain' ) ? self::decode( $raw ) : $raw;
-		$id    = Schema::field( Schema::groups()[ $group ][ $key ], $value );
-		if ( 'image' === Schema::groups()[ $group ][ $key ]['type'] && is_array( $id ) && $id[0] > 0 && ! wp_attachment_is_image( $id[0] ) ) {
-			WP_CLI::error( "Attachment {$id[0]} is not an image on this site. Nothing was saved." );
+		$id    = Schema::field( $field, $value );
+		if ( 'image' === $field['type'] && is_array( $id ) && $id[0] > 0 ) {
+			if ( ! wp_attachment_is_image( $id[0] ) ) {
+				WP_CLI::error( "Attachment {$id[0]} is not an image on this site. Nothing was saved." );
+			}
+			if ( false === ( $field['svg'] ?? true ) && Svg::is( $id[0] ) ) {
+				WP_CLI::error( "$path: " . Labels::problem( 'svg' ) . ' Nothing was saved.' );
+			}
 		}
 		self::save( array( $group => array( $key => $value ) ) );
 		WP_CLI::success( "$path = " . self::json( Settings::get( $path ), false ) );
@@ -143,8 +150,8 @@ final class SettingsCommand {
 	 *
 	 * Groups and fields missing from the file keep their current value, so
 	 * a file can hold only what changes. Nothing is saved when any field is
-	 * invalid or unknown. Image fields that point to no image on this site
-	 * are cleared, with a warning.
+	 * invalid or unknown. Image fields that point to no image on this site,
+	 * or to an SVG where SVG cannot be used, are cleared, with a warning.
 	 *
 	 * ## OPTIONS
 	 *
@@ -247,7 +254,8 @@ final class SettingsCommand {
 	}
 
 	/**
-	 * Clears image fields whose attachment is not an image on this site.
+	 * Clears image fields whose attachment is not an image on this site, or
+	 * is an SVG where the field takes none.
 	 *
 	 * @param array<string, mixed> $input Partial settings.
 	 * @return array<string, mixed>
@@ -258,6 +266,9 @@ final class SettingsCommand {
 				$id = $input[ $group ][ $key ] ?? null;
 				if ( 'image' === $field['type'] && is_int( $id ) && $id > 0 && ! wp_attachment_is_image( $id ) ) {
 					WP_CLI::warning( "$group.$key: attachment $id is not an image on this site; cleared." );
+					$input[ $group ][ $key ] = 0;
+				} elseif ( 'image' === $field['type'] && is_int( $id ) && false === ( $field['svg'] ?? true ) && Svg::is( $id ) ) {
+					WP_CLI::warning( "$group.$key: attachment $id is an SVG. " . Labels::problem( 'svg' ) . ' Cleared.' );
 					$input[ $group ][ $key ] = 0;
 				}
 			}

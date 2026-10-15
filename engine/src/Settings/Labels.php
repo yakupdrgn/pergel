@@ -103,7 +103,7 @@ final class Labels {
 	/**
 	 * Field labels and help texts.
 	 *
-	 * @return array<string, array<string, array{label: string, help?: string}>>
+	 * @return array<string, array<string, array{label: string, help?: string, svg?: string}>>
 	 */
 	public static function fields(): array {
 		return array(
@@ -148,12 +148,13 @@ final class Labels {
 				'logo_inverse' => array(
 					'label' => __( 'Logo for dark backgrounds', 'pergel-engine' ),
 					'help'  => __( 'The main logo is the Site Logo in the Site Editor.', 'pergel-engine' ),
+					'svg'   => __( 'SVG uploads are off on this site. The free Safe SVG plugin turns them on and cleans every SVG file.', 'pergel-engine' ),
 				),
 			),
 			'seo'         => array(
 				'og_image'      => array(
 					'label' => __( 'Default share image', 'pergel-engine' ),
-					'help'  => __( 'Shown when a shared page has no featured image. 1200 × 630 pixels works everywhere.', 'pergel-engine' ),
+					'help'  => __( 'Shown when a shared page has no featured image. JPG, PNG or WebP; 1200 × 630 pixels works everywhere.', 'pergel-engine' ),
 				),
 				'twitter_site'  => array(
 					'label' => __( 'X (Twitter) username', 'pergel-engine' ),
@@ -200,6 +201,7 @@ final class Labels {
 			'invalid_choice'  => __( 'Choose one of the listed options.', 'pergel-engine' ),
 			'out_of_range'    => __( 'The number is out of range.', 'pergel-engine' ),
 			'too_many'        => __( 'There are too many items.', 'pergel-engine' ),
+			'svg'             => __( 'Social networks do not show SVG images. Choose a JPG, PNG or WebP image.', 'pergel-engine' ),
 			default           => __( 'The value has the wrong type.', 'pergel-engine' ),
 		};
 	}
