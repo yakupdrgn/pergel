@@ -42,6 +42,7 @@ pergel/
 ├─ tests/php/             birim testleri (WordPress olmadan)
 ├─ tests/integration/     WordPress gerektiren testler (PERGEL_WP_DIR)
 ├─ tests/budget/          performans bütçesi (K11)
+├─ tests/visual/          pattern erişilebilirlik ve görsel regresyon testleri (Playwright)
 └─ docs/
 ```
 
@@ -408,6 +409,15 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   `patternName` taşıdığını, yalnızca içerik modunda düzenlenecek bir şey kaldığını doğrular.
   Header/footer (yalnızca Site Editor) ve gizli pattern'ler yalnızca çözümleme denetiminden geçer.
   Konsol hatası da başarısızlıktır.
+- **Erişilebilirlik ve görsel regresyon** (`tests/visual/patterns.spec.mjs`, CI'da `visual` işi):
+  Pattern'ler örnek sayfada perf probe'un `X-Pergel-Pattern: <ad>[,<ad>…]` başlığıyla, hiçbir şey
+  kaydedilmeden ve `page-landing` şablonuyla çizilir. Varsayılan stil ve her variation için bölüm
+  pattern'leri kategori başına bir sayfada, tam sayfalar tek tek 1280 ve 360 piksel genişlikte axe
+  (WCAG 2.2 A/AA) ve yana kaydırma denetiminden geçer. Tam sayfaların variation'lardaki ekran
+  görüntüleri (1280/800/360) `tests/visual/baselines/` ile karşılaştırılır; referanslar yalnızca
+  CI'da (Linux) üretilir. Eksik referans `visual-report` artifact'ına yazılır; hepsini yenilemek
+  için iş `update-baselines` girdisiyle elle çalıştırılır. Yerelde `npm run test:a11y` (ekran
+  görüntüsüz) çalışır.
 
 ## WP-CLI (F2)
 

@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      update-baselines:
+        description: Regenerate every visual baseline (download them from the visual-report artifact)
+        type: boolean
+        default: false
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -136,6 +141,65 @@ jobs:
           name: budget-report
           path: |
             reports/
+            /tmp/php-server.log
+          if-no-files-found: ignore
+
+  visual:
+    name: Pattern accessibility + visual regression
+    runs-on: ubuntu-24.04
+    needs: [lint, syntax]
+    timeout-minutes: 30
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wordpress
+          MARIADB_PASSWORD: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_DIR: /tmp/pergel-wp
+      SITE_URL: http://127.0.0.1:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: mysqli, gd, intl, zip, zlib
+          tools: wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Install WordPress + Pergel
+        run: bash tools/ci/setup-wp.sh
+      - name: Start PHP server
+        run: |
+          php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
+          cat /tmp/php-server.log; exit 1
+      - name: axe, overflow and screenshots
+        # Baselines are made here on Linux only. A missing one is written to the
+        # visual-report artifact, to be downloaded and committed.
+        env:
+          PERGEL_BASE: ${{ env.SITE_URL }}
+          UPDATE: ${{ inputs.update-baselines && 'all' || 'missing' }}
+        run: npx playwright test --update-snapshots="$UPDATE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-report
+          path: |
+            tests/visual/baselines/
+            test-results/
+            playwright-report/
             /tmp/php-server.log
           if-no-files-found: ignore
 

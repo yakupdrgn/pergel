@@ -14,6 +14,10 @@
  * - X-Pergel-Header: <name> / X-Pergel-Footer: <name>: the header or footer
  *   part renders the pergel/header-<name> or pergel/footer-<name> pattern
  *   instead of its default one, so every header and footer can be measured.
+ * - X-Pergel-Pattern: <name>[,<name>...]: a singular page renders the
+ *   pergel/<name> patterns in order as its content, with the page-landing
+ *   template, so patterns can be checked without saving pages
+ *   (tests/visual).
  *
  * @package Pergel
  */
@@ -52,6 +56,32 @@ foreach ( array( 'header', 'footer' ) as $pergel_area ) {
 			}
 			return $block;
 		}
+	);
+}
+
+if ( ! empty( $_SERVER['HTTP_X_PERGEL_PATTERN'] ) ) {
+	$pergel_patterns = array();
+	foreach ( explode( ',', strtolower( (string) $_SERVER['HTTP_X_PERGEL_PATTERN'] ) ) as $pergel_name ) {
+		$pergel_name = (string) preg_replace( '/[^a-z0-9-]/', '', $pergel_name );
+		if ( '' !== $pergel_name ) {
+			$pergel_patterns[] = '<!-- wp:pattern ' . wp_json_encode( array( 'slug' => "pergel/$pergel_name" ) ) . ' /-->';
+		}
+	}
+	$pergel_patterns = implode( PHP_EOL, $pergel_patterns );
+	add_filter(
+		'get_post_metadata',
+		static function ( mixed $value, int $id, string $key ): mixed {
+			return '_wp_page_template' === $key && is_singular() && get_queried_object_id() === $id ? array( 'page-landing' ) : $value;
+		},
+		10,
+		3
+	);
+	add_filter(
+		'the_content',
+		static function ( string $content ) use ( $pergel_patterns ): string {
+			return is_singular() && get_the_ID() === get_queried_object_id() ? $pergel_patterns : $content;
+		},
+		0
 	);
 }
 

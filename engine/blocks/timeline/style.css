@@ -27,6 +27,7 @@
 }
 
 .wp-block-pergel-timeline-item {
+	box-sizing: border-box;
 	margin: 0;
 	padding-inline-start: calc(var(--pergel-timeline-dot) + var(--pergel-timeline-gap));
 	position: relative;

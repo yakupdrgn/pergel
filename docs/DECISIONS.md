@@ -403,6 +403,15 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 - **Boş harita marka adresini kullanır:** Desenlerdeki harita bloklarına örnek adres yazılmaz;
   site sahibi adresi bir kez marka ayarlarına girer, bütün haritalar onu gösterir. Bloğa adres
   yazılırsa o geçerlidir (ikinci şube gibi).
+- **Zaman çizelgesi kendi genişliğine bakar:** İki yanlı düzen ekran genişliğine (media query)
+  bağlıyken dar bir sütundaki çizelge de iki yana açılıyordu. Artık container query ile blok
+  40rem'den darsa tek sütundur. Kapsayıcı dikey flex içinde içeriğe göre büzülmesin diye
+  `align-self`/`justify-self: stretch` taşır.
+- **Görsel referanslar yalnızca CI'da:** Yazı tipi çizimi işletim sistemine göre değiştiği için
+  ekran görüntüsü referansları Linux CI'da üretilip repoya girer; yerelde yalnızca axe ve taşma
+  denetimi çalışır. Testler için sayfa oluşturulmaz (menü yedeği, bütçe ve veritabanı etkilenirdi);
+  pattern'ler `X-Pergel-Pattern` başlığıyla mevcut örnek sayfaya çizilir. Yalnızca 8 tam sayfanın
+  ekran görüntüsü alınır; bölümleri onlar ve axe kapsar.
 - **İletişim/teklif formu gönderimleri:** yöneticiye e-posta ve panelde gizli bir yazı türünde
   kayıt; e-posta kaybolsa da talep kaybolmaz (kullanıcı kararı). Yalnızca yerelde, `pre_wp_mail`
   ile yakalanarak test edilir.
