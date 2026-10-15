@@ -145,6 +145,12 @@ final class Schema {
 			),
 			// WooCommerce; the tab is shown only while it is active.
 			'woo'         => array(
+				// Most open first; see Pergel\Woo\Modes.
+				'sales_mode'        => array(
+					'type'    => 'enum',
+					'options' => array( 'sale', 'login', 'quote', 'catalog' ),
+					'default' => 'sale',
+				),
 				'mini_cart'         => array(
 					'type'    => 'bool',
 					'default' => true,

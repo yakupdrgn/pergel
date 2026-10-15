@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T19:33:36+03:00\n"
+"POT-Creation-Date: 2026-10-15T20:18:53+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -354,6 +354,9 @@ msgstr ""
 msgid "Delivery"
 msgstr ""
 
+msgid "Selling"
+msgstr ""
+
 msgid "Header"
 msgstr ""
 
@@ -471,6 +474,24 @@ msgstr ""
 msgid "Leave empty to use the administration email address of the site."
 msgstr ""
 
+msgid "Sales mode"
+msgstr ""
+
+msgid "For the whole shop. A product category or a single product can choose its own mode; when a product is in several categories, the strictest one applies. Hidden prices are left out of the page, the shop data and the structured data, and the products cannot be added to the cart."
+msgstr ""
+
+msgid "Sale: prices and the cart for everyone"
+msgstr ""
+
+msgid "Prices for logged-in customers only"
+msgstr ""
+
+msgid "Quote: no prices, customers ask for an offer"
+msgstr ""
+
+msgid "Catalog: products only, no prices"
+msgstr ""
+
 msgid "Show the mini cart in the header"
 msgstr ""
 
@@ -551,6 +572,18 @@ msgid "Use this image"
 msgstr ""
 
 msgid "Choose image"
+msgstr ""
+
+msgid "Same as its categories or the shop"
+msgstr ""
+
+msgid "Whether this product shows its price and can be added to the cart. Quote and catalog hide the price everywhere."
+msgstr ""
+
+msgid "Applies to the products of this category and its subcategories, unless a product chooses its own mode. A product in several categories takes the strictest mode."
+msgstr ""
+
+msgid "Same as the parent category or the shop"
 msgstr ""
 
 msgid "Scroll animation"

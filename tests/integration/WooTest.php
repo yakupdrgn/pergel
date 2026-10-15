@@ -80,6 +80,7 @@ final class WooTest extends TestCase {
 	public function test_defaults_keep_shop_files_on_shop_pages(): void {
 		$this->assertSame(
 			array(
+				'sales_mode'        => 'sale',
 				'mini_cart'         => true,
 				'shop_assets_only'  => true,
 				'no_cart_fragments' => true,

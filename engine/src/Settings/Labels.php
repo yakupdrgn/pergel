@@ -112,11 +112,15 @@ final class Labels {
 				),
 			),
 			'woo'         => array(
-				'header' => array(
+				'selling' => array(
+					'title'  => __( 'Selling', 'pergel-engine' ),
+					'fields' => array( 'sales_mode' ),
+				),
+				'header'  => array(
 					'title'  => __( 'Header', 'pergel-engine' ),
 					'fields' => array( 'mini_cart' ),
 				),
-				'speed'  => array(
+				'speed'   => array(
 					'title'  => __( 'Speed', 'pergel-engine' ),
 					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
 				),
@@ -127,7 +131,7 @@ final class Labels {
 	/**
 	 * Field labels and help texts.
 	 *
-	 * @return array<string, array<string, array{label: string, help?: string, svg?: string}>>
+	 * @return array<string, array<string, array{label: string, help?: string, svg?: string, choices?: array<string, string>}>>
 	 */
 	public static function fields(): array {
 		return array(
@@ -222,6 +226,16 @@ final class Labels {
 				),
 			),
 			'woo'         => array(
+				'sales_mode'        => array(
+					'label'   => __( 'Sales mode', 'pergel-engine' ),
+					'help'    => __( 'For the whole shop. A product category or a single product can choose its own mode; when a product is in several categories, the strictest one applies. Hidden prices are left out of the page, the shop data and the structured data, and the products cannot be added to the cart.', 'pergel-engine' ),
+					'choices' => array(
+						'sale'    => __( 'Sale: prices and the cart for everyone', 'pergel-engine' ),
+						'login'   => __( 'Prices for logged-in customers only', 'pergel-engine' ),
+						'quote'   => __( 'Quote: no prices, customers ask for an offer', 'pergel-engine' ),
+						'catalog' => __( 'Catalog: products only, no prices', 'pergel-engine' ),
+					),
+				),
 				'mini_cart'         => array(
 					'label' => __( 'Show the mini cart in the header', 'pergel-engine' ),
 					'help'  => __( 'Adds the cart button after the menu in the theme headers. It shows the number of items and opens the cart in a side panel.', 'pergel-engine' ),

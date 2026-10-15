@@ -480,7 +480,39 @@ görünmez (`Settings\Screen::shown`).
   bu öneki taşıyan gizli pattern'lerde izin verir.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
-  ödeme sayfasında eklenmez. `woo.mini_cart` ayarına bağlı.
+  ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir
+  şey satılmıyorsa eklenmez). WooCommerce kendi `register_hooked_block`'u (öncelik 9) ile mini
+  sepeti her header pattern'ine ekler; Pergel süzgeci öncelik 20'de çalışır, Pergel header'larında
+  bu kaydı önce listeden çıkarır ve yalnızca koşullar tutuyorsa geri koyar. Başka temaların ve
+  pattern'lerin kaydına dokunmaz.
+- **Satış modları (`Woo\Modes`):** `sale` (fiyat ve sepet herkese), `login` (fiyat girişten
+  sonra), `quote` (fiyat yok, teklif) ve `catalog` (fiyat yok). Mağazanın modu `woo.sales_mode`
+  ayarında; ürün kategorisi (`pergel_sales_mode` term meta) ve ürün (`_pergel_sales_mode` post
+  meta) kendi modunu seçebilir. Çözüm sırası: ürünün kendi modu → kategorilerinin en katısı
+  (kategori modunu alt kategorilerine geçirir) → mağaza. Varyasyon ürününü izler. Kategori
+  modları ve kullanılan modlar tek bir otomatik yüklenen seçenekte (`pergel_woo_modes`:
+  `terms`, `slugs`, `used`) tutulur; mod meta'sı, kategori ağacı değişince yeniden kurulur,
+  sayfa görüntülemesi ek satır okumaz, yazmaz. Modlar ön yüzde, Store API'de ve
+  `edit_products` yetkisi olmayanların AJAX isteklerinde uygulanır; yönetim ekranları, mağaza
+  yöneticisinin REST isteği, cron ve WP-CLI tüm fiyatları görür (`Modes::enforced()`,
+  `pergel/woo/enforce_modes` süzgeci).
+- **Fiyatın kaldırılması (`Woo\Selling`):** Ziyaretçiye satılmayan üründe fiyat veri
+  katmanında kalkar: `price`/`regular_price`/`sale_price` görünüm getter'ları boş, varyasyon
+  fiyat aralığı boş (önbellek anahtarı ayrı: `pergel-no-price`), `price_html` boş, satın
+  alınamaz; fiyatsız varyasyonlar seçilebilir kalır. WooCommerce yapılandırılmış verisinde ve
+  Rank Math / Yoast / AIOSEO graph süzgeçlerinde `offers` silinir; Google for WooCommerce
+  feed'ine yalnızca herkese satılan ürünler girer. Fiyat gizleyen listelerde (mağaza ya da
+  kategori modu) `min_price`/`max_price` ve fiyat sıralaması istekten düşer, sıralama menüsünden
+  ve varsayılan sıralamadan çıkar, fiyat filtresi blokları basılmaz; Store API ürün
+  listelerinde aynı parametreler ve fiyat aralığı kaldırılır. Gizli üründe sepete ekleme formu
+  blokları (`add-to-cart-with-options`, `add-to-cart-form`) hiç basılmaz; yoksa boş bir form ve
+  değişken üründe "Stokta yok" görünüyordu.
+- **Sayfalar (`Woo\Pages`):** Sepet, ödeme ve hesap sayfaları çekirdek site haritasına girmez.
+  Ziyaretçiye hiçbir şey satılmıyorsa (`Modes::nothing_sells()`) sepet ve ödeme bağlantıları
+  navigasyon bloklarından, sayfa listesinden ve klasik menülerden çıkar.
+- **Alanlar (`Woo\Fields`):** Ürün verisinin Genel panelinde ve ürün kategorisi formlarında
+  mod seçimi; boş seçim kategoriyi / üst kategoriyi / mağazayı izler. Meta anahtarları sanitize
+  ve yetki callback'iyle kayıtlıdır (`edit_products`, `manage_product_terms`).
 - **Yol (`Woo\Trail`):** `pergel/seo/crumbs` süzgeciyle ürün ve ürün kategorisi yoluna mağaza
   sayfası ve kategori zinciri girer (`Seo\Head::term_trail`).
 - **İşaretleme düzeltmeleri (`Woo\Markup`, yalnızca ön yüz):** varyasyon özniteliklerine
@@ -489,6 +521,9 @@ görünmez (`Settings\Screen::shown`).
 - **Blok başına stiller (`theme/assets/css/blocks/`, `functions.php`):** `woocommerce/catalog-sorting`,
   `product-sale-badge`, `mini-cart` (kapalı çekmece klavyeden gizli) ve sepet ile ödemenin
   ortak form alanları (`woocommerce-forms.css`); hepsi preset renk token'larını kullanır.
+  `woocommerce-forms.css` dar sepette ürün sütununu esnek yapar (WooCommerce 132 px sabitliyor)
+  ve satır toplamının altındaki tasarruf rozetinin kırılmasına izin verir; Türkçe metinle sepet
+  360 px'te yana taşıyordu.
 
 ## WP-CLI (F2)
 

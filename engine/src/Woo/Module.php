@@ -45,6 +45,10 @@ final class Module implements Core\Module {
 	 */
 	public function register(): void {
 		add_action( 'before_woocommerce_init', array( self::class, 'declare_compatibility' ) );
+		Modes::register();
+		Fields::register();
+		Selling::register();
+		Pages::register();
 		MiniCart::register();
 		Trail::register();
 		if ( ! is_admin() ) {

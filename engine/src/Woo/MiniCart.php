@@ -17,6 +17,10 @@ use Pergel\Settings\Settings;
  * blocks on a site without WooCommerce. Every header pattern keeps its menu
  * in a flex row, where the cart lines up next to it.
  *
+ * WooCommerce hooks the same block into every header pattern itself; in
+ * Pergel's headers the decision is left to this class, so the setting, the
+ * cart pages and the sales modes can keep it out.
+ *
  * The block shows the count from the session, not from cart fragments, and
  * updates it when an item is added or removed.
  */
@@ -25,17 +29,15 @@ final class MiniCart {
 	public const BLOCK = 'woocommerce/mini-cart';
 
 	/**
-	 * Hooks the block when the setting is on.
+	 * Adds the filter. It runs after WooCommerce's, which hooks at 9.
 	 */
 	public static function register(): void {
-		if ( true === Settings::get( 'woo.mini_cart' ) ) {
-			add_filter( 'hooked_block_types', array( self::class, 'hook' ), 20, 4 );
-		}
+		add_filter( 'hooked_block_types', array( self::class, 'hook' ), 20, 4 );
 	}
 
 	/**
 	 * Filter for hooked_block_types: the mini cart after the navigation of
-	 * a Pergel header pattern, once.
+	 * a Pergel header pattern, once, when the setting is on.
 	 *
 	 * @param mixed $hooked   Block types hooked at this position.
 	 * @param mixed $position Relative position: before, after, first_child, last_child.
@@ -44,7 +46,11 @@ final class MiniCart {
 	 * @return mixed
 	 */
 	public static function hook( mixed $hooked, mixed $position, mixed $anchor, mixed $context ): mixed {
-		if ( ! is_array( $hooked ) || 'after' !== $position || 'core/navigation' !== $anchor || in_array( self::BLOCK, $hooked, true ) ) {
+		if ( ! is_array( $hooked ) || 'after' !== $position || 'core/navigation' !== $anchor || ! self::is_header_pattern( $context ) ) {
+			return $hooked;
+		}
+		$hooked = array_values( array_diff( $hooked, array( self::BLOCK ) ) );
+		if ( true !== Settings::get( 'woo.mini_cart' ) || str_contains( (string) ( $context['content'] ?? '' ), 'wp:' . self::BLOCK ) ) {
 			return $hooked;
 		}
 		// The cart and checkout pages show the cart already. There the block
@@ -53,9 +59,11 @@ final class MiniCart {
 		if ( is_cart() || is_checkout() ) {
 			return $hooked;
 		}
-		if ( self::is_header_pattern( $context ) && ! str_contains( (string) ( $context['content'] ?? '' ), 'wp:' . self::BLOCK ) ) {
-			$hooked[] = self::BLOCK;
+		// Nothing to put in it under a mode that sells nothing to the visitor.
+		if ( Modes::nothing_sells() ) {
+			return $hooked;
 		}
+		$hooked[] = self::BLOCK;
 		return $hooked;
 	}
 

@@ -594,6 +594,43 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   Ödeme sayfasındaki `aria-label`'lı iskeletler yüklenirken geçicidir, yüklenince kalkar.
   Mağaza, kategori, iki ürün, arama, boş ve dolu sepet ile ödeme sayfaları üç varyasyonda ve
   varsayılan stilde, 1280 ve 360 px'te axe temiz.
+- **Satış modları üç seviyede, en katı kazanır:** Mağaza, kategori ve ürün `sale`, `login`,
+  `quote` ya da `catalog` seçebilir. Ürünün kendi modu kazanır; yoksa kategorilerinden en katısı
+  (birden çok kategorideki ürün, fiyat gizleyen bir kategorideyse fiyatı gizlenir), yoksa
+  mağazanınki. Kategori modu alt kategorilere geçer. Mod bilgisi tek bir otomatik yüklenen
+  seçenekte indekslenir; sayfa görüntülemesinde veritabanına yazılmaz (`Woo\Modes`).
+- **Fiyat yalnızca gizlenmez, kaldırılır:** CSS ile gizlemek fiyatı HTML'de, Store API'de ve
+  şemada bırakır. Satılmayan üründe fiyat getter'lardan boş döner, `price_html` boş, ürün
+  satın alınamaz, yapılandırılmış veride ve SEO eklentilerinin graph'ında `offers` yoktur
+  (`Woo\Selling`). Rank Math'te ürün düğümü satış modunda `offers` taşır, teklif modunda
+  taşımaz; Yoast'ın ücretsiz sürümü ürün şeması basmaz, süzgeç Yoast WooCommerce SEO için
+  güvenlik ağıdır.
+- **Fiyat geri okunamasın:** Fiyat gizleyen listede fiyat filtresi, fiyat sıralaması ve Store
+  API fiyat aralığı kapanır; aksi hâlde aralık daraltılarak fiyat bulunabilirdi.
+- **Modlar ön yüzde ve Store API'de uygulanır:** Yönetim ekranları, mağaza yöneticisinin REST
+  istekleri, cron ve WP-CLI fiyatları görür; sipariş, rapor ve içe aktarma bozulmaz.
+- **Mini sepeti WooCommerce'ten devralmak:** WooCommerce mini sepeti kendi kanca kaydıyla her
+  header pattern'ine ekliyordu; `woo.mini_cart` kapalıyken ya da hiçbir şey satılmazken de
+  görünüyordu. Pergel header'larında karar `Woo\MiniCart`'ta (öncelik 20) verilir.
+- **Gizli üründe sepet formu yok:** Form blokları boş döner. Teklif ve giriş CTA'sı, değişken
+  ürün için kendi varyasyon seçimiyle birlikte F4a 4. adımdaki `pergel/product-cta` bloğunda.
+- **Dar sepette satır düzeni:** WooCommerce'in sabit 132 px ürün sütunu ve tek satırlık tasarruf
+  rozeti Türkçe metinle sepeti 360 px'te yana taşırıyordu; `woocommerce-forms.css` ürün
+  sütununu esnek yapar.
+- **Satış modlarının sınırları (kabul edilen):**
+  - Karışık katalogda satış modundaki listeler ve Store API gizli ürünleri saklanan fiyatlarına
+    göre sıralar ve süzer; koleksiyon fiyat aralığı onları da içerir. Store API'deki liste
+    kararı yalnızca mağaza modunu izler.
+  - Editörde sıralaması fiyat olarak ayarlanmış bir Product Collection bloğu değiştirilmez.
+  - Store API gizli ürün için fiyatı `"0"` verir; gizli değişken ürünün Store API
+    `stock_availability` değeri "stokta yok" der.
+  - Merchant Center'a daha önce gönderilmiş ürünler orada kalır; oradan kaldırılmalıdır.
+  - Hızlı ve toplu düzenlemede mod alanı yok.
+  - Yönetim etiketleri İngilizce (yalnızca `.pot`).
+  - Rank Math kurulum sihirbazı tamamlanmadan şema basmaz.
+- **Yerel mağaza "yakında" kipindeydi:** `pergel-shop`'ta WooCommerce'in `woocommerce_coming_soon`
+  seçeneği açıktı; oturumsuz ziyaretçi mağaza sayfaları yerine "yakında" sayfasını görüyordu.
+  Kapatıldı; mağaza ölçümleri ve axe taramaları oturumsuz gerçek sayfalarda yapılır.
 - **Bilinen ve kabul edilen:** WooCommerce'in bazı metinleri ("Related products" gibi) yerel
   sitede Türkçe çeviri paketi kurulmadığı için İngilizce görünür; tema metinleri `.pot`'ta.
 

@@ -26,3 +26,18 @@
 :is(.wp-block-woocommerce-cart, .wp-block-woocommerce-checkout) .wc-block-components-radio-control .wc-block-components-radio-control__input:checked::before {
 	background: currentColor;
 }
+
+/*
+ * Line items on a narrow cart. WooCommerce gives the product column a fixed
+ * 132px and keeps the savings badge under the line total on one line, so a
+ * longer translation ("₺2,300.00 tasarruf et") pushes the table past the
+ * screen on a phone. The product column takes what is left and the badge
+ * may wrap.
+ */
+.wp-block-woocommerce-cart :is(.is-mobile, .is-small, .is-medium) table.wc-block-cart-items .wc-block-cart-items__row {
+	grid-template-columns: 80px minmax(0, 1fr) auto;
+}
+
+.wp-block-woocommerce-cart .wc-block-cart-item__total .wc-block-components-sale-badge {
+	white-space: normal;
+}
