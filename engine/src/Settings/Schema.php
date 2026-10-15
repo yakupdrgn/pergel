@@ -41,7 +41,7 @@ final class Schema {
 	private const MAX_ITEMS = 10;
 
 	/**
-	 * Every group and field. Later steps add the seo and performance groups.
+	 * Every group and field. A later step adds the performance group.
 	 *
 	 * Types: bool, text, textarea, email, url, tel, country (ISO 3166-1
 	 * alpha-2), enum (options), int (min, max), image (attachment id, 0 =
@@ -95,6 +95,18 @@ final class Schema {
 				),
 				'logo_inverse' => array( 'type' => 'image' ),
 				'social'       => array( 'type' => 'urls' ),
+			),
+			// Used only when no SEO plugin is active.
+			'seo'     => array(
+				'og_image'      => array( 'type' => 'image' ),
+				'twitter_site'  => array(
+					'type' => 'text',
+					'max'  => 16,
+				),
+				'sitemap_users' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 		);
 	}

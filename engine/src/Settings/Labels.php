@@ -30,6 +30,10 @@ final class Labels {
 				'title'       => __( 'Brand', 'pergel-engine' ),
 				'description' => __( 'Company details, entered once. Blocks show them through the Pergel Brand source, and search engines receive them as Organization data.', 'pergel-engine' ),
 			),
+			'seo'     => array(
+				'title'       => __( 'SEO', 'pergel-engine' ),
+				'description' => __( 'Used only while no SEO plugin is active. With Rank Math, Yoast SEO, All in One SEO, SEOPress or The SEO Framework, Pergel hands over and only adds the brand details to its data.', 'pergel-engine' ),
+			),
 		);
 	}
 
@@ -67,6 +71,16 @@ final class Labels {
 				'logos'   => array(
 					'title'  => __( 'Logos', 'pergel-engine' ),
 					'fields' => array( 'logo_inverse' ),
+				),
+			),
+			'seo'     => array(
+				'sharing' => array(
+					'title'  => __( 'Sharing', 'pergel-engine' ),
+					'fields' => array( 'og_image', 'twitter_site' ),
+				),
+				'sitemap' => array(
+					'title'  => __( 'Sitemap', 'pergel-engine' ),
+					'fields' => array( 'sitemap_users' ),
 				),
 			),
 		);
@@ -120,6 +134,20 @@ final class Labels {
 				'logo_inverse' => array(
 					'label' => __( 'Logo for dark backgrounds', 'pergel-engine' ),
 					'help'  => __( 'The main logo is the Site Logo in the Site Editor.', 'pergel-engine' ),
+				),
+			),
+			'seo'     => array(
+				'og_image'      => array(
+					'label' => __( 'Default share image', 'pergel-engine' ),
+					'help'  => __( 'Shown when a shared page has no featured image. 1200 × 630 pixels works everywhere.', 'pergel-engine' ),
+				),
+				'twitter_site'  => array(
+					'label' => __( 'X (Twitter) username', 'pergel-engine' ),
+					'help'  => __( 'For example @ariumlab.', 'pergel-engine' ),
+				),
+				'sitemap_users' => array(
+					'label' => __( 'List author pages in the sitemap', 'pergel-engine' ),
+					'help'  => __( 'Off for most company sites: author pages repeat the blog.', 'pergel-engine' ),
 				),
 			),
 		);

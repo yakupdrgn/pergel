@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T08:14:59+03:00\n"
+"POT-Creation-Date: 2026-10-15T08:28:08+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -62,6 +62,14 @@ msgstr ""
 msgid "Pergel Brand"
 msgstr ""
 
+msgid "Home"
+msgstr ""
+
+#. translators: %s: search terms.
+#, php-format
+msgid "Search results for “%s”"
+msgstr ""
+
 msgid "Modules"
 msgstr ""
 
@@ -72,6 +80,12 @@ msgid "Brand"
 msgstr ""
 
 msgid "Company details, entered once. Blocks show them through the Pergel Brand source, and search engines receive them as Organization data."
+msgstr ""
+
+msgid "SEO"
+msgstr ""
+
+msgid "Used only while no SEO plugin is active. With Rank Math, Yoast SEO, All in One SEO, SEOPress or The SEO Framework, Pergel hands over and only adds the brand details to its data."
 msgstr ""
 
 msgid "Company"
@@ -89,10 +103,13 @@ msgstr ""
 msgid "Logos"
 msgstr ""
 
-msgid "Brand details in blocks (Block Bindings) and in structured data."
+msgid "Sharing"
 msgstr ""
 
-msgid "SEO"
+msgid "Sitemap"
+msgstr ""
+
+msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr ""
 
 msgid "Hands over to an active SEO plugin and adds the brand details to its data. Without one, Pergel prints the meta tags and structured data itself."
@@ -155,6 +172,24 @@ msgstr ""
 msgid "The main logo is the Site Logo in the Site Editor."
 msgstr ""
 
+msgid "Default share image"
+msgstr ""
+
+msgid "Shown when a shared page has no featured image. 1200 × 630 pixels works everywhere."
+msgstr ""
+
+msgid "X (Twitter) username"
+msgstr ""
+
+msgid "For example @ariumlab."
+msgstr ""
+
+msgid "List author pages in the sitemap"
+msgstr ""
+
+msgid "Off for most company sites: author pages repeat the blog."
+msgstr ""
+
 msgid "The value is too long."
 msgstr ""
 
@@ -199,6 +234,11 @@ msgstr ""
 msgid "Settings sections"
 msgstr ""
 
+#. translators: %s: SEO plugin name.
+#, php-format
+msgid "%s is active, so these settings are not used now."
+msgstr ""
+
 msgid "Other"
 msgstr ""
 
@@ -209,4 +249,27 @@ msgid "Choose image"
 msgstr ""
 
 msgid "Remove"
+msgstr ""
+
+#. translators: 1: characters typed, 2: recommended maximum.
+#, js-format
+msgid "%1$d of about %2$d characters."
+msgstr ""
+
+msgid "Search title"
+msgstr ""
+
+msgid "Empty: the post title and the site title."
+msgstr ""
+
+msgid "Search description"
+msgstr ""
+
+msgid "Empty: the excerpt or the start of the content."
+msgstr ""
+
+msgid "Hide from search engines"
+msgstr ""
+
+msgid "Adds noindex and leaves the page out of the sitemap."
 msgstr ""

@@ -11,6 +11,7 @@ namespace Pergel\Core;
 
 use Pergel\Brand;
 use Pergel\Cli;
+use Pergel\Seo;
 use Pergel\Settings;
 
 /**
@@ -35,6 +36,7 @@ final class Plugin {
 		$modules = array(
 			Settings\Module::class,
 			Brand\Module::class,
+			Seo\Module::class,
 			Cli\Module::class,
 		);
 

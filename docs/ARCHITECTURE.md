@@ -68,7 +68,7 @@ Planlanan modüller ve yüklenme koşulları:
 | Settings | Her zaman (hafif: hook'lar; ekran yalnızca admin) |
 | Blocks | Blok sayfadaysa CSS/JS |
 | Brand | Her zaman (hafif: `init` + editör script'i yalnızca editörde) |
-| Seo | Ön yüz |
+| Seo | Her zaman (meta kaydı admin/REST için; `Head` yalnızca ön yüzde, eklenti varsa yalnızca entegrasyon filtreleri) |
 | Ai | İsteğe bağlı |
 | Content | Yalnızca açılan içerik türleri |
 | Woo | WooCommerce aktifse |
@@ -80,8 +80,8 @@ Planlanan modüller ve yüklenme koşulları:
 Tek option (`pergel_settings`), autoload ≤ 20 KB, REST şemasıyla doğrulanır. Tasarım ayarları bu
 option'da değil Global Styles'tadır (K5).
 
-- `Settings\Schema` — gruplar ve alanlar (`modules`, `brand`; SEO ve performans grupları kendi
-  adımlarında eklenir). Varsayılanlar, temizleme ve REST JSON Schema bu tek tanımdan üretilir.
+- `Settings\Schema` — gruplar ve alanlar (`modules`, `brand`, `seo`; performans grubu kendi adımında
+  eklenir). Varsayılanlar, temizleme ve REST JSON Schema bu tek tanımdan üretilir.
 - `Settings\Settings` — okuma: `all()`, `get( 'brand.email' )`, `module_enabled( 'seo' )`,
   yazma: `update( $değişiklikler )`. Değerler istek başına bir kez şemaya göre normalize edilir;
   önbellek option her değiştiğinde düşer.
@@ -122,6 +122,32 @@ option'da değil Global Styles'tadır (K5).
 <p>+90 000 000 00 00</p>
 <!-- /wp:paragraph -->
 ```
+
+## SEO (F2)
+
+K8 sözleşmesi: bir SEO eklentisi aktifse Pergel hiçbir SEO etiketi basmaz, yalnızca eklentinin
+`Organization` düğümünü marka bilgisiyle tamamlar. Eklenti yoksa çekirdek API'lerle bir yedek
+katman çalışır.
+
+- `Seo\Detect` — Rank Math, Yoast SEO, AIOSEO, SEOPress, TSF'yi sürüm sabitinden tanır (ilk
+  eşleşen kazanır); `pergel/seo/plugin` filtresiyle değiştirilebilir.
+- `Seo\Integrations` — eklenti başına tek filtre: `rank_math/json_ld` (100),
+  `wpseo_schema_organization`, `aioseo_schema_output`, `seopress_schemas_organization_html`
+  (JSON dizesi), `the_seo_framework_schema_graph_data`. Yalnızca boş özellikler doldurulur,
+  `sameAs` birleştirilir; `Person` düğümlerine dokunulmaz.
+- `Seo\Graph` — saf PHP: `Organization`, `WebSite` (+ `SearchAction`), `WebPage` türü,
+  yazıda `BlogPosting` / `Article`, en az iki halkada `BreadcrumbList`. Birim testli.
+- `Seo\Head` — yedek katman: belge başlığı, `wp_robots`, açıklama, Open Graph, Twitter
+  kartı, liste sayfalarında sayfa numaralı canonical (tekil sayfanın canonical'ı çekirdekte),
+  tek bir JSON-LD `@graph` (`pergel/seo/graph` filtresi). 404'te hiçbir şey basılmaz.
+  Açıklama sırası: SEO paneli → özet → içeriğin başı; ön sayfada site sloganı.
+- `Seo\Meta` — `_pergel_seo_title`, `_pergel_seo_description`, `_pergel_seo_noindex`
+  (REST'te, `edit_post` yetkisiyle) ve editörde build'siz "SEO" paneli
+  (`engine/assets/seo-panel.js`).
+- `Seo\Sitemap` — çekirdek site haritası: gizli yazılar çıkarılır, `lastmod` eklenir, yazar
+  sayfaları ayarla açılmadıkça listelenmez.
+- Ayarlardaki SEO sekmesi (paylaşım görseli, X kullanıcı adı, yazar site haritası) eklenti
+  aktifken bunu söyleyen bir bildirim gösterir.
 
 ## Ölçüm
 

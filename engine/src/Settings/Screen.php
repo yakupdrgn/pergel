@@ -9,6 +9,8 @@ declare( strict_types=1 );
 
 namespace Pergel\Settings;
 
+use Pergel\Seo\Detect;
+
 use const Pergel\FILE;
 use const Pergel\VERSION;
 
@@ -160,6 +162,14 @@ final class Screen {
 		settings_fields( 'pergel' );
 		if ( isset( $tabs[ $tab ]['description'] ) ) {
 			echo '<p>' . esc_html( $tabs[ $tab ]['description'] ) . '</p>';
+		}
+		$seo_plugin = 'seo' === $tab ? Detect::active() : '';
+		if ( '' !== $seo_plugin ) {
+			printf(
+				'<div class="notice notice-info inline"><p>%s</p></div>',
+				/* translators: %s: SEO plugin name. */
+				esc_html( sprintf( __( '%s is active, so these settings are not used now.', 'pergel-engine' ), Detect::name( $seo_plugin ) ) )
+			);
 		}
 
 		$values = Settings::all()[ $tab ];

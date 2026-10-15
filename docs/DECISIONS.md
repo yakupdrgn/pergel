@@ -288,6 +288,24 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   değişmez.
 - **Ad yoksa site başlığı, ana logo Site Logo:** Ayarda ayrı bir ana logo alanı yok; Site Editor'deki
   Site Logo kullanılır. Ayarda yalnızca koyu zemin logosu var.
+- **SEO eklentisine tam devir (K8):** Eklenti aktifse Pergel başlık, açıklama, canonical,
+  Open Graph, JSON-LD ve site haritası filtresi eklemez; panel ve meta kaydı da yüklenmez.
+  Tek katkı eklentinin `Organization` düğümüne marka bilgisi eklemektir.
+- **Zenginleştir, ezme:** Eklentinin doldurduğu bir özellik (ad, logo) korunur; Pergel yalnızca
+  boş olanları doldurur ve `sameAs` listelerini birleştirir. Kişi (`Person`) düğümlerine ve
+  diğer türlere dokunulmaz. Organization verisi marka modülü kapalı olsa da marka ayarlarından
+  gelir (veri ayarda, modül anahtarı yalnızca Block Bindings'i yönetir).
+- **Taşıma yok:** Pergel'in yazı başına SEO alanları bir eklenti kurulduğunda eklentiye
+  aktarılmaz; eklentinin içe aktarma araçları veya F5'teki proje paketi bunu üstlenir. Veri
+  silinmez, eklenti kaldırılınca yedek katman aynı alanları yeniden kullanır.
+- **Yedek katman çekirdekle çakışmaz:** Tekil sayfada canonical'ı çekirdek basar, Pergel yalnızca
+  liste sayfalarına ekler; robots `wp_robots` filtresinden, başlık `pre_get_document_title`'dan
+  geçer. Böylece her etiket tam bir kez basılır.
+- **Yazı başına küçük panel:** Başlık, açıklama ve "arama motorlarından gizle". Gizli yazı
+  `noindex, follow` alır ve site haritasından çıkar. Ücretsiz eklentilerin sunduğu odak kelime,
+  okunabilirlik gibi özellikler eklenmez.
+- **Yazar site haritası varsayılan kapalı:** Kurumsal sitelerde yazar sayfaları blog listesini
+  tekrarlar; ayardan açılabilir.
 
 ## Aşamalar ve bitti tanımları
 
@@ -306,4 +324,5 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
 - Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor → F2 performans modülü kapatacak.
+- K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi) → F3'te breadcrumb bloğuyla.
 - ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.
