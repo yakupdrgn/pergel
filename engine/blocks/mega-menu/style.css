@@ -32,7 +32,7 @@
 
 .wp-block-pergel-mega-menu__panel {
 	background: var(--wp--preset--color--base, #fff);
-	border-block: 1px solid var(--wp--preset--color--border, rgba(0, 0, 0, 0.12));
+	border-block: 1px solid var(--wp--preset--color--line, rgba(0, 0, 0, 0.12));
 	box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.08);
 	box-sizing: border-box;
 	color: var(--wp--preset--color--contrast, #111);

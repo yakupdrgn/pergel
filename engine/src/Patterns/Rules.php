@@ -300,4 +300,71 @@ final class Rules {
 
 		return $errors;
 	}
+
+	/**
+	 * Preset slugs a theme.json defines, by preset type.
+	 *
+	 * @param array<string, mixed> $theme_json Decoded theme.json.
+	 * @return array<string, list<string>> color, font-size, font-family, spacing, shadow => slugs.
+	 */
+	public static function presets( array $theme_json ): array {
+		$settings = $theme_json['settings'] ?? array();
+		$lists    = array(
+			'color'       => $settings['color']['palette'] ?? array(),
+			'font-size'   => $settings['typography']['fontSizes'] ?? array(),
+			'font-family' => $settings['typography']['fontFamilies'] ?? array(),
+			'spacing'     => $settings['spacing']['spacingSizes'] ?? array(),
+			'shadow'      => $settings['shadow']['presets'] ?? array(),
+		);
+		$slugs    = array();
+		foreach ( $lists as $type => $list ) {
+			$slugs[ $type ] = array();
+			foreach ( is_array( $list ) ? $list : array() as $preset ) {
+				if ( is_array( $preset ) && isset( $preset['slug'] ) && is_string( $preset['slug'] ) ) {
+					$slugs[ $type ][] = $preset['slug'];
+				}
+			}
+		}
+		return $slugs;
+	}
+
+	/**
+	 * Preset references in a pattern that the theme does not define; a renamed
+	 * or missing preset fails silently in the browser.
+	 *
+	 * @param string                      $source  File contents.
+	 * @param array<string, list<string>> $presets Output of presets().
+	 * @return list<string>
+	 */
+	public static function unknown_presets( string $source, array $presets ): array {
+		$markup = self::markup( $source );
+		$found  = array();
+		foreach ( array( '/var:preset\|([a-z-]+)\|([a-z0-9-]+)/', '/var\(--wp--preset--([a-z-]+)--([a-z0-9-]+)\)/' ) as $pattern ) {
+			if ( preg_match_all( $pattern, $markup, $refs, PREG_SET_ORDER ) ) {
+				foreach ( $refs as $ref ) {
+					$found[] = array( $ref[1], $ref[2] );
+				}
+			}
+		}
+		$named = array(
+			'color'       => 'backgroundColor|textColor|borderColor|overlayColor',
+			'font-size'   => 'fontSize',
+			'font-family' => 'fontFamily',
+		);
+		foreach ( $named as $type => $keys ) {
+			if ( preg_match_all( '/"(?:' . $keys . ')":"([a-z][a-z0-9-]*)"/', $markup, $refs ) ) {
+				foreach ( $refs[1] as $slug ) {
+					$found[] = array( $type, $slug );
+				}
+			}
+		}
+
+		$errors = array();
+		foreach ( $found as [ $type, $slug ] ) {
+			if ( isset( $presets[ $type ] ) && ! in_array( $slug, $presets[ $type ], true ) ) {
+				$errors[] = "Unknown {$type} preset {$slug}.";
+			}
+		}
+		return array_values( array_unique( $errors ) );
+	}
 }

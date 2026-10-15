@@ -470,6 +470,14 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   farkları deprecation ile sessizce düzeltir; ama şablonda `wp:pattern` ile çağrılan pattern ön
   yüzde dosyadaki işaretlemeyle basılır. Bu
   yüzden her blok `validateBlock` ile bugünkü `save` çıktısına karşı denetlenir.
+- **Ayırıcı rengi `line`, `border` değil:** Renk preset'inin metin sınıfı `.has-{slug}-color`'dır;
+  WordPress kenarlık rengi verilen her bloğa `.has-border-color` ekler. `border` adlı renk bu
+  yüzden kenarlıklı her kartın yazısını ayırıcı rengine boyuyordu. Renk `line` oldu; derleyici
+  çekirdeğin genel sınıflarıyla çakışan `text`, `link` ve `border` adlarını reddeder.
+- **Pattern'ler yalnızca var olan preset'lere başvurur:** `tools/patterns.php --check`
+  `var:preset|…`, `var(--wp--preset--…)` ve `backgroundColor`/`textColor`/`borderColor`/
+  `overlayColor`/`fontSize`/`fontFamily` adlarını `theme.json`'daki preset'lerle karşılaştırır;
+  yeniden adlandırılan bir preset tarayıcıda sessizce boş kalır.
 
 ## Aşamalar ve bitti tanımları
 

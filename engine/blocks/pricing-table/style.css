@@ -7,7 +7,7 @@
 }
 
 .wp-block-pergel-pricing-plan {
-	border: 1px solid var(--wp--preset--color--border, currentcolor);
+	border: 1px solid var(--wp--preset--color--line, currentcolor);
 	border-radius: var(--wp--custom--radius--card, 8px);
 	display: flex;
 	flex-direction: column;

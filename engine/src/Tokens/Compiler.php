@@ -45,6 +45,13 @@ final class Compiler {
 	);
 
 	/**
+	 * Color slugs whose text class (.has-{slug}-color) is also a class WordPress
+	 * adds to every block with that kind of color: a "border" color would turn
+	 * the text of every bordered block that color.
+	 */
+	private const RESERVED_COLORS = array( 'text', 'link', 'border' );
+
+	/**
 	 * Text/background pairs that must reach WCAG AA (4.5:1) in every token set.
 	 */
 	private const CONTRAST = array(
@@ -224,6 +231,12 @@ final class Compiler {
 				if ( ! isset( $tokens[ "$group.$slug" ] ) ) {
 					$problems[] = "$label: required token $group.$slug is missing";
 				}
+			}
+		}
+
+		foreach ( self::RESERVED_COLORS as $slug ) {
+			if ( isset( $tokens[ "color.$slug" ] ) ) {
+				$problems[] = "$label: color.$slug clashes with the .has-$slug-color class WordPress adds to blocks; use another name";
 			}
 		}
 

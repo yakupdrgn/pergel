@@ -100,4 +100,25 @@ final class RulesTest extends TestCase {
 		$this->assertContains( 'Image without alt.', Rules::check( 'cards.php', self::file( $noalt ) ) );
 		$this->assertContains( 'No <script> in patterns.', Rules::check( 'cards.php', self::file( $script ) ) );
 	}
+
+	public function test_preset_references_must_exist_in_the_theme(): void {
+		$presets = Rules::presets(
+			array(
+				'settings' => array(
+					'color'      => array( 'palette' => array( array( 'slug' => 'base' ), array( 'slug' => 'line' ) ) ),
+					'typography' => array( 'fontSizes' => array( array( 'slug' => 'large' ) ) ),
+					'spacing'    => array( 'spacingSizes' => array( array( 'slug' => '40' ) ) ),
+				),
+			)
+		);
+		$good    = '<!-- wp:group {"backgroundColor":"base","fontSize":"large","style":{"border":{"color":"var:preset|color|line"},"typography":{"fontSize":"3rem"},"spacing":{"padding":{"top":"var:preset|spacing|40"}}}} --><div class="wp-block-group" style="border-color:var(--wp--preset--color--line)"></div><!-- /wp:group -->';
+		$bad     = '<!-- wp:group {"textColor":"border","fontSize":"huge","style":{"spacing":{"padding":{"top":"var:preset|spacing|90"}}}} --><div class="wp-block-group" style="border-color:var(--wp--preset--color--border)"></div><!-- /wp:group -->';
+
+		$this->assertSame( array( 'base', 'line' ), $presets['color'] );
+		$this->assertSame( array(), Rules::unknown_presets( self::file( $good ), $presets ) );
+		$this->assertSame(
+			array( 'Unknown spacing preset 90.', 'Unknown color preset border.', 'Unknown font-size preset huge.' ),
+			Rules::unknown_presets( self::file( $bad ), $presets )
+		);
+	}
 }

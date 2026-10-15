@@ -10,7 +10,7 @@
 }
 
 .wp-block-pergel-timeline::before {
-	background: var(--wp--preset--color--border, currentcolor);
+	background: var(--wp--preset--color--line, currentcolor);
 	content: "";
 	inset-block: 0;
 	inset-inline-start: calc(var(--pergel-timeline-dot) / 2 - 1px);

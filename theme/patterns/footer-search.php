@@ -27,8 +27,8 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:column --></div>
 <!-- /wp:columns -->
 
-<!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"var:preset|spacing|40"}},"border":{"top":{"color":"var:preset|color|border","width":"1px","style":"solid"}}},"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between"}} -->
-<div class="wp-block-group alignwide" style="border-top-color:var(--wp--preset--color--border);border-top-style:solid;border-top-width:1px;padding-top:var(--wp--preset--spacing--40)"><!-- wp:navigation {"ariaLabel":"<?php echo esc_attr_x( 'Footer', 'footer menu label', 'pergel' ); ?>","overlayMenu":"never","fontSize":"small"} /-->
+<!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"var:preset|spacing|40"}},"border":{"top":{"color":"var:preset|color|line","width":"1px","style":"solid"}}},"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between"}} -->
+<div class="wp-block-group alignwide" style="border-top-color:var(--wp--preset--color--line);border-top-style:solid;border-top-width:1px;padding-top:var(--wp--preset--spacing--40)"><!-- wp:navigation {"ariaLabel":"<?php echo esc_attr_x( 'Footer', 'footer menu label', 'pergel' ); ?>","overlayMenu":"never","fontSize":"small"} /-->
 
 <!-- wp:paragraph {"fontSize":"small"} -->
 <p class="has-small-font-size"><?php /* translators: %s: link to WordPress.org */ printf( esc_html__( 'Proudly powered by %s', 'pergel' ), '<a href="https://wordpress.org/">WordPress</a>' ); ?></p>

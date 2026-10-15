@@ -376,7 +376,8 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   harf yok; çeviri alan adı `pergel`; en fazla bir H1, o da yalnızca hero (`banner`) ve tam sayfa
   (`pergel-pages`) pattern'lerinde; bölüm pattern'inde tek kök blok (tam sayfalar yalnızca
   `core/pattern` bloklarından oluşur); `src`/`href`/`srcset`/`poster` ve JSON `url`'lerinde dış
-  adres yok; `<script>`, `<style>`, `<link>`, `<iframe>` yok; her `<img>` `alt` taşır.
+  adres yok; `<script>`, `<style>`, `<link>`, `<iframe>` yok; her `<img>` `alt` taşır; başvurulan
+  her renk, yazı boyutu, yazı ailesi, boşluk ve gölge preset'i `theme.json`'da tanımlı.
 - **Kategoriler:** Çekirdeğin kategorileri yeniden kullanılır (`banner`, `services`, `about`,
   `team`, `testimonials`, `call-to-action`, `contact`, `posts`, `portfolio`, `gallery`, `header`,
   `footer`); eksikler Pergel'den gelir: `pergel-stats` (Numbers), `pergel-process` (Process),

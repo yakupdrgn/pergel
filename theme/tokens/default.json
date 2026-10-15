@@ -9,7 +9,7 @@
 		"surface": { "$value": "#f4f5f7", "$description": "Subtle sections, footer, cards" },
 		"contrast": { "$value": "#16181d", "$description": "Body text and headings" },
 		"muted": { "$value": "#5b6270", "$description": "Secondary text: dates, captions" },
-		"border": { "$value": "#dde0e6", "$description": "Dividers and input borders (decorative, no contrast rule)" },
+		"line": { "$value": "#dde0e6", "$description": "Dividers and input borders (decorative, no contrast rule)" },
 		"accent": { "$value": "#1f4fd1", "$description": "Links, buttons, focus" },
 		"on-accent": { "$value": "#ffffff", "$extensions": { "com.ariumlab.pergel": { "name": "On accent" } } }
 	},
