@@ -42,6 +42,12 @@
 			</property>
 		</properties>
 	</rule>
+	<!-- Token compiler and dev tools run only under WP-CLI or CI; their exception
+	     messages go to a terminal, never into HTML. -->
+	<rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">
+		<exclude-pattern>engine/src/Tokens/*</exclude-pattern>
+		<exclude-pattern>tools/*</exclude-pattern>
+	</rule>
 	<!-- Hook names use the pergel/ namespace style (pergel/modules). -->
 	<rule ref="WordPress.NamingConventions.ValidHookName">
 		<properties>

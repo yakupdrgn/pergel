@@ -26,6 +26,8 @@ jobs:
           tools: composer:v2
       - run: composer install --no-interaction --no-progress
       - run: composer check
+      - name: theme.json in sync with design tokens
+        run: php tools/tokens.php --check
       - uses: actions/setup-node@v4
         with:
           node-version: 24

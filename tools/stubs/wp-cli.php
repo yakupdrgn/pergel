@@ -41,4 +41,12 @@ namespace WP_CLI\Utils {
 	 * @param array<string>|string $fields Fields.
 	 */
 	function format_items( $format, $items, $fields ): void {}
+
+	/**
+	 * @param array<string, mixed> $assoc_args Associative arguments.
+	 * @param string               $flag       Flag name.
+	 * @param mixed                $default    Default value.
+	 * @return mixed
+	 */
+	function get_flag_value( $assoc_args, $flag, $default = null ) {}
 }

@@ -12,6 +12,9 @@
   Global önek `pergel_`, hook'lar `pergel/<ad>` (ör. `pergel/modules`).
 - Text domain: tema `pergel`, eklenti `pergel-engine`. Kullanıcıya görünen her metin çevrilebilir.
 - Satır sonu LF, girinti tab (YAML hariç), UTF-8 (`.editorconfig`).
+- `theme.json` preset'leri ve `styles/*.json` elle düzenlenmez; `tokens/` değiştirilip
+  `php tools/tokens.php` (veya `wp pergel tokens build`) çalıştırılır (`docs/TOKENS.md`).
+- WordPress gerektirmeyen mantık `tests/php/` altında PHPUnit ile test edilir.
 
 ## Güvenlik
 

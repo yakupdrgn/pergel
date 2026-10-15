@@ -1,0 +1,103 @@
+{
+	"$description": "Pergel default design tokens. Source of the presets in theme.json; edit here and run `wp pergel tokens build`. Format: docs/TOKENS.md.",
+	"$extensions": {
+		"com.ariumlab.pergel": { "format": 1, "title": "Default" }
+	},
+	"color": {
+		"$type": "color",
+		"base": { "$value": "#ffffff", "$description": "Page background" },
+		"surface": { "$value": "#f4f5f7", "$description": "Subtle sections, footer, cards" },
+		"contrast": { "$value": "#16181d", "$description": "Body text and headings" },
+		"muted": { "$value": "#5b6270", "$description": "Secondary text: dates, captions" },
+		"border": { "$value": "#dde0e6", "$description": "Dividers and input borders (decorative, no contrast rule)" },
+		"accent": { "$value": "#1f4fd1", "$description": "Links, buttons, focus" },
+		"on-accent": { "$value": "#ffffff", "$extensions": { "com.ariumlab.pergel": { "name": "On accent" } } }
+	},
+	"font-family": {
+		"$type": "fontFamily",
+		"body": {
+			"$value": [ "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif" ],
+			"$extensions": { "com.ariumlab.pergel": { "name": "System sans" } }
+		},
+		"heading": { "$value": "{font-family.body}", "$extensions": { "com.ariumlab.pergel": { "name": "Headings" } } },
+		"mono": {
+			"$value": [ "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace" ],
+			"$extensions": { "com.ariumlab.pergel": { "name": "System mono" } }
+		}
+	},
+	"font-size": {
+		"$type": "dimension",
+		"small": { "$value": { "value": 0.875, "unit": "rem" } },
+		"medium": { "$value": { "value": 1.0625, "unit": "rem" } },
+		"large": {
+			"$value": { "value": 1.375, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "fluid": { "min": { "value": 1.25, "unit": "rem" } } } }
+		},
+		"x-large": {
+			"$value": { "value": 2, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "name": "Extra large", "fluid": { "min": { "value": 1.625, "unit": "rem" } } } }
+		},
+		"xx-large": {
+			"$value": { "value": 3, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "name": "Huge", "fluid": { "min": { "value": 2.125, "unit": "rem" } } } }
+		}
+	},
+	"spacing": {
+		"$type": "dimension",
+		"20": { "$value": { "value": 0.5, "unit": "rem" }, "$extensions": { "com.ariumlab.pergel": { "name": "2XS" } } },
+		"30": { "$value": { "value": 0.75, "unit": "rem" }, "$extensions": { "com.ariumlab.pergel": { "name": "XS" } } },
+		"40": { "$value": { "value": 1, "unit": "rem" }, "$extensions": { "com.ariumlab.pergel": { "name": "S" } } },
+		"50": {
+			"$value": { "value": 1.5, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "name": "M", "fluid": { "min": { "value": 1.25, "unit": "rem" } } } }
+		},
+		"60": {
+			"$value": { "value": 2.5, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "name": "L", "fluid": { "min": { "value": 1.75, "unit": "rem" } } } }
+		},
+		"70": {
+			"$value": { "value": 4, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "name": "XL", "fluid": { "min": { "value": 2.5, "unit": "rem" } } } }
+		},
+		"80": {
+			"$value": { "value": 6.5, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "name": "2XL", "fluid": { "min": { "value": 3.5, "unit": "rem" } } } }
+		}
+	},
+	"layout": {
+		"$type": "dimension",
+		"content": { "$value": { "value": 720, "unit": "px" } },
+		"wide": { "$value": { "value": 1240, "unit": "px" } }
+	},
+	"radius": {
+		"$type": "dimension",
+		"small": { "$value": { "value": 4, "unit": "px" } },
+		"medium": { "$value": { "value": 8, "unit": "px" } },
+		"large": { "$value": { "value": 16, "unit": "px" } },
+		"button": { "$value": "{radius.small}" },
+		"card": { "$value": "{radius.medium}" }
+	},
+	"font-weight": {
+		"$type": "fontWeight",
+		"body": { "$value": 400 },
+		"heading": { "$value": 650 },
+		"button": { "$value": 600 }
+	},
+	"line-height": {
+		"$type": "number",
+		"body": { "$value": 1.6 },
+		"heading": { "$value": 1.2 }
+	},
+	"shadow": {
+		"$type": "shadow",
+		"small": {
+			"$value": { "color": "#16181d14", "offsetX": "0px", "offsetY": "1px", "blur": "2px", "spread": "0px" }
+		},
+		"medium": {
+			"$value": [
+				{ "color": "#16181d0f", "offsetX": "0px", "offsetY": "2px", "blur": "4px", "spread": "0px" },
+				{ "color": "#16181d14", "offsetX": "0px", "offsetY": "8px", "blur": "24px", "spread": "-4px" }
+			]
+		}
+	}
+}

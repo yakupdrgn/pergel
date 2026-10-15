@@ -109,6 +109,39 @@ bir projeye ait; o adlar kullanılmaz.
   gelince yeniden değerlendirilir.
 - **Repo konumu:** `D:\dev\pergel` (önce `C:\dev\pergel`, kullanıcı isteğiyle taşındı).
 
+## F1 kararları (15 Ekim 2026)
+
+- **Token formatı:** W3C DTCG 2025.10'un bir alt kümesi, `tokens/*.json` (ayrıntı:
+  `docs/TOKENS.md`). Plandaki proje paketi `tokens.json` dosyası da bu formatı kullanır.
+  **Elenen:** Style Dictionary gibi bir Node aracı (derleme WordPress olmadan da PHP ile çalışmalı,
+  child temalar `wp pergel tokens build` ile derleniyor) ve doğrudan `theme.json` düzenlemek
+  (kontrast denetimi ve variation'lar arası tutarlılık kaybolur).
+- **Ayrı JSON Schema yok:** Doğrulayıcı derleyicinin kendisidir. Tüm sorunları tek seferde
+  dosya ve token yoluyla listeler, hiçbir dosyayı yarım yazmaz. Şema ile derleyici arasında
+  iki kaynaklı kural ikiliği oluşmaz. Editör otomatik tamamlaması gerekirse şema sonradan
+  derleyicinin sabitlerinden üretilir.
+- **Üretilen `theme.json`:** Token'ların sahip olduğu alanlar her derlemede yeniden yazılır, geri
+  kalanı korunur. Biçim sabittir (tab girinti, sonda satır sonu), böylece CI'daki
+  `php tools/tokens.php --check` farkı bayt bayt yakalar.
+- **Kontrast derleme hatasıdır:** WCAG AA 4.5:1 sağlamayan zorunlu renk çifti uyarı değil
+  hatadır. ariumlab.com'un bugünkü `#767676` / `#F5F7F8` (4.23) gibi çiftleri bu yüzden yeni
+  temaya taşınamaz.
+- **PHPUnit 10.5:** Saf PHP birimleri (token derleyicisi ve sonraki modüller) için geliştirme
+  bağımlılığı olarak eklendi. `composer check` artık lint + analiz + test çalıştırır.
+  WordPress gerektiren testler F2'de ayrıca değerlendirilir.
+- **Style variation'lar ariumlab.com kimliğine göre:** Variation'lar genel örnekler değil,
+  ariumlab.com kurumsal kimliğinden (mavi `#1E64E6`, koyu `#191919`/`#242424`, açık gri zemin,
+  küçük radius) türetilen yönlerdir. Ticari fontlar (Satoshi, Preospe) kullanılmaz; yerine OFL
+  lisanslı, Türkçe karakterleri kapsayan değişken fontlar kendi sunucumuzdan sunulur.
+- **Varsayılan font sistem yığınıdır:** Ana tema hiç web font indirmez. Web fontları yalnızca
+  variation'lar ve child temalar getirir.
+
+### Değişiklik (15 Ekim 2026)
+
+F5'teki "organik ürünler provası" plandaki bir örnekti; kullanıcı bu provaya gerek olmadığını
+söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek seferde ve tekrar
+üretilebilen bir site) aynı kalır.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
@@ -118,7 +151,7 @@ bir projeye ait; o adlar kullanılmaz.
 | F2 | Modül sistemi, ayar ekranı, marka + Block Bindings, SEO sözleşmesi, performans modülü, `wp pergel` | SEO matrisi 6 senaryoda temiz |
 | F3 | Pergel blokları ve uzantıları, 120+ pattern, kurumsal starter, dönen video hero | Tüm pattern'ler geçerli, görsel testler oturdu, kurumsal demo kuruluyor |
 | F4 | WooCommerce şablonları, hızlı arama, satış modları, P2 özellikleri, ölçek testi | Mağaza bütçesi tutuyor, ödeme akışı test modunda geçiyor |
-| F5 | Proje paketi ve `wp pergel import`, Abilities/MCP, skill'ler, organik ürünler provası | Prova sitesi paketten tek seferde ve tekrar üretilebiliyor |
+| F5 | Proje paketi ve `wp pergel import`, Abilities/MCP, skill'ler, prova sitesi (hedef açık) | Prova sitesi paketten tek seferde ve tekrar üretilebiliyor |
 | F6 | Tam test matrisi, güvenlik incelemesi, çeviriler, WP 7.2 uyumu | Tüm kontroller yeşil, v1.0.0 |
 | F7 | ariumlab.com: içerik, staging, geçiş, 30 gün izleme | Yeni site yayında |
 
