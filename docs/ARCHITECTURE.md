@@ -223,6 +223,25 @@ yüksekliğe göre boyutlanır: `logo.height` (40px) ve `logo.max-width` (240px)
 verilirse sınıf kalkar ve o genişlik geçerlidir. Kural theme.json `css` alanında değildir:
 WordPress o alanı `:where()` ile sardığı için çekirdeğin 120px kuralını geçemez.
 
+### Breadcrumb
+
+`pergel/breadcrumb` sayfanın yolunu `<nav><ol>` olarak basar; son adım bağlantısız ve
+`aria-current="page"` taşır, iki adımdan kısa yolda hiçbir şey basmaz. Yolu `Seo\Trail` verir:
+
+- Rank Math, Yoast, AIOSEO ve TSF aktifse yol eklentinin kendi BreadcrumbList'ini ürettiği listeden
+  okunur (Rank Math `Breadcrumbs::get()->get_crumbs()`, Yoast `YoastSEO()->meta->for_current_page()`,
+  AIOSEO `breadcrumbs->frontend->getBreadcrumbs()`, TSF `Meta\Breadcrumbs::get_breadcrumb_list()`).
+- Eklenti yoksa yol Pergel'in yedek grafiğindeki yoldur (`Head::page()['crumbs']`).
+- SEOPress (ücretsiz) yol üretmez: Pergel'in yolu kullanılır ve blok BreadcrumbList'i kendisi
+  ekler (`pergel/breadcrumb/schema` filtresiyle kapatılabilir).
+
+Her kaynak `Trail::clean()`'den geçer: adı ve bağlantısı olan, schema'dan gizlenmemiş adımlar
+kalır. Eklentiler de BreadcrumbList'e tam bu adımları koyduğu için görünen yol ile schema aynıdır;
+SEO matrisi (`tools/seo/check.mjs`) bunu altı senaryoda denetler. Rank Math yolu yalnızca destek
+bildiren temalarda kurduğundan Pergel `rank-math-breadcrumbs` desteğini ekler; blog sayfası gibi
+bağlantısız bırakılan son adıma sayfanın adresini verir. Editörde blok örnek bir yol gösterir.
+Blok `single`, `page`, `archive` ve `home` şablonlarında başlığın üstündedir.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.

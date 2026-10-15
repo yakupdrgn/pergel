@@ -39,6 +39,7 @@ final class Module implements Core\Module {
 		$plugin = Detect::active();
 		if ( '' !== $plugin ) {
 			Integrations::register( $plugin );
+			Trail::register( $plugin );
 			return;
 		}
 

@@ -1,0 +1,23 @@
+.wp-block-pergel-breadcrumb ol {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.25em 0.5em;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.wp-block-pergel-breadcrumb li {
+	display: inline-flex;
+	gap: 0.5em;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+/* The separator is decoration; the empty alternative text keeps it out of screen readers. */
+.wp-block-pergel-breadcrumb li + li::before {
+	content: "/";
+	content: "/" / "";
+	opacity: 0.6;
+}

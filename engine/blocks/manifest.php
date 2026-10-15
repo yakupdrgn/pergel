@@ -8,4 +8,49 @@
 // phpcs:ignoreFile
 
 return array (
+  'breadcrumb' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/breadcrumb',
+    'title' => 'Breadcrumb',
+    'category' => 'pergel',
+    'icon' => 'arrow-right-alt2',
+    'description' => 'The path from the home page to the current page. With an SEO plugin the path comes from the plugin, so it matches the page\'s structured data.',
+    'keywords' => 
+    array (
+      0 => 'breadcrumbs',
+      1 => 'trail',
+      2 => 'navigation',
+      3 => 'path',
+    ),
+    'textdomain' => 'pergel-engine',
+    'supports' => 
+    array (
+      'autoRegister' => true,
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'color' => 
+      array (
+        'text' => true,
+        'link' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+      'typography' => 
+      array (
+        'fontSize' => true,
+        'lineHeight' => true,
+      ),
+    ),
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
 );

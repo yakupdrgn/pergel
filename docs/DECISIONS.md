@@ -377,6 +377,13 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   header örneğinde saklanır, global ayar değildir. Böylece yalnızca anasayfa overlay, diğer
   sayfalar sticky olabilir ve ayar Site Editor'de, header'ın yanında durur. CSS ve küçük script
   yalnızca seçenek açık olan sayfalarda yüklenir.
+- **Görünen breadcrumb = BreadcrumbList (K8):** Breadcrumb bloğu yolu aktif SEO eklentisinin
+  schema'ya giren listesinden okur, eklenti yoksa Pergel'in yolundan. Adı ve bağlantısı olan,
+  gizlenmemiş adımlar kalır; bu, eklentilerin BreadcrumbList kuralıyla aynıdır. SEOPress ücretsiz
+  sürümü yol üretmediği için Pergel'in yolu ve blokta basılan bir BreadcrumbList kullanılır.
+  Rank Math'in blog sayfasında bağlantısız bıraktığı son adıma sayfa adresi verilir; böylece o
+  sayfada da yol ve schema "Ana sayfa > Blog" olur.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
@@ -394,5 +401,5 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
 - ~~Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor~~ → F2'de performans modülüyle çözüldü (bütçe `emoji = 0`).
-- K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi) → F3'te breadcrumb bloğuyla.
+- ~~K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi)~~ → F3a'da `pergel/breadcrumb` ile çözüldü (SEO matrisi görünen yolu BreadcrumbList ile karşılaştırır).
 - ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.
