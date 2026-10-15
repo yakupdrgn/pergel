@@ -42,6 +42,10 @@ final class Labels {
 				'title'       => __( 'Forms', 'pergel-engine' ),
 				'description' => __( 'Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive.', 'pergel-engine' ),
 			),
+			'woo'         => array(
+				'title'       => __( 'Shop', 'pergel-engine' ),
+				'description' => __( 'How Pergel works with WooCommerce. This tab is shown while WooCommerce is active.', 'pergel-engine' ),
+			),
 		);
 	}
 
@@ -56,7 +60,7 @@ final class Labels {
 			'modules'     => array(
 				'modules' => array(
 					'title'  => __( 'Modules', 'pergel-engine' ),
-					'fields' => array( 'brand', 'seo', 'performance', 'forms' ),
+					'fields' => array( 'brand', 'seo', 'performance', 'forms', 'woo' ),
 				),
 			),
 			'brand'       => array(
@@ -107,6 +111,12 @@ final class Labels {
 					'fields' => array( 'recipient' ),
 				),
 			),
+			'woo'         => array(
+				'speed' => array(
+					'title'  => __( 'Speed', 'pergel-engine' ),
+					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
+				),
+			),
 		);
 	}
 
@@ -133,6 +143,10 @@ final class Labels {
 				'forms'       => array(
 					'label' => __( 'Forms', 'pergel-engine' ),
 					'help'  => __( 'The contact and quote Form block: messages are emailed and kept in the admin area.', 'pergel-engine' ),
+				),
+				'woo'         => array(
+					'label' => __( 'Shop', 'pergel-engine' ),
+					'help'  => __( 'WooCommerce support. It loads only while WooCommerce is active.', 'pergel-engine' ),
 				),
 			),
 			'brand'       => array(
@@ -201,6 +215,16 @@ final class Labels {
 				'recipient' => array(
 					'label' => __( 'Send messages to', 'pergel-engine' ),
 					'help'  => __( 'Leave empty to use the administration email address of the site.', 'pergel-engine' ),
+				),
+			),
+			'woo'         => array(
+				'shop_assets_only'  => array(
+					'label' => __( 'Load WooCommerce files on shop pages only', 'pergel-engine' ),
+					'help'  => __( 'Shop, product, category, cart, checkout and account pages, and pages with a WooCommerce shortcode. Other pages skip the classic WooCommerce styles and jQuery scripts; shop blocks still bring their own files.', 'pergel-engine' ),
+				),
+				'no_cart_fragments' => array(
+					'label' => __( 'Turn off cart fragments', 'pergel-engine' ),
+					'help'  => __( 'An old script that asks the server for the cart on every page view. The mini cart block does not need it.', 'pergel-engine' ),
 				),
 			),
 		);

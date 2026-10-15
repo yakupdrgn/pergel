@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T15:27:28+03:00\n"
+"POT-Creation-Date: 2026-10-15T18:33:20+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -324,6 +324,12 @@ msgstr ""
 msgid "Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive."
 msgstr ""
 
+msgid "Shop"
+msgstr ""
+
+msgid "How Pergel works with WooCommerce. This tab is shown while WooCommerce is active."
+msgstr ""
+
 msgid "Address"
 msgstr ""
 
@@ -348,6 +354,9 @@ msgstr ""
 msgid "Delivery"
 msgstr ""
 
+msgid "Speed"
+msgstr ""
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr ""
 
@@ -358,6 +367,9 @@ msgid "Removes front-end assets that most sites do not need."
 msgstr ""
 
 msgid "The contact and quote Form block: messages are emailed and kept in the admin area."
+msgstr ""
+
+msgid "WooCommerce support. It loads only while WooCommerce is active."
 msgstr ""
 
 msgid "Brand name"
@@ -454,6 +466,18 @@ msgid "Send messages to"
 msgstr ""
 
 msgid "Leave empty to use the administration email address of the site."
+msgstr ""
+
+msgid "Load WooCommerce files on shop pages only"
+msgstr ""
+
+msgid "Shop, product, category, cart, checkout and account pages, and pages with a WooCommerce shortcode. Other pages skip the classic WooCommerce styles and jQuery scripts; shop blocks still bring their own files."
+msgstr ""
+
+msgid "Turn off cart fragments"
+msgstr ""
+
+msgid "An old script that asks the server for the cart on every page view. The mini cart block does not need it."
 msgstr ""
 
 msgid "The value is too long."

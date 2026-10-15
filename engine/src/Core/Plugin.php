@@ -16,6 +16,7 @@ use Pergel\Forms;
 use Pergel\Performance;
 use Pergel\Seo;
 use Pergel\Settings;
+use Pergel\Woo;
 
 /**
  * Boots the modules that apply to the current request.
@@ -43,6 +44,7 @@ final class Plugin {
 			Seo\Module::class,
 			Performance\Module::class,
 			Forms\Module::class,
+			Woo\Module::class,
 			Cli\Module::class,
 		);
 

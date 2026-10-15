@@ -456,6 +456,22 @@ okuma ayarları (ön sayfa, yazılar sayfası). `starters/<ad>/starter.json` pak
   depoya bakar (CI'da symlink). Kopyalanmış eklentide (`LINK_MODE=copy`, zip kurulumu) paket klasör yoluyla verilir:
   `wp pergel starter install /yol/starters/corporate`.
 
+## Mağaza (F4)
+
+`Woo\Module` yalnızca WooCommerce etkinken yüklenir (`class_exists( 'WooCommerce', false )`);
+mağazasız sitede modülün hiçbir dosyası açılmaz, ayar ekranında "Shop" sekmesi ve modül anahtarı
+görünmez (`Settings\Screen::shown`).
+
+- **Uyumluluk:** `before_woocommerce_init` üzerinde HPOS (`custom_order_tables`) ve blok
+  sepet/ödeme (`cart_checkout_blocks`) uyumu bildirilir.
+- **Dosyalar (`Woo\Assets`, yalnızca ön yüz):** `woo.shop_assets_only` açıkken klasik CSS'ler
+  (`woocommerce_enqueue_styles` boş döner, `woocommerce-blocktheme` ve `woocommerce-inline`
+  kuyruktan çıkar) ve klasik jQuery betikleri (`woocommerce`, `wc-add-to-cart`,
+  `wc-add-to-cart-variation`, `wc-single-product`) yalnızca mağaza sayfalarında kalır.
+  Mağaza sayfası: `is_woocommerce()`, sepet, ödeme, hesap ya da WooCommerce kısa kodu içeren
+  tekil içerik; `pergel/woo/shop_request` süzgeci kararı değiştirir. `woo.no_cart_fragments`
+  `wc-cart-fragments` betiğini her yerde kaldırır.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.

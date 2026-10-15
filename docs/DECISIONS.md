@@ -527,6 +527,38 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   Team de bir başkasını paylaşıyordu; kurulan sitede beş sayfa iki H1 tekrar ediyordu. Her tam
   sayfa artık kendi hero'sunu kullanır ve ton sırası korunur.
 
+## F4 kararları (15 Ekim 2026)
+
+- **F4 üç PR'da:** F4a WooCommerce modülü, blok şablonları, satış modları ve ürün CTA'sı; F4b
+  hızlı arama, filtre stilleri ve P2 özellikleri; F4c mağaza starter'ı, ödeme e2e ve ölçek testi
+  (kullanıcı kararı).
+- **P2 özelliklerinin dördü de F4b'de:** karşılaştırma ve istek listesi, swatch ve yapışkan sepete
+  ekle, tahmini teslimat ve stok bildirimi, beden rehberi ve birlikte al. Her biri ayrı açılır,
+  varsayılan kapalıdır; sayfa görüntülemede veritabanına yazmaz (kullanıcı kararı).
+- **Divit F4'te sahte sağlayıcıyla:** Teklif sağlayıcı arayüzü ve bir sahte sağlayıcı yazılır;
+  gerçek Divit entegrasyonu staging'de denenir (kullanıcı kararı).
+- **Mağaza ayrı yerel sitede:** `localhost/pergel-shop` kendi veritabanıyla WooCommerce
+  çalıştırır. `pergel-tema` WooCommerce'siz kalır; bütçesi ve testleri mağaza olmayan siteyi ölçer.
+- **Woo modülü yalnızca WooCommerce etkinken yüklenir:** Modül kaydı `class_exists`
+  denetimiyle yapılır; WooCommerce yoksa modülün hiçbir sınıfı açılmaz ve "Mağaza" sekmesi ile
+  modül anahtarı ayar ekranında gösterilmez. Gizli alanlar kayıtlı değerlerini korur.
+- **HPOS ve blok sepet/ödeme uyumu bildirilir:** Motor `before_woocommerce_init` üzerinde iki
+  özellik için de uyumlu olduğunu bildirir; WooCommerce uyumsuzluk uyarısı göstermez.
+- **WooCommerce'in klasik dosyaları yalnızca mağaza sayfalarında:** WooCommerce 11.2 klasik
+  CSS'lerini (`woocommerce-general`, `-layout`, `-smallscreen`, `-blocktheme`) ve jQuery
+  betiklerini her sayfada yükler. Mağaza, ürün, kategori, sepet, ödeme ve hesap sayfaları ile
+  WooCommerce kısa kodu içeren sayfalar dışında bunlar kaldırılır (`pergel/woo/shop_request`
+  süzgeciyle genişletilebilir). Yerel ölçümde ön sayfa 15 yerine 5 JS/CSS dosyası, 83 yerine
+  24 KB yükledi ve jQuery kalktı. Ayar varsayılan açık, kapatılabilir.
+- **Sepet parçaları (cart fragments) kapalı:** Her sayfada sunucudan sepeti isteyen eski betik
+  kaldırılır; mini sepet bloğu buna ihtiyaç duymaz. Ayar varsayılan açık.
+- **Sipariş kaynağı izleme dokunulmadı:** `sourcebuster` ve `wc-order-attribution` her sayfada
+  kalır; bu WooCommerce'in kendi özellik ayarıdır (WooCommerce → Ayarlar → Gelişmiş → Özellikler)
+  ve kapatma kararı site sahibinindir.
+- **Entegrasyon testleri iki sitede:** Test takımı WooCommerce'siz sitede mağaza testlerini
+  atlar. Yerelde `PERGEL_WP_DIR=…/pergel-shop` ile de çalıştırılır; CI'daki WooCommerce'li iş
+  F4c'de gelir.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
