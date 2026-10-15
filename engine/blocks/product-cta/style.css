@@ -1,0 +1,63 @@
+.wp-block-pergel-product-cta {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.wp-block-pergel-product-cta > * {
+	margin: 0;
+}
+
+.wp-block-pergel-product-cta__quote > summary {
+	cursor: pointer;
+	display: inline-flex;
+	list-style: none;
+}
+
+.wp-block-pergel-product-cta__quote > summary::-webkit-details-marker {
+	display: none;
+}
+
+.wp-block-pergel-product-cta__quote > summary::after {
+	content: "▾";
+	margin-inline-start: 0.5em;
+}
+
+.wp-block-pergel-product-cta__quote[open] > summary::after {
+	content: "▴";
+}
+
+.wp-block-pergel-product-cta__panel {
+	border: 1px solid var(--wp--preset--color--muted, #6b6b6b);
+	border-radius: var(--wp--custom--radius--small, 4px);
+	margin-top: 1rem;
+	padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.wp-block-pergel-product-cta__contacts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	list-style: none;
+	padding: 0;
+}
+
+.wp-block-pergel-product-cta__link {
+	align-items: center;
+	border: 1px solid currentColor;
+	border-radius: var(--wp--custom--radius--small, 4px);
+	display: inline-flex;
+	font-weight: var(--wp--custom--font-weight--button, 600);
+	min-height: 2.75rem;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+}
+
+.wp-block-pergel-product-cta__link:hover {
+	text-decoration: underline;
+}
+
+.wp-block-pergel-product-cta__link:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent, currentColor);
+	outline-offset: 2px;
+}

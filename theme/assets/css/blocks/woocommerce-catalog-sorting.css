@@ -1,0 +1,13 @@
+/*
+ * The shop's sort menu, in the theme's type and colors instead of the
+ * browser's default select.
+ */
+.wc-block-catalog-sorting select.orderby {
+	font: inherit;
+	color: var(--wp--preset--color--contrast);
+	background-color: var(--wp--preset--color--base);
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--small);
+	padding: 0.4em 0.6em;
+	min-height: 2.5em;
+}

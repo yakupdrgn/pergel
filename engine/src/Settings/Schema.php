@@ -69,6 +69,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				'woo'         => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
 			),
 			// Company details: block bindings and Organization schema.
 			'brand'       => array(
@@ -138,6 +142,30 @@ final class Schema {
 			// Contact and quote forms.
 			'forms'       => array(
 				'recipient' => array( 'type' => 'email' ),
+			),
+			// WooCommerce; the tab is shown only while it is active.
+			'woo'         => array(
+				// Most open first; see Pergel\Woo\Modes.
+				'sales_mode'        => array(
+					'type'    => 'enum',
+					'options' => array( 'sale', 'login', 'quote', 'catalog' ),
+					'default' => 'sale',
+				),
+				// Product enquiry block; the phone number is brand.phone.
+				'whatsapp'          => array( 'type' => 'tel' ),
+				'contact_url'       => array( 'type' => 'url' ),
+				'mini_cart'         => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'shop_assets_only'  => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'no_cart_fragments' => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
 			),
 		);
 	}

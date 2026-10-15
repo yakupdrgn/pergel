@@ -527,6 +527,134 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   Team de bir başkasını paylaşıyordu; kurulan sitede beş sayfa iki H1 tekrar ediyordu. Her tam
   sayfa artık kendi hero'sunu kullanır ve ton sırası korunur.
 
+## F4 kararları (15 Ekim 2026)
+
+- **F4 üç PR'da:** F4a WooCommerce modülü, blok şablonları, satış modları ve ürün CTA'sı; F4b
+  hızlı arama, filtre stilleri ve P2 özellikleri; F4c mağaza starter'ı, ödeme e2e ve ölçek testi
+  (kullanıcı kararı).
+- **P2 özelliklerinin dördü de F4b'de:** karşılaştırma ve istek listesi, swatch ve yapışkan sepete
+  ekle, tahmini teslimat ve stok bildirimi, beden rehberi ve birlikte al. Her biri ayrı açılır,
+  varsayılan kapalıdır; sayfa görüntülemede veritabanına yazmaz (kullanıcı kararı).
+- **Divit F4'te sahte sağlayıcıyla:** Teklif sağlayıcı arayüzü ve bir sahte sağlayıcı yazılır;
+  gerçek Divit entegrasyonu staging'de denenir (kullanıcı kararı).
+- **Mağaza ayrı yerel sitede:** `localhost/pergel-shop` kendi veritabanıyla WooCommerce
+  çalıştırır. `pergel-tema` WooCommerce'siz kalır; bütçesi ve testleri mağaza olmayan siteyi ölçer.
+- **Woo modülü yalnızca WooCommerce etkinken yüklenir:** Modül kaydı `class_exists`
+  denetimiyle yapılır; WooCommerce yoksa modülün hiçbir sınıfı açılmaz ve "Mağaza" sekmesi ile
+  modül anahtarı ayar ekranında gösterilmez. Gizli alanlar kayıtlı değerlerini korur.
+- **HPOS ve blok sepet/ödeme uyumu bildirilir:** Motor `before_woocommerce_init` üzerinde iki
+  özellik için de uyumlu olduğunu bildirir; WooCommerce uyumsuzluk uyarısı göstermez.
+- **WooCommerce'in klasik dosyaları yalnızca klasik işaretlemede:** WooCommerce 11.2 klasik
+  CSS'lerini (`woocommerce-general`, `-layout`, `-smallscreen`, `-blocktheme`) ve jQuery
+  betiklerini her sayfada yükler. Bunları yalnızca klasik işaretleme kullanır: hesap sayfaları,
+  WooCommerce kısa kodları ve klasik şablon basan bloklar. Temanın mağaza şablonları kendi
+  dosyasını getiren bloklardan oluştuğu için bu dosyalar mağaza sayfalarında da yüklenmez
+  (`pergel/woo/classic_files` süzgeciyle değiştirilebilir). Yerel ölçümde ön sayfa 15 yerine 5
+  JS/CSS dosyası, 83 yerine 24 KB yükledi ve jQuery kalktı. Ayar varsayılan açık, kapatılabilir.
+- **Sepet parçaları (cart fragments) kapalı:** Her sayfada sunucudan sepeti isteyen eski betik
+  kaldırılır; mini sepet bloğu buna ihtiyaç duymaz. Ayar varsayılan açık.
+- **Sipariş kaynağı izleme dokunulmadı:** `sourcebuster` ve `wc-order-attribution` her sayfada
+  kalır; bu WooCommerce'in kendi özellik ayarıdır (WooCommerce → Ayarlar → Gelişmiş → Özellikler)
+  ve kapatma kararı site sahibinindir.
+- **Entegrasyon testleri iki sitede:** Test takımı WooCommerce'siz sitede mağaza testlerini
+  atlar. Yerelde `PERGEL_WP_DIR=…/pergel-shop` ile de çalıştırılır; CI'daki WooCommerce'li iş
+  F4c'de gelir.
+- **Mağaza şablonları blok şablonu, ön yüzde jQuery yok (K10):** Tema mağaza, ürün, kategori,
+  etiket, öznitelik, ürün araması, sepet, ödeme ve sipariş onayı için kendi blok şablonlarını
+  getirir. Ürün sayfası galeri ve `add-to-cart-with-options` bloklarını, açılır-kapanır ürün
+  ayrıntılarını (açıklama, özellikler, yorumlar) ve blok yorum formunu kullanır; klasik
+  galeri/sepete ekle şablonu ve onların jQuery betikleri yüklenmez. Basit ve varyasyonlu ürünle
+  tam satın alma akışı yerelde denendi.
+- **Mini sepet Block Hooks ile:** `woocommerce/mini-cart` Pergel header pattern'lerinin menüsünden
+  sonra eklenir; header'larda mağaza bloğu yazılı durmaz, WooCommerce'siz sitede hiç görünmez.
+  Ayar (`woo.mini_cart`) varsayılan açık. Sepet ve ödeme sayfalarında eklenmez: orada blok eski
+  işaretlemesini basar ve betiği Store API adresini bilmeden istek atıp 404 alır. Sayı oturumdan
+  gelir; sepet parçalarına gerek yoktur.
+- **Ürün yolunda mağaza sayfası ve kategori:** `pergel/breadcrumb` ve BreadcrumbList ürün ve
+  ürün kategorisi sayfalarında Ana sayfa → Mağaza → üst kategoriler → kategori → ürün yolunu
+  izler (`pergel/seo/crumbs` süzgeci, `Woo\Trail`). Kategori seçimi WooCommerce'in kendi
+  breadcrumb süzgecini (`woocommerce_breadcrumb_product_terms_args`) kullanır.
+- **WooCommerce bloklarına tema renkleri:** Sıralama, indirim etiketi ve sepet/ödeme form alanları
+  için blok başına küçük CSS dosyaları yalnızca blok sayfada varsa yüklenir. WooCommerce bu
+  parçalarda beyaz zemin ve gri yazıyı sabit verdiği için koyu varyasyonda (graphite) okunmuyordu;
+  artık varyasyon token'larını izler.
+- **İlgili ürünler `section` değil `div`:** WooCommerce'in Product Collection bloğu bildirim
+  kutusunu düzenli ifadeyle "ilk `<div`"in içine ekler; `tagName: section` iken bu ilk ürünün
+  görseli oluyor ve kartlar kayıyordu. Pattern `pergel/hidden-product-related` sarmalayıcı
+  olarak `div` kullanır.
+- **Gizli mağaza pattern'lerinde WooCommerce blokları:** Pattern kuralları WooCommerce
+  bloklarına yalnızca `pergel/hidden-product-*` pattern'lerinde izin verir; bunları yalnızca
+  mağaza şablonları kullanır. Ekleyicide görünen pattern'ler çekirdek ve Pergel bloklarıyla kalır.
+- **WooCommerce işaretlemesinde erişilebilirlik düzeltmeleri:** Mağaza sayfalarında axe üç sorun
+  buldu, üçü de düzeltildi (`Woo\Markup`, `woocommerce-mini-cart.css`):
+  kapalı mini sepet çekmecesi yalnızca saydamlaştığı için klavye içindeki bağlantılara
+  giriyordu, solma bitince `visibility: hidden` olur; varyasyon seçicisi `role="list"` olduğu
+  hâlde öznitelikleri liste öğesi değildi, `role="listitem"` alır; varyasyon seçilmeden
+  sepete ekle düğmesi yalnızca soluk görünüyordu, aynı duruma bağlı `aria-disabled` alır.
+  Ödeme sayfasındaki `aria-label`'lı iskeletler yüklenirken geçicidir, yüklenince kalkar.
+  Mağaza, kategori, iki ürün, arama, boş ve dolu sepet ile ödeme sayfaları üç varyasyonda ve
+  varsayılan stilde, 1280 ve 360 px'te axe temiz.
+- **Satış modları üç seviyede, en katı kazanır:** Mağaza, kategori ve ürün `sale`, `login`,
+  `quote` ya da `catalog` seçebilir. Ürünün kendi modu kazanır; yoksa kategorilerinden en katısı
+  (birden çok kategorideki ürün, fiyat gizleyen bir kategorideyse fiyatı gizlenir), yoksa
+  mağazanınki. Kategori modu alt kategorilere geçer. Mod bilgisi tek bir otomatik yüklenen
+  seçenekte indekslenir; sayfa görüntülemesinde veritabanına yazılmaz (`Woo\Modes`).
+- **Fiyat yalnızca gizlenmez, kaldırılır:** CSS ile gizlemek fiyatı HTML'de, Store API'de ve
+  şemada bırakır. Satılmayan üründe fiyat getter'lardan boş döner, `price_html` boş, ürün
+  satın alınamaz, yapılandırılmış veride ve SEO eklentilerinin graph'ında `offers` yoktur
+  (`Woo\Selling`). Rank Math'te ürün düğümü satış modunda `offers` taşır, teklif modunda
+  taşımaz; Yoast'ın ücretsiz sürümü ürün şeması basmaz, süzgeç Yoast WooCommerce SEO için
+  güvenlik ağıdır.
+- **Fiyat geri okunamasın:** Fiyat gizleyen listede fiyat filtresi, fiyat sıralaması ve Store
+  API fiyat aralığı kapanır; aksi hâlde aralık daraltılarak fiyat bulunabilirdi.
+- **Modlar ön yüzde ve Store API'de uygulanır:** Yönetim ekranları, mağaza yöneticisinin REST
+  istekleri, cron ve WP-CLI fiyatları görür; sipariş, rapor ve içe aktarma bozulmaz.
+- **Mini sepeti WooCommerce'ten devralmak:** WooCommerce mini sepeti kendi kanca kaydıyla her
+  header pattern'ine ekliyordu; `woo.mini_cart` kapalıyken ya da hiçbir şey satılmazken de
+  görünüyordu. Pergel header'larında karar `Woo\MiniCart`'ta (öncelik 20) verilir.
+- **Gizli üründe sepet formu yok:** Form blokları boş döner. Teklif ve giriş CTA'sı, değişken
+  ürün için kendi varyasyon seçimiyle birlikte F4a 4. adımdaki `pergel/product-cta` bloğunda.
+- **Dar sepette satır düzeni:** WooCommerce'in sabit 132 px ürün sütunu ve tek satırlık tasarruf
+  rozeti Türkçe metinle sepeti 360 px'te yana taşırıyordu; `woocommerce-forms.css` ürün
+  sütununu esnek yapar.
+- **Satış modlarının sınırları (kabul edilen):**
+  - Karışık katalogda satış modundaki listeler ve Store API gizli ürünleri saklanan fiyatlarına
+    göre sıralar ve süzer; koleksiyon fiyat aralığı onları da içerir. Store API'deki liste
+    kararı yalnızca mağaza modunu izler.
+  - Editörde sıralaması fiyat olarak ayarlanmış bir Product Collection bloğu değiştirilmez.
+  - Store API gizli ürün için fiyatı `"0"` verir; gizli değişken ürünün Store API
+    `stock_availability` değeri "stokta yok" der.
+  - Merchant Center'a daha önce gönderilmiş ürünler orada kalır; oradan kaldırılmalıdır.
+  - Hızlı ve toplu düzenlemede mod alanı yok.
+  - Yönetim etiketleri İngilizce (yalnızca `.pot`).
+  - Rank Math kurulum sihirbazı tamamlanmadan şema basmaz.
+- **Yerel mağaza "yakında" kipindeydi:** `pergel-shop`'ta WooCommerce'in `woocommerce_coming_soon`
+  seçeneği açıktı; oturumsuz ziyaretçi mağaza sayfaları yerine "yakında" sayfasını görüyordu.
+  Kapatıldı; mağaza ölçümleri ve axe taramaları oturumsuz gerçek sayfalarda yapılır.
+- **Bilinen ve kabul edilen:** WooCommerce'in bazı metinleri ("Related products" gibi) yerel
+  sitede Türkçe çeviri paketi kurulmadığı için İngilizce görünür; tema metinleri `.pot`'ta.
+- **Ürün sorusu bloğu (F4a 4. adım):**
+  - Katalog modu yalnızca iletişim bağlantılarını gösterir; teklif formu yalnızca `quote`
+    modunda. Katalog "fiyat yok, satış yok" demektir, talep toplamak değil.
+  - `generate_lead` yalnızca ürün sorusunda değil, tüm Pergel formlarında ve iletişim
+    bağlantılarında gönderilir; Analytics kurulu değilse hiçbir şey olmaz.
+  - Divit, F7'de `pergel/woo/quote_providers` süzgeciyle bir `QuoteProvider` olarak bağlanır.
+    F4'te arayüz ve testlerdeki sahte sağlayıcı var; Divit'in API'si tahmin edilmedi.
+  - Sağlayıcı çağrıları eşzamanlı: mesaj önce saklanıp e-postalandığı için kaybolmaz; başarısız
+    aktarım mesajın üstünde görünür ve elle izlenir. Kuyruk, gerçek bir sağlayıcıyla gerekirse
+    eklenir.
+  - Blok WooCommerce yoksa hiç kaydedilmez; mağazasız sitenin editöründe ve bütçesinde yok.
+  - Editör ayarları `index.js`'te çevrilebilir ToggleControl'lerle; çekirdeğin otomatik ayar
+    paneli etiketleri çevirmediği için kullanılmadı.
+  - Konu alanları genel Forms modülünde süzgeçlerle; Forms WooCommerce'i bilmez.
+- **Ürün yorumu formu dar ekranda:** WooCommerce'in `cols="45"` yorum kutusu 360 px'te sağdan
+  kesiliyordu (sayfa kaymıyordu, axe'ın taşma denetimi buldu). Alanlar form genişliğini alır.
+- **Mağaza pattern'lerinin editör denetimi:** `woocommerce/product-reviews` WooCommerce'te
+  yalnızca Site Editor'de kayıtlı, yazı editöründe değil. `editor-check.mjs` gizli mağaza
+  pattern'lerini (`pergel/hidden-product-*`) Site Editor'de, ürün şablonunda denetler;
+  WooCommerce yoksa onları atlar ve adlarını yazar. WooCommerce'li CI işi F4c'de gelir; o zamana
+  kadar yerel mağaza sitesinde çalıştırılır.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

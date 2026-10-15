@@ -19,7 +19,11 @@ use Pergel\Core\Plugin;
  * JavaScript; the view script sends it to the REST endpoint instead and
  * shows the answer in place.
  *
- * @phpstan-type Spec array{kind: string, optional: list<string>, consent: bool, time: int, post: int, id: string}
+ * A form can be about the post it is on (aboutPost): code that knows the
+ * post adds fields with pergel/forms/subject_fields and checks them with
+ * pergel/forms/subject_values, e.g. a product's options on a quote form.
+ *
+ * @phpstan-type Spec array{kind: string, optional: list<string>, consent: bool, time: int, post: int, subject: int, id: string}
  */
 final class Form {
 
@@ -58,6 +62,7 @@ final class Form {
 		$optional = array_values( array_filter( self::OPTIONAL, static fn ( string $field ): bool => true === ( $attributes[ $field ] ?? false ) ) );
 		$consent  = true === ( $attributes['consent'] ?? false );
 		$post_id  = $block instanceof \WP_Block && is_int( $block->context['postId'] ?? null ) ? $block->context['postId'] : (int) get_the_ID();
+		$subject  = true === ( $attributes['aboutPost'] ?? false ) ? $post_id : 0;
 		$id       = 'pergel-form-' . ( ++self::$count );
 		$token    = self::sign(
 			array(
@@ -66,6 +71,7 @@ final class Form {
 				'consent'  => $consent,
 				'time'     => time(),
 				'post'     => $post_id,
+				'subject'  => $subject,
 				'id'       => $id,
 			)
 		);
@@ -87,6 +93,9 @@ final class Form {
 		$labels = self::labels( $kind );
 		$fields = '';
 		foreach ( self::fields( $kind, $optional ) as $name => $field ) {
+			if ( 'message' === $name && $subject > 0 ) {
+				$fields .= self::subject_fields( $subject, $id );
+			}
 			$fields .= self::field( $id, $name, $field, $labels[ $name ] );
 		}
 		if ( $consent ) {
@@ -103,6 +112,8 @@ final class Form {
 			'message' => $message,
 			'success' => $success,
 			'errors'  => new \stdClass(),
+			// Lead source reported to Google Analytics after sending.
+			'lead'    => $kind . '_form',
 		);
 
 		return '<form ' . get_block_wrapper_attributes(
@@ -181,12 +192,16 @@ final class Form {
 	 */
 	public static function labels( string $kind ): array {
 		return array(
-			'name'    => __( 'Name', 'pergel-engine' ),
-			'email'   => __( 'Email', 'pergel-engine' ),
-			'phone'   => __( 'Phone', 'pergel-engine' ),
-			'company' => __( 'Company', 'pergel-engine' ),
-			'message' => 'quote' === $kind ? __( 'What do you need?', 'pergel-engine' ) : __( 'Message', 'pergel-engine' ),
-			'consent' => __( 'Consent', 'pergel-engine' ),
+			'name'      => __( 'Name', 'pergel-engine' ),
+			'email'     => __( 'Email', 'pergel-engine' ),
+			'phone'     => __( 'Phone', 'pergel-engine' ),
+			'company'   => __( 'Company', 'pergel-engine' ),
+			'message'   => 'quote' === $kind ? __( 'What do you need?', 'pergel-engine' ) : __( 'Message', 'pergel-engine' ),
+			'consent'   => __( 'Consent', 'pergel-engine' ),
+			// Fields about the post the form is on.
+			'product'   => __( 'Product', 'pergel-engine' ),
+			'variation' => __( 'Option', 'pergel-engine' ),
+			'quantity'  => __( 'Quantity', 'pergel-engine' ),
 		);
 	}
 
@@ -233,6 +248,9 @@ final class Form {
 		}
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- URL-safe token, not code.
 		$spec = json_decode( (string) base64_decode( strtr( $parts[1], '-_', '+/' ), true ), true );
+		if ( is_array( $spec ) && ! isset( $spec['subject'] ) ) {
+			$spec['subject'] = 0;
+		}
 		if ( ! is_array( $spec )
 			|| ! in_array( $spec['kind'] ?? null, self::KINDS, true )
 			|| ! is_array( $spec['optional'] ?? null )
@@ -240,6 +258,7 @@ final class Form {
 			|| ! is_bool( $spec['consent'] ?? null )
 			|| ! is_int( $spec['time'] ?? null )
 			|| ! is_int( $spec['post'] ?? null )
+			|| ! is_int( $spec['subject'] ?? null )
 			|| ! is_string( $spec['id'] ?? null )
 			|| 1 !== preg_match( '/^pergel-form-[0-9]+$/', $spec['id'] )
 		) {
@@ -251,6 +270,7 @@ final class Form {
 			'consent'  => $spec['consent'],
 			'time'     => $spec['time'],
 			'post'     => $spec['post'],
+			'subject'  => $spec['subject'],
 			'id'       => $spec['id'],
 		);
 	}
@@ -365,11 +385,31 @@ final class Form {
 	}
 
 	/**
+	 * Fields about the post the form is on, from the code that knows it.
+	 *
+	 * @param int    $subject Post id.
+	 * @param string $id      Form id.
+	 */
+	private static function subject_fields( int $subject, string $id ): string {
+		/**
+		 * Filters the fields a form shows about the post it is on, before the
+		 * message field. Use Form::error() for each field's error slot and
+		 * check the values with pergel/forms/subject_values.
+		 *
+		 * @param string $html    Escaped HTML; '' by default.
+		 * @param int    $subject Post the form is about.
+		 * @param string $id      Form id, the prefix of field ids.
+		 */
+		$html = apply_filters( 'pergel/forms/subject_fields', '', $subject, $id );
+		return is_string( $html ) ? $html : '';
+	}
+
+	/**
 	 * The slot for a field's error message.
 	 *
 	 * @param string $input Input id.
 	 */
-	private static function error( string $input ): string {
+	public static function error( string $input ): string {
 		return '<p class="wp-block-pergel-form__error" id="' . esc_attr( $input ) . '-error" hidden data-wp-bind--hidden="!state.error" data-wp-text="state.error"></p>';
 	}
 

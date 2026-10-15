@@ -19,3 +19,4 @@ parameters:
 	scanFiles:
 		- tools/stubs/wp-cli.php
 		- tools/stubs/seo-plugins.php
+		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php

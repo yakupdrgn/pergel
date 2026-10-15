@@ -331,6 +331,15 @@ bloğunun mesajlarını alır.
 - **Turnstile:** `PERGEL_TURNSTILE_SITE_KEY` ve `PERGEL_TURNSTILE_SECRET_KEY` `wp-config.php`'de
   tanımlıysa (ya da `pergel/forms/turnstile` süzgeciyle) kullanılır; Cloudflare script'i yalnızca
   formlu sayfalarda yüklenir.
+- **Bir yazı hakkındaki form:** bloğun iç ayarı `aboutPost` açıksa formun konusu (`subject`)
+  bulunduğu yazıdır ve belirteçle imzalanır. Konunun alanlarını onu bilen kod verir:
+  `pergel/forms/subject_fields` (mesaj alanından önce basılacak HTML) ve
+  `pergel/forms/subject_values` (`values` + `errors`; formun kendi alanlarının adları
+  kullanılamaz, değerler mesajdan önce saklanır ve e-postaya girer). Saklanan ve gönderilen her
+  mesajdan sonra `pergel/forms/received` (`$entry, $spec, $values, $input`) çalışır.
+- **Analytics:** başarılı her gönderim `generate_lead` olayı verir (`gtag`, yoksa
+  `dataLayer`; `lead_source`: `contact_form` / `quote_form`). Site etiketi yoksa olay hiçbir
+  yere gitmez.
 
 ### Ön yüzde yalın yükleme
 
@@ -455,6 +464,92 @@ okuma ayarları (ön sayfa, yazılar sayfası). `starters/<ad>/starter.json` pak
 - **Yer:** `Starter::dir()` eklentinin yanındaki `starters/` klasörüdür; yerelde junction ile
   depoya bakar (CI'da symlink). Kopyalanmış eklentide (`LINK_MODE=copy`, zip kurulumu) paket klasör yoluyla verilir:
   `wp pergel starter install /yol/starters/corporate`.
+
+## Mağaza (F4)
+
+`Woo\Module` yalnızca WooCommerce etkinken yüklenir (`class_exists( 'WooCommerce', false )`);
+mağazasız sitede modülün hiçbir dosyası açılmaz, ayar ekranında "Shop" sekmesi ve modül anahtarı
+görünmez (`Settings\Screen::shown`).
+
+- **Uyumluluk:** `before_woocommerce_init` üzerinde HPOS (`custom_order_tables`) ve blok
+  sepet/ödeme (`cart_checkout_blocks`) uyumu bildirilir.
+- **Dosyalar (`Woo\Assets`, yalnızca ön yüz):** `woo.shop_assets_only` açıkken klasik CSS'ler
+  (`woocommerce_enqueue_styles` boş döner, `woocommerce-blocktheme` ve `woocommerce-inline`
+  kuyruktan çıkar) ve klasik jQuery betikleri (`woocommerce`, `wc-add-to-cart`,
+  `wc-add-to-cart-variation`, `wc-single-product`) yalnızca klasik işaretleme olan sayfada
+  kalır (`Assets::classic_request()`): hesap sayfası, WooCommerce kısa kodu ya da içerikte veya
+  mağaza şablonunda klasik blok (`legacy-template`, `classic-shortcode`, `add-to-cart-form`,
+  `product-image-gallery`). `pergel/woo/classic_files` süzgeci kararı değiştirir.
+  `woo.no_cart_fragments` `wc-cart-fragments` betiğini her yerde kaldırır.
+- **Şablonlar (tema):** `archive-product` (mağaza, kategori, etiket, öznitelik de buna düşer),
+  `product-search-results`, `single-product`, `page-cart`, `page-checkout`,
+  `order-confirmation`. Sabit metinler ve WooCommerce blokları gizli pattern'lerde:
+  `pergel/hidden-product-terms`, `-details` (açıklama, özellikler, yorumlar akordeonu),
+  `-related`. Pattern kuralları (`Patterns\Rules::SHOP_PREFIX`) WooCommerce bloklarına yalnızca
+  bu öneki taşıyan gizli pattern'lerde izin verir.
+- **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
+  `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
+  ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir
+  şey satılmıyorsa eklenmez). WooCommerce kendi `register_hooked_block`'u (öncelik 9) ile mini
+  sepeti her header pattern'ine ekler; Pergel süzgeci öncelik 20'de çalışır, Pergel header'larında
+  bu kaydı önce listeden çıkarır ve yalnızca koşullar tutuyorsa geri koyar. Başka temaların ve
+  pattern'lerin kaydına dokunmaz.
+- **Satış modları (`Woo\Modes`):** `sale` (fiyat ve sepet herkese), `login` (fiyat girişten
+  sonra), `quote` (fiyat yok, teklif) ve `catalog` (fiyat yok). Mağazanın modu `woo.sales_mode`
+  ayarında; ürün kategorisi (`pergel_sales_mode` term meta) ve ürün (`_pergel_sales_mode` post
+  meta) kendi modunu seçebilir. Çözüm sırası: ürünün kendi modu → kategorilerinin en katısı
+  (kategori modunu alt kategorilerine geçirir) → mağaza. Varyasyon ürününü izler. Kategori
+  modları ve kullanılan modlar tek bir otomatik yüklenen seçenekte (`pergel_woo_modes`:
+  `terms`, `slugs`, `used`) tutulur; mod meta'sı, kategori ağacı değişince yeniden kurulur,
+  sayfa görüntülemesi ek satır okumaz, yazmaz. Modlar ön yüzde, Store API'de ve
+  `edit_products` yetkisi olmayanların AJAX isteklerinde uygulanır; yönetim ekranları, mağaza
+  yöneticisinin REST isteği, cron ve WP-CLI tüm fiyatları görür (`Modes::enforced()`,
+  `pergel/woo/enforce_modes` süzgeci).
+- **Fiyatın kaldırılması (`Woo\Selling`):** Ziyaretçiye satılmayan üründe fiyat veri
+  katmanında kalkar: `price`/`regular_price`/`sale_price` görünüm getter'ları boş, varyasyon
+  fiyat aralığı boş (önbellek anahtarı ayrı: `pergel-no-price`), `price_html` boş, satın
+  alınamaz; fiyatsız varyasyonlar seçilebilir kalır. WooCommerce yapılandırılmış verisinde ve
+  Rank Math / Yoast / AIOSEO graph süzgeçlerinde `offers` silinir; Google for WooCommerce
+  feed'ine yalnızca herkese satılan ürünler girer. Fiyat gizleyen listelerde (mağaza ya da
+  kategori modu) `min_price`/`max_price` ve fiyat sıralaması istekten düşer, sıralama menüsünden
+  ve varsayılan sıralamadan çıkar, fiyat filtresi blokları basılmaz; Store API ürün
+  listelerinde aynı parametreler ve fiyat aralığı kaldırılır. Gizli üründe sepete ekleme formu
+  blokları (`add-to-cart-with-options`, `add-to-cart-form`) hiç basılmaz; yoksa boş bir form ve
+  değişken üründe "Stokta yok" görünüyordu.
+- **Sayfalar (`Woo\Pages`):** Sepet, ödeme ve hesap sayfaları çekirdek site haritasına girmez.
+  Ziyaretçiye hiçbir şey satılmıyorsa (`Modes::nothing_sells()`) sepet ve ödeme bağlantıları
+  navigasyon bloklarından, sayfa listesinden ve klasik menülerden çıkar.
+- **Alanlar (`Woo\Fields`):** Ürün verisinin Genel panelinde ve ürün kategorisi formlarında
+  mod seçimi; boş seçim kategoriyi / üst kategoriyi / mağazayı izler. Meta anahtarları sanitize
+  ve yetki callback'iyle kayıtlıdır (`edit_products`, `manage_product_terms`).
+- **Yol (`Woo\Trail`):** `pergel/seo/crumbs` süzgeciyle ürün ve ürün kategorisi yoluna mağaza
+  sayfası ve kategori zinciri girer (`Seo\Head::term_trail`).
+- **İşaretleme düzeltmeleri (`Woo\Markup`, yalnızca ön yüz):** varyasyon özniteliklerine
+  `role="listitem"`; `data-wp-class--disabled` taşıyan ürün düğmesine aynı duruma bağlı
+  `aria-disabled` (`data-wp-bind--aria-disabled`).
+- **Blok başına stiller (`theme/assets/css/blocks/`, `functions.php`):** `woocommerce/catalog-sorting`,
+  `product-sale-badge`, `mini-cart` (kapalı çekmece klavyeden gizli) ve sepet ile ödemenin
+  ortak form alanları (`woocommerce-forms.css`); hepsi preset renk token'larını kullanır.
+  `woocommerce-forms.css` dar sepette ürün sütununu esnek yapar (WooCommerce 132 px sabitliyor)
+  ve satır toplamının altındaki tasarruf rozetinin kırılmasına izin verir; Türkçe metinle sepet
+  360 px'te yana taşıyordu.
+  `woocommerce-product-review-form.css` yorum formunun alanlarını form genişliğine sığdırır
+  (45 sütunluk yorum kutusu 360 px'te kesiliyordu).
+- **Ürün sorusu bloğu (`pergel/product-cta`, `Woo\Cta`):** ürün şablonunda sepet formunun
+  altında. Ziyaretçiye satılmayan üründe ne yapabileceğini gösterir: `login` modunda oturumsuz
+  ziyaretçiye "Log in to see prices" bağlantısı; `quote` modunda katlanmış bir teklif formu
+  (`<details>`; script'siz gönderimden dönünce açık); satılmayan her üründe WhatsApp
+  (`woo.whatsapp`), telefon (`brand.phone`) ve iletişim sayfası (`woo.contact_url`)
+  bağlantıları. Satılan üründe yalnızca `onSale` açıksa iletişim bağlantılarını gösterir.
+  Bağlantılar `generate_lead` olayı verir (`lead_source`: `whatsapp`, `phone`,
+  `contact_page`). WooCommerce yoksa blok kaydedilmez (`Blocks\Module::SHOP_BLOCKS`).
+- **Teklif formu (`Woo\Quote`):** Form bloğunu `kind=quote`, `aboutPost` ile çizer. Konu alanları:
+  ürün adı ve SKU, değişken üründe yayımlanmış varyasyonlardan zorunlu seçim (değer
+  varyasyonun SKU'suyla saklanır) ve adet (1–999999). Mesaj saklandıktan sonra istek
+  `QuoteRequest` olarak her kullanılabilir `QuoteProvider`'a verilir
+  (`pergel/woo/quote_providers` süzgeci; varsayılan boş). Çağrılar eşzamanlıdır; hata veren
+  sağlayıcı "gönderilmedi" sayılır. Sonuçlar mesajın `_pergel_handoff` meta'sında tutulur ve
+  "Form messages" ekranında "Passed on to" satırında görünür.
 
 ## WP-CLI (F2)
 

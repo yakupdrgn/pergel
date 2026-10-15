@@ -59,7 +59,16 @@ final class FormsTest extends TestCase {
 			remove_filter( 'pre_http_request', $this->http );
 		}
 		delete_transient( 'pergel_form_' . substr( wp_hash( $this->ip, 'nonce' ), 0, 20 ) );
-		foreach ( get_posts( array( 'post_type' => Inbox::TYPE, 'post_status' => 'any', 'fields' => 'ids', 'posts_per_page' => -1, 'meta_key' => Inbox::META_EMAIL, 'meta_value' => 'ada@example.invalid' ) ) as $id ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+		foreach ( get_posts(
+			array(
+				'post_type'      => Inbox::TYPE,
+				'post_status'    => 'any',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'meta_key'       => Inbox::META_EMAIL,
+				'meta_value'     => 'ada@example.invalid',
+			)
+		) as $id ) { // phpcs:ignore WordPress.DB.SlowDBQuery
 			wp_delete_post( (int) $id, true );
 		}
 		Settings::update( array( 'forms' => array( 'recipient' => '' ) ) );
@@ -101,9 +110,9 @@ final class FormsTest extends TestCase {
 	}
 
 	public function test_a_changed_token_is_refused(): void {
-		$token = Form::sign( self::spec() );
+		$token                   = Form::sign( self::spec() );
 		[ $payload, $signature ] = explode( '.', $token );
-		$other = rtrim( strtr( base64_encode( (string) wp_json_encode( array( 'consent' => false ) + self::spec() ) ), '+/', '-_' ), '=' );
+		$other                   = rtrim( strtr( base64_encode( (string) wp_json_encode( array( 'consent' => false ) + self::spec() ) ), '+/', '-_' ), '=' );
 
 		$this->assertNotNull( Form::verify( $token ) );
 		$this->assertNull( Form::verify( $other . '.' . $signature ) );
@@ -113,7 +122,13 @@ final class FormsTest extends TestCase {
 	}
 
 	public function test_a_filled_trap_looks_sent_but_keeps_nothing(): void {
-		$result = Submit::handle( array( 'token' => Form::sign( self::spec() ), 'website' => 'http://spam.example' ) + self::fields(), $this->ip );
+		$result = Submit::handle(
+			array(
+				'token'   => Form::sign( self::spec() ),
+				'website' => 'http://spam.example',
+			) + self::fields(),
+			$this->ip
+		);
 
 		$this->assertSame( 'sent', $result['code'] );
 		$this->assertSame( 0, $result['entry'] );
@@ -146,7 +161,13 @@ final class FormsTest extends TestCase {
 	public function test_a_message_is_kept_and_mailed_to_the_recipient(): void {
 		Settings::update( array( 'forms' => array( 'recipient' => 'owner@example.invalid' ) ) );
 		$page   = (int) get_option( 'page_on_front' );
-		$result = Submit::handle( array( 'token' => Form::sign( array( 'post' => $page ) + self::spec() ), 'consent' => '1' ) + self::fields(), $this->ip );
+		$result = Submit::handle(
+			array(
+				'token'   => Form::sign( array( 'post' => $page ) + self::spec() ),
+				'consent' => '1',
+			) + self::fields(),
+			$this->ip
+		);
 
 		$this->assertSame( 'sent', $result['code'] );
 		$entry = get_post( $result['entry'] );
@@ -190,7 +211,13 @@ final class FormsTest extends TestCase {
 	}
 
 	public function test_turnstile_is_asked_when_it_has_keys(): void {
-		add_filter( 'pergel/forms/turnstile', static fn (): array => array( 'site' => 'site-key', 'secret' => 'secret-key' ) );
+		add_filter(
+			'pergel/forms/turnstile',
+			static fn (): array => array(
+				'site'   => 'site-key',
+				'secret' => 'secret-key',
+			)
+		);
 		$asked      = array();
 		$this->http = static function ( $response, $args, $url ) use ( &$asked ) {
 			$asked[] = array( $url, $args['body'] );
@@ -217,8 +244,13 @@ final class FormsTest extends TestCase {
 
 	public function test_rest_endpoint_answers_with_field_errors(): void {
 		$_SERVER['REMOTE_ADDR'] = $this->ip;
-		$request = new \WP_REST_Request( 'POST', '/' . Submit::NAMESPACE . '/' . Submit::ROUTE );
-		$request->set_body_params( array( 'token' => Form::sign( self::spec( false ) ), 'email' => 'ada@example.invalid' ) );
+		$request                = new \WP_REST_Request( 'POST', '/' . Submit::NAMESPACE . '/' . Submit::ROUTE );
+		$request->set_body_params(
+			array(
+				'token' => Form::sign( self::spec( false ) ),
+				'email' => 'ada@example.invalid',
+			)
+		);
 		$response = rest_do_request( $request );
 		$data     = $response->get_data();
 
@@ -231,6 +263,65 @@ final class FormsTest extends TestCase {
 		$response = rest_do_request( $request );
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame( Form::message( 'sent' ), $response->get_data()['message'] );
+	}
+
+	public function test_a_form_about_its_post_takes_fields_from_the_code_that_knows_the_post(): void {
+		$page   = wp_insert_post(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Pergel form subject',
+			)
+		);
+		$fields = static fn ( mixed $html, mixed $subject ): string => $html . '<p class="test-about">About ' . (int) $subject . '</p>';
+		$values = static fn ( mixed $checked, mixed $subject, mixed $input ): array => array(
+			'values' => array(
+				'colour' => is_array( $input ) && is_string( $input['colour'] ?? null ) ? $input['colour'] : '',
+				'email'  => 'replaced@example.invalid',
+				'Bad'    => 'x',
+			),
+			'errors' => array(),
+		);
+		add_filter( 'pergel/forms/subject_fields', $fields, 10, 2 );
+		add_filter( 'pergel/forms/subject_values', $values, 10, 3 );
+
+		$block = new \WP_Block(
+			array(
+				'blockName'    => 'pergel/form',
+				'attrs'        => array( 'aboutPost' => true ),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			),
+			array( 'postId' => $page )
+		);
+		$html  = $block->render();
+		$this->assertMatchesRegularExpression( '/<p class="test-about">About ' . $page . '<\/p><div class="wp-block-pergel-form__field is-message"/', $html );
+		$this->assertStringContainsString( '"lead":"contact_form"', $html );
+		$this->assertSame( 1, preg_match( '/name="token" value="([^"]+)"/', $html, $token ) );
+		$spec = Form::verify( $token[1] );
+		$this->assertNotNull( $spec );
+		$this->assertSame( $page, $spec['subject'] );
+
+		$result = Submit::handle(
+			array(
+				'token'  => Form::sign( array( 'time' => time() - 10 ) + $spec ),
+				'colour' => 'Blue',
+			) + self::fields(),
+			$this->ip
+		);
+		remove_filter( 'pergel/forms/subject_fields', $fields );
+		remove_filter( 'pergel/forms/subject_values', $values );
+		wp_delete_post( $page, true );
+		$this->assertSame( 'sent', $result['code'] );
+		$stored = get_post_meta( $result['entry'], Inbox::META_FIELDS, true );
+		$this->assertIsArray( $stored );
+		$this->assertSame( array( 'name', 'email', 'phone', 'colour', 'message' ), array_keys( $stored ) );
+		$this->assertSame( 'ada@example.invalid', $stored['email'] );
+		$this->assertSame( 'Blue', $stored['colour'] );
+
+		// A form that is not about its post asks no one.
+		$this->assertStringNotContainsString( 'test-about', do_blocks( '<!-- wp:pergel/form /-->' ) );
 	}
 
 	public function test_the_page_shows_the_result_of_a_form_sent_without_javascript(): void {

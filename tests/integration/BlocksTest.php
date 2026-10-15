@@ -48,6 +48,10 @@ final class BlocksTest extends TestCase {
 		$this->assertIsArray( $blocks );
 		foreach ( $blocks as $slug => $metadata ) {
 			$type = $registry->get_registered( "pergel/{$slug}" );
+			if ( in_array( "pergel/{$slug}", Module::SHOP_BLOCKS, true ) && ! \Pergel\Woo\Module::active() ) {
+				$this->assertNull( $type, "pergel/{$slug} needs WooCommerce." );
+				continue;
+			}
 			$this->assertNotNull( $type, "pergel/{$slug} is not registered." );
 			$this->assertIsCallable( $type->render_callback, "pergel/{$slug} has no render callback." );
 			$this->assertSame( $metadata['category'], $type->category );

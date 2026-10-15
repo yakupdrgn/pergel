@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T15:27:28+03:00\n"
+"POT-Creation-Date: 2026-10-15T22:55:15+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -173,6 +173,15 @@ msgstr ""
 msgid "Consent"
 msgstr ""
 
+msgid "Product"
+msgstr ""
+
+msgid "Option"
+msgstr ""
+
+msgid "Quantity"
+msgstr ""
+
 msgid "Thank you. Your message has been sent; we will get back to you soon."
 msgstr ""
 
@@ -243,6 +252,9 @@ msgstr ""
 msgid "Given on %s"
 msgstr ""
 
+msgid "Passed on to"
+msgstr ""
+
 msgid "Back to the messages"
 msgstr ""
 
@@ -259,6 +271,17 @@ msgid "Yes"
 msgstr ""
 
 msgid "No"
+msgstr ""
+
+#. translators: 1: service name, 2: Sent or Failed.
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "Failed"
 msgstr ""
 
 #. translators: %s: field label.
@@ -324,6 +347,12 @@ msgstr ""
 msgid "Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive."
 msgstr ""
 
+msgid "Shop"
+msgstr ""
+
+msgid "How Pergel works with WooCommerce. This tab is shown while WooCommerce is active."
+msgstr ""
+
 msgid "Address"
 msgstr ""
 
@@ -348,6 +377,18 @@ msgstr ""
 msgid "Delivery"
 msgstr ""
 
+msgid "Selling"
+msgstr ""
+
+msgid "Product enquiries"
+msgstr ""
+
+msgid "Header"
+msgstr ""
+
+msgid "Speed"
+msgstr ""
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr ""
 
@@ -358,6 +399,9 @@ msgid "Removes front-end assets that most sites do not need."
 msgstr ""
 
 msgid "The contact and quote Form block: messages are emailed and kept in the admin area."
+msgstr ""
+
+msgid "WooCommerce support. It loads only while WooCommerce is active."
 msgstr ""
 
 msgid "Brand name"
@@ -456,6 +500,54 @@ msgstr ""
 msgid "Leave empty to use the administration email address of the site."
 msgstr ""
 
+msgid "Sales mode"
+msgstr ""
+
+msgid "For the whole shop. A product category or a single product can choose its own mode; when a product is in several categories, the strictest one applies. Hidden prices are left out of the page, the shop data and the structured data, and the products cannot be added to the cart."
+msgstr ""
+
+msgid "Sale: prices and the cart for everyone"
+msgstr ""
+
+msgid "Prices for logged-in customers only"
+msgstr ""
+
+msgid "Quote: no prices, customers ask for an offer"
+msgstr ""
+
+msgid "Catalog: products only, no prices"
+msgstr ""
+
+msgid "WhatsApp number"
+msgstr ""
+
+msgid "With the country code, e.g. +90 532 000 00 00. The Product enquiry block links to a chat with this number. Its phone link uses the phone number of the brand."
+msgstr ""
+
+msgid "Contact page"
+msgstr ""
+
+msgid "Address of the page the Product enquiry block links to, e.g. the contact page."
+msgstr ""
+
+msgid "Show the mini cart in the header"
+msgstr ""
+
+msgid "Adds the cart button after the menu in the theme headers. It shows the number of items and opens the cart in a side panel."
+msgstr ""
+
+msgid "Load classic WooCommerce files only where they are used"
+msgstr ""
+
+msgid "The classic WooCommerce styles and jQuery scripts load on account pages, on pages with a WooCommerce shortcode and with classic templates. The theme shop templates are made of blocks, which bring their own files."
+msgstr ""
+
+msgid "Turn off cart fragments"
+msgstr ""
+
+msgid "An old script that asks the server for the cart on every page view. The mini cart block does not need it."
+msgstr ""
+
 msgid "The value is too long."
 msgstr ""
 
@@ -518,6 +610,65 @@ msgid "Use this image"
 msgstr ""
 
 msgid "Choose image"
+msgstr ""
+
+msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
+msgstr ""
+
+msgid "Prices are shown to registered customers."
+msgstr ""
+
+msgid "Log in to see prices"
+msgstr ""
+
+msgid "Send the request"
+msgstr ""
+
+#. translators: 1: product name, 2: product page address.
+#, php-format
+msgid "Hello, I would like to ask about %1$s: %2$s"
+msgstr ""
+
+msgid "Ask on WhatsApp"
+msgstr ""
+
+#. translators: %s: phone number.
+#, php-format
+msgid "Call %s"
+msgstr ""
+
+msgid "Contact us"
+msgstr ""
+
+msgid "Get in touch about this product"
+msgstr ""
+
+msgid "Same as its categories or the shop"
+msgstr ""
+
+msgid "Whether this product shows its price and can be added to the cart. Quote and catalog hide the price everywhere."
+msgstr ""
+
+msgid "Applies to the products of this category and its subcategories, unless a product chooses its own mode. A product in several categories takes the strictest mode."
+msgstr ""
+
+msgid "Same as the parent category or the shop"
+msgstr ""
+
+msgid "Choose an option"
+msgstr ""
+
+msgid "Choose one of the options."
+msgstr ""
+
+#. translators: %s: largest quantity.
+#, php-format
+msgid "Enter a whole number from 1 to %s."
+msgstr ""
+
+#. translators: %s: stock keeping unit.
+#, php-format
+msgid "SKU: %s"
 msgstr ""
 
 msgid "Scroll animation"
@@ -703,6 +854,36 @@ msgid "Highlight this plan"
 msgstr ""
 
 msgid "Gives the plan an accent border. Say why in its text too, for example \"Most popular\"."
+msgstr ""
+
+msgid "Product enquiry"
+msgstr ""
+
+msgid "Quote form"
+msgstr ""
+
+msgid "On products in quote mode. Requests are kept under Pergel → Form messages."
+msgstr ""
+
+msgid "WhatsApp link"
+msgstr ""
+
+msgid "Needs the WhatsApp number under Pergel → Settings → Shop."
+msgstr ""
+
+msgid "The phone number of the brand."
+msgstr ""
+
+msgid "Contact page link"
+msgstr ""
+
+msgid "Needs the contact page under Pergel → Settings → Shop."
+msgstr ""
+
+msgid "Links on products for sale too"
+msgstr ""
+
+msgid "Otherwise the block shows only where a product has no price or cart."
 msgstr ""
 
 msgid "Headings"
@@ -950,6 +1131,26 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "pricing"
+msgstr ""
+
+msgctxt "block title"
+msgid "Product enquiry"
+msgstr ""
+
+msgctxt "block description"
+msgid "What a visitor can do when a product is not sold to them: log in to see prices, request a quote with the product's options, or get in touch by WhatsApp, phone or the contact page."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "whatsapp"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "phone"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "lead"
 msgstr ""
 
 msgctxt "block title"

@@ -58,11 +58,26 @@ final class ScreenTest extends TestCase {
 		return (string) ob_get_clean();
 	}
 
+	/**
+	 * The groups and fields this site shows: the Shop tab needs WooCommerce.
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
+	private static function shown(): array {
+		$groups = array();
+		foreach ( Schema::groups() as $group => $fields ) {
+			if ( Screen::shown( $group ) ) {
+				$groups[ $group ] = array_filter( $fields, static fn ( string $key ): bool => Screen::shown( $group, $key ), ARRAY_FILTER_USE_KEY );
+			}
+		}
+		return $groups;
+	}
+
 	public function test_every_field_is_labelled_and_placed_once(): void {
 		foreach ( Schema::groups() as $group => $fields ) {
 			$this->assertArrayHasKey( $group, Labels::tabs(), "Tab title for $group" );
-			$placed = array_merge( ...array_column( Screen::sections( $group ), 'fields' ) );
-			$this->assertSame( array(), array_diff( array_keys( $fields ), $placed ), "Unplaced fields in $group" );
+			$placed = array_merge( array(), ...array_column( Screen::sections( $group ), 'fields' ) );
+			$this->assertSame( array(), array_diff( array_keys( self::shown()[ $group ] ?? array() ), $placed ), "Unplaced fields in $group" );
 			$this->assertSame( count( $placed ), count( array_unique( $placed ) ), "Duplicate fields in $group" );
 			foreach ( array_keys( $fields ) as $key ) {
 				$this->assertNotEmpty( Labels::fields()[ $group ][ $key ]['label'] ?? '', "Label for $group.$key" );
@@ -71,7 +86,7 @@ final class ScreenTest extends TestCase {
 	}
 
 	public function test_each_tab_renders_its_fields(): void {
-		foreach ( Schema::groups() as $group => $fields ) {
+		foreach ( self::shown() as $group => $fields ) {
 			$html = self::render( $group );
 			$this->assertStringContainsString( "<input type='hidden' name='option_page' value='pergel' />", $html );
 			$this->assertStringContainsString( 'name="_wpnonce"', $html );
@@ -114,7 +129,7 @@ final class ScreenTest extends TestCase {
 	}
 
 	public function test_share_image_takes_no_svg(): void {
-		$svg      = wp_insert_attachment(
+		$svg = wp_insert_attachment(
 			array(
 				'post_title'     => 'pergel-logo.svg',
 				'post_mime_type' => Svg::MIME,

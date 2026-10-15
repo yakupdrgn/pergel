@@ -18,6 +18,14 @@
 	grid-column: 1 / -1;
 }
 
+.wp-block-pergel-form__about-label {
+	font-weight: var(--wp--custom--font-weight--button, 600);
+}
+
+.wp-block-pergel-form__about {
+	margin: 0;
+}
+
 .wp-block-pergel-form__note,
 .wp-block-pergel-form__status {
 	font-size: var(--wp--preset--font-size--small, 0.875rem);
@@ -40,6 +48,7 @@
 }
 
 .wp-block-pergel-form__field input:not([type="checkbox"]),
+.wp-block-pergel-form__field select,
 .wp-block-pergel-form__field textarea {
 	background: var(--wp--preset--color--base, #fff);
 	border: 1px solid var(--wp--preset--color--muted, #6b6b6b);
@@ -56,7 +65,7 @@
 	resize: vertical;
 }
 
-.wp-block-pergel-form__field :is(input, textarea):focus-visible {
+.wp-block-pergel-form__field :is(input, select, textarea):focus-visible {
 	outline: 2px solid var(--wp--preset--color--accent, currentColor);
 	outline-offset: 1px;
 }

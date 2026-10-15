@@ -249,6 +249,17 @@ final class Head {
 			$page['image'] = self::attachment( (int) Settings::get( 'seo.og_image' ) );
 		}
 
+		if ( array() !== $page['crumbs'] ) {
+			/**
+			 * Filters Pergel's own breadcrumb trail of the current page, the
+			 * steps of its visible breadcrumb and of its BreadcrumbList.
+			 *
+			 * @param list<array{name: string, url: string}> $crumbs Steps, home first.
+			 */
+			$crumbs         = apply_filters( 'pergel/seo/crumbs', $page['crumbs'] );
+			$page['crumbs'] = is_array( $crumbs ) ? Trail::clean( $crumbs ) : $page['crumbs'];
+		}
+
 		self::$page = $page;
 		return $page;
 	}
@@ -340,10 +351,10 @@ final class Head {
 	/**
 	 * Term ancestors and the term itself as crumbs.
 	 *
-	 * @param \WP_Term $term Queried term.
+	 * @param \WP_Term $term Term.
 	 * @return list<array{name: string, url: string}>
 	 */
-	private static function term_trail( \WP_Term $term ): array {
+	public static function term_trail( \WP_Term $term ): array {
 		$crumbs = array();
 		$ids    = array_reverse( get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' ) );
 		$ids[]  = $term->term_id;

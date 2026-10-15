@@ -42,6 +42,10 @@ final class Labels {
 				'title'       => __( 'Forms', 'pergel-engine' ),
 				'description' => __( 'Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive.', 'pergel-engine' ),
 			),
+			'woo'         => array(
+				'title'       => __( 'Shop', 'pergel-engine' ),
+				'description' => __( 'How Pergel works with WooCommerce. This tab is shown while WooCommerce is active.', 'pergel-engine' ),
+			),
 		);
 	}
 
@@ -56,7 +60,7 @@ final class Labels {
 			'modules'     => array(
 				'modules' => array(
 					'title'  => __( 'Modules', 'pergel-engine' ),
-					'fields' => array( 'brand', 'seo', 'performance', 'forms' ),
+					'fields' => array( 'brand', 'seo', 'performance', 'forms', 'woo' ),
 				),
 			),
 			'brand'       => array(
@@ -107,13 +111,31 @@ final class Labels {
 					'fields' => array( 'recipient' ),
 				),
 			),
+			'woo'         => array(
+				'selling'   => array(
+					'title'  => __( 'Selling', 'pergel-engine' ),
+					'fields' => array( 'sales_mode' ),
+				),
+				'enquiries' => array(
+					'title'  => __( 'Product enquiries', 'pergel-engine' ),
+					'fields' => array( 'whatsapp', 'contact_url' ),
+				),
+				'header'    => array(
+					'title'  => __( 'Header', 'pergel-engine' ),
+					'fields' => array( 'mini_cart' ),
+				),
+				'speed'     => array(
+					'title'  => __( 'Speed', 'pergel-engine' ),
+					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
+				),
+			),
 		);
 	}
 
 	/**
 	 * Field labels and help texts.
 	 *
-	 * @return array<string, array<string, array{label: string, help?: string, svg?: string}>>
+	 * @return array<string, array<string, array{label: string, help?: string, svg?: string, choices?: array<string, string>}>>
 	 */
 	public static function fields(): array {
 		return array(
@@ -133,6 +155,10 @@ final class Labels {
 				'forms'       => array(
 					'label' => __( 'Forms', 'pergel-engine' ),
 					'help'  => __( 'The contact and quote Form block: messages are emailed and kept in the admin area.', 'pergel-engine' ),
+				),
+				'woo'         => array(
+					'label' => __( 'Shop', 'pergel-engine' ),
+					'help'  => __( 'WooCommerce support. It loads only while WooCommerce is active.', 'pergel-engine' ),
 				),
 			),
 			'brand'       => array(
@@ -201,6 +227,38 @@ final class Labels {
 				'recipient' => array(
 					'label' => __( 'Send messages to', 'pergel-engine' ),
 					'help'  => __( 'Leave empty to use the administration email address of the site.', 'pergel-engine' ),
+				),
+			),
+			'woo'         => array(
+				'sales_mode'        => array(
+					'label'   => __( 'Sales mode', 'pergel-engine' ),
+					'help'    => __( 'For the whole shop. A product category or a single product can choose its own mode; when a product is in several categories, the strictest one applies. Hidden prices are left out of the page, the shop data and the structured data, and the products cannot be added to the cart.', 'pergel-engine' ),
+					'choices' => array(
+						'sale'    => __( 'Sale: prices and the cart for everyone', 'pergel-engine' ),
+						'login'   => __( 'Prices for logged-in customers only', 'pergel-engine' ),
+						'quote'   => __( 'Quote: no prices, customers ask for an offer', 'pergel-engine' ),
+						'catalog' => __( 'Catalog: products only, no prices', 'pergel-engine' ),
+					),
+				),
+				'whatsapp'          => array(
+					'label' => __( 'WhatsApp number', 'pergel-engine' ),
+					'help'  => __( 'With the country code, e.g. +90 532 000 00 00. The Product enquiry block links to a chat with this number. Its phone link uses the phone number of the brand.', 'pergel-engine' ),
+				),
+				'contact_url'       => array(
+					'label' => __( 'Contact page', 'pergel-engine' ),
+					'help'  => __( 'Address of the page the Product enquiry block links to, e.g. the contact page.', 'pergel-engine' ),
+				),
+				'mini_cart'         => array(
+					'label' => __( 'Show the mini cart in the header', 'pergel-engine' ),
+					'help'  => __( 'Adds the cart button after the menu in the theme headers. It shows the number of items and opens the cart in a side panel.', 'pergel-engine' ),
+				),
+				'shop_assets_only'  => array(
+					'label' => __( 'Load classic WooCommerce files only where they are used', 'pergel-engine' ),
+					'help'  => __( 'The classic WooCommerce styles and jQuery scripts load on account pages, on pages with a WooCommerce shortcode and with classic templates. The theme shop templates are made of blocks, which bring their own files.', 'pergel-engine' ),
+				),
+				'no_cart_fragments' => array(
+					'label' => __( 'Turn off cart fragments', 'pergel-engine' ),
+					'help'  => __( 'An old script that asks the server for the cart on every page view. The mini cart block does not need it.', 'pergel-engine' ),
 				),
 			),
 		);

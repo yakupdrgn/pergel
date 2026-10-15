@@ -71,6 +71,49 @@ final class RulesTest extends TestCase {
 		$this->assertContains( 'Block acme/slider is not a core or Pergel block.', $errors );
 	}
 
+	public function test_woocommerce_blocks_only_in_hidden_shop_patterns(): void {
+		$price = '<!-- wp:group --><div class="wp-block-group"><!-- wp:woocommerce/product-price /--></div><!-- /wp:group -->';
+		$error = 'Block woocommerce/product-price is not a core or Pergel block.';
+
+		$this->assertSame(
+			array(),
+			Rules::check(
+				'hidden-product-x.php',
+				self::file(
+					$price,
+					' * Inserter: no
+',
+					'hidden-product-x'
+				)
+			)
+		);
+		$this->assertContains(
+			$error,
+			Rules::check(
+				'hidden-x.php',
+				self::file(
+					$price,
+					' * Inserter: no
+',
+					'hidden-x'
+				)
+			)
+		);
+		$this->assertContains(
+			$error,
+			Rules::check(
+				'hidden-product-x.php',
+				self::file(
+					$price,
+					' * Categories: services
+ * Description: Prices.
+',
+					'hidden-product-x'
+				)
+			)
+		);
+	}
+
 	public function test_h1_only_in_heroes_and_pages(): void {
 		$h1 = '<!-- wp:heading {"level":1} --><h1 class="wp-block-heading"><?php esc_html_e( "Hi", "pergel" ); ?></h1><!-- /wp:heading -->';
 		$h1 = '<!-- wp:group --><div class="wp-block-group">' . $h1 . '</div><!-- /wp:group -->';

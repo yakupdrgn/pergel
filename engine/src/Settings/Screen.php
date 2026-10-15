@@ -11,6 +11,7 @@ namespace Pergel\Settings;
 
 use Pergel\Core\Svg;
 use Pergel\Seo\Detect;
+use Pergel\Woo\Module as Woo;
 
 use const Pergel\FILE;
 use const Pergel\VERSION;
@@ -132,7 +133,7 @@ final class Screen {
 			return;
 		}
 
-		$groups = Schema::groups();
+		$groups = array_filter( Schema::groups(), array( self::class, 'shown' ), ARRAY_FILTER_USE_KEY );
 		$tabs   = Labels::tabs();
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- tab switch, read only.
 		$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
@@ -197,7 +198,7 @@ final class Screen {
 	 * @return list<array{title: string, fields: list<string>}>
 	 */
 	public static function sections( string $group ): array {
-		$fields   = array_keys( Schema::groups()[ $group ] ?? array() );
+		$fields   = array_values( array_filter( array_keys( Schema::groups()[ $group ] ?? array() ), static fn ( string $key ): bool => self::shown( $group, $key ) ) );
 		$sections = array();
 		$placed   = array();
 		foreach ( Labels::sections()[ $group ] ?? array() as $section ) {
@@ -218,6 +219,18 @@ final class Screen {
 			);
 		}
 		return $sections;
+	}
+
+	/**
+	 * Whether a tab, or a field of it, is shown. The Shop tab and its module
+	 * switch need WooCommerce; hidden fields keep their saved values.
+	 *
+	 * @param string $group Schema group.
+	 * @param string $key   Field key; empty for the whole tab.
+	 */
+	public static function shown( string $group, string $key = '' ): bool {
+		$woo = 'woo' === $group || ( 'modules' === $group && 'woo' === $key );
+		return ! $woo || Woo::active();
 	}
 
 	/**

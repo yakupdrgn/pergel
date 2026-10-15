@@ -28,6 +28,11 @@ final class Inbox {
 	public const META_MAILED = '_pergel_mailed';
 
 	/**
+	 * Where the message was passed on: label and result by service id.
+	 */
+	public const META_HANDOFF = '_pergel_handoff';
+
+	/**
 	 * Entries per export or erasure batch.
 	 */
 	private const BATCH = 50;
@@ -234,12 +239,16 @@ final class Inbox {
 				: nl2br( esc_html( $value ) );
 			echo '<tr><th scope="row">' . esc_html( $labels[ $field ] ?? $field ) . '</th><td>' . $cell . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
 		}
-		$rows = array(
+		$rows    = array(
 			__( 'Form', 'pergel-engine' )       => esc_html( self::kind_label( $kind ) ),
 			__( 'Page', 'pergel-engine' )       => self::page_link( (int) get_post_meta( $post->ID, self::META_PAGE, true ) ),
 			__( 'Received', 'pergel-engine' )   => esc_html( (string) get_the_date( (string) get_option( 'date_format' ) . ' ' . (string) get_option( 'time_format' ), $post ) ),
 			__( 'Email sent', 'pergel-engine' ) => esc_html( self::mailed_label( $post->ID ) ),
 		);
+		$handoff = self::handoff_label( $post->ID );
+		if ( '' !== $handoff ) {
+			$rows[ __( 'Passed on to', 'pergel-engine' ) ] = esc_html( $handoff );
+		}
 		foreach ( $rows as $label => $cell ) {
 			echo '<tr><th scope="row">' . esc_html( $label ) . '</th><td>' . $cell . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
 		}
@@ -401,6 +410,27 @@ final class Inbox {
 	 */
 	private static function mailed_label( int $post_id ): string {
 		return '1' === (string) get_post_meta( $post_id, self::META_MAILED, true ) ? __( 'Yes', 'pergel-engine' ) : __( 'No', 'pergel-engine' );
+	}
+
+	/**
+	 * Services the message was passed on to, with their results.
+	 *
+	 * @param int $post_id Entry id.
+	 */
+	private static function handoff_label( int $post_id ): string {
+		$handoff = get_post_meta( $post_id, self::META_HANDOFF, true );
+		$parts   = array();
+		foreach ( is_array( $handoff ) ? $handoff : array() as $service ) {
+			if ( is_array( $service ) && is_string( $service['label'] ?? null ) ) {
+				$parts[] = sprintf(
+					/* translators: 1: service name, 2: Sent or Failed. */
+					__( '%1$s: %2$s', 'pergel-engine' ),
+					$service['label'],
+					! empty( $service['sent'] ) ? __( 'Sent', 'pergel-engine' ) : __( 'Failed', 'pergel-engine' )
+				);
+			}
+		}
+		return implode( '; ', $parts );
 	}
 
 	/**

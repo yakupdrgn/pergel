@@ -70,7 +70,14 @@ final class ContentBlocksTest extends TestCase {
 
 	public function test_map_loads_nothing_from_google_until_opened(): void {
 		$query = 'Kızılay "Ankara" <b>';
-		$html  = do_blocks( '<!-- wp:pergel/map ' . wp_json_encode( array( 'query' => $query, 'zoom' => 50 ) ) . ' /-->' );
+		$html  = do_blocks(
+			'<!-- wp:pergel/map ' . wp_json_encode(
+				array(
+					'query' => $query,
+					'zoom'  => 50,
+				)
+			) . ' /-->'
+		);
 		$tags  = new \WP_HTML_Tag_Processor( $html );
 
 		$this->assertTrue( $tags->next_tag() );

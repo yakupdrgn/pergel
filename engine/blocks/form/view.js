@@ -3,8 +3,23 @@
  * place, with an error under each field the server turned back. The
  * browser's own checks (required, email) run first. Without this script
  * the form posts to admin-post.php and the page comes back with the result.
+ * A sent form is reported to Google Analytics as a generate_lead event,
+ * when the site has gtag or a Tag Manager data layer.
  */
 import { store, getContext, getElement, withSyncEvent } from '@wordpress/interactivity';
+
+/**
+ * Reports a lead to Google Analytics.
+ *
+ * @param {string} source Where the lead came from.
+ */
+function reportLead( source ) {
+	if ( 'function' === typeof window.gtag ) {
+		window.gtag( 'event', 'generate_lead', { lead_source: source } );
+	} else if ( Array.isArray( window.dataLayer ) ) {
+		window.dataLayer.push( { event: 'generate_lead', lead_source: source } );
+	}
+}
 
 const { state } = store( 'pergel/form', {
 	state: {
@@ -50,6 +65,7 @@ const { state } = store( 'pergel/form', {
 			context.errors = data.errors || {};
 			context.message = data.ok && context.success ? context.success : data.message;
 			if ( data.ok ) {
+				reportLead( context.lead );
 				ref.reset();
 				if ( window.turnstile ) {
 					window.turnstile.reset();

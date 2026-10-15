@@ -54,16 +54,27 @@ add_filter( 'should_load_remote_block_patterns', '__return_false' );
 
 /**
  * Loads the theme's per-block styles. Core prints each one only on pages
- * that show the block, and inlines it, since it is small.
+ * that show the block, and inlines it, since it is small. A shop block's
+ * style costs nothing on a site without WooCommerce. The cart and the
+ * checkout share one file for their form fields.
  */
 function enqueue_block_styles(): void {
-	foreach ( array( 'site-logo' ) as $block ) {
+	$styles = array(
+		'core/site-logo'                  => 'site-logo',
+		'woocommerce/catalog-sorting'     => 'woocommerce-catalog-sorting',
+		'woocommerce/mini-cart'           => 'woocommerce-mini-cart',
+		'woocommerce/product-review-form' => 'woocommerce-product-review-form',
+		'woocommerce/product-sale-badge'  => 'woocommerce-product-sale-badge',
+		'woocommerce/cart'                => 'woocommerce-forms',
+		'woocommerce/checkout'            => 'woocommerce-forms',
+	);
+	foreach ( $styles as $block => $file ) {
 		wp_enqueue_block_style(
-			"core/{$block}",
+			$block,
 			array(
-				'handle' => "pergel-{$block}",
-				'src'    => get_theme_file_uri( "assets/css/blocks/{$block}.css" ),
-				'path'   => get_theme_file_path( "assets/css/blocks/{$block}.css" ),
+				'handle' => "pergel-{$file}",
+				'src'    => get_theme_file_uri( "assets/css/blocks/{$file}.css" ),
+				'path'   => get_theme_file_path( "assets/css/blocks/{$file}.css" ),
 				'ver'    => wp_get_theme()->get( 'Version' ),
 			)
 		);

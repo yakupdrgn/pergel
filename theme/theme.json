@@ -269,6 +269,26 @@
 			}
 		},
 		"blocks": {
+			"core/accordion-heading": {
+				"typography": {
+					"fontSize": "var(--wp--preset--font-size--large)"
+				}
+			},
+			"core/accordion-item": {
+				"border": {
+					"bottom": {
+						"color": "var(--wp--preset--color--line)",
+						"style": "solid",
+						"width": "1px"
+					}
+				},
+				"spacing": {
+					"padding": {
+						"top": "var(--wp--preset--spacing--30)",
+						"bottom": "var(--wp--preset--spacing--30)"
+					}
+				}
+			},
 			"core/site-title": {
 				"typography": {
 					"fontFamily": "var(--wp--preset--font-family--heading)",
