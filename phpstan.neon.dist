@@ -1,0 +1,20 @@
+includes:
+	- vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+	level: 8
+	# Filter results are only as typed as their docblocks; keep runtime guards meaningful.
+	treatPhpDocTypesAsCertain: false
+	phpVersion:
+		min: 80100
+		max: 80499
+	paths:
+		- theme
+		- engine
+		- tools
+	excludePaths:
+		analyse:
+			- engine/build
+			- tools/stubs
+	scanFiles:
+		- tools/stubs/wp-cli.php

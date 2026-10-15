@@ -1,0 +1,47 @@
+# Pergel — sürüm kontrolü dışı bırakılanlar
+#
+# Bu depoya hiçbir sır girmez: veritabanı şifreleri, API anahtarları ve SSH
+# bilgileri wp-config.php'de veya C:\devtools\.secrets altında yaşar, ikisi de
+# bu deponun dışındadır. Veritabanı yedekleri de girmez (kullanıcı verisi).
+
+# Geliştirme bağımlılıkları (composer install / npm ci ile yeniden kurulur)
+/vendor/
+/node_modules/
+
+# Ölçüm çıktıları. CI raporları artifact olarak saklar; yerelde her koşu
+# yeni dosya ürettiği için depoya girselerdi gürültü olurdu.
+/reports/
+/test-results/
+/playwright-report/
+
+# Günlükler ve dökümler
+*.log
+*.jsonl
+*.sql
+*.sql.gz
+
+# Claude Code — kişisel/yerel araçlar ve kurulan skill'ler.
+# Dizinin KENDİSİ değil İÇERİĞİ dışlanır (`/*`); böylece Pergel'e özgü bir
+# skill eklenirse aşağıya `!/.claude/skills/<ad>/` yazmak yeterli olur.
+/.claude/skills/*
+/.claude/settings*.json
+
+# Editör / IDE
+/.vscode/
+/.idea/
+*.swp
+*.swo
+*~
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Yerel geliştirme yapılandırması
+*.local.php
+/.env
+/.env.*
+
+# Paketleme çıktısı (tools/package ileride depo köküne yazar)
+pergel-*.zip

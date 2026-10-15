@@ -1,0 +1,40 @@
+# Satır sonu: depoda LF tutulur (.editorconfig ile aynı).
+* text=auto eol=lf
+*.png  binary
+*.jpg  binary
+*.webp binary
+*.avif binary
+*.woff2 binary
+*.mp4  binary
+*.webm binary
+
+# Derlenmiş editör JS'i repoya girer (K6) ama diff ve dil istatistiğinde sayılmaz.
+engine/build/** linguist-generated=true -diff
+composer.lock   -diff
+package-lock.json -diff
+
+# ---------------------------------------------------------------------------
+# Dağıtım dışı bırakılanlar (export-ignore)
+#
+# `git archive` bu yolları paket dışında bırakır. Tema ve eklenti zip'leri
+# yalnızca theme/ ve engine/ içeriğinden üretilir; geliştirme araçları,
+# testler ve iç belgeler web'den erişilebilir bir dizine düşmemeli.
+# ---------------------------------------------------------------------------
+.github/            export-ignore
+.claude/            export-ignore
+.gitattributes      export-ignore
+.gitignore          export-ignore
+.editorconfig       export-ignore
+tools/              export-ignore
+tests/              export-ignore
+docs/               export-ignore
+starters/           export-ignore
+CLAUDE.md           export-ignore
+README.md           export-ignore
+composer.json       export-ignore
+composer.lock       export-ignore
+package.json        export-ignore
+package-lock.json   export-ignore
+phpcs.xml.dist      export-ignore
+phpstan.neon.dist   export-ignore
+**/.gitkeep         export-ignore

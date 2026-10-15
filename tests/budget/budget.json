@@ -1,0 +1,24 @@
+{
+	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. Shop/catalog pages are added with the WooCommerce module (F4).",
+	"runs": 3,
+	"pages": [
+		{ "name": "home", "path": "/" },
+		{ "name": "post", "path": "/pergel-sample-post/" },
+		{ "name": "page", "path": "/pergel-sample-page/" },
+		{ "name": "category", "path": "/category/pergel-test/" },
+		{ "name": "search", "path": "/?s=pergel" },
+		{ "name": "404", "path": "/pergel-budget-missing/", "status": 404 }
+	],
+	"limits": {
+		"*": {
+			"pergel_files": 60,
+			"queries": 75,
+			"writes": 0,
+			"htmlKB": 100,
+			"requests": 30,
+			"jsKB": 30,
+			"bodyCssLinks": 0,
+			"h1": 1
+		}
+	}
+}
