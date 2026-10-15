@@ -109,6 +109,145 @@ bir projeye ait; o adlar kullanılmaz.
   gelince yeniden değerlendirilir.
 - **Repo konumu:** `D:\dev\pergel` (önce `C:\dev\pergel`, kullanıcı isteğiyle taşındı).
 
+## F1 kararları (15 Ekim 2026)
+
+- **Token formatı:** W3C DTCG 2025.10'un bir alt kümesi, `tokens/*.json` (ayrıntı:
+  `docs/TOKENS.md`). Plandaki proje paketi `tokens.json` dosyası da bu formatı kullanır.
+  **Elenen:** Style Dictionary gibi bir Node aracı (derleme WordPress olmadan da PHP ile çalışmalı,
+  child temalar `wp pergel tokens build` ile derleniyor) ve doğrudan `theme.json` düzenlemek
+  (kontrast denetimi ve variation'lar arası tutarlılık kaybolur).
+- **Ayrı JSON Schema yok:** Doğrulayıcı derleyicinin kendisidir. Tüm sorunları tek seferde
+  dosya ve token yoluyla listeler, hiçbir dosyayı yarım yazmaz. Şema ile derleyici arasında
+  iki kaynaklı kural ikiliği oluşmaz. Editör otomatik tamamlaması gerekirse şema sonradan
+  derleyicinin sabitlerinden üretilir.
+- **Üretilen `theme.json`:** Token'ların sahip olduğu alanlar her derlemede yeniden yazılır, geri
+  kalanı korunur. Biçim sabittir (tab girinti, sonda satır sonu), böylece CI'daki
+  `php tools/tokens.php --check` farkı bayt bayt yakalar.
+- **Kontrast derleme hatasıdır:** WCAG AA 4.5:1 sağlamayan zorunlu renk çifti uyarı değil
+  hatadır. ariumlab.com'un bugünkü `#767676` / `#F5F7F8` (4.23) gibi çiftleri bu yüzden yeni
+  temaya taşınamaz.
+- **PHPUnit 10.5:** Saf PHP birimleri (token derleyicisi ve sonraki modüller) için geliştirme
+  bağımlılığı olarak eklendi. `composer check` artık lint + analiz + test çalıştırır.
+  WordPress gerektiren testler F2'de ayrıca değerlendirilir.
+- **Style variation'lar ariumlab.com kimliğine göre:** Variation'lar genel örnekler değil,
+  ariumlab.com kurumsal kimliğinden (mavi `#1E64E6`, koyu `#191919`/`#242424`, açık gri zemin,
+  küçük radius) türetilen yönlerdir. Ticari fontlar (Satoshi, Preospe) kullanılmaz; yerine OFL
+  lisanslı, Türkçe karakterleri kapsayan değişken fontlar kendi sunucumuzdan sunulur.
+- **Varsayılan font sistem yığınıdır:** Ana tema hiç web font indirmez. Web fontları yalnızca
+  variation'lar ve child temalar getirir.
+
+- **Şablonlar ve tek H1:** `index`, `home`, `front-page`, `archive`, `search`, `single`, `page`,
+  `404`. Her sayfada tam olarak bir H1 bulunur ve bütçe bunu `h1 = [1, 1]` aralığıyla denetler.
+  Bütçede bir sayı üst sınırdır, `[min, max]` aralıktır.
+- **`front-page.html` yalnızca statik ön sayfada:** Şablon sayfanın içeriğini başlıksız gösterir;
+  H1'i içeriğin ilk bölümü (hero) taşır. Ön sayfa yazıları listeliyorsa `front-page`
+  `frontpage_template_hierarchy` filtresiyle hiyerarşiden çıkarılır ve `home.html` kullanılır.
+  Aynı filtre Site Editor'ün ana sayfa için açtığı şablonu da düzeltir.
+  **Elenen:** `front-page.html` hiç olmaması (statik ön sayfada sayfa başlığı H1 olarak görünür;
+  kurumsal sitelerde istenmez) ve koşulsuz `front-page.html` (yazı listesi olan ön sayfayı bozar).
+- **Şablon metinleri PHP pattern'lerde:** HTML şablonlardaki metinler çevrilemediği için
+  `patterns/hidden-*.php` dosyalarına taşındı (`Inserter: no`). Şablonlar bunları
+  `wp:pattern` ile çağırır. Pattern'lerde koşullu blok yapısı yoktur, yalnızca çevrilen metin
+  ve ayar değerleri vardır; çünkü Site Editor pattern'i bir kez çözüp şablona gömebilir.
+- **`.pot` dosyaları depoda:** `composer pot` ile üretilir (`--no-location`, satır numarası
+  değişince fark oluşmasın diye). CI, tarih satırı dışında farkı hata sayar.
+- **Erişilebilirlik bütçede:** `@axe-core/playwright` her bütçe sayfasında WCAG 2.0/2.1/2.2
+  A ve AA kurallarını çalıştırır. Limit `axe = 0` ihlaldir; ihlaller rapora kural, etki ve ilk
+  seçiciyle yazılır. Her sayfa üç görünümde taranır: masaüstü (1440 px), telefon (390 px) ve
+  telefonda açılmış menü. Her ihlal hangi görünümde bulunduğunu taşır.
+  **Elenen:** ayrı bir pa11y/Lighthouse işi (aynı tarayıcı oturumunu kullanmak daha hızlı).
+- **Yatay taşma bütçede:** `overflowX`, telefon genişliğinde `scrollWidth − clientWidth` farkıdır
+  ve limiti 0'dır.
+- **CSS ve font bütçesi:** `cssKB` harici stil dosyaları ile satır içi `<style>` toplamıdır
+  (blok temalarda çekirdek CSS'in çoğu satır içidir). İlk ölçüm 45–51 KB, limit 60 KB.
+  `fontKB` varsayılan temada 0'dır (sistem fontu). Variation'ların limitleri aşağıdadır.
+- **Navigation yedeği:** Menüsü olmayan Navigation bloğu çekirdekte `ul > ul > li` üretiyor (axe
+  `list` ihlali). Tema, `block_core_navigation_render_fallback` filtresiyle Page List yedeğini üst
+  düzey sayfalar için Navigation Link bloklarına çevirir (en çok 12). Menüsü olan siteler
+  etkilenmez. Çekirdek düzeltilince filtre kaldırılır.
+- **Üç style variation (ariumlab.com yönleri):** Hepsi `tokens/<slug>.json` dosyasından üretilir
+  ve yedi kontrast çiftinin hepsini geçer. Font KB, Türkçe metin içeren sayfada ölçülmüştür.
+
+| Variation | Zemin / metin / vurgu | Fontlar (gövde / başlık) | Biçim | Font KB |
+| --- | --- | --- | --- | --: |
+| Lab Precision | `#F5F7F8` / `#242424` / `#1E64E6` | Figtree / Lexend Exa | 5 px buton, 12 px kart, büyük harf buton ve menü | 110,9 |
+| Graphite Engineering | `#191919` / `#EEF1F5` / `#4C8DFF` | Geist / Space Grotesk | Koyu, 4 px buton, 10 px kart | 85,1 |
+| Clinical Air | `#FFFFFF` / `#0F2A5C` / `#00787A` | Manrope / Manrope | Hap buton, 16 px kart | 39,0 |
+
+- **Lab Precision** bugünkü siteye en yakın olanıdır. Satoshi'nin yerine Figtree, Preospe'nin yerine
+  geniş ve teknik görünümlü Lexend Exa kullanılır. İkincil metin `#5E6672` olduğu için bugünkü
+  `#767676` / `#F5F7F8` çiftinin 4,23:1'lik sorunu kalkar (5,40:1).
+- **Graphite**'ta marka mavisi `#1E64E6` koyu zeminde yaklaşık 3:1 kalır. Bu yüzden vurgu rengi
+  `#4C8DFF`, buton metni koyudur.
+- **Clinical Air**'deki teal `#00A3A3` beyaz üzerinde 3,10:1'de kalır. Bu yüzden vurgu rengi koyu
+  teal `#00787A`'dır (5,29:1).
+- **Font seçimi Türkçe kapsam ve boyuta göre:** ğĞşŞıİçÇöÖüÜâÂîÎûÛ glifleri fontTools ile
+  denetlendi. ₺ işareti Figtree ve Geist'te yok; tarayıcı onu sistem fontundan gösterir.
+  İtalik dosyaları paketlenmez; italik metni (ör. alıntı) tarayıcı eğerek üretir.
+  **Elenen:** Unbounded (latin-ext 116 KB, kırpılınca bile 66 KB) ve Inter (latin-ext 83 KB). Türkçe
+  sayfada font yükünü 150–195 KB'a çıkarıyorlardı.
+- **Font bütçesi Türkçe metinle ölçülür:** Fixture'daki örnek yazıya ve ön sayfaya Türkçe bir
+  başlık ve paragraf eklendi. Böylece İngilizce kurulan CI sitesi de latin-ext dosyalarını indirir
+  ve yerel Türkçe siteyle aynı sonucu verir. Limitler ölçümün yaklaşık %10 üstündedir: Lab
+  Precision 120, Graphite 95, Clinical Air 45 KB.
+- **Variation'lar bütçede veritabanına yazmadan ölçülür:** Geliştirme probe'u
+  `X-Pergel-Variation: <slug>` başlığıyla gelen istekte `styles/<slug>.json` dosyasını
+  `wp_theme_json_data_theme` filtresiyle uygular. Bütçe sayfası `"variation"` ve sayfaya özel
+  `"limits"` alabilir. Her variation için ön sayfa ve yazı sayfası ölçülür (axe dahil).
+  **Elenen:** ölçüm sırasında global styles'ı kaydetmek (veritabanına yazar, paralel ölçümü
+  bozar). Site Editor'de seçip kaydetme yolu ayrıca elle denendi: ön yüz doğru font ve renkleri
+  yükledi.
+- **Variation'a özel stil kuralları:** Token'la ifade edilemeyen kurallar (Lab Precision'daki
+  büyük harf buton ve menü gibi) token dosyasındaki `$extensions."com.ariumlab.pergel".styles`
+  alanına yazılır ve variation'a olduğu gibi kopyalanır.
+- **Lab Precision 1600 px geniş alan:** ariumlab.com 1600 px konteyner kullanır; bu variation'ın
+  `layout.wide` değeri 1600 px'tir (ana tema 1240 px kalır).
+- **Header ve footer'lar pattern:** `parts/header.html` ve `parts/footer.html` yalnızca birer
+  `wp:pattern` çağrısıdır (`pergel/header-classic`, `pergel/footer-simple`). Diğer pattern'ler
+  `Block Types: core/template-part/header|footer` taşıdığı için Site Editor'de parça seçilince
+  Ayarlar › Tasarım panelinde ilk sırada listelenir; tıklayınca parça o tasarıma geçer (elle
+  denendi). Metinler PHP'de çevrilir. Dış grup tam genişlik, iç satır
+  `align: wide` olduğu için variation'ın geniş alanını izler.
+
+| Header | İçerik | Footer | İçerik |
+| --- | --- | --- | --- |
+| `classic` | Logo + başlık, menü | `simple` | Başlık + slogan, menü |
+| `cta` | Classic + "Get in touch" butonu | `columns` | Marka, Sayfalar, Son yazılar, Konular, alt satır |
+| `centered` | Ortalanmış başlık ve menü, alt çizgi | `cta` | Vurgu renkli çağrı bandı, altında başlık + menü |
+| `search` | Classic + yalnız ikonlu arama | `centered` | Ortalanmış logo, başlık, slogan, menü |
+| `topbar` | Üstte koyu şerit (slogan + iletişim), altında classic | `inverse` | Koyu zeminde marka, Sayfalar, Konular |
+| `inverse` | Koyu zemin, çerçeveli buton | `search` | Marka + arama formu, alt satırda menü |
+
+- **Telefonda gizleme çekirdek özelliğiyle:** CTA butonu ve üst şerit telefonda
+  `metadata.blockVisibility.viewport.mobile: false` ile gizlenir (WP 7.0+, 480 px kırılımı).
+  Ek CSS yazılmaz.
+- **Site başlığı rengi `inherit`:** `core/site-title` bağlantısı grubun metin rengini alır; böylece
+  koyu zeminli header ve footer'da ayrı ayar gerekmez.
+- **Kök padding `0px`:** `styles.spacing.padding` üst/alt değeri birimsiz `0` iken çekirdeğin
+  mobil menü kuralı `clamp(1rem, 0, 20rem)` geçersiz sayılıyor ve açılan menü kenara yapışıyordu.
+- **Liste blokları arası boşluk:** Page List, Categories, Latest Posts ve Archives öğeleri arasına
+  `0.5em` eklenir (theme.json blok `css`). Küçük puntolu footer listeleri axe `target-size`
+  (24 px) kuralını bu olmadan geçmiyordu.
+- **Yüzey kontrastı:** Footer'lar `surface` zemin kullandığı için derleyici `muted/surface` ve
+  `accent/surface` çiftlerini de denetler (toplam yedi çift).
+- **Header/footer'lar bütçede veritabanına yazmadan ölçülür:** Probe, `X-Pergel-Header: <ad>` ve
+  `X-Pergel-Footer: <ad>` başlıklarıyla parçadaki `pergel/header-*` / `pergel/footer-*` pattern
+  çağrısını `render_block_data` filtresiyle değiştirir. Altı header ve altı footer, beş sayfada
+  eşleştirilerek ölçülür; biri Graphite ile.
+- **Pattern önbelleği:** WordPress tema pattern dosyalarının listesini bir site transient'inde
+  tutar ve anahtar tema yolunun hash'idir. Windows'ta web sunucusu ile WP-CLI yolu farklı yazdığı
+  için (`C:\` / `C:/`) CLI'dan temizlemek web tarafını etkilemiyordu. Fixture bu transient'lerin
+  hepsini siler.
+- **Ertelenen:** Mega menü F3'e kaldı. Yapışkan (sticky) header yapılmadı: şablon parçasının
+  sarmalayıcı `<header>` öğesi yalnızca kendi yüksekliği kadar olduğu için `position: sticky`
+  içerideki grupta çalışmıyor; F3'te parça düzeyinde ele alınacak.
+
+### Değişiklik (15 Ekim 2026)
+
+F5'teki "organik ürünler provası" plandaki bir örnekti; kullanıcı bu provaya gerek olmadığını
+söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek seferde ve tekrar
+üretilebilen bir site) aynı kalır.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
@@ -118,14 +257,12 @@ bir projeye ait; o adlar kullanılmaz.
 | F2 | Modül sistemi, ayar ekranı, marka + Block Bindings, SEO sözleşmesi, performans modülü, `wp pergel` | SEO matrisi 6 senaryoda temiz |
 | F3 | Pergel blokları ve uzantıları, 120+ pattern, kurumsal starter, dönen video hero | Tüm pattern'ler geçerli, görsel testler oturdu, kurumsal demo kuruluyor |
 | F4 | WooCommerce şablonları, hızlı arama, satış modları, P2 özellikleri, ölçek testi | Mağaza bütçesi tutuyor, ödeme akışı test modunda geçiyor |
-| F5 | Proje paketi ve `wp pergel import`, Abilities/MCP, skill'ler, organik ürünler provası | Prova sitesi paketten tek seferde ve tekrar üretilebiliyor |
+| F5 | Proje paketi ve `wp pergel import`, Abilities/MCP, skill'ler, prova sitesi (hedef açık) | Prova sitesi paketten tek seferde ve tekrar üretilebiliyor |
 | F6 | Tam test matrisi, güvenlik incelemesi, çeviriler, WP 7.2 uyumu | Tüm kontroller yeşil, v1.0.0 |
 | F7 | ariumlab.com: içerik, staging, geçiş, 30 gün izleme | Yeni site yayında |
 
 ## Bilinen açık işler
 
-- Anasayfa (blog listesi) şu an H1 içermiyor → F1'de `home`/`front-page` şablonu (bütçe `h1 ≤ 1`
-  bunu yakalamıyor; F1'de `h1 = 1` yapılacak).
+- ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
 - Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor → F2 performans modülü kapatacak.
-- HTML şablonlardaki sabit metinler ("Nothing found." vb.) çevrilemiyor → F1'de PHP pattern'lere
-  taşınacak.
+- ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.

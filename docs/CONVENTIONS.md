@@ -12,6 +12,14 @@
   Global önek `pergel_`, hook'lar `pergel/<ad>` (ör. `pergel/modules`).
 - Text domain: tema `pergel`, eklenti `pergel-engine`. Kullanıcıya görünen her metin çevrilebilir.
 - Satır sonu LF, girinti tab (YAML hariç), UTF-8 (`.editorconfig`).
+- `theme.json` preset'leri ve `styles/*.json` elle düzenlenmez; `tokens/` değiştirilip
+  `php tools/tokens.php` (veya `wp pergel tokens build`) çalıştırılır (`docs/TOKENS.md`).
+- WordPress gerektirmeyen mantık `tests/php/` altında PHPUnit ile test edilir.
+- HTML şablon ve template part'larda sabit metin olmaz; metin `patterns/hidden-*.php` içinde
+  çeviri fonksiyonuyla yazılır ve şablona `wp:pattern` ile girer. Metin değişince `composer pot`.
+- Her şablon tam olarak bir H1 üretir (bütçe denetler). Ön sayfada H1'i içeriğin ilk bölümü taşır.
+- WordPress tema pattern dosyalarının listesini önbelleğe alır: yeni pattern dosyası ekleyince
+  `tools/fixtures/seed.php`'yi çalıştırın (veya `wp eval 'wp_get_theme()->delete_pattern_cache();'`).
 
 ## Güvenlik
 

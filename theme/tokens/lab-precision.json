@@ -1,0 +1,67 @@
+{
+	"$description": "Lab Precision: light, close to the current ariumlab.com look. Grey page with white cards, ariumlab blue, small radii, uppercase buttons. Figtree body, Lexend Exa headings (OFL stand-ins for Satoshi and Preospe).",
+	"$extensions": {
+		"com.ariumlab.pergel": {
+			"title": "Lab Precision",
+			"styles": {
+				"elements": {
+					"button": { "typography": { "textTransform": "uppercase", "letterSpacing": "0.04em" } }
+				},
+				"blocks": {
+					"core/navigation": { "typography": { "textTransform": "uppercase", "letterSpacing": "0.04em", "fontSize": "var(--wp--preset--font-size--small)" } }
+				}
+			}
+		}
+	},
+	"color": {
+		"base": { "$value": "#f5f7f8" },
+		"surface": { "$value": "#ffffff" },
+		"contrast": { "$value": "#242424" },
+		"muted": { "$value": "#5e6672" },
+		"border": { "$value": "#1919191a" },
+		"accent": { "$value": "#1e64e6" },
+		"on-accent": { "$value": "#ffffff" }
+	},
+	"font-family": {
+		"body": {
+			"$value": [ "Figtree", "system-ui", "sans-serif" ],
+			"$extensions": { "com.ariumlab.pergel": { "name": "Figtree",
+				"fontFace": [
+					{ "src": "file:./assets/fonts/figtree/figtree-latin-wght-normal.woff2", "fontWeight": "300 900", "fontStyle": "normal", "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD" },
+					{ "src": "file:./assets/fonts/figtree/figtree-latin-ext-wght-normal.woff2", "fontWeight": "300 900", "fontStyle": "normal", "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF" }
+				]
+			} }
+		},
+		"heading": {
+			"$value": [ "Lexend Exa", "system-ui", "sans-serif" ],
+			"$extensions": { "com.ariumlab.pergel": { "name": "Lexend Exa",
+				"fontFace": [
+					{ "src": "file:./assets/fonts/lexend-exa/lexend-exa-latin-wght-normal.woff2", "fontWeight": "100 900", "fontStyle": "normal", "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD" },
+					{ "src": "file:./assets/fonts/lexend-exa/lexend-exa-latin-ext-wght-normal.woff2", "fontWeight": "100 900", "fontStyle": "normal", "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF" }
+				]
+			} }
+		}
+	},
+	"font-size": {
+		"xx-large": {
+			"$value": { "value": 2.625, "unit": "rem" },
+			"$extensions": { "com.ariumlab.pergel": { "name": "Huge", "fluid": { "min": { "value": 1.875, "unit": "rem" } } } }
+		}
+	},
+	"layout": {
+		"$description": "ariumlab.com uses a 1600 px container.",
+		"wide": { "$value": { "value": 1600, "unit": "px" } }
+	},
+	"radius": {
+		"small": { "$value": { "value": 5, "unit": "px" } },
+		"medium": { "$value": { "value": 12, "unit": "px" } },
+		"large": { "$value": { "value": 35, "unit": "px" } }
+	},
+	"font-weight": {
+		"heading": { "$value": 500 },
+		"button": { "$value": 600 }
+	},
+	"line-height": {
+		"heading": { "$value": 1.2 }
+	}
+}

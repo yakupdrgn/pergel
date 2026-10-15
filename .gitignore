@@ -45,3 +45,6 @@ desktop.ini
 
 # Paketleme çıktısı (tools/package ileride depo köküne yazar)
 pergel-*.zip
+
+# PHPUnit
+/.phpunit.cache/

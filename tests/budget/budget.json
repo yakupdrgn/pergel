@@ -1,13 +1,26 @@
 {
-	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. Shop/catalog pages are added with the WooCommerce module (F4).",
+	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. A number is a maximum; [min, max] is a range. A page with \"variation\" is rendered with that style variation, \"header\"/\"footer\" swap in pergel/header-<name> and pergel/footer-<name>; a page's \"limits\" override the shared ones. axe runs at 1440 px, at 390 px and with the phone menu open; overflowX is sideways scroll at 390 px. Shop/catalog pages are added with the WooCommerce module (F4).",
 	"runs": 3,
 	"pages": [
-		{ "name": "home", "path": "/" },
+		{ "name": "front", "path": "/" },
+		{ "name": "blog", "path": "/blog/" },
 		{ "name": "post", "path": "/pergel-sample-post/" },
 		{ "name": "page", "path": "/pergel-sample-page/" },
 		{ "name": "category", "path": "/category/pergel-test/" },
 		{ "name": "search", "path": "/?s=pergel" },
-		{ "name": "404", "path": "/pergel-budget-missing/", "status": 404 }
+		{ "name": "404", "path": "/pergel-budget-missing/", "status": 404 },
+		{ "name": "front@lab-precision", "path": "/", "variation": "lab-precision", "limits": { "fontKB": 120 } },
+		{ "name": "post@lab-precision", "path": "/pergel-sample-post/", "variation": "lab-precision", "limits": { "fontKB": 120 } },
+		{ "name": "front@graphite", "path": "/", "variation": "graphite", "limits": { "fontKB": 95 } },
+		{ "name": "post@graphite", "path": "/pergel-sample-post/", "variation": "graphite", "limits": { "fontKB": 95 } },
+		{ "name": "front@clinical-air", "path": "/", "variation": "clinical-air", "limits": { "fontKB": 45 } },
+		{ "name": "post@clinical-air", "path": "/pergel-sample-post/", "variation": "clinical-air", "limits": { "fontKB": 45 } },
+		{ "name": "front:cta/columns", "path": "/", "header": "cta", "footer": "columns" },
+		{ "name": "front:centered/cta", "path": "/", "header": "centered", "footer": "cta" },
+		{ "name": "front:search/search", "path": "/", "header": "search", "footer": "search" },
+		{ "name": "front:topbar/centered", "path": "/", "header": "topbar", "footer": "centered" },
+		{ "name": "front:inverse/inverse", "path": "/", "header": "inverse", "footer": "inverse" },
+		{ "name": "post:inverse/inverse@graphite", "path": "/pergel-sample-post/", "variation": "graphite", "header": "inverse", "footer": "inverse", "limits": { "fontKB": 95 } }
 	],
 	"limits": {
 		"*": {
@@ -17,8 +30,12 @@
 			"htmlKB": 100,
 			"requests": 30,
 			"jsKB": 30,
+			"cssKB": 60,
+			"fontKB": 0,
 			"bodyCssLinks": 0,
-			"h1": 1
+			"h1": [ 1, 1 ],
+			"axe": 0,
+			"overflowX": 0
 		}
 	}
 }

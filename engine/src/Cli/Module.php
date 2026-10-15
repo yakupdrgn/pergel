@@ -36,5 +36,6 @@ final class Module implements Core\Module {
 	 */
 	public function register(): void {
 		WP_CLI::add_command( 'pergel', Command::class );
+		WP_CLI::add_command( 'pergel tokens', Tokens::class );
 	}
 }
