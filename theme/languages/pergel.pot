@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T15:02:13+03:00\n"
+"POT-Creation-Date: 2026-10-15T15:12:00+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -447,6 +447,123 @@ msgid "We look at the space, listen to your plans and leave you with a written p
 msgstr ""
 
 msgid "Arrange a visit"
+msgstr ""
+
+#: patterns/faq-accordion.php
+msgctxt "Pattern title"
+msgid "FAQ accordion"
+msgstr ""
+
+#: patterns/faq-accordion.php
+msgctxt "Pattern description"
+msgid "Centered heading and questions that open to show the answer."
+msgstr ""
+
+msgid "FAQ"
+msgstr ""
+
+msgid "Frequently asked questions"
+msgstr ""
+
+msgid "How quickly can you start?"
+msgstr ""
+
+msgid "Most surveys happen within a week of your first call. Work usually starts two weeks after you approve the plan."
+msgstr ""
+
+msgid "Is the price in the quote final?"
+msgstr ""
+
+msgid "Yes. The quote is a fixed price for the work described. If you ask for changes, we price them before we do them."
+msgstr ""
+
+msgid "Do you work outside office hours?"
+msgstr ""
+
+msgid "Yes, at no extra cost for planned work. Emergency call-outs at night are included in the Premium plan."
+msgstr ""
+
+msgid "What happens after the warranty ends?"
+msgstr ""
+
+msgid "You can continue with a maintenance plan or call us when you need us. Your documents stay valid either way."
+msgstr ""
+
+msgid "Can you work with our existing systems?"
+msgstr ""
+
+msgid "In most cases, yes. We check compatibility during the survey and tell you before quoting."
+msgstr ""
+
+msgid "How do I pay?"
+msgstr ""
+
+msgid "By bank transfer. Projects are paid in two parts; plans are paid monthly or yearly."
+msgstr ""
+
+#: patterns/faq-cards.php
+msgctxt "Pattern title"
+msgid "FAQ cards"
+msgstr ""
+
+#: patterns/faq-cards.php
+msgctxt "Pattern description"
+msgid "Six questions with their answers in cards on a light background."
+msgstr ""
+
+#: patterns/faq-inverse.php
+msgctxt "Pattern title"
+msgid "FAQ on a dark background"
+msgstr ""
+
+#: patterns/faq-inverse.php
+msgctxt "Pattern description"
+msgid "Centered heading and questions that open, on a dark background."
+msgstr ""
+
+#: patterns/faq-split-intro.php
+msgctxt "Pattern title"
+msgid "FAQ with introduction"
+msgstr ""
+
+#: patterns/faq-split-intro.php
+msgctxt "Pattern description"
+msgid "Heading and contact link on the left, questions on the right."
+msgstr ""
+
+msgid "Questions we hear most"
+msgstr ""
+
+msgid "Cannot find your answer? Our team replies within one working day."
+msgstr ""
+
+msgid "Ask a question"
+msgstr ""
+
+#: patterns/faq-two-columns.php
+msgctxt "Pattern title"
+msgid "FAQ in two columns"
+msgstr ""
+
+#: patterns/faq-two-columns.php
+msgctxt "Pattern description"
+msgid "Questions and answers shown open, in two columns."
+msgstr ""
+
+#: patterns/faq-with-contact.php
+msgctxt "Pattern title"
+msgid "FAQ with contact box"
+msgstr ""
+
+#: patterns/faq-with-contact.php
+msgctxt "Pattern description"
+msgid "Questions on the left and a box with a contact button on the right."
+msgstr ""
+
+msgid "Still have a question?"
+msgstr ""
+
+msgid "Call or write to us. A real person answers."
 msgstr ""
 
 #: patterns/footer-centered.php
@@ -966,6 +1083,291 @@ msgctxt "Pattern description"
 msgid "Search form with translated label and button text."
 msgstr ""
 
+#: patterns/logos-grid.php
+msgctxt "Pattern title"
+msgid "Client logos in a grid"
+msgstr ""
+
+#: patterns/logos-grid.php
+msgctxt "Pattern description"
+msgid "Heading and six client logos in bordered boxes."
+msgstr ""
+
+msgid "Our clients"
+msgstr ""
+
+msgid "Some of the teams we work with"
+msgstr ""
+
+#: patterns/logos-inverse.php
+msgctxt "Pattern title"
+msgid "Client logos on a dark background"
+msgstr ""
+
+#: patterns/logos-inverse.php
+msgctxt "Pattern description"
+msgid "A short line and six client logos on a dark background."
+msgstr ""
+
+msgid "Trusted by teams across the region"
+msgstr ""
+
+#: patterns/logos-marquee.php
+msgctxt "Pattern title"
+msgid "Moving client logos"
+msgstr ""
+
+#: patterns/logos-marquee.php
+msgctxt "Pattern description"
+msgid "Client logos that scroll slowly sideways; they stand still for visitors who prefer less motion."
+msgstr ""
+
+#: patterns/logos-row.php
+msgctxt "Pattern title"
+msgid "Client logos in a row"
+msgstr ""
+
+#: patterns/logos-row.php
+msgctxt "Pattern description"
+msgid "A short centered line and six client logos in a row."
+msgstr ""
+
+#: patterns/logos-with-heading-split.php
+msgctxt "Pattern title"
+msgid "Client logos beside a heading"
+msgstr ""
+
+#: patterns/logos-with-heading-split.php
+msgctxt "Pattern description"
+msgid "A heading on the left and a three by two grid of logos on the right."
+msgstr ""
+
+msgid "Over 300 companies rely on us"
+msgstr ""
+
+msgid "From local shops to national chains."
+msgstr ""
+
+#: patterns/pricing-comparison.php
+msgctxt "Pattern title"
+msgid "Plan comparison table"
+msgstr ""
+
+#: patterns/pricing-comparison.php
+msgctxt "Pattern description"
+msgid "A table comparing what each plan includes, row by row."
+msgstr ""
+
+msgid "Compare plans"
+msgstr ""
+
+msgid "What each plan includes"
+msgstr ""
+
+msgid "Basic"
+msgstr ""
+
+msgid "Standard"
+msgstr ""
+
+msgid "Premium"
+msgstr ""
+
+msgid "Inspections per year"
+msgstr ""
+
+msgid "Phone support"
+msgstr ""
+
+msgid "Weekdays"
+msgstr ""
+
+msgid "Around the clock"
+msgstr ""
+
+msgid "Email support"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "Response time"
+msgstr ""
+
+msgid "2 working days"
+msgstr ""
+
+msgid "1 working day"
+msgstr ""
+
+msgid "Same day"
+msgstr ""
+
+msgid "Spare parts at cost"
+msgstr ""
+
+msgid "Named engineer"
+msgstr ""
+
+msgid "Monthly price"
+msgstr ""
+
+msgctxt "sample price"
+msgid "$49"
+msgstr ""
+
+msgctxt "sample price"
+msgid "$99"
+msgstr ""
+
+msgctxt "sample price"
+msgid "$199"
+msgstr ""
+
+#: patterns/pricing-inverse.php
+msgctxt "Pattern title"
+msgid "Pricing on a dark background"
+msgstr ""
+
+#: patterns/pricing-inverse.php
+msgctxt "Pattern description"
+msgid "Three plans as light cards on a dark background."
+msgstr ""
+
+msgid "Pricing"
+msgstr ""
+
+msgid "Simple plans, no hidden costs"
+msgstr ""
+
+msgid "Every plan includes the work, the travel and the report. Cancel with one month notice."
+msgstr ""
+
+msgid "per month"
+msgstr ""
+
+msgid "For small offices with one site."
+msgstr ""
+
+msgid "Yearly inspection"
+msgstr ""
+
+msgid "Phone support on weekdays"
+msgstr ""
+
+msgid "Response within two working days"
+msgstr ""
+
+msgid "Choose Basic"
+msgstr ""
+
+msgid "Most popular"
+msgstr ""
+
+msgid "For growing teams that cannot afford downtime."
+msgstr ""
+
+msgid "Two inspections a year"
+msgstr ""
+
+msgid "Phone and email support"
+msgstr ""
+
+msgid "Response within one working day"
+msgstr ""
+
+msgid "Choose Standard"
+msgstr ""
+
+msgid "For sites that run around the clock."
+msgstr ""
+
+msgid "Quarterly inspections"
+msgstr ""
+
+msgid "Support line around the clock"
+msgstr ""
+
+msgid "Same-day response"
+msgstr ""
+
+msgid "Choose Premium"
+msgstr ""
+
+#: patterns/pricing-single.php
+msgctxt "Pattern title"
+msgid "Single plan"
+msgstr ""
+
+#: patterns/pricing-single.php
+msgctxt "Pattern description"
+msgid "One plan beside a list of everything it includes."
+msgstr ""
+
+msgid "One plan"
+msgstr ""
+
+msgid "Everything in one contract"
+msgstr ""
+
+msgid "One monthly price covers inspections, repairs and support. No call-out fees."
+msgstr ""
+
+msgid "Spare parts included"
+msgstr ""
+
+msgctxt "sample price"
+msgid "$149"
+msgstr ""
+
+msgid "per month, billed yearly"
+msgstr ""
+
+msgid "Get started"
+msgstr ""
+
+#: patterns/pricing-three.php
+msgctxt "Pattern title"
+msgid "Three pricing plans"
+msgstr ""
+
+#: patterns/pricing-three.php
+msgctxt "Pattern description"
+msgid "Centered heading and three plans, the middle one highlighted."
+msgstr ""
+
+#: patterns/pricing-two.php
+msgctxt "Pattern title"
+msgid "Two pricing plans"
+msgstr ""
+
+#: patterns/pricing-two.php
+msgctxt "Pattern description"
+msgid "Centered heading and two plans side by side on a light background."
+msgstr ""
+
+#: patterns/pricing-with-intro.php
+msgctxt "Pattern title"
+msgid "Pricing with introduction"
+msgstr ""
+
+#: patterns/pricing-with-intro.php
+msgctxt "Pattern description"
+msgid "Introduction and a contact link on the left, two plans on the right."
+msgstr ""
+
+msgid "Pick a plan, change it any time"
+msgstr ""
+
+msgid "Need something in between? We also make plans to measure."
+msgstr ""
+
+msgid "Talk to us"
+msgstr ""
+
 #: patterns/process-inverse.php
 msgctxt "Pattern title"
 msgid "Process on a dark background"
@@ -1204,19 +1606,10 @@ msgstr ""
 msgid "Software and firmware updates"
 msgstr ""
 
-msgid "Spare parts at cost"
-msgstr ""
-
-msgid "Phone support on weekdays"
-msgstr ""
-
 msgid "Written report after each visit"
 msgstr ""
 
 msgid "Named engineer for your site"
-msgstr ""
-
-msgid "Response within one working day"
 msgstr ""
 
 msgid "Training for new staff"
@@ -1534,6 +1927,123 @@ msgid "Every client has a named engineer and a project manager who knows the sit
 msgstr ""
 
 msgid "We are hiring"
+msgstr ""
+
+#: patterns/testimonial-large-centered.php
+msgctxt "Pattern title"
+msgid "Large centered testimonial"
+msgstr ""
+
+#: patterns/testimonial-large-centered.php
+msgctxt "Pattern description"
+msgid "One large centered quote with the client photo and name below."
+msgstr ""
+
+msgid "Good advice from the first call. They talked us out of the expensive option because we did not need it."
+msgstr ""
+
+msgctxt "job title"
+msgid "Owner"
+msgstr ""
+
+#: patterns/testimonial-single-quote.php
+msgctxt "Pattern title"
+msgid "Single testimonial"
+msgstr ""
+
+#: patterns/testimonial-single-quote.php
+msgctxt "Pattern description"
+msgid "One quote with the client name and role."
+msgstr ""
+
+msgid "They found the cause of a problem two other firms had missed, fixed it in a day and explained it so we could understand."
+msgstr ""
+
+msgctxt "job title"
+msgid "Operations manager"
+msgstr ""
+
+#: patterns/testimonial-with-image.php
+msgctxt "Pattern title"
+msgid "Testimonial with image"
+msgstr ""
+
+#: patterns/testimonial-with-image.php
+msgctxt "Pattern description"
+msgid "A large photo beside one quote and the client details."
+msgstr ""
+
+msgid "Client story"
+msgstr ""
+
+#: patterns/testimonials-cards.php
+msgctxt "Pattern title"
+msgid "Testimonial cards"
+msgstr ""
+
+#: patterns/testimonials-cards.php
+msgctxt "Pattern description"
+msgid "Four quotes in cards on a light background."
+msgstr ""
+
+msgid "Testimonials"
+msgstr ""
+
+msgid "What our clients say"
+msgstr ""
+
+msgid "The quote was clear, the work finished on the agreed date and the site was cleaner than they found it."
+msgstr ""
+
+msgctxt "job title"
+msgid "Office manager"
+msgstr ""
+
+msgid "Three years into our contract and we have never waited more than a day for an engineer."
+msgstr ""
+
+msgctxt "job title"
+msgid "Facilities director"
+msgstr ""
+
+#: patterns/testimonials-carousel.php
+msgctxt "Pattern title"
+msgid "Testimonials carousel"
+msgstr ""
+
+#: patterns/testimonials-carousel.php
+msgctxt "Pattern description"
+msgid "Quotes in a carousel, one at a time, centered."
+msgstr ""
+
+#: patterns/testimonials-inverse.php
+msgctxt "Pattern title"
+msgid "Testimonials on a dark background"
+msgstr ""
+
+#: patterns/testimonials-inverse.php
+msgctxt "Pattern description"
+msgid "Three quotes in outlined cards on a dark background."
+msgstr ""
+
+#: patterns/testimonials-three.php
+msgctxt "Pattern title"
+msgid "Three testimonials"
+msgstr ""
+
+#: patterns/testimonials-three.php
+msgctxt "Pattern description"
+msgid "Centered heading and three quotes in a row."
+msgstr ""
+
+#: patterns/testimonials-two.php
+msgctxt "Pattern title"
+msgid "Two testimonials"
+msgstr ""
+
+#: patterns/testimonials-two.php
+msgctxt "Pattern description"
+msgid "Heading and two larger quotes side by side."
 msgstr ""
 
 msgctxt "Color name"

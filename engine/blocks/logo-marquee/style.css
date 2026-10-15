@@ -92,6 +92,7 @@
 @media (prefers-reduced-motion: reduce) {
 	.wp-block-pergel-logo-marquee__track {
 		animation: none;
+		justify-content: center;
 		mask-image: none;
 		width: auto;
 	}
