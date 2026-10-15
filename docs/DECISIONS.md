@@ -675,6 +675,28 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     kurulur (`Core\Plugin::switched` → `enabled()`).
   - Eklenti kaldırıldığında tablo silinmez, çünkü motorda henüz `uninstall.php` yok. Bu iş
     F6'ya, diğer seçeneklerle birlikte yapılmak üzere bırakıldı.
+- **F4b ürün filtreleri (16 Ekim 2026, kullanıcı kararları):** Mağaza şablonunda filtreler
+  solda bir kenar çubuğudur (16rem); 782 px altında WooCommerce'in kendi çekmecesine ("Ürünleri
+  filtrele" düğmesi) geçer. Filtreler gizli `pergel/hidden-product-filters` pattern'inde:
+  seçili filtreler ve "Clear filters", fiyat, kategori, stok durumu ve mağazanın ilk üç
+  özniteliği için birer öznitelik filtresi (öznitelik filtresi ID ister; Site Editor'den
+  değiştirilir). Puan filtresi konmadı.
+  - Stiller `woocommerce-product-filters.css`'te, `.wc-block-product-filters` kapsamında;
+    `:where()` kullanılmadı, çünkü WooCommerce'in alt blok stilleri temanınkinden sonra
+    basılıyor ve sıfır özgüllük kaybederdi. Renkler WooCommerce'in custom property'lerine
+    preset token'larıyla verilir; editörde seçilen renk yine kazanır.
+  - WooCommerce kapalı çekmeceyi yalnızca ekran dışına kaydırıyordu; klavye içine girebiliyordu.
+    Kapalı çekmece kayma bittikten sonra `visibility: hidden` olur, geniş ekranda görünür kalır.
+    Çekmece açılınca WooCommerce odağı içine taşımıyor; bu WooCommerce'in davranışı, değiştirilmedi.
+  - Fiyat filtresi fiyat gizleyen modlarda zaten basılmaz (`Woo\Selling`).
+  - Mağaza sayfalarında çekirdeğin satır içi stil sınırı WooCommerce stilleriyle dolduğu için
+    filtre stili `<head>`'de ayrı bir `<link>` olarak gelir (+1 istek, ~5 KB). Filtre blokları
+    WooCommerce'in beş script modülünü ekler.
+  - Tema pattern'leri `wp_theme_files_patterns-*` site transient'inde önbelleğe alınır;
+    anahtar web ve CLI'da farklı yol biçiminden üretildiği için yeni bir pattern
+    `wp transient delete` ile değil, ilgili satırlar silinerek görünür olur (yalnızca
+    `WP_DEVELOPMENT_MODE` `theme` değilken; canlıda tema güncellemesi sürümü değiştirdiği için
+    önbellek yenilenir).
 
 ## Aşamalar ve bitti tanımları
 

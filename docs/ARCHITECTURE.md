@@ -483,9 +483,11 @@ görünmez (`Settings\Screen::shown`).
   `woo.no_cart_fragments` `wc-cart-fragments` betiğini her yerde kaldırır.
 - **Şablonlar (tema):** `archive-product` (mağaza, kategori, etiket, öznitelik de buna düşer),
   `product-search-results`, `single-product`, `page-cart`, `page-checkout`,
-  `order-confirmation`. Sabit metinler ve WooCommerce blokları gizli pattern'lerde:
-  `pergel/hidden-product-terms`, `-details` (açıklama, özellikler, yorumlar akordeonu),
-  `-related`. Pattern kuralları (`Patterns\Rules::SHOP_PREFIX`) WooCommerce bloklarına yalnızca
+  `order-confirmation`. `archive-product`'ta ürünler solda bir filtre sütununun
+  (`pergel-shop-layout`, dar ekranda WooCommerce çekmecesi) yanında listelenir. Sabit metinler
+  ve WooCommerce blokları gizli pattern'lerde: `pergel/hidden-product-terms`, `-details`
+  (açıklama, özellikler, yorumlar akordeonu), `-related`, `-filters` (seçili filtreler, fiyat,
+  kategori, stok ve ilk üç öznitelik). Pattern kuralları (`Patterns\Rules::SHOP_PREFIX`) WooCommerce bloklarına yalnızca
   bu öneki taşıyan gizli pattern'lerde izin verir.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
@@ -528,7 +530,9 @@ görünmez (`Settings\Screen::shown`).
   `role="listitem"`; `data-wp-class--disabled` taşıyan ürün düğmesine aynı duruma bağlı
   `aria-disabled` (`data-wp-bind--aria-disabled`).
 - **Blok başına stiller (`theme/assets/css/blocks/`, `functions.php`):** `woocommerce/catalog-sorting`,
-  `product-sale-badge`, `mini-cart` (kapalı çekmece klavyeden gizli) ve sepet ile ödemenin
+  `product-sale-badge`, `mini-cart` (kapalı çekmece klavyeden gizli), `product-filters`
+  (WooCommerce custom property'leri token'lara bağlı; kapalı filtre çekmecesi klavyeden gizli)
+  ve sepet ile ödemenin
   ortak form alanları (`woocommerce-forms.css`); hepsi preset renk token'larını kullanır.
   `woocommerce-forms.css` dar sepette ürün sütununu esnek yapar (WooCommerce 132 px sabitliyor)
   ve satır toplamının altındaki tasarruf rozetinin kırılmasına izin verir; Türkçe metinle sepet

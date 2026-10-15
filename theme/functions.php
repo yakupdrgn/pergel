@@ -63,6 +63,7 @@ function enqueue_block_styles(): void {
 		'core/site-logo'                  => 'site-logo',
 		'woocommerce/catalog-sorting'     => 'woocommerce-catalog-sorting',
 		'woocommerce/mini-cart'           => 'woocommerce-mini-cart',
+		'woocommerce/product-filters'     => 'woocommerce-product-filters',
 		'woocommerce/product-review-form' => 'woocommerce-product-review-form',
 		'woocommerce/product-sale-badge'  => 'woocommerce-product-sale-badge',
 		'woocommerce/cart'                => 'woocommerce-forms',

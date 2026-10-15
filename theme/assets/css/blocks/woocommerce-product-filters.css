@@ -1,0 +1,180 @@
+/*
+ * The shop's filters in the theme's colors, type and spacing. WooCommerce
+ * reads most of its filter colors from custom properties, so the theme sets
+ * those; a color picked in the editor is written on the block and still
+ * wins. The child blocks' own styles print after this file, so the rules
+ * that replace one of their values are scoped to the filters block.
+ */
+.wc-block-product-filters {
+	--wc-product-filters-background-color: var(--wp--preset--color--base);
+	--wc-product-filters-text-color: var(--wp--preset--color--contrast);
+	--wc-product-filter-block-spacing: var(--wp--preset--spacing--40);
+	--wc-product-filter-checkbox-list-option-element: var(--wp--preset--color--base);
+	--wc-product-filter-checkbox-list-option-element-border: var(--wp--preset--color--muted);
+	--wc-product-filter-checkbox-list-option-element-selected: var(--wp--preset--color--on-accent);
+	--wc-product-filter-price-slider: var(--wp--preset--color--accent);
+	--wc-product-filter-price-slider-handle: var(--wp--preset--color--base);
+	--wc-product-filter-price-slider-handle-border: var(--wp--preset--color--accent);
+	--wc-product-filter-removable-chips-background: var(--wp--preset--color--surface);
+	--wc-product-filter-removable-chips-border: var(--wp--preset--color--line);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+/* Headings sized for a narrow column, and a rule between the filters. */
+.wc-block-product-filters .pergel-filters__title {
+	font-size: var(--wp--preset--font-size--large);
+	margin: 0;
+}
+
+.wc-block-product-filters h3 {
+	font-size: var(--wp--preset--font-size--medium);
+	margin: 0 0 var(--wp--preset--spacing--20);
+}
+
+.wc-block-product-filters :is(.wc-block-product-filters__content, .wc-block-product-filters__overlay-content) > :not(:first-child, .pergel-filters__title + *) {
+	border-top: 1px solid var(--wp--preset--color--line);
+	padding-top: var(--wp--preset--spacing--40);
+}
+
+/* Check boxes: a visible edge, the accent color when checked. */
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__items {
+	display: grid;
+	gap: var(--wp--preset--spacing--20);
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__input-wrapper::before {
+	display: none;
+}
+
+.wc-block-product-filters input[type="checkbox"].wc-block-product-filter-checkbox-list__input,
+.wc-block-product-filters svg.wc-block-product-filter-checkbox-list__mark {
+	width: 1.125em;
+	height: 1.125em;
+}
+
+.wc-block-product-filters input[type="checkbox"].wc-block-product-filter-checkbox-list__input {
+	border-radius: var(--wp--custom--radius--small);
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list:not(.has-option-element-color, .has-option-element-border-color) .wc-block-product-filter-checkbox-list__input:checked {
+	--wc-product-filter-checkbox-list-option-element: var(--wp--preset--color--accent);
+	--wc-product-filter-checkbox-list-option-element-border: var(--wp--preset--color--accent);
+}
+
+.wc-block-product-filters input[type="checkbox"].wc-block-product-filter-checkbox-list__input:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__text-wrapper {
+	font-size: inherit;
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__count {
+	color: var(--wp--preset--color--muted);
+}
+
+/* Price: the theme's field style, and thumbs that show focus. */
+.wc-block-product-filters .wc-block-product-filter-price-slider .text input[type="text"] {
+	font: inherit;
+	color: inherit;
+	background-color: var(--wp--preset--color--base);
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--small);
+	max-width: 6.5em;
+	padding: 0.4em 0.6em;
+}
+
+.wc-block-product-filters .wc-block-product-filter-price-slider__range input[type="range"]:is(:hover, :focus)::-webkit-slider-thumb {
+	background: var(--wp--preset--color--accent);
+	border-color: var(--wp--preset--color--base);
+}
+
+.wc-block-product-filters .wc-block-product-filter-price-slider__range input[type="range"]:is(:hover, :focus)::-moz-range-thumb {
+	background: var(--wp--preset--color--accent);
+	border-color: var(--wp--preset--color--base);
+}
+
+.wc-block-product-filters .wc-block-product-filter-price-slider__range input[type="range"]:focus-visible::-webkit-slider-thumb {
+	box-shadow: 0 0 0 2px var(--wp--preset--color--accent);
+}
+
+.wc-block-product-filters .wc-block-product-filter-price-slider__range input[type="range"]:focus-visible::-moz-range-thumb {
+	box-shadow: 0 0 0 2px var(--wp--preset--color--accent);
+}
+
+/* Chosen filters and the button that clears them. */
+.wc-block-product-filters .wc-block-product-filter-removable-chips__items {
+	gap: var(--wp--preset--spacing--20);
+}
+
+.wc-block-product-filters .wc-block-product-filter-removable-chips__items .wc-block-product-filter-removable-chips__item {
+	border-radius: var(--wp--custom--radius--small);
+	font-size: inherit;
+}
+
+.wc-block-product-filters .wc-block-product-filter-removable-chips__remove:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+.wc-block-product-filters .wp-block-woocommerce-product-filter-clear-button .wp-block-buttons {
+	margin-top: var(--wp--preset--spacing--30);
+}
+
+.wc-block-product-filters .wp-block-woocommerce-product-filter-clear-button .wp-block-button__link {
+	font-size: inherit;
+	padding: 0.5em 1em;
+}
+
+/* The "Filter products" button and the drawer it opens on narrow screens. */
+.wc-block-product-filters .wc-block-product-filters__open-overlay {
+	gap: 0.25em;
+	min-height: 2.75rem;
+	padding: 0.4em 0.9em 0.4em 0.6em;
+	font: inherit;
+	font-weight: var(--wp--custom--font-weight--button);
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--button);
+	cursor: pointer;
+}
+
+.wc-block-product-filters .wc-block-product-filters__close-overlay {
+	justify-content: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	cursor: pointer;
+}
+
+.wc-block-product-filters .wc-block-product-filters__overlay-footer {
+	box-shadow: none;
+	border-top: 1px solid var(--wp--preset--color--line);
+}
+
+.wc-block-product-filters .wc-block-product-filters__overlay-content {
+	overflow-y: auto;
+	padding-bottom: var(--wp--preset--spacing--40);
+}
+
+/*
+ * WooCommerce only slides the closed drawer off the screen, so the keyboard
+ * could still tab into it. It is taken out of reach once it has slid away,
+ * and shows at once when opened. On wide screens the filters sit in the
+ * page, so they stay visible there.
+ */
+.wc-block-product-filters:not(.is-overlay-opened, .is-filter-drawer-disabled) .wc-block-product-filters__overlay-dialog {
+	visibility: hidden;
+	transition: transform 0.5s, visibility 0s 0.5s;
+}
+
+@media (width > 782px) {
+	.wc-block-product-filters.is-mobile-overlay .wc-block-product-filters__overlay-dialog {
+		visibility: visible;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wc-block-product-filters .wc-block-product-filters__overlay-dialog {
+		transition: none;
+	}
+}
