@@ -82,7 +82,6 @@ final class ContentBlocksTest extends TestCase {
 		$this->assertStringNotContainsString( '<iframe', $html );
 		$this->assertStringNotContainsString( '<b>', $html );
 		$this->assertStringContainsString( 'wp-block-pergel-map__placeholder', $html );
-		$this->assertSame( '', do_blocks( '<!-- wp:pergel/map {"query":"  "} /-->' ) );
 	}
 
 	public function test_comparison_style_loads_its_css_only_when_used(): void {

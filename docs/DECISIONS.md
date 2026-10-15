@@ -400,6 +400,9 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   bölüm bloksuz da bağlantılanabilir. HTML çapası olan başlığa dokunulmaz.
 - **Harita tıklayınca yüklenir:** Gizlilik (sayfa açılışında Google'a istek ve çerez yok) ve
   performans (iframe ~1 MB). Bağlantı JavaScript olmadan da Google Maps'i açar.
+- **Boş harita marka adresini kullanır:** Desenlerdeki harita bloklarına örnek adres yazılmaz;
+  site sahibi adresi bir kez marka ayarlarına girer, bütün haritalar onu gösterir. Bloğa adres
+  yazılırsa o geçerlidir (ikinci şube gibi).
 - **İletişim/teklif formu gönderimleri:** yöneticiye e-posta ve panelde gizli bir yazı türünde
   kayıt; e-posta kaybolsa da talep kaybolmaz (kullanıcı kararı). Yalnızca yerelde, `pre_wp_mail`
   ile yakalanarak test edilir.

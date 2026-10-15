@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Pergel\Blocks\Map;
 use Pergel\Brand\Brand;
 use Pergel\Brand\Module;
 use Pergel\Core\Plugin;
@@ -162,6 +163,35 @@ final class BrandTest extends TestCase {
 		$this->assertSame( 'Örnek Sok. 1, 34000 Kadıköy', Brand::value( 'address' ) );
 		$this->assertSame( home_url( '/' ), Brand::value( 'url' ) );
 		$this->assertStringContainsString( wp_date( 'Y' ) . ' Example', (string) Brand::value( 'copyright' ) );
+	}
+
+	public function test_map_falls_back_to_the_brand_address(): void {
+		Settings::update(
+			array(
+				'brand' => array(
+					'street'      => '',
+					'postal_code' => '',
+					'locality'    => '',
+					'region'      => '',
+				),
+			)
+		);
+		$this->assertSame( '', do_blocks( '<!-- wp:pergel/map /-->' ) );
+		$this->assertSame( '', do_blocks( '<!-- wp:pergel/map {"query":"  "} /-->' ) );
+
+		Settings::update(
+			array(
+				'brand' => array(
+					'street'   => 'Örnek Sok. 1',
+					'locality' => 'Kadıköy',
+				),
+			)
+		);
+		$this->assertStringContainsString( esc_attr( Map::embed_url( 'Örnek Sok. 1, Kadıköy', Map::ZOOM ) ), do_blocks( '<!-- wp:pergel/map /-->' ) );
+
+		$own = do_blocks( '<!-- wp:pergel/map {"query":"Akasya Sok. 2"} /-->' );
+		$this->assertStringContainsString( esc_attr( Map::embed_url( 'Akasya Sok. 2', Map::ZOOM ) ), $own );
+		$this->assertStringNotContainsString( 'Kad', $own );
 	}
 
 	public function test_button_link_and_text(): void {

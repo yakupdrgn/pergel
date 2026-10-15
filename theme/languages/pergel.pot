@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T15:12:00+03:00\n"
+"POT-Creation-Date: 2026-10-15T15:27:27+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -247,6 +247,181 @@ msgstr ""
 msgid "Read our story"
 msgstr ""
 
+#: patterns/contact-details-cards.php
+msgctxt "Pattern title"
+msgid "Contact details in cards"
+msgstr ""
+
+#: patterns/contact-details-cards.php
+msgctxt "Pattern description"
+msgid "Centered heading and three cards for phone, email and address."
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "Talk to our team"
+msgstr ""
+
+msgid "Tell us what you need. We reply within one working day."
+msgstr ""
+
+msgid "Call us"
+msgstr ""
+
+msgid "Weekdays from 9:00 to 18:00."
+msgstr ""
+
+msgid "Write to us"
+msgstr ""
+
+msgid "We answer within one working day."
+msgstr ""
+
+msgctxt "sample email address"
+msgid "hello@example.com"
+msgstr ""
+
+msgid "Visit us"
+msgstr ""
+
+msgid "Please call ahead so we can welcome you."
+msgstr ""
+
+msgctxt "sample address"
+msgid "1 Sample Street, 34000 Istanbul"
+msgstr ""
+
+#: patterns/contact-details-list.php
+msgctxt "Pattern title"
+msgid "Contact details list"
+msgstr ""
+
+#: patterns/contact-details-list.php
+msgctxt "Pattern description"
+msgid "A heading beside a list of phone, email, address and opening hours."
+msgstr ""
+
+msgid "How to reach us"
+msgstr ""
+
+msgid "Use whichever suits you. For urgent faults, please call."
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Opening hours"
+msgstr ""
+
+msgid "Monday to Friday, 9:00 to 18:00"
+msgstr ""
+
+#: patterns/contact-form-centered.php
+msgctxt "Pattern title"
+msgid "Centered contact form"
+msgstr ""
+
+#: patterns/contact-form-centered.php
+msgctxt "Pattern description"
+msgid "Centered heading with a contact form below it."
+msgstr ""
+
+#: patterns/contact-form-split.php
+msgctxt "Pattern title"
+msgid "Contact form with details"
+msgstr ""
+
+#: patterns/contact-form-split.php
+msgctxt "Pattern description"
+msgid "Phone, email and address on the left, a contact form on the right."
+msgstr ""
+
+#: patterns/contact-inverse.php
+msgctxt "Pattern title"
+msgid "Contact on a dark background"
+msgstr ""
+
+#: patterns/contact-inverse.php
+msgctxt "Pattern description"
+msgid "Contact details on a dark background and a form in a light card."
+msgstr ""
+
+#: patterns/contact-map-full.php
+msgctxt "Pattern title"
+msgid "Full width map with details"
+msgstr ""
+
+#: patterns/contact-map-full.php
+msgctxt "Pattern description"
+msgid "A wide map of the brand address with contact details in a row below."
+msgstr ""
+
+#: patterns/contact-map-split.php
+msgctxt "Pattern title"
+msgid "Contact details with map"
+msgstr ""
+
+#: patterns/contact-map-split.php
+msgctxt "Pattern description"
+msgid "Contact details on the left and a map of the brand address on the right."
+msgstr ""
+
+#: patterns/contact-quote-form.php
+msgctxt "Pattern title"
+msgid "Quote request form"
+msgstr ""
+
+#: patterns/contact-quote-form.php
+msgctxt "Pattern description"
+msgid "What happens after a request on the left, a quote form on the right."
+msgstr ""
+
+msgid "Free quote"
+msgstr ""
+
+msgid "Get a fixed price for your project"
+msgstr ""
+
+msgid "Describe the job in a few words. A planner calls you to agree a site visit."
+msgstr ""
+
+msgid "Step 1"
+msgstr ""
+
+msgid "You send the form"
+msgstr ""
+
+msgid "It takes about two minutes."
+msgstr ""
+
+msgid "Step 2"
+msgstr ""
+
+msgid "We call you back"
+msgstr ""
+
+msgid "Within one working day, to agree a visit."
+msgstr ""
+
+msgid "Step 3"
+msgstr ""
+
+msgid "You get a written quote"
+msgstr ""
+
+msgid "A fixed price, valid for 30 days."
+msgstr ""
+
+msgid "Request a quote"
+msgstr ""
+
 #: patterns/cta-accent.php
 msgctxt "Pattern title"
 msgid "Call to action on the accent color"
@@ -318,9 +493,6 @@ msgid "Ready to start your project?"
 msgstr ""
 
 msgid "Tell us what you need and we will send a clear plan and price within two working days."
-msgstr ""
-
-msgid "Request a quote"
 msgstr ""
 
 msgid "Contact us"
@@ -400,9 +572,6 @@ msgid "Need a reliable partner for your next job?"
 msgstr ""
 
 msgid "One team for planning, delivery and support."
-msgstr ""
-
-msgid "Call us"
 msgstr ""
 
 #: patterns/cta-two-options.php
@@ -659,6 +828,55 @@ msgctxt "Pattern description"
 msgid "Site title and tagline on the left, footer menu on the right."
 msgstr ""
 
+#: patterns/gallery-carousel.php
+msgctxt "Pattern title"
+msgid "Image carousel"
+msgstr ""
+
+#: patterns/gallery-carousel.php
+msgctxt "Pattern description"
+msgid "Heading and images in a carousel, one at a time."
+msgstr ""
+
+msgid "Gallery"
+msgstr ""
+
+msgid "A look at our work"
+msgstr ""
+
+#: patterns/gallery-grid.php
+msgctxt "Pattern title"
+msgid "Image gallery"
+msgstr ""
+
+#: patterns/gallery-grid.php
+msgctxt "Pattern description"
+msgid "Heading and six images in three columns."
+msgstr ""
+
+#: patterns/gallery-mosaic.php
+msgctxt "Pattern title"
+msgid "Image mosaic"
+msgstr ""
+
+#: patterns/gallery-mosaic.php
+msgctxt "Pattern description"
+msgid "One large image and four smaller ones in a mosaic."
+msgstr ""
+
+msgid "Inside our projects"
+msgstr ""
+
+#: patterns/gallery-wide.php
+msgctxt "Pattern title"
+msgid "Full width image strip"
+msgstr ""
+
+#: patterns/gallery-wide.php
+msgctxt "Pattern description"
+msgid "Four images edge to edge across the full width."
+msgstr ""
+
 #: patterns/header-centered.php
 msgctxt "Pattern title"
 msgid "Centered header"
@@ -818,10 +1036,6 @@ msgid "Talk to the people who will do the work"
 msgstr ""
 
 msgid "Call or write to us. You will speak with an engineer, not a call center."
-msgstr ""
-
-msgctxt "sample email address"
-msgid "hello@example.com"
 msgstr ""
 
 #: patterns/hero-cover-left.php
@@ -1146,6 +1360,222 @@ msgid "Over 300 companies rely on us"
 msgstr ""
 
 msgid "From local shops to national chains."
+msgstr ""
+
+#: patterns/portfolio-cards.php
+msgctxt "Pattern title"
+msgid "Project cards"
+msgstr ""
+
+#: patterns/portfolio-cards.php
+msgctxt "Pattern description"
+msgid "Three projects in cards with a short description and a link."
+msgstr ""
+
+msgid "Our work"
+msgstr ""
+
+msgid "Projects we are proud of"
+msgstr ""
+
+msgid "Renovation"
+msgstr ""
+
+msgid "Harbour office renovation"
+msgstr ""
+
+msgid "New heating, cooling and lighting for a four-floor office, finished in eight weeks."
+msgstr ""
+
+msgid "View project"
+msgstr ""
+
+msgid "Healthcare"
+msgstr ""
+
+msgid "City clinic upgrade"
+msgstr ""
+
+msgid "Backup power and air handling for a clinic that never closes."
+msgstr ""
+
+msgid "Industrial"
+msgstr ""
+
+msgid "Riverside warehouse"
+msgstr ""
+
+msgid "Full electrical installation for a 12,000 square metre logistics hall."
+msgstr ""
+
+#: patterns/portfolio-case-study.php
+msgctxt "Pattern title"
+msgid "Case study"
+msgstr ""
+
+#: patterns/portfolio-case-study.php
+msgctxt "Pattern description"
+msgid "One project in detail: image, challenge, result and three key figures."
+msgstr ""
+
+msgid "Case study"
+msgstr ""
+
+msgid "The building had three heating systems from three decades and no one who knew all of them. We replaced them with one system the staff can run from a phone."
+msgstr ""
+
+msgid "Weeks on site"
+msgstr ""
+
+msgid "Lower energy bills"
+msgstr ""
+
+msgid "Days closed"
+msgstr ""
+
+msgid "Read the full story"
+msgstr ""
+
+#: patterns/portfolio-grid.php
+msgctxt "Pattern title"
+msgid "Project grid"
+msgstr ""
+
+#: patterns/portfolio-grid.php
+msgctxt "Pattern description"
+msgid "Heading and six projects with an image, type and name."
+msgstr ""
+
+msgid "Recent projects"
+msgstr ""
+
+msgid "Hospitality"
+msgstr ""
+
+msgid "Old town hotel"
+msgstr ""
+
+msgid "Education"
+msgstr ""
+
+msgid "School campus"
+msgstr ""
+
+msgid "Retail"
+msgstr ""
+
+msgid "Retail park"
+msgstr ""
+
+#: patterns/portfolio-split.php
+msgctxt "Pattern title"
+msgid "Two projects, image and text"
+msgstr ""
+
+#: patterns/portfolio-split.php
+msgctxt "Pattern description"
+msgid "Two projects with the image and text on alternating sides."
+msgstr ""
+
+msgid "Selected projects"
+msgstr ""
+
+#: patterns/posts-cards.php
+msgctxt "Pattern title"
+msgid "Latest posts as cards"
+msgstr ""
+
+#: patterns/posts-cards.php
+msgctxt "Pattern description"
+msgid "Three latest posts in cards on a light background."
+msgstr ""
+
+msgid "Blog"
+msgstr ""
+
+msgid "Latest articles"
+msgstr ""
+
+msgid "No posts yet."
+msgstr ""
+
+msgid "See all articles"
+msgstr ""
+
+#: patterns/posts-featured-first.php
+msgctxt "Pattern title"
+msgid "Featured post and latest posts"
+msgstr ""
+
+#: patterns/posts-featured-first.php
+msgctxt "Pattern description"
+msgid "The latest post large, the next three in a row below."
+msgstr ""
+
+#: patterns/posts-grid-three.php
+msgctxt "Pattern title"
+msgid "Latest posts in three columns"
+msgstr ""
+
+#: patterns/posts-grid-three.php
+msgctxt "Pattern description"
+msgid "Heading and the three latest posts with image, date, title and excerpt."
+msgstr ""
+
+#: patterns/posts-latest-inverse.php
+msgctxt "Pattern title"
+msgid "Latest posts on a dark background"
+msgstr ""
+
+#: patterns/posts-latest-inverse.php
+msgctxt "Pattern description"
+msgid "Three latest posts as text only, on a dark background."
+msgstr ""
+
+#: patterns/posts-list.php
+msgctxt "Pattern title"
+msgid "Latest posts as a list"
+msgstr ""
+
+#: patterns/posts-list.php
+msgctxt "Pattern description"
+msgid "The four latest posts in rows, each with an image beside the text."
+msgstr ""
+
+#: patterns/posts-minimal-list.php
+msgctxt "Pattern title"
+msgid "Latest posts, titles only"
+msgstr ""
+
+#: patterns/posts-minimal-list.php
+msgctxt "Pattern description"
+msgid "A compact list of the five latest post titles with their dates."
+msgstr ""
+
+#: patterns/posts-two-columns.php
+msgctxt "Pattern title"
+msgid "Latest posts in two columns"
+msgstr ""
+
+#: patterns/posts-two-columns.php
+msgctxt "Pattern description"
+msgid "The two latest posts side by side with large images."
+msgstr ""
+
+#: patterns/posts-with-heading-split.php
+msgctxt "Pattern title"
+msgid "Latest posts beside a heading"
+msgstr ""
+
+#: patterns/posts-with-heading-split.php
+msgctxt "Pattern description"
+msgid "A heading and link on the left, three latest posts with small images on the right."
+msgstr ""
+
+msgid "Notes from the field"
+msgstr ""
+
+msgid "Practical advice, project stories and news from our team."
 msgstr ""
 
 #: patterns/pricing-comparison.php

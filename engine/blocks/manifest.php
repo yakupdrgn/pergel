@@ -561,7 +561,7 @@ return array (
     'title' => 'Timeline',
     'category' => 'pergel',
     'icon' => 'backup',
-    'description' => 'Milestones in order, one under the other on phones and on both sides of a line on wider screens.',
+    'description' => 'Milestones in order, one under the other in narrow spaces and on both sides of a line when there is room.',
     'keywords' => 
     array (
       0 => 'history',

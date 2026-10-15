@@ -257,8 +257,9 @@ script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
 - **Sayaç** (`pergel/counter`): sayı ve etiket paragrafı. Sunucu son sayıyı basar; script blok
   görünür olunca sıfırdan sayar (binlik ayırıcı, ondalık ve çevresindeki metin korunur: `250+`,
   `%98`, `1.200`). `prefers-reduced-motion`'da ve süre 0 iken sayı hiç değişmez. Süre 0–10000 ms.
-- **Zaman çizelgesi** (`pergel/timeline` > `pergel/timeline-item`): `<ol>`/`<li>`; dar ekranda tek
-  sütun, 48rem'den geniş ekranda çizginin iki yanında sırayla.
+- **Zaman çizelgesi** (`pergel/timeline` > `pergel/timeline-item`): `<ol>`/`<li>`; blok 40rem'den
+  darsa tek sütun, genişse çizginin iki yanında sırayla. Ölçü ekran değil bloğun kendi genişliğidir
+  (container query); dar bir sütundaki zaman çizelgesi tek tarafta kalır.
 - **Logo şeridi** (`pergel/logo-marquee`): Image blokları iki kez basılır, ikinci kopya
   `aria-hidden` ve `inert`'tir ve id'leri silinir. Kayma saf CSS'tir (süre 5–120 sn), üzerine
   gelince, logolara odaklanınca ve "Duraklat" düğmesiyle durur (WCAG 2.2.2); düğmeyi script
@@ -277,7 +278,8 @@ script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
   Editör önizlemesi kayıtlı içerikten gelir.
 - **Harita** (`pergel/map`): adres/yer ve yakınlık. Önce statik görsel (ya da adresli bir yer
   tutucu) ve Google Maps'e giden bir bağlantı basılır; iframe yalnızca "Show the map"e basınca
-  oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez.
+  oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez. Adres boş
+  bırakılırsa marka ayarlarındaki adres kullanılır; ikisi de boşsa blok hiçbir şey basmaz.
 
 ### Etkileşimli bloklar (F3b)
 

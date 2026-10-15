@@ -1,5 +1,13 @@
-/* One column with the line at the start; both sides of the line from 48rem. */
+/*
+ * One column with the line at the start; both sides of the line once the
+ * timeline itself is 40rem wide, so a timeline in a narrow column stays on
+ * one side. The container's inline size comes from its parent, so it
+ * stretches in flex and grid parents instead of shrinking to its content.
+ */
 .wp-block-pergel-timeline {
+	align-self: stretch;
+	container-type: inline-size;
+	justify-self: stretch;
 	--pergel-timeline-dot: 1rem;
 	--pergel-timeline-gap: 1.5rem;
 	display: grid;
@@ -45,7 +53,7 @@
 	margin-block-start: 0.5rem;
 }
 
-@media (min-width: 48rem) {
+@container (min-width: 40rem) {
 	.wp-block-pergel-timeline::before {
 		inset-inline-start: calc(50% - 1px);
 	}

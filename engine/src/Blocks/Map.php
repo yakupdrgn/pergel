@@ -9,24 +9,31 @@ declare( strict_types=1 );
 
 namespace Pergel\Blocks;
 
+use Pergel\Brand\Brand;
+
 /**
  * A static image (or a plain placeholder) with a "Show the map" link. The
  * page makes no request to the map provider until the visitor asks: the
  * view script swaps the image for the embedded map on click. Without
- * JavaScript the link opens the map on Google Maps.
+ * JavaScript the link opens the map on Google Maps. A block without an
+ * address of its own uses the address from the brand settings.
  */
 final class Map {
 
 	public const ZOOM = 14;
 
 	/**
-	 * Block markup; empty without an address.
+	 * Block markup; empty when neither the block nor the brand has an address.
 	 *
 	 * @param array<string, mixed> $attributes Block attributes.
 	 * @param string               $content    Rendered inner blocks (an image).
 	 */
 	public static function render( array $attributes, string $content ): string {
 		$query = is_string( $attributes['query'] ?? null ) ? trim( $attributes['query'] ) : '';
+		if ( '' === $query ) {
+			$address = Brand::value( 'address' );
+			$query   = is_string( $address ) ? $address : '';
+		}
 		if ( '' === $query ) {
 			return '';
 		}
