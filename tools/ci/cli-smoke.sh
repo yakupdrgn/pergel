@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-# Runs every `wp pergel settings` and `wp pergel modules` command against a
-# site set up like tools/ci/setup-wp.sh and checks output and exit codes.
+# Runs every `wp pergel settings`, `wp pergel modules` and `wp pergel starter`
+# command against a site set up like tools/ci/setup-wp.sh and checks output
+# and exit codes.
 #
 #   tools/ci/cli-smoke.sh
 #
-# pergel_settings and the Site Logo are restored at the end.
+# pergel_settings, the Site Logo and the reading settings are restored at the
+# end. The starter is installed and removed again, so do not run this on a
+# site where the corporate starter is in use.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -22,11 +25,16 @@ wp option get pergel_settings --format=json > "$work/backup.json"
 logo=""
 svg=""
 previous_logo="$(wp option get site_logo 2> /dev/null || true)"
+reading="$(wp eval 'echo implode( " ", array( get_option( "show_on_front" ), (int) get_option( "page_on_front" ), (int) get_option( "page_for_posts" ) ) );')"
 restore() {
 	[ -z "$logo" ] || wp eval-file "$REPO_PHP/tools/seo/logo.php" remove "$logo" "$previous_logo"
 	[ -z "$svg" ] || wp post delete "$svg" --force --quiet
 	wp option delete pergel_settings --quiet
 	wp option add pergel_settings --format=json --autoload=yes < "$work/backup.json" > /dev/null
+	read -r show front posts <<< "$reading"
+	wp option update show_on_front "$show" --quiet
+	wp option update page_on_front "$front" --quiet
+	wp option update page_for_posts "$posts" --quiet
 	rm -rf "$work"
 }
 trap restore EXIT
@@ -105,6 +113,22 @@ expect 0 'false' wp pergel settings get modules.performance
 expect 0 'performance, seo enabled' wp pergel modules enable performance seo
 expect 0 '"module":"seo","switch":"on","loaded":"yes"' wp pergel modules list --format=json
 expect 1 'No switch for: cli, nope' wp pergel modules disable cli nope
+echo "::endgroup::"
+
+# By path, so it also works when setup-wp.sh copies the plugin (LINK_MODE=copy).
+echo "::group::wp pergel starter"
+starter="$REPO_PHP/starters/corporate"
+expect 0 'Dry run, nothing was saved. Starter corporate: 10 create, 1 keep, 2 set' wp pergel starter install "$starter" --dry-run
+expect 0 'Starter corporate: 10 create, 1 keep, 2 set.' wp pergel starter install "$starter"
+expect 0 'Starter corporate: 13 keep.' wp pergel starter install "$starter"
+expect 0 '"action":"reset","type":"page","key":"home"' wp pergel starter install "$starter" --reset --format=json
+expect 0 'page-landing' wp post list --post_type=page --meta_key=_pergel_starter_key --meta_value=about --fields=page_template --format=csv
+expect 0 'Dry run, nothing was saved. Starter corporate: 10 delete, 3 set.' wp pergel starter remove corporate --dry-run
+expect 0 'Starter corporate: 10 delete, 3 set.' wp pergel starter remove corporate --yes
+expect 0 'posts' wp option get show_on_front
+expect 0 'nothing to do' wp pergel starter remove corporate --yes
+expect 1 'starter.json not found' wp pergel starter install "$work_php/missing"
+expect 1 'starter.json not found' wp pergel starter install nope
 echo "::endgroup::"
 
 exit "$failed"

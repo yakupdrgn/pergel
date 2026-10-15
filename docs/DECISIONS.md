@@ -490,6 +490,34 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   `var:preset|…`, `var(--wp--preset--…)` ve `backgroundColor`/`textColor`/`borderColor`/
   `overlayColor`/`fontSize`/`fontFamily` adlarını `theme.json`'daki preset'lerle karşılaştırır;
   yeniden adlandırılan bir preset tarayıcıda sessizce boş kalır.
+- **Izgara içeren bölümler akış düzeninde:** Dikey flex yığını (`stack`) içinde
+  `container-type: inline-size` taşıyan bir çocuk (zaman çizelgesi, kart ızgarası) genişliğini
+  içeriğinden alamıyor, dar sütunda yüksekliği şişiyordu. Izgara veya zaman çizelgesi saran
+  yığınlar varsayılan akış düzenine (`flow`, aralık blok boşluğuyla) geçti; flex yığın yalnızca
+  metin ve buton gruplarında kaldı.
+- **Zaman çizelgesi öğeleri `box-sizing: border-box`:** İki yanlı düzende çift öğeler dolgu
+  yüzünden 8 piksel taşıyor, tek öğelerin noktası çizginin yanına düşüyordu.
+- **Sabit rakamlar sayılmaz:** Kuruluş yılı ("2009") ve "0 gün kapalı" gibi rakamlarda sayaç
+  süresi 0'dır; yıl binlik ayırıcıyla sayılmaz, sıfır da boşuna canlandırılmaz.
+- **Sütun içindeki ızgara `wide` hizası taşımaz:** Hizalama yalnızca bölüm kökündeki ızgarada
+  anlamlıdır; sütun içinde `align` özniteliği tamamen kaldırılır (boş değerle bırakılan
+  `"align":null` blok doğrulamasında hata verir).
+- **Koyu bölümde tarih rengi açıkça verilir:** `theme.json` yazı tarihini `muted` yapar; koyu
+  zeminde bu okunmuyordu. Tarihler koyu tonlarda `base`, açık tonlarda `muted` rengini taşır.
+- **Starter'lar eklenti zip'ine girmez:** `starters/` geliştirme ve demo içindir (`export-ignore`);
+  zip ile kurulan sitede paket klasör yoluyla kurulur. Starter içeriği pattern'leri kopyalar,
+  sayfa editörde ekleyiciden kurulmuş gibi açılır; pattern sonradan değişse de müşterinin sayfası
+  değişmez.
+- **Starter'ın yaptığı her şey meta ile işaretli:** Tekrar kurulum aynı sayfaları bulur (kopya
+  yapmaz), kaldırma yalnızca onları siler. Okuma ayarları silmeden önce okunur, çünkü WordPress
+  ön sayfa silinince ayarı kendisi sıfırlar ve rapor değişikliği göstermezdi.
+- **Starter içeriği kses'siz kaydedilir:** WP-CLI'da oturum açmış kullanıcı yoktur, bu yüzden
+  içerik `unfiltered_html` yetkisi olmayan kullanıcının HTML süzgecinden geçerdi. İçerik temanın
+  kendi pattern dosyalarından gelir, şablonlar kadar güvenilirdir; süzgeç yalnızca
+  `wp_insert_post` çağrısı boyunca kapatılır.
+- **Starter sayfalarında farklı hero'lar:** About, Pricing ve Portfolio aynı hero'yu, Services ve
+  Team de bir başkasını paylaşıyordu; kurulan sitede beş sayfa iki H1 tekrar ediyordu. Her tam
+  sayfa artık kendi hero'sunu kullanır ve ton sırası korunur.
 
 ## Aşamalar ve bitti tanımları
 

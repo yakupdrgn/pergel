@@ -16,7 +16,7 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<!-- wp:pattern {"slug":"pergel/hero-minimal"} /-->
+<!-- wp:pattern {"slug":"pergel/hero-accent"} /-->
 
 <!-- wp:pattern {"slug":"pergel/team-cards"} /-->
 

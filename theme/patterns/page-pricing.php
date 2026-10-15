@@ -16,7 +16,7 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<!-- wp:pattern {"slug":"pergel/hero-split-reverse"} /-->
+<!-- wp:pattern {"slug":"pergel/hero-inverse"} /-->
 
 <!-- wp:pattern {"slug":"pergel/pricing-three"} /-->
 

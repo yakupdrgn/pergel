@@ -31,7 +31,7 @@ pergel/
 │  ├─ blocks/<blok>/      block.json + render.php (sunucuda çizilen bloklar)
 │  ├─ build/              derlenmiş editör JS'i (repoya girer, K6)
 │  └─ languages/
-├─ starters/              kurumsal / e-ticaret / editoryal starter paketleri (F3–F4)
+├─ starters/<ad>/         starter paketleri: starter.json (dağıtılmaz; F3: corporate, F4: e-ticaret)
 ├─ tools/
 │  ├─ budget/             perf-probe.php (mu-plugin) + measure.mjs (Playwright)
 │  ├─ ci/                 CI'da WordPress kurulumu ve php -S router'ı
@@ -398,7 +398,8 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
 - **Tam sayfalar** (`pergel-pages`, yalnızca `page` yazı tipinde, yeni sayfa açılırken önerilir):
   Home, About, Services, Contact, Pricing, Team, Quote landing ve Portfolio. Bölümlerin arka planı
   sırayla değişir (base, surface, contrast veya accent; aynı ton art arda gelmez); bir sayfada
-  aynı başlık veya paragraf iki kez geçmez.
+  aynı başlık veya paragraf iki kez geçmez. Her tam sayfanın hero'su farklıdır, böylece bir
+  starter'ın sayfaları aynı H1'i taşımaz.
 - **Yer tutucu görseller:** `theme/assets/images/placeholders/` içinde nötr gri, yazısız SVG'ler
   (wide 16:9, landscape 3:2, portrait 4:5, square, avatar, logo-1…6), her biri 330 bayttan küçük.
   Süs oldukları için `alt=""` taşırlar; gerçek görseller projede değiştirilir.
@@ -419,6 +420,42 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   için iş `update-baselines` girdisiyle elle çalıştırılır. Yerelde `npm run test:a11y` (ekran
   görüntüsüz) çalışır.
 
+## Starter'lar (F3c)
+
+Starter, tam sayfa pattern'lerinden kurulan hazır bir site iskeletidir: sayfalar, ana menü ve
+okuma ayarları (ön sayfa, yazılar sayfası). `starters/<ad>/starter.json` paketi tanımlar:
+
+```json
+{
+  "format": 1,
+  "title": "Corporate",
+  "pages": [
+    { "key": "about", "title": { "en": "About us", "tr": "Hakkımızda" },
+      "slug": { "en": "about", "tr": "hakkimizda" }, "pattern": "pergel/page-about" },
+    { "key": "blog", "title": "Blog", "slug": "blog", "posts_page": true }
+  ],
+  "menu": { "title": { "en": "Main menu", "tr": "Ana menü" }, "pages": [ "about", "blog" ] }
+}
+```
+
+- **Dil:** Başlık ve adresler düz metin veya dil haritasıdır; site dili (`tr_TR`, sonra `tr`,
+  sonra `en`) seçer.
+- **Sayfa içeriği:** Tam sayfa pattern'inin `core/pattern` referansları açılır ve her bölümün
+  kökü ekleyicinin verdiği `metadata`'yı (`patternName`, ad, açıklama, kategoriler) taşır;
+  sayfa editörde ekleyiciden kurulmuş gibi içerik modunda açılır. Pattern'li sayfalar
+  `page-landing` şablonunu alır (tek H1 hero'da).
+- **Menü:** `wp_navigation` yazısı, sayfa bağlantılarıyla. Header'lardaki Navigation bloğu bir
+  menüye bağlı olmadığı için en yeni menüyü, yani starter'ınkini gösterir.
+- **İşaretleme ve tekrar:** Starter'ın yaptığı her sayfa ve menü `_pergel_starter` (starter adı)
+  ve `_pergel_starter_key` (öğe anahtarı) meta'sını taşır. Kurulum tekrar çalışınca bunları
+  bulur ve dokunmaz (`keep`); `--reset` başlık, içerik ve şablonu starter'ınkine döndürür.
+  Adresi dolu bir sayfa varsa WordPress yeni bir adres seçer, rapor bunu söyler.
+- **Kaldırma:** Meta'sı olan sayfa ve menüler kalıcı silinir; okuma ayarları yalnızca silinen
+  bir sayfayı gösteriyorsa "son yazılar"a döner. Başka içerik etkilenmez.
+- **Yer:** `Starter::dir()` eklentinin yanındaki `starters/` klasörüdür; yerelde junction ile
+  depoya bakar (CI'da symlink). Kopyalanmış eklentide (`LINK_MODE=copy`, zip kurulumu) paket klasör yoluyla verilir:
+  `wp pergel starter install /yol/starters/corporate`.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.
@@ -433,12 +470,15 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
 | `wp pergel settings import <dosya\|-> [--dry-run]` | JSON'dan okur; dosyada olmayan alanlar korunur, değişen alanlar listelenir |
 | `wp pergel modules list` | Modül, anahtar (`on`/`off`/`always`), bu komutta yüklendi mi |
 | `wp pergel modules enable\|disable <id>...` | Anahtarı olan modülleri açar/kapatır |
+| `wp pergel starter list` | Pergel'le gelen starter'lar |
+| `wp pergel starter install <ad\|klasör> [--dry-run] [--reset]` | Starter'ın sayfalarını, menüsünü ve okuma ayarlarını kurar; tekrar çalışınca bir şey değiştirmez |
+| `wp pergel starter remove <ad> [--dry-run] [--yes]` | Starter'ın yaptığı sayfa ve menüleri kalıcı siler, okuma ayarlarını düzeltir |
 
 Ayar komutları ekranla aynı şemadan geçer: geçersiz veya bilinmeyen bir alan varsa hiçbir şey
 kaydedilmez ve komut 1 ile çıkar (ekran ise geçerli kısmı kaydeder). Görsel alanları ek olarak
 bu sitede görsel olan bir ekin kimliğini ister: `set` başka bir değeri reddeder, `import` başka
 siteden gelen kimlikleri uyarıyla sıfırlar. `tools/ci/cli-smoke.sh` tüm komutları CI'da gerçek
-WP-CLI ile dener ve ayarları sonunda geri yükler.
+WP-CLI ile dener (starter'ı kurar, tekrar kurar ve kaldırır) ve ayarları sonunda geri yükler.
 
 ## Ölçüm
 
