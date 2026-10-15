@@ -270,6 +270,16 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   ister ve PHPUnit 10'u desteklemez. `tests/integration/` kurulu bir siteyi (`PERGEL_WP_DIR`)
   `wp-load.php` ile yükler; testler değiştirdiklerini geri koyar. CI'da kurulumdan sonra
   `composer test:integration` çalışır; yerelde `PERGEL_WP_DIR=C:/xampp/htdocs/pergel-tema`.
+- **Ayar ekranı build'siz PHP formu:** Ekran şemadan üretilir; React/DataForm ve derleme adımı
+  yok. Üst düzey "Pergel" menüsü (eklenti listesinde "Settings" bağlantısı da var), grup başına
+  bir sekme. Kayıt `options.php` + `register_setting` ile; nonce ve yetki çekirdekte.
+- **Sekme başına kayıt:** Form yalnızca açık sekmenin alanlarını gönderir, şema eksik
+  anahtarları eski değerle birleştirir. Böylece bir sekmeyi kaydetmek diğerini silmez.
+- **Hata alanın yanında:** Geçersiz alan kaydedilmez, eski değer kalır; hata üstte bildirim ve
+  alanın altında metin olarak gösterilir. Tarayıcı doğrulaması (`type="email"`, `url`) ilk
+  savunmadır, sunucu şeması asıl kuraldır. Hata rengi `#b32d2e` (gri zeminde 4,5:1 üstü).
+- **Medya seçici çekirdekten:** Görsel alanları `wp.media` kullanır; build'siz küçük bir
+  script yalnızca ayar sayfasında yüklenir.
 
 ## Aşamalar ve bitti tanımları
 

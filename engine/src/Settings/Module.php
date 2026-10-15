@@ -42,6 +42,9 @@ final class Module implements Core\Module {
 		}
 		add_action( 'admin_init', array( self::class, 'register_setting' ) );
 		add_action( 'rest_api_init', array( self::class, 'register_setting' ) );
+		if ( is_admin() ) {
+			Screen::register();
+		}
 	}
 
 	/**

@@ -91,6 +91,13 @@ option'da değil Global Styles'tadır (K5).
 - `Core\Plugin::boot` bir modülü yalnızca `modules.<id>` anahtarı açıksa (veya hiç yoksa) ve
   `should_load()` doğruysa yükler.
 - Eklenti etkinleştirilirken varsayılanlar autoload ile yazılır; böylece okuma sorgu yapmaz.
+- `Settings\Screen` — yalnızca admin'de yüklenir. Üst düzey "Pergel" menüsü, her şema grubu
+  için bir sekme. Form `options.php`'ye gider ve yalnızca açık sekmenin alanlarını gönderir;
+  diğer gruplar birleştirerek yazma sayesinde korunur. Hatalı alanlar eski değerini korur,
+  hata hem üst bildirimde hem alanın altında (`aria-invalid`, `aria-describedby`) görünür.
+- `Settings\Labels` — sekme, bölüm, alan etiketleri ve hata metinleri; şemanın saf PHP
+  kalması için ayrı tutulur. Labels'ta yer almayan alan "Other" bölümünde yine gösterilir.
+- `engine/assets/settings.js` — build'siz; görsel alanları için çekirdek medya seçicisi.
 
 ## Ölçüm
 
