@@ -42,6 +42,7 @@ final class Module implements Core\Module {
 	public function register(): void {
 		add_action( 'init', array( self::class, 'register_blocks' ) );
 		add_filter( 'block_categories_all', array( self::class, 'category' ) );
+		Header::register();
 	}
 
 	/**

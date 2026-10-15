@@ -370,7 +370,13 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   `wp_register_block_types_from_metadata_collection` ile bu dosyadan kaydeder; blok sayısı artsa
   da istek başına dosya okuma ve JSON çözme maliyeti sabit kalır. Blocks modülünün açma/kapama
   anahtarı yok: kapatılsaydı Pergel bloklarıyla kurulan pattern'ler ve sayfalar bozulurdu.
-
+- **Logo yüksekliğe göre boyutlanır:** Pattern'lerdeki 40/48px sabit genişlik yatay yazı logosunu
+  ~40×5px'e düşürüyordu. Genişlik kaldırıldı; logo 40px yükseklik ve 240px üst sınırla çizilir
+  (token'lardan, variation başına değiştirilebilir). Kullanıcının editörde verdiği genişlik geçerli kalır.
+- **Header davranışı Template Part özniteliğidir:** Sticky/akıllı/overlay seçenekleri şablondaki
+  header örneğinde saklanır, global ayar değildir. Böylece yalnızca anasayfa overlay, diğer
+  sayfalar sticky olabilir ve ayar Site Editor'de, header'ın yanında durur. CSS ve küçük script
+  yalnızca seçenek açık olan sayfalarda yüklenir.
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

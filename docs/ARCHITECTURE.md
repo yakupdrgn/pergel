@@ -199,6 +199,30 @@ dosyasına yazar. `Blocks\Module` blokları bu dosyadan bir metadata koleksiyonu
 istek başına JSON okunmaz. CI `--check` ile manifest'in güncel olduğunu, `npm run validate:json`
 ile `block.json`'ların WP 7.1 şemasına uyduğunu denetler.
 
+### Header seçenekleri
+
+`Blocks\Header`, header alanını gösteren Template Part bloğuna iki öznitelik ekler:
+`pergelSticky` (`""`, `always`, `smart`: aşağı kaydırırken gizlenir, yukarıda geri gelir) ve
+`pergelOverlay` (header sayfanın ilk bölümünün üstüne biner, sayfa kayana kadar arka planı
+yoktur). Seçenekler bloğun Ayarlar sekmesindeki "Header behaviour" panelindedir
+(`engine/assets/header-controls.js`, derlemesiz). Öznitelik şablondaki blok örneğinde durduğu için
+her şablon kendi davranışını seçer; overlay için olağan yer `front-page` şablonudur.
+
+Ön yüzde `render_block_core/template-part` süzgeci sarmalayıcıya `pergel-header` ve durum
+sınıflarını ekler, `header.css`'i (satır içi) ve `pergel/header` script modülünü yalnızca seçenek
+açıkken yükler. Script; gizleme, `is-scrolled` ve çapa bağlantıları için `--pergel-header-height`
+değişkenini yönetir. Odak header'a girerse ya da mobil menü açıksa header gizlenmez. Gizlenmemiş
+header'da `transform` bulunmaz; aksi halde `position: fixed` mobil menü header'ın içine hapsolurdu.
+
+### Logo boyutu
+
+Header ve footer pattern'lerindeki Site Logo bloklarında sabit genişlik yoktur. Genişliği
+verilmemiş logo (`is-default-size`) temanın `assets/css/blocks/site-logo.css` stiliyle
+yüksekliğe göre boyutlanır: `logo.height` (40px) ve `logo.max-width` (240px) token'ları
+`--wp--custom--logo--*` olur. Yatay yazı logosu da kare işaret de okunur kalır. Editörde genişlik
+verilirse sınıf kalkar ve o genişlik geçerlidir. Kural theme.json `css` alanında değildir:
+WordPress o alanı `:where()` ile sardığı için çekirdeğin 120px kuralını geçemez.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.

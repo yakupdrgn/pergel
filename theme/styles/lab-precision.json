@@ -231,6 +231,10 @@
 				"button": "5px",
 				"card": "12px"
 			},
+			"logo": {
+				"height": "40px",
+				"max-width": "240px"
+			},
 			"font-weight": {
 				"body": 400,
 				"heading": 500,

@@ -1,0 +1,20 @@
+/*
+ * Site Logo without an explicit width: size it by height, so a wide
+ * wordmark and a square mark both read well. Core gives these logos a
+ * fixed 120px width. A width set in the editor removes .is-default-size
+ * and wins.
+ */
+.wp-block-site-logo.is-default-size .custom-logo {
+	width: auto;
+	height: var(--wp--custom--logo--height, 40px);
+	max-width: min(var(--wp--custom--logo--max-width, 240px), 100%);
+	object-fit: contain;
+}
+
+/* In the editor, the resize box follows the image instead of core's 120px default. */
+.wp-block-site-logo.is-default-size .components-resizable-box__container {
+	width: auto !important;
+	min-width: 0 !important;
+	height: auto !important;
+	min-height: 0 !important;
+}
