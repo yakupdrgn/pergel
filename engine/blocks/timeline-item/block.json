@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/timeline-item",
+	"title": "Timeline item",
+	"category": "pergel",
+	"icon": "marker",
+	"description": "One milestone of a timeline: a date, a title and a few words.",
+	"textdomain": "pergel-engine",
+	"parent": [ "pergel/timeline" ],
+	"supports": {
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

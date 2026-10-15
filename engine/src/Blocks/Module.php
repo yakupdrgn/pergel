@@ -12,11 +12,14 @@ namespace Pergel\Blocks;
 use Pergel\Core;
 
 use const Pergel\FILE;
+use const Pergel\VERSION;
 
 /**
  * Registers the engine's server-rendered blocks from engine/blocks. Each
  * block brings its own CSS, which core prints only on pages that show the
- * block. Has no switch: patterns are built from these blocks.
+ * block. Blocks that hold core blocks have a small editor script built on
+ * the shared pergel-blocks-editor script (no build step). Has no switch:
+ * patterns are built from these blocks.
  */
 final class Module implements Core\Module {
 
@@ -40,9 +43,12 @@ final class Module implements Core\Module {
 	 * {@inheritDoc}
 	 */
 	public function register(): void {
+		add_action( 'init', array( self::class, 'register_editor_script' ), 5 );
 		add_action( 'init', array( self::class, 'register_blocks' ) );
 		add_filter( 'block_categories_all', array( self::class, 'category' ) );
 		Header::register();
+		Styles::register();
+		Toc::register();
 	}
 
 	/**
@@ -50,6 +56,24 @@ final class Module implements Core\Module {
 	 */
 	public static function dir(): string {
 		return dirname( FILE ) . '/blocks';
+	}
+
+	/**
+	 * Registers the editor helper that the blocks' index.js files depend on.
+	 * Hooked on init, before the blocks.
+	 */
+	public static function register_editor_script(): void {
+		$src = plugins_url( 'assets/blocks-editor.js', FILE );
+		if ( '' === $src ) {
+			return;
+		}
+		wp_register_script(
+			'pergel-blocks-editor',
+			$src,
+			array( 'wp-blocks', 'wp-block-editor', 'wp-element' ),
+			VERSION,
+			array( 'in_footer' => true )
+		);
 	}
 
 	/**

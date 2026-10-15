@@ -51,8 +51,9 @@ final class Manifest {
 	/**
 	 * Rule violations of one block. Blocks are server-rendered: name
 	 * pergel/<folder>, block API 3, the engine's text domain, a category,
-	 * and render.php. Without a compiled editor script the editor builds
-	 * the block from its attributes (supports.autoRegister, WP 7.0).
+	 * and render.php. Without an editor script the editor builds the block
+	 * from its attributes (supports.autoRegister, WP 7.0). Every file the
+	 * block points to must exist.
 	 *
 	 * @param string               $slug     Folder name.
 	 * @param array<string, mixed> $metadata Decoded block.json.
@@ -86,7 +87,7 @@ final class Manifest {
 		if ( ! isset( $metadata['editorScript'] ) && true !== ( $supports['autoRegister'] ?? null ) ) {
 			$problems[] = 'a block without editorScript needs supports.autoRegister: true';
 		}
-		foreach ( array( 'style', 'editorStyle', 'viewStyle' ) as $field ) {
+		foreach ( array( 'style', 'editorStyle', 'viewStyle', 'editorScript', 'script', 'viewScript', 'viewScriptModule' ) as $field ) {
 			foreach ( (array) ( $metadata[ $field ] ?? array() ) as $asset ) {
 				if ( is_string( $asset ) && str_starts_with( $asset, 'file:' ) && ! is_file( $folder . '/' . substr( $asset, 5 ) ) ) {
 					$problems[] = "{$field} file {$asset} does not exist";

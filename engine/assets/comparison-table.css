@@ -1,0 +1,42 @@
+/* Comparison table: the core Table block with the "Comparison" style. */
+.wp-block-table.is-style-pergel-comparison {
+	overflow-x: auto;
+}
+
+.wp-block-table.is-style-pergel-comparison table {
+	border-collapse: separate;
+	border-spacing: 0;
+	min-width: 32rem;
+	width: 100%;
+}
+
+.wp-block-table.is-style-pergel-comparison :is(th, td) {
+	border: 0;
+	border-bottom: 1px solid var(--wp--preset--color--border, currentcolor);
+	padding: 0.75em 1em;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.wp-block-table.is-style-pergel-comparison :is(th, td):first-child {
+	background: var(--wp--preset--color--base, canvas);
+	inset-inline-start: 0;
+	position: sticky;
+	text-align: start;
+}
+
+.wp-block-table.is-style-pergel-comparison thead :is(th, td) {
+	border-bottom-width: 2px;
+	font-weight: 700;
+	vertical-align: bottom;
+}
+
+.wp-block-table.is-style-pergel-comparison tfoot :is(th, td) {
+	border-bottom: 0;
+	font-weight: 700;
+}
+
+.wp-block-table.is-style-pergel-comparison:focus-visible {
+	outline: 2px solid currentcolor;
+	outline-offset: 2px;
+}

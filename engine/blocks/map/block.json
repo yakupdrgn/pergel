@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/map",
+	"title": "Map",
+	"category": "pergel",
+	"icon": "location-alt",
+	"description": "An image of the location that turns into a Google map when the visitor asks for it. Nothing loads from Google before that.",
+	"keywords": [ "map", "location", "address", "directions", "google" ],
+	"textdomain": "pergel-engine",
+	"allowedBlocks": [ "core/image" ],
+	"attributes": {
+		"query": {
+			"type": "string",
+			"default": ""
+		},
+		"zoom": {
+			"type": "integer",
+			"default": 14
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"margin": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

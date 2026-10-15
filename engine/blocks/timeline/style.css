@@ -1,0 +1,72 @@
+/* One column with the line at the start; both sides of the line from 48rem. */
+.wp-block-pergel-timeline {
+	--pergel-timeline-dot: 1rem;
+	--pergel-timeline-gap: 1.5rem;
+	display: grid;
+	gap: var(--wp--style--block-gap, 2rem);
+	list-style: none;
+	padding-inline: 0;
+	position: relative;
+}
+
+.wp-block-pergel-timeline::before {
+	background: var(--wp--preset--color--border, currentcolor);
+	content: "";
+	inset-block: 0;
+	inset-inline-start: calc(var(--pergel-timeline-dot) / 2 - 1px);
+	position: absolute;
+	width: 2px;
+}
+
+.wp-block-pergel-timeline-item {
+	margin: 0;
+	padding-inline-start: calc(var(--pergel-timeline-dot) + var(--pergel-timeline-gap));
+	position: relative;
+}
+
+.wp-block-pergel-timeline-item::before {
+	background: var(--wp--preset--color--accent, currentcolor);
+	border: 3px solid var(--wp--preset--color--base, canvas);
+	border-radius: 50%;
+	box-sizing: border-box;
+	content: "";
+	height: var(--pergel-timeline-dot);
+	inset-block-start: 0.25em;
+	inset-inline-start: 0;
+	position: absolute;
+	width: var(--pergel-timeline-dot);
+}
+
+.wp-block-pergel-timeline-item > * {
+	margin-block: 0;
+}
+
+.wp-block-pergel-timeline-item > * + * {
+	margin-block-start: 0.5rem;
+}
+
+@media (min-width: 48rem) {
+	.wp-block-pergel-timeline::before {
+		inset-inline-start: calc(50% - 1px);
+	}
+
+	.wp-block-pergel-timeline-item {
+		padding-inline: 0 calc(var(--pergel-timeline-dot) / 2 + var(--pergel-timeline-gap));
+		text-align: end;
+		width: 50%;
+	}
+
+	.wp-block-pergel-timeline-item::before {
+		inset-inline: auto calc(var(--pergel-timeline-dot) / -2);
+	}
+
+	.wp-block-pergel-timeline-item:nth-child(even) {
+		margin-inline-start: 50%;
+		padding-inline: calc(var(--pergel-timeline-dot) / 2 + var(--pergel-timeline-gap)) 0;
+		text-align: start;
+	}
+
+	.wp-block-pergel-timeline-item:nth-child(even)::before {
+		inset-inline: calc(var(--pergel-timeline-dot) / -2) auto;
+	}
+}

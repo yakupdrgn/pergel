@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T11:41:05+03:00\n"
+"POT-Creation-Date: 2026-10-15T12:23:23+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -46,7 +46,33 @@ msgstr ""
 msgid "Current page"
 msgstr ""
 
+#. translators: %s: address or place shown on the map.
+#, php-format
+msgid "Map: %s"
+msgstr ""
+
+msgid "Show the map"
+msgstr ""
+
+msgid "The map loads from Google Maps when you open it."
+msgstr ""
+
+msgid "Pause the moving logos"
+msgstr ""
+
+msgid "Pause"
+msgstr ""
+
 msgid "Pergel"
+msgstr ""
+
+msgid "Comparison"
+msgstr ""
+
+msgid "The headings of the content are listed here once there are at least two."
+msgstr ""
+
+msgid "On this page"
 msgstr ""
 
 #. translators: 1: current year, 2: brand name.
@@ -349,6 +375,93 @@ msgstr ""
 msgid "Adds noindex and leaves the page out of the sitemap."
 msgstr ""
 
+msgid "Number, e.g. 250+"
+msgstr ""
+
+msgid "What it counts"
+msgstr ""
+
+msgid "Counter"
+msgstr ""
+
+msgid "Count duration (milliseconds)"
+msgstr ""
+
+msgid "The number counts up from zero when it scrolls into view. 0 shows it at once."
+msgstr ""
+
+msgid "Movement"
+msgstr ""
+
+msgid "Seconds for one loop"
+msgstr ""
+
+msgid "Higher is slower. Visitors can pause the row; with reduced motion it stands still."
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Address or place"
+msgstr ""
+
+msgid "Searched on Google Maps. The block shows nothing until this is filled in."
+msgstr ""
+
+msgid "Zoom"
+msgstr ""
+
+msgid "Plan name"
+msgstr ""
+
+msgid "Price"
+msgstr ""
+
+msgid "Who the plan is for"
+msgstr ""
+
+msgid "What is included"
+msgstr ""
+
+msgid "Button text"
+msgstr ""
+
+msgid "Plan"
+msgstr ""
+
+msgid "Highlight this plan"
+msgstr ""
+
+msgid "Gives the plan an accent border. Say why in its text too, for example \"Most popular\"."
+msgstr ""
+
+msgid "Headings"
+msgstr ""
+
+msgid "Headings to list"
+msgstr ""
+
+msgid "The list follows the saved content."
+msgstr ""
+
+msgid "Level 2"
+msgstr ""
+
+msgid "Levels 2 and 3"
+msgstr ""
+
+msgid "Levels 2 to 4"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Milestone"
+msgstr ""
+
+msgid "What happened"
+msgstr ""
+
 msgctxt "block title"
 msgid "Breadcrumb"
 msgstr ""
@@ -371,4 +484,176 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "path"
+msgstr ""
+
+msgctxt "block title"
+msgid "Counter"
+msgstr ""
+
+msgctxt "block description"
+msgid "A number that counts up when it scrolls into view, with a label. The number is in the page without JavaScript."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "number"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "statistic"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "count"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "stat"
+msgstr ""
+
+msgctxt "block title"
+msgid "Logo marquee"
+msgstr ""
+
+msgctxt "block description"
+msgid "A row of logos that moves slowly sideways. Visitors can pause it; with reduced motion it stands still."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "logos"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "clients"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "partners"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "brands"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "ticker"
+msgstr ""
+
+msgctxt "block title"
+msgid "Map"
+msgstr ""
+
+msgctxt "block description"
+msgid "An image of the location that turns into a Google map when the visitor asks for it. Nothing loads from Google before that."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "map"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "location"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "address"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "directions"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "google"
+msgstr ""
+
+msgctxt "block title"
+msgid "Pricing plan"
+msgstr ""
+
+msgctxt "block description"
+msgid "One plan: name, price, what it includes and a button. A highlighted plan stands out."
+msgstr ""
+
+msgctxt "block title"
+msgid "Pricing table"
+msgstr ""
+
+msgctxt "block description"
+msgid "Plans side by side, as many per row as fit. Buttons line up at the bottom."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "prices"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "plans"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "packages"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "pricing"
+msgstr ""
+
+msgctxt "block title"
+msgid "Table of contents"
+msgstr ""
+
+msgctxt "block description"
+msgid "Links to the headings of the content. Headings get their anchors when the page renders."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "contents"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "toc"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "headings"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "anchors"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "summary"
+msgstr ""
+
+msgctxt "block title"
+msgid "Timeline item"
+msgstr ""
+
+msgctxt "block description"
+msgid "One milestone of a timeline: a date, a title and a few words."
+msgstr ""
+
+msgctxt "block title"
+msgid "Timeline"
+msgstr ""
+
+msgctxt "block description"
+msgid "Milestones in order, one under the other on phones and on both sides of a line on wider screens."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "history"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "milestones"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "steps"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "process"
 msgstr ""

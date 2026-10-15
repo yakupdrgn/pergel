@@ -45,6 +45,8 @@ Bindings ile tek yerden bağlanır.
 Sunucuda Node gerekmez. Basit bloklar PHP-only. Karmaşık editör arayüzleri `@wordpress/scripts`
 ile derlenir; derlenmiş dosyalar (`engine/build/`) repoya girer.
 **Elenen:** tamamen build'siz yaklaşım; her şeyi derleyen ağır toolchain.
+**Değişiklik (F3b, 15 Ekim 2026):** Şimdiye kadarki editör arayüzleri derleme gerektirmedi;
+`engine/build/` yok. Gerekçe ve kural F3 kararlarında ("Blok editör betikleri derlemesiz").
 
 ## K7 — Asgari WordPress 7.1, PHP 8.1; destek: son iki major WP sürümü
 
@@ -383,6 +385,24 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   sürümü yol üretmediği için Pergel'in yolu ve blokta basılan bir BreadcrumbList kullanılır.
   Rank Math'in blog sayfasında bağlantısız bıraktığı son adıma sayfa adresi verilir; böylece o
   sayfada da yol ve schema "Ana sayfa > Blog" olur.
+- **F3b tek PR, üç commit:** içerik blokları, etkileşimli bloklar (carousel, mega menü, form),
+  blok uzantıları (kullanıcı kararı).
+- **Blok editör betikleri derlemesiz:** WP 7.0'ın `autoRegister` ile ürettiği ayar alanları blok
+  contentOnly modundayken (kilitli pattern'ler) gizlenir, yalnızca metin/sayı/boolean
+  özniteliklerini kapsar ve etiketleri çevrilmez. Bu yüzden içerik tutan bloklar içeriği çekirdek
+  bloklarda (InnerBlocks şablonu) tutar ve editör tarafını elle yazılmış, derlemesiz bir
+  `index.js` kaydeder (`wp.element.createElement`, ortak `pergel-blocks-editor` yardımcısı).
+  Gerekirse ileride derlemeye geçmek K6 içinde kalır; şimdilik Node yalnızca test aracıdır.
+- **Karşılaştırma tablosu blok stilidir:** Çekirdek tablo zaten doğru semantiği, başlık satırını
+  ve düzenleme araçlarını veriyor; ayrı blok aynı şeyi ikinci kez yazardı.
+- **İçindekiler id'leri tekil sayfadaki bütün başlıklara verilir:** Blok şablonda içerikten önce
+  de sonra da durabilir; id'ler yalnızca blok varken verilseydi sıraya bağlı kalırdı. Ayrıca her
+  bölüm bloksuz da bağlantılanabilir. HTML çapası olan başlığa dokunulmaz.
+- **Harita tıklayınca yüklenir:** Gizlilik (sayfa açılışında Google'a istek ve çerez yok) ve
+  performans (iframe ~1 MB). Bağlantı JavaScript olmadan da Google Maps'i açar.
+- **İletişim/teklif formu gönderimleri:** yöneticiye e-posta ve panelde gizli bir yazı türünde
+  kayıt; e-posta kaybolsa da talep kaybolmaz (kullanıcı kararı). Yalnızca yerelde, `pre_wp_mail`
+  ile yakalanarak test edilir.
 
 ## Aşamalar ve bitti tanımları
 

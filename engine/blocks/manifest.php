@@ -53,4 +53,357 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'counter' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/counter',
+    'title' => 'Counter',
+    'category' => 'pergel',
+    'icon' => 'performance',
+    'description' => 'A number that counts up when it scrolls into view, with a label. The number is in the page without JavaScript.',
+    'keywords' => 
+    array (
+      0 => 'number',
+      1 => 'statistic',
+      2 => 'count',
+      3 => 'stat',
+    ),
+    'textdomain' => 'pergel-engine',
+    'attributes' => 
+    array (
+      'duration' => 
+      array (
+        'type' => 'integer',
+        'default' => 1500,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+      'typography' => 
+      array (
+        'textAlign' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'logo-marquee' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/logo-marquee',
+    'title' => 'Logo marquee',
+    'category' => 'pergel',
+    'icon' => 'images-alt2',
+    'description' => 'A row of logos that moves slowly sideways. Visitors can pause it; with reduced motion it stands still.',
+    'keywords' => 
+    array (
+      0 => 'logos',
+      1 => 'clients',
+      2 => 'partners',
+      3 => 'brands',
+      4 => 'ticker',
+    ),
+    'textdomain' => 'pergel-engine',
+    'allowedBlocks' => 
+    array (
+      0 => 'core/image',
+    ),
+    'attributes' => 
+    array (
+      'duration' => 
+      array (
+        'type' => 'integer',
+        'default' => 30,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+        'blockGap' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'map' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/map',
+    'title' => 'Map',
+    'category' => 'pergel',
+    'icon' => 'location-alt',
+    'description' => 'An image of the location that turns into a Google map when the visitor asks for it. Nothing loads from Google before that.',
+    'keywords' => 
+    array (
+      0 => 'map',
+      1 => 'location',
+      2 => 'address',
+      3 => 'directions',
+      4 => 'google',
+    ),
+    'textdomain' => 'pergel-engine',
+    'allowedBlocks' => 
+    array (
+      0 => 'core/image',
+    ),
+    'attributes' => 
+    array (
+      'query' => 
+      array (
+        'type' => 'string',
+        'default' => '',
+      ),
+      'zoom' => 
+      array (
+        'type' => 'integer',
+        'default' => 14,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'pricing-plan' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/pricing-plan',
+    'title' => 'Pricing plan',
+    'category' => 'pergel',
+    'icon' => 'tag',
+    'description' => 'One plan: name, price, what it includes and a button. A highlighted plan stands out.',
+    'textdomain' => 'pergel-engine',
+    'parent' => 
+    array (
+      0 => 'pergel/pricing-table',
+    ),
+    'attributes' => 
+    array (
+      'featured' => 
+      array (
+        'type' => 'boolean',
+        'default' => false,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'reusable' => false,
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'padding' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'render' => 'file:./render.php',
+  ),
+  'pricing-table' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/pricing-table',
+    'title' => 'Pricing table',
+    'category' => 'pergel',
+    'icon' => 'money-alt',
+    'description' => 'Plans side by side, as many per row as fit. Buttons line up at the bottom.',
+    'keywords' => 
+    array (
+      0 => 'prices',
+      1 => 'plans',
+      2 => 'packages',
+      3 => 'pricing',
+    ),
+    'textdomain' => 'pergel-engine',
+    'allowedBlocks' => 
+    array (
+      0 => 'pergel/pricing-plan',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+        'blockGap' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'table-of-contents' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/table-of-contents',
+    'title' => 'Table of contents',
+    'category' => 'pergel',
+    'icon' => 'list-view',
+    'description' => 'Links to the headings of the content. Headings get their anchors when the page renders.',
+    'keywords' => 
+    array (
+      0 => 'contents',
+      1 => 'toc',
+      2 => 'headings',
+      3 => 'anchors',
+      4 => 'summary',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+    ),
+    'attributes' => 
+    array (
+      'maxLevel' => 
+      array (
+        'type' => 'integer',
+        'enum' => 
+        array (
+          0 => 2,
+          1 => 3,
+          2 => 4,
+        ),
+        'default' => 3,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'color' => 
+      array (
+        'text' => true,
+        'link' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+      'typography' => 
+      array (
+        'fontSize' => true,
+        'lineHeight' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'timeline' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/timeline',
+    'title' => 'Timeline',
+    'category' => 'pergel',
+    'icon' => 'backup',
+    'description' => 'Milestones in order, one under the other on phones and on both sides of a line on wider screens.',
+    'keywords' => 
+    array (
+      0 => 'history',
+      1 => 'milestones',
+      2 => 'steps',
+      3 => 'process',
+    ),
+    'textdomain' => 'pergel-engine',
+    'allowedBlocks' => 
+    array (
+      0 => 'pergel/timeline-item',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+      ),
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+        'blockGap' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'timeline-item' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/timeline-item',
+    'title' => 'Timeline item',
+    'category' => 'pergel',
+    'icon' => 'marker',
+    'description' => 'One milestone of a timeline: a date, a title and a few words.',
+    'textdomain' => 'pergel-engine',
+    'parent' => 
+    array (
+      0 => 'pergel/timeline',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'reusable' => false,
+    ),
+    'editorScript' => 'file:./index.js',
+    'render' => 'file:./render.php',
+  ),
 );

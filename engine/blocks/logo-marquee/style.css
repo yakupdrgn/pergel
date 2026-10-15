@@ -1,0 +1,110 @@
+.wp-block-pergel-logo-marquee {
+	--pergel-marquee-gap: var(--wp--style--block-gap, 3rem);
+	--pergel-marquee-logo: 3rem;
+	container-type: inline-size;
+	overflow: hidden;
+	position: relative;
+}
+
+.wp-block-pergel-logo-marquee__track {
+	animation: pergel-marquee var(--pergel-marquee-duration, 30s) linear infinite;
+	display: flex;
+	mask-image: linear-gradient(to right, transparent, #000 4rem, #000 calc(100% - 4rem), transparent);
+	width: max-content;
+}
+
+.wp-block-pergel-logo-marquee__group {
+	align-items: center;
+	display: flex;
+	flex: none;
+	gap: var(--pergel-marquee-gap);
+	justify-content: space-around;
+	min-inline-size: 100cqi;
+	padding-inline-end: var(--pergel-marquee-gap);
+}
+
+.wp-block-pergel-logo-marquee__group > .wp-block-image,
+.wp-block-pergel-logo-marquee > .wp-block-image {
+	flex: none;
+	margin: 0;
+}
+
+.wp-block-pergel-logo-marquee .wp-block-image img {
+	height: var(--pergel-marquee-logo);
+	max-width: none;
+	object-fit: contain;
+	width: auto;
+}
+
+/* Hovering or focusing the logos pauses them; the button only through its state. */
+.wp-block-pergel-logo-marquee__track:is(:hover, :focus-within),
+.wp-block-pergel-logo-marquee.is-paused .wp-block-pergel-logo-marquee__track {
+	animation-play-state: paused;
+}
+
+.wp-block-pergel-logo-marquee__toggle {
+	background: transparent;
+	border: 1px solid currentcolor;
+	border-radius: var(--wp--custom--radius--button, 4px);
+	color: inherit;
+	cursor: pointer;
+	display: block;
+	font: inherit;
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+	margin: 0.75rem 0 0 auto;
+	min-height: 24px;
+	padding: 0.25em 0.75em;
+}
+
+.wp-block-pergel-logo-marquee__toggle[hidden] {
+	display: none;
+}
+
+.wp-block-pergel-logo-marquee__toggle[aria-pressed="true"] {
+	background: color-mix(in srgb, currentcolor 15%, transparent);
+	border-width: 2px;
+}
+
+@keyframes pergel-marquee {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@keyframes pergel-marquee-rtl {
+	to {
+		transform: translateX(50%);
+	}
+}
+
+.wp-block-pergel-logo-marquee:dir(rtl) .wp-block-pergel-logo-marquee__track {
+	animation-name: pergel-marquee-rtl;
+}
+
+/* The editor shows the logos as a still, wrapping row. */
+.wp-block-pergel-logo-marquee:not(:has(> .wp-block-pergel-logo-marquee__track)) {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--pergel-marquee-gap);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wp-block-pergel-logo-marquee__track {
+		animation: none;
+		mask-image: none;
+		width: auto;
+	}
+
+	.wp-block-pergel-logo-marquee__group {
+		flex-wrap: wrap;
+		justify-content: center;
+		min-inline-size: 0;
+		padding-inline-end: 0;
+	}
+
+	.wp-block-pergel-logo-marquee__group[aria-hidden="true"],
+	.wp-block-pergel-logo-marquee__toggle {
+		display: none;
+	}
+}

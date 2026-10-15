@@ -1,0 +1,35 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/counter",
+	"title": "Counter",
+	"category": "pergel",
+	"icon": "performance",
+	"description": "A number that counts up when it scrolls into view, with a label. The number is in the page without JavaScript.",
+	"keywords": [ "number", "statistic", "count", "stat" ],
+	"textdomain": "pergel-engine",
+	"attributes": {
+		"duration": {
+			"type": "integer",
+			"default": 1500
+		}
+	},
+	"supports": {
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"textAlign": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

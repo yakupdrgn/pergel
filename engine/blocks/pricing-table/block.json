@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/pricing-table",
+	"title": "Pricing table",
+	"category": "pergel",
+	"icon": "money-alt",
+	"description": "Plans side by side, as many per row as fit. Buttons line up at the bottom.",
+	"keywords": [ "prices", "plans", "packages", "pricing" ],
+	"textdomain": "pergel-engine",
+	"allowedBlocks": [ "pergel/pricing-plan" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

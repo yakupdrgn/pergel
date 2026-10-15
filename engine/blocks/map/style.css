@@ -1,0 +1,67 @@
+.wp-block-pergel-map__frame {
+	aspect-ratio: 4 / 3;
+	background: var(--wp--preset--color--surface, #eee);
+	border-radius: var(--wp--custom--radius--card, 8px);
+	overflow: hidden;
+	position: relative;
+}
+
+@media (min-width: 48rem) {
+	.wp-block-pergel-map__frame {
+		aspect-ratio: 16 / 9;
+	}
+}
+
+.wp-block-pergel-map__frame > .wp-block-image,
+.wp-block-pergel-map__placeholder,
+.wp-block-pergel-map__embed {
+	border: 0;
+	height: 100%;
+	inset: 0;
+	margin: 0;
+	position: absolute;
+	width: 100%;
+}
+
+.wp-block-pergel-map__frame > .wp-block-image img {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+
+.wp-block-pergel-map__placeholder {
+	align-items: center;
+	background-image:
+		linear-gradient(var(--wp--preset--color--border, #ccc) 1px, transparent 1px),
+		linear-gradient(90deg, var(--wp--preset--color--border, #ccc) 1px, transparent 1px);
+	background-size: 2.5rem 2.5rem;
+	display: flex;
+	justify-content: center;
+	padding: 1rem 1rem 5rem;
+	text-align: center;
+}
+
+.wp-block-pergel-map__placeholder span {
+	background: var(--wp--preset--color--base, #fff);
+	border-radius: var(--wp--custom--radius--small, 4px);
+	padding: 0.25em 0.75em;
+}
+
+.wp-block-pergel-map__load {
+	inset-block-end: 1.5rem;
+	inset-inline-start: 50%;
+	position: absolute;
+	transform: translateX(-50%);
+	white-space: nowrap;
+}
+
+.wp-block-pergel-map.is-loaded .wp-block-pergel-map__load,
+.wp-block-pergel-map.is-loaded .wp-block-pergel-map__frame > :not(.wp-block-pergel-map__embed),
+.wp-block-pergel-map.is-loaded .wp-block-pergel-map__note {
+	display: none;
+}
+
+.wp-block-pergel-map__note {
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+	margin-block: 0.5rem 0;
+}

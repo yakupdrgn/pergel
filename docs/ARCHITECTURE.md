@@ -189,10 +189,17 @@ Pergel blokları sunucuda çizilir ve `engine/blocks/<slug>/` altında durur:
 - `render.php`: blok çıktısı; `$attributes`, `$content`, `$block` değişkenleriyle çağrılır.
 - `style.css` (isteğe bağlı): çekirdek yalnızca blok sayfada çizildiğinde ekler ve küçükse
   satır içine alır; ayrı istek oluşmaz.
-- Derlenmiş editör betiği olmayan blok `supports.autoRegister: true` taşır. WP 7.0'dan beri
-  editör böyle bir bloğu sunucu önizlemesiyle kendisi kaydeder ve ayar alanlarını
-  `attributes`'tan üretir (K6: basit bloklar PHP-only). Karmaşık editör arayüzü gereken bloklar
-  `@wordpress/scripts` ile `engine/build/`'e derlenir ve `editorScript` taşır.
+- Editör betiği olmayan blok `supports.autoRegister: true` taşır. WP 7.0'dan beri editör böyle
+  bir bloğu sunucu önizlemesiyle kendisi kaydeder ve ayar alanlarını `attributes`'tan üretir
+  (breadcrumb böyledir).
+- İçerik tutan bloklar derlemesiz bir `index.js` (`editorScript: file:./index.js`) ve bağımlılıkları
+  sayan `index.asset.php` taşır. Ortak yardımcı `engine/assets/blocks-editor.js`
+  (`pergel-blocks-editor`) `window.pergelBlocks.container()` ile bloğu çekirdek bloklardan oluşan
+  bir InnerBlocks şablonu, isteğe bağlı sınıf ve Inspector kontrolleriyle kaydeder; `save` yalnızca
+  iç blokları yazar, sarmalayıcıyı `render.php` basar. Böylece metin, görsel ve bağlantılar çekirdek
+  blokların kendi araçlarıyla düzenlenir, contentOnly pattern'lerde de açık kalır ve çevrilebilir.
+- `render.php` ve `block.json`'un gösterdiği her dosya (`style`, `editorScript`,
+  `viewScriptModule`...) var olmalıdır; `tools/blocks.php` bunu da denetler.
 
 `php tools/blocks.php` bu kuralları denetler ve tüm `block.json`'ları `engine/blocks/manifest.php`
 dosyasına yazar. `Blocks\Module` blokları bu dosyadan bir metadata koleksiyonu olarak kaydeder;
@@ -241,6 +248,36 @@ SEO matrisi (`tools/seo/check.mjs`) bunu altı senaryoda denetler. Rank Math yol
 bildiren temalarda kurduğundan Pergel `rank-math-breadcrumbs` desteğini ekler; blog sayfası gibi
 bağlantısız bırakılan son adıma sayfanın adresini verir. Editörde blok örnek bir yol gösterir.
 Blok `single`, `page`, `archive` ve `home` şablonlarında başlığın üstündedir.
+
+### İçerik blokları (F3b)
+
+Hepsi sunucuda çizilir; CSS'leri yalnızca blok sayfadayken yüklenir. Ön yüz script'leri küçük
+script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
+
+- **Sayaç** (`pergel/counter`): sayı ve etiket paragrafı. Sunucu son sayıyı basar; script blok
+  görünür olunca sıfırdan sayar (binlik ayırıcı, ondalık ve çevresindeki metin korunur: `250+`,
+  `%98`, `1.200`). `prefers-reduced-motion`'da ve süre 0 iken sayı hiç değişmez. Süre 0–10000 ms.
+- **Zaman çizelgesi** (`pergel/timeline` > `pergel/timeline-item`): `<ol>`/`<li>`; dar ekranda tek
+  sütun, 48rem'den geniş ekranda çizginin iki yanında sırayla.
+- **Logo şeridi** (`pergel/logo-marquee`): Image blokları iki kez basılır, ikinci kopya
+  `aria-hidden` ve `inert`'tir ve id'leri silinir. Kayma saf CSS'tir (süre 5–120 sn), üzerine
+  gelince, logolara odaklanınca ve "Duraklat" düğmesiyle durur (WCAG 2.2.2); düğmeyi script
+  gösterir. Hareket azaltılmışsa logolar sabit, sarılan bir satırdır. Editörde de sabit satırdır.
+- **Fiyat tablosu** (`pergel/pricing-table` > `pergel/pricing-plan`): sığdığı kadar sütun, butonlar
+  altta hizalı; öne çıkan plan `is-featured` alır.
+- **Karşılaştırma tablosu:** yeni blok değil, `core/table` için `pergel-comparison` blok stili
+  (`Blocks\Styles`). İlk sütun yapışkan, tablo en az 32rem; dar ekranda tablo kendi içinde yatay
+  kayar ve çerçevesi klavyeyle kaydırılabilsin diye `tabindex="0"` alır.
+- **İçindekiler** (`pergel/table-of-contents`): yazının H2–H3 (ayarla H4'e kadar) başlıklarını
+  iç içe `<ol>` olarak listeler; iki başlıktan azsa hiçbir şey basmaz. Başlık listesi
+  `parse_blocks` ile içerikten çıkarılır. `Blocks\Toc` tekil sayfalarda içeriğin her başlığına
+  aynı id'yi verir: HTML çapası olan kendi id'sini korur, diğerleri metinden üretilir ve tekrar
+  edenler `-2`, `-3` alır. Eşleşme düzey+metin ve sıraya göredir; sıra her `the_content`
+  geçişinde baştan başlar (meta açıklaması için üretilen özet başlıkları önce bir kez çizer).
+  Editör önizlemesi kayıtlı içerikten gelir.
+- **Harita** (`pergel/map`): adres/yer ve yakınlık. Önce statik görsel (ya da adresli bir yer
+  tutucu) ve Google Maps'e giden bir bağlantı basılır; iframe yalnızca "Show the map"e basınca
+  oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez.
 
 ## WP-CLI (F2)
 
