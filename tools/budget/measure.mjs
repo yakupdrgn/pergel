@@ -55,7 +55,9 @@ const probeHeaders = ( page ) => ( {
 
 async function server( page ) {
 	const url = base + page.path;
-	await fetch( url, { headers: probeHeaders( page ) } ); // Warm OPcache and object caches.
+	// Warm OPcache and object caches. The body is read so undici never holds a paused
+	// response when the server closes the connection (it crashes on an assertion).
+	await ( await fetch( url, { headers: probeHeaders( page ) } ) ).arrayBuffer();
 	for ( let i = 0; i < budget.runs; i++ ) {
 		const res = await fetch( url, { headers: { ...probeHeaders( page ), 'X-Pergel-Perf': `${ runId }:${ page.name }:${ i }` } } );
 		await res.arrayBuffer();
