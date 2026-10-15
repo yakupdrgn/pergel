@@ -39,12 +39,13 @@ page.on( 'console', ( message ) => {
 } );
 page.on( 'pageerror', ( error ) => consoleErrors.push( String( error ) ) );
 
-await page.goto( `${ base }/wp-login.php` );
+// Straight to the editor: the dashboard's news widget fetches feeds from
+// wordpress.org over admin-ajax, which can hold up the single-threaded CI server.
+await page.goto( `${ base }/wp-login.php?redirect_to=${ encodeURIComponent( `${ base }/wp-admin/post-new.php?post_type=page` ) }` );
 await page.fill( '#user_login', opt.user );
 await page.fill( '#user_pass', password );
 await page.click( '#wp-submit' );
-await page.waitForURL( /wp-admin/ );
-await page.goto( `${ base }/wp-admin/post-new.php?post_type=page` );
+await page.waitForURL( /post-new\.php/, { waitUntil: 'domcontentloaded', timeout: 90000 } );
 await page.waitForFunction( () => window.wp?.data?.select( 'core/block-editor' ) && window.wp.blocks?.getBlockTypes().length > 50, null, { timeout: 90000 } );
 await page.evaluate( () => {
 	wp.data.dispatch( 'core/preferences' ).set( 'core/edit-post', 'welcomeGuide', false );
