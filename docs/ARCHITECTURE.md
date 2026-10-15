@@ -67,7 +67,7 @@ Planlanan modüller ve yüklenme koşulları:
 | Core | Her zaman |
 | Settings | Her zaman (hafif: hook'lar; ekran yalnızca admin) |
 | Blocks | Blok sayfadaysa CSS/JS |
-| Brand | Her zaman (hafif) |
+| Brand | Her zaman (hafif: `init` + editör script'i yalnızca editörde) |
 | Seo | Ön yüz |
 | Ai | İsteğe bağlı |
 | Content | Yalnızca açılan içerik türleri |
@@ -98,6 +98,30 @@ option'da değil Global Styles'tadır (K5).
 - `Settings\Labels` — sekme, bölüm, alan etiketleri ve hata metinleri; şemanın saf PHP
   kalması için ayrı tutulur. Labels'ta yer almayan alan "Other" bölümünde yine gösterilir.
 - `engine/assets/settings.js` — build'siz; görsel alanları için çekirdek medya seçicisi.
+
+## Marka ve Block Bindings (F2)
+
+Şirket bilgileri bir kez ayarlarda girilir; bloklar ve yapılandırılmış veri aynı kaynaktan okur.
+
+- `Brand\Brand` — `brand` grubunu okur ve boşlukları doldurur: ad yoksa site başlığı, adres
+  için ana sayfa, ana logo için Site Logo. `value( $anahtar )` boş değerde `null` döner.
+- `Brand\Format` — saf PHP: `tel:` / `mailto:` bağlantısı, tek satır adres, profil URL'sinden
+  sosyal ağ, schema.org `Organization`. Birim testleriyle sınanır.
+- `Brand\Module` — `pergel/brand` bağlama kaynağı. Argümanlar: `{"key": "name"}`; sosyal için
+  `{"key": "social", "network": "linkedin"}`. Anahtarlar: tüm metin alanları ile `url`,
+  `address`, `email_url`, `phone_url`, `copyright`, `logo_inverse` (görselde `id`, `url`, `alt`).
+  Boş değer bloğun kayıtlı metnini korur. Zengin metin özelliklerinde (`content`, `text`,
+  `caption`) değer burada kaçışlanır; diğer özellikleri çekirdek yazarken kaçışlar.
+- `engine/assets/brand-bindings.js` — build'siz, yalnızca blok ve site editöründe: güncel
+  değerler ve bloğun "Özellikler" panelindeki alan listesi (`getFieldsList`). Değerler editörde
+  salt okunur.
+- `Brand::organization()` SEO modülünün `Organization` düğümünü besler.
+
+```html
+<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"pergel/brand","args":{"key":"phone"}}}}} -->
+<p>+90 000 000 00 00</p>
+<!-- /wp:paragraph -->
+```
 
 ## Ölçüm
 

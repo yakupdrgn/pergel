@@ -280,6 +280,14 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   savunmadır, sunucu şeması asıl kuraldır. Hata rengi `#b32d2e` (gri zeminde 4,5:1 üstü).
 - **Medya seçici çekirdekten:** Görsel alanları `wp.media` kullanır; build'siz küçük bir
   script yalnızca ayar sayfasında yüklenir.
+- **Marka bilgisi tek kaynak, Block Bindings ile:** Telefon, e-posta, adres gibi bilgiler
+  pattern'lere yazılmaz; bloklar `pergel/brand` kaynağına bağlanır. Değer boşsa blok kayıtlı
+  metnini gösterir; modül kapalıysa da aynı metin görünür, sayfa bozulmaz.
+- **Editörde salt okunur:** Bağlı blokta değer editörde değiştirilemez (`canUserEditValue`
+  false); değişiklik ayar ekranından yapılır. Böylece bir sayfada yanlışlıkla marka bilgisi
+  değişmez.
+- **Ad yoksa site başlığı, ana logo Site Logo:** Ayarda ayrı bir ana logo alanı yok; Site Editor'deki
+  Site Logo kullanılır. Ayarda yalnızca koyu zemin logosu var.
 
 ## Aşamalar ve bitti tanımları
 

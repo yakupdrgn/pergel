@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Core;
 
+use Pergel\Brand;
 use Pergel\Cli;
 use Pergel\Settings;
 
@@ -33,6 +34,7 @@ final class Plugin {
 	public static function modules(): array {
 		$modules = array(
 			Settings\Module::class,
+			Brand\Module::class,
 			Cli\Module::class,
 		);
 
