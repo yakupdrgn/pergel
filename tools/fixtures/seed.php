@@ -115,7 +115,15 @@ function seed(): void {
 	update_option( 'page_for_posts', $blog );
 
 	// WordPress caches the list of theme pattern files; new files appear only after this.
+	// The cache key hashes the theme path, which the web server and WP-CLI may spell
+	// differently on Windows (C:\ vs C:/), so every copy is removed, not only ours.
 	wp_get_theme()->delete_pattern_cache();
+	global $wpdb;
+	foreach ( array( '_site_transient_', '_site_transient_timeout_' ) as $prefix ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- dev fixture; transients have no wildcard delete API.
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like( $prefix . 'wp_theme_files_patterns-' ) . '%' ) );
+	}
+	wp_cache_flush();
 
 	\WP_CLI::success( sprintf( 'Seeded post %d, page %d, front page %d and posts page %d.', $post, $page, $front, $blog ) );
 }

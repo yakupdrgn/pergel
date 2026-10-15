@@ -134,7 +134,9 @@ listeler.
 | contrast | base |
 | contrast | surface |
 | muted | base |
+| muted | surface (footer, kartlar) |
 | accent | base (bağlantılar) |
+| accent | surface |
 | on-accent | accent (butonlar) |
 
 CI iki şeyi doğrular. `php tools/tokens.php --check` çıktının token'larla aynı olduğunu

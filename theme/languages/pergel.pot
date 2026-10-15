@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T07:01:11+03:00\n"
+"POT-Creation-Date: 2026-10-15T07:19:43+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -35,6 +35,175 @@ msgid "https://ariumlab.com/"
 msgstr ""
 
 msgid "Sections and full pages from the Pergel library."
+msgstr ""
+
+#: patterns/footer-centered.php
+msgctxt "Pattern title"
+msgid "Centered footer"
+msgstr ""
+
+#: patterns/footer-centered.php
+msgctxt "Pattern description"
+msgid "Logo, site title, tagline and footer menu stacked in the center."
+msgstr ""
+
+msgctxt "footer menu label"
+msgid "Footer"
+msgstr ""
+
+#: patterns/footer-columns.php
+msgctxt "Pattern title"
+msgid "Footer with columns"
+msgstr ""
+
+#: patterns/footer-columns.php
+msgctxt "Pattern description"
+msgid "Site title and tagline beside lists of pages, recent posts and categories."
+msgstr ""
+
+msgctxt "footer column heading"
+msgid "Pages"
+msgstr ""
+
+msgctxt "footer column heading"
+msgid "Recent posts"
+msgstr ""
+
+msgctxt "footer column heading"
+msgid "Topics"
+msgstr ""
+
+#. translators: %s: link to WordPress.org
+#, php-format
+msgid "Proudly powered by %s"
+msgstr ""
+
+#: patterns/footer-cta.php
+msgctxt "Pattern title"
+msgid "Footer with call to action"
+msgstr ""
+
+#: patterns/footer-cta.php
+msgctxt "Pattern description"
+msgid "A call-to-action band in the accent color above the site title and footer menu."
+msgstr ""
+
+msgctxt "footer call to action"
+msgid "Have a project in mind?"
+msgstr ""
+
+msgctxt "footer call to action"
+msgid "Tell us what you are building. We reply within one working day."
+msgstr ""
+
+msgctxt "header button"
+msgid "Get in touch"
+msgstr ""
+
+#: patterns/footer-inverse.php
+msgctxt "Pattern title"
+msgid "Inverse footer"
+msgstr ""
+
+#: patterns/footer-inverse.php
+msgctxt "Pattern description"
+msgid "Footer in the contrast color with the site title, a page list and categories."
+msgstr ""
+
+#: patterns/footer-search.php
+msgctxt "Pattern title"
+msgid "Footer with search"
+msgstr ""
+
+#: patterns/footer-search.php
+msgctxt "Pattern description"
+msgid "Site title and tagline beside a search form, with the footer menu below."
+msgstr ""
+
+#: patterns/footer-simple.php
+msgctxt "Pattern title"
+msgid "Simple footer"
+msgstr ""
+
+#: patterns/footer-simple.php
+msgctxt "Pattern description"
+msgid "Site title and tagline on the left, footer menu on the right."
+msgstr ""
+
+#: patterns/header-centered.php
+msgctxt "Pattern title"
+msgid "Centered header"
+msgstr ""
+
+#: patterns/header-centered.php
+msgctxt "Pattern description"
+msgid "Logo and site title centered above a centered menu, with a bottom border."
+msgstr ""
+
+msgctxt "header menu label"
+msgid "Primary"
+msgstr ""
+
+#: patterns/header-classic.php
+msgctxt "Pattern title"
+msgid "Classic header"
+msgstr ""
+
+#: patterns/header-classic.php
+msgctxt "Pattern description"
+msgid "Logo and site title on the left, menu on the right."
+msgstr ""
+
+#: patterns/header-cta.php
+msgctxt "Pattern title"
+msgid "Header with button"
+msgstr ""
+
+#: patterns/header-cta.php
+msgctxt "Pattern description"
+msgid "Logo and site title, menu and a contact button. The button is hidden on phones."
+msgstr ""
+
+#: patterns/header-inverse.php
+msgctxt "Pattern title"
+msgid "Inverse header"
+msgstr ""
+
+#: patterns/header-inverse.php
+msgctxt "Pattern description"
+msgid "Header in the contrast color with an outline contact button. The button is hidden on phones."
+msgstr ""
+
+#: patterns/header-search.php
+msgctxt "Pattern title"
+msgid "Header with search"
+msgstr ""
+
+#: patterns/header-search.php
+msgctxt "Pattern description"
+msgid "Logo and site title, menu and a search button that opens a search field."
+msgstr ""
+
+msgctxt "search form label"
+msgid "Search"
+msgstr ""
+
+msgctxt "search input placeholder"
+msgid "Search…"
+msgstr ""
+
+msgctxt "search button text"
+msgid "Search"
+msgstr ""
+
+#: patterns/header-topbar.php
+msgctxt "Pattern title"
+msgid "Header with top bar"
+msgstr ""
+
+#: patterns/header-topbar.php
+msgctxt "Pattern description"
+msgid "A dark top bar with the tagline and a contact link above the classic header. The top bar is hidden on phones."
 msgstr ""
 
 #: patterns/hidden-404.php
@@ -112,18 +281,6 @@ msgstr ""
 #: patterns/hidden-search.php
 msgctxt "Pattern description"
 msgid "Search form with translated label and button text."
-msgstr ""
-
-msgctxt "search form label"
-msgid "Search"
-msgstr ""
-
-msgctxt "search input placeholder"
-msgid "Search…"
-msgstr ""
-
-msgctxt "search button text"
-msgid "Search"
 msgstr ""
 
 msgctxt "Color name"

@@ -202,9 +202,9 @@
 		"spacing": {
 			"blockGap": "var(--wp--preset--spacing--40)",
 			"padding": {
-				"top": "0",
+				"top": "0px",
 				"right": "var(--wp--preset--spacing--50)",
-				"bottom": "0",
+				"bottom": "0px",
 				"left": "var(--wp--preset--spacing--50)"
 			}
 		},
@@ -270,10 +270,22 @@
 				"elements": {
 					"link": {
 						"color": {
-							"text": "var(--wp--preset--color--contrast)"
+							"text": "inherit"
 						}
 					}
 				}
+			},
+			"core/archives": {
+				"css": "& li + li { margin-block-start: 0.5em; }"
+			},
+			"core/categories": {
+				"css": "& li + li { margin-block-start: 0.5em; }"
+			},
+			"core/latest-posts": {
+				"css": "& li + li { margin-block-start: 0.5em; }"
+			},
+			"core/page-list": {
+				"css": "& li + li { margin-block-start: 0.5em; }"
 			},
 			"core/post-date": {
 				"color": {

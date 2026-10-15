@@ -11,6 +11,9 @@
  *   tools/budget/measure.mjs reads that log.
  * - X-Pergel-Variation: <slug>: renders the page with styles/<slug>.json
  *   applied, without saving anything, so each style variation can be measured.
+ * - X-Pergel-Header: <name> / X-Pergel-Footer: <name>: the header or footer
+ *   part renders the pergel/header-<name> or pergel/footer-<name> pattern
+ *   instead of its default one, so every header and footer can be measured.
  *
  * @package Pergel
  */
@@ -31,6 +34,23 @@ if ( ! empty( $_SERVER['HTTP_X_PERGEL_VARIATION'] ) ) {
 			$file      = get_theme_file_path( "styles/$pergel_variation.json" );
 			$variation = is_file( $file ) ? wp_json_file_decode( $file, array( 'associative' => true ) ) : null;
 			return is_array( $variation ) ? $data->update_with( $variation ) : $data;
+		}
+	);
+}
+
+foreach ( array( 'header', 'footer' ) as $pergel_area ) {
+	$pergel_key = 'HTTP_X_PERGEL_' . strtoupper( $pergel_area );
+	if ( empty( $_SERVER[ $pergel_key ] ) ) {
+		continue;
+	}
+	$pergel_slug = "pergel/$pergel_area-" . preg_replace( '/[^a-z0-9-]/', '', strtolower( (string) $_SERVER[ $pergel_key ] ) );
+	add_filter(
+		'render_block_data',
+		static function ( array $block ) use ( $pergel_area, $pergel_slug ): array {
+			if ( 'core/pattern' === $block['blockName'] && str_starts_with( (string) ( $block['attrs']['slug'] ?? '' ), "pergel/$pergel_area-" ) ) {
+				$block['attrs']['slug'] = $pergel_slug;
+			}
+			return $block;
 		}
 	);
 }
@@ -105,6 +125,6 @@ function perf_log(): void {
 
 	$log = defined( 'PERGEL_PERF_LOG' ) ? (string) PERGEL_PERF_LOG : WP_CONTENT_DIR . '/pergel-perf.jsonl';
 	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- append-only dev log.
-	file_put_contents( $log, wp_json_encode( $row ) . "\n", FILE_APPEND | LOCK_EX );
+	file_put_contents( $log, wp_json_encode( $row, JSON_UNESCAPED_SLASHES ) . "\n", FILE_APPEND | LOCK_EX );
 }
 add_action( 'shutdown', __NAMESPACE__ . '\perf_log', PHP_INT_MAX );

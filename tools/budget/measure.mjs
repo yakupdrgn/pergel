@@ -5,7 +5,8 @@
  * Measures every page in tests/budget/budget.json on a running site and
  * fails when a value is outside its limit. Server-side numbers come from the perf
  * probe (tools/budget/perf-probe.php) through its JSON-lines log; browser
- * numbers come from Playwright, accessibility from axe-core (WCAG 2.2 A/AA).
+ * numbers come from Playwright, accessibility from axe-core (WCAG 2.2 A/AA)
+ * at desktop width, at phone width and with the phone menu open.
  *
  *   node tools/budget/measure.mjs --base http://localhost/pergel-tema \
  *        --log C:/xampp/htdocs/pergel-tema/wp-content/pergel-perf.jsonl [--channel chrome]
@@ -44,14 +45,19 @@ const median = ( a ) => {
 };
 
 /* ---- Server side: probe log, median of N warm runs ---------------------- */
-// A page with "variation" is rendered with styles/<slug>.json applied (perf probe header).
-const variationHeaders = ( page ) => ( page.variation ? { 'X-Pergel-Variation': page.variation } : {} );
+// Perf probe headers: "variation" renders the page with styles/<slug>.json applied,
+// "header" and "footer" swap in the pergel/header-<name> and pergel/footer-<name> patterns.
+const probeHeaders = ( page ) => ( {
+	...( page.variation ? { 'X-Pergel-Variation': page.variation } : {} ),
+	...( page.header ? { 'X-Pergel-Header': page.header } : {} ),
+	...( page.footer ? { 'X-Pergel-Footer': page.footer } : {} ),
+} );
 
 async function server( page ) {
 	const url = base + page.path;
-	await fetch( url, { headers: variationHeaders( page ) } ); // Warm OPcache and object caches.
+	await fetch( url, { headers: probeHeaders( page ) } ); // Warm OPcache and object caches.
 	for ( let i = 0; i < budget.runs; i++ ) {
-		const res = await fetch( url, { headers: { ...variationHeaders( page ), 'X-Pergel-Perf': `${ runId }:${ page.name }:${ i }` } } );
+		const res = await fetch( url, { headers: { ...probeHeaders( page ), 'X-Pergel-Perf': `${ runId }:${ page.name }:${ i }` } } );
 		await res.arrayBuffer();
 		const expected = page.status ?? 200;
 		if ( res.status !== expected ) {
@@ -97,9 +103,11 @@ new PerformanceObserver(l=>{for(const e of l.getEntries())if(!e.hadRecentInput)w
 
 // axe-core rule tags: WCAG 2.0, 2.1 and 2.2, levels A and AA.
 const AXE_TAGS = [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa' ];
+const DESKTOP = { width: 1440, height: 900 };
+const PHONE = { width: 390, height: 844 };
 
 async function browserMetrics( browser, page ) {
-	const ctx = await browser.newContext( { viewport: { width: 1440, height: 900 }, extraHTTPHeaders: variationHeaders( page ) } );
+	const ctx = await browser.newContext( { viewport: DESKTOP, extraHTTPHeaders: probeHeaders( page ) } );
 	await ctx.addInitScript( INIT );
 	const tab = await ctx.newPage();
 	const finished = [];
@@ -116,7 +124,21 @@ async function browserMetrics( browser, page ) {
 		}
 	}
 	const html = await res.body();
-	const axe = await new AxeBuilder( { page: tab } ).withTags( AXE_TAGS ).analyze();
+
+	// Accessibility at desktop width, at phone width, then with the phone menu open.
+	const audit = async ( view ) => ( await new AxeBuilder( { page: tab } ).withTags( AXE_TAGS ).analyze() ).violations.map( ( v ) => ( { ...v, view } ) );
+	const violations = await audit( 'desktop' );
+	await tab.setViewportSize( PHONE );
+	await tab.waitForTimeout( 300 );
+	// Pixels the page scrolls sideways at phone width; anything above 0 is a layout bug.
+	const overflowX = await tab.evaluate( () => document.documentElement.scrollWidth - document.documentElement.clientWidth );
+	violations.push( ...( await audit( 'phone' ) ) );
+	const menu = tab.locator( '.wp-block-navigation__responsive-container-open' ).first();
+	if ( await menu.isVisible() ) {
+		await menu.click();
+		await tab.waitForTimeout( 300 );
+		violations.push( ...( await audit( 'phone menu' ) ) );
+	}
 	await ctx.close();
 	const kb = ( n ) => +( n / 1024 ).toFixed( 1 );
 	const { inlineCss, ...rest } = data;
@@ -128,8 +150,10 @@ async function browserMetrics( browser, page ) {
 		cssKB: kb( bytes.stylesheet + inlineCss ),
 		fontKB: kb( bytes.font ),
 		totalKB: kb( bytes.total ),
-		axe: axe.violations.length,
-		axeViolations: axe.violations.map( ( v ) => ( {
+		overflowX,
+		axe: violations.length,
+		axeViolations: violations.map( ( v ) => ( {
+			view: v.view,
 			id: v.id,
 			impact: v.impact,
 			nodes: v.nodes.length,
@@ -164,7 +188,7 @@ for ( const page of budget.pages ) {
 await browser.close();
 
 const ordered = budget.pages.map( ( p ) => [ p.name, results[ p.name ] ] );
-const cols = [ 'pergel_files', 'queries', 'writes', 'ms', 'htmlKB', 'requests', 'jsKB', 'cssKB', 'fontKB', 'totalKB', 'bodyCssLinks', 'dom', 'h1', 'axe', 'lcp', 'cls' ];
+const cols = [ 'pergel_files', 'queries', 'writes', 'ms', 'htmlKB', 'requests', 'jsKB', 'cssKB', 'fontKB', 'totalKB', 'bodyCssLinks', 'dom', 'h1', 'axe', 'overflowX', 'lcp', 'cls' ];
 const cell = ( m, c ) => ( c === 'writes' ? m.writes.length : m[ c ] );
 const limitRow = budget.limits[ '*' ];
 const md = [
@@ -187,7 +211,7 @@ const md = [
 		.flatMap( ( [ n, m ] ) => [
 			`## Accessibility on ${ n }`,
 			'',
-			...m.axeViolations.map( ( v ) => `- \`${ v.id }\` (${ v.impact }, ${ v.nodes } nodes): ${ v.help }. First: \`${ v.target }\`` ),
+			...m.axeViolations.map( ( v ) => `- ${ v.view }: \`${ v.id }\` (${ v.impact }, ${ v.nodes } nodes): ${ v.help }. First: \`${ v.target }\`` ),
 			'',
 		] ),
 	...ordered

@@ -48,6 +48,10 @@
 			"$extensions": { "com.ariumlab.pergel": { "name": "Huge", "fluid": { "min": { "value": 1.875, "unit": "rem" } } } }
 		}
 	},
+	"layout": {
+		"$description": "ariumlab.com uses a 1600 px container.",
+		"wide": { "$value": { "value": 1600, "unit": "px" } }
+	},
 	"radius": {
 		"small": { "$value": { "value": 5, "unit": "px" } },
 		"medium": { "$value": { "value": 12, "unit": "px" } },

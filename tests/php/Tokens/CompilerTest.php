@@ -140,8 +140,17 @@ final class CompilerTest extends TestCase {
 		$tree['color']['muted']['$value'] = '#a5a5a5';
 
 		$problems = self::problems( $tree );
-		$this->assertCount( 1, $problems );
+		$this->assertCount( 2, $problems );
 		$this->assertStringContainsString( 'color.muted on color.base is 2.46:1', $problems[0] );
+		$this->assertStringContainsString( 'color.muted on color.surface', $problems[1] );
+	}
+
+	public function test_accent_is_checked_on_surface(): void {
+		$tree                               = self::minimal();
+		$tree['color']['surface']['$value'] = '#2a2a2a';
+
+		$problems = implode( "\n", self::problems( $tree ) );
+		$this->assertStringContainsString( 'color.accent on color.surface', $problems );
 	}
 
 	public function test_missing_required_token_and_bad_alias_are_all_reported(): void {

@@ -153,8 +153,11 @@ bir projeye ait; o adlar kullanılmaz.
   değişince fark oluşmasın diye). CI, tarih satırı dışında farkı hata sayar.
 - **Erişilebilirlik bütçede:** `@axe-core/playwright` her bütçe sayfasında WCAG 2.0/2.1/2.2
   A ve AA kurallarını çalıştırır. Limit `axe = 0` ihlaldir; ihlaller rapora kural, etki ve ilk
-  seçiciyle yazılır. Masaüstü genişliğinde (1440 px) ölçülür; mobil görünüm 6. adımda header'larla
-  eklenecek. **Elenen:** ayrı bir pa11y/Lighthouse işi (aynı tarayıcı oturumunu kullanmak daha hızlı).
+  seçiciyle yazılır. Her sayfa üç görünümde taranır: masaüstü (1440 px), telefon (390 px) ve
+  telefonda açılmış menü. Her ihlal hangi görünümde bulunduğunu taşır.
+  **Elenen:** ayrı bir pa11y/Lighthouse işi (aynı tarayıcı oturumunu kullanmak daha hızlı).
+- **Yatay taşma bütçede:** `overflowX`, telefon genişliğinde `scrollWidth − clientWidth` farkıdır
+  ve limiti 0'dır.
 - **CSS ve font bütçesi:** `cssKB` harici stil dosyaları ile satır içi `<style>` toplamıdır
   (blok temalarda çekirdek CSS'in çoğu satır içidir). İlk ölçüm 45–51 KB, limit 60 KB.
   `fontKB` varsayılan temada 0'dır (sistem fontu). Variation'ların limitleri aşağıdadır.
@@ -163,7 +166,7 @@ bir projeye ait; o adlar kullanılmaz.
   düzey sayfalar için Navigation Link bloklarına çevirir (en çok 12). Menüsü olan siteler
   etkilenmez. Çekirdek düzeltilince filtre kaldırılır.
 - **Üç style variation (ariumlab.com yönleri):** Hepsi `tokens/<slug>.json` dosyasından üretilir
-  ve beş kontrast çiftinin hepsini geçer. Font KB, Türkçe metin içeren sayfada ölçülmüştür.
+  ve yedi kontrast çiftinin hepsini geçer. Font KB, Türkçe metin içeren sayfada ölçülmüştür.
 
 | Variation | Zemin / metin / vurgu | Fontlar (gövde / başlık) | Biçim | Font KB |
 | --- | --- | --- | --- | --: |
@@ -197,6 +200,47 @@ bir projeye ait; o adlar kullanılmaz.
 - **Variation'a özel stil kuralları:** Token'la ifade edilemeyen kurallar (Lab Precision'daki
   büyük harf buton ve menü gibi) token dosyasındaki `$extensions."com.ariumlab.pergel".styles`
   alanına yazılır ve variation'a olduğu gibi kopyalanır.
+- **Lab Precision 1600 px geniş alan:** ariumlab.com 1600 px konteyner kullanır; bu variation'ın
+  `layout.wide` değeri 1600 px'tir (ana tema 1240 px kalır).
+- **Header ve footer'lar pattern:** `parts/header.html` ve `parts/footer.html` yalnızca birer
+  `wp:pattern` çağrısıdır (`pergel/header-classic`, `pergel/footer-simple`). Diğer pattern'ler
+  `Block Types: core/template-part/header|footer` taşıdığı için Site Editor'de parça seçilince
+  Ayarlar › Tasarım panelinde ilk sırada listelenir; tıklayınca parça o tasarıma geçer (elle
+  denendi). Metinler PHP'de çevrilir. Dış grup tam genişlik, iç satır
+  `align: wide` olduğu için variation'ın geniş alanını izler.
+
+| Header | İçerik | Footer | İçerik |
+| --- | --- | --- | --- |
+| `classic` | Logo + başlık, menü | `simple` | Başlık + slogan, menü |
+| `cta` | Classic + "Get in touch" butonu | `columns` | Marka, Sayfalar, Son yazılar, Konular, alt satır |
+| `centered` | Ortalanmış başlık ve menü, alt çizgi | `cta` | Vurgu renkli çağrı bandı, altında başlık + menü |
+| `search` | Classic + yalnız ikonlu arama | `centered` | Ortalanmış logo, başlık, slogan, menü |
+| `topbar` | Üstte koyu şerit (slogan + iletişim), altında classic | `inverse` | Koyu zeminde marka, Sayfalar, Konular |
+| `inverse` | Koyu zemin, çerçeveli buton | `search` | Marka + arama formu, alt satırda menü |
+
+- **Telefonda gizleme çekirdek özelliğiyle:** CTA butonu ve üst şerit telefonda
+  `metadata.blockVisibility.viewport.mobile: false` ile gizlenir (WP 7.0+, 480 px kırılımı).
+  Ek CSS yazılmaz.
+- **Site başlığı rengi `inherit`:** `core/site-title` bağlantısı grubun metin rengini alır; böylece
+  koyu zeminli header ve footer'da ayrı ayar gerekmez.
+- **Kök padding `0px`:** `styles.spacing.padding` üst/alt değeri birimsiz `0` iken çekirdeğin
+  mobil menü kuralı `clamp(1rem, 0, 20rem)` geçersiz sayılıyor ve açılan menü kenara yapışıyordu.
+- **Liste blokları arası boşluk:** Page List, Categories, Latest Posts ve Archives öğeleri arasına
+  `0.5em` eklenir (theme.json blok `css`). Küçük puntolu footer listeleri axe `target-size`
+  (24 px) kuralını bu olmadan geçmiyordu.
+- **Yüzey kontrastı:** Footer'lar `surface` zemin kullandığı için derleyici `muted/surface` ve
+  `accent/surface` çiftlerini de denetler (toplam yedi çift).
+- **Header/footer'lar bütçede veritabanına yazmadan ölçülür:** Probe, `X-Pergel-Header: <ad>` ve
+  `X-Pergel-Footer: <ad>` başlıklarıyla parçadaki `pergel/header-*` / `pergel/footer-*` pattern
+  çağrısını `render_block_data` filtresiyle değiştirir. Altı header ve altı footer, beş sayfada
+  eşleştirilerek ölçülür; biri Graphite ile.
+- **Pattern önbelleği:** WordPress tema pattern dosyalarının listesini bir site transient'inde
+  tutar ve anahtar tema yolunun hash'idir. Windows'ta web sunucusu ile WP-CLI yolu farklı yazdığı
+  için (`C:\` / `C:/`) CLI'dan temizlemek web tarafını etkilemiyordu. Fixture bu transient'lerin
+  hepsini siler.
+- **Ertelenen:** Mega menü F3'e kaldı. Yapışkan (sticky) header yapılmadı: şablon parçasının
+  sarmalayıcı `<header>` öğesi yalnızca kendi yüksekliği kadar olduğu için `position: sticky`
+  içerideki grupta çalışmıyor; F3'te parça düzeyinde ele alınacak.
 
 ### Değişiklik (15 Ekim 2026)
 

@@ -51,7 +51,9 @@ final class Compiler {
 		array( 'contrast', 'base', 4.5 ),
 		array( 'contrast', 'surface', 4.5 ),
 		array( 'muted', 'base', 4.5 ),
+		array( 'muted', 'surface', 4.5 ),
 		array( 'accent', 'base', 4.5 ),
+		array( 'accent', 'surface', 4.5 ),
 		array( 'on-accent', 'accent', 4.5 ),
 	);
 
