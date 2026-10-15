@@ -16,6 +16,8 @@ namespace Pergel\Patterns;
  * - The header names the pattern: Title, Slug `pergel/<file name>`, known
  *   Categories and a Description (hidden patterns need only Title and Slug).
  * - Only core and Pergel blocks; no Custom HTML, Classic or Shortcode block.
+ *   Hidden shop patterns (`pergel/hidden-product-*`), which only the shop's
+ *   templates use, may also hold WooCommerce blocks.
  * - No hard-coded text: every visible string, alt text and label comes from a
  *   translation function with the `pergel` text domain.
  * - At most one H1, and only in hero (banner) and full-page patterns.
@@ -58,6 +60,11 @@ final class Rules {
 	 * Core blocks that hold free HTML or legacy content.
 	 */
 	public const BANNED_BLOCKS = array( 'core/html', 'core/freeform', 'core/shortcode', 'core/missing' );
+
+	/**
+	 * Slug prefix of the hidden patterns that may hold WooCommerce blocks.
+	 */
+	public const SHOP_PREFIX = 'pergel/hidden-product-';
 
 	/**
 	 * Block attributes that hold text a visitor sees or hears.
@@ -219,6 +226,7 @@ final class Rules {
 		$header = self::header( $source );
 		$slug   = 'pergel/' . basename( $file, '.php' );
 		$hidden = 'no' === strtolower( $header['Inserter'] ?? '' );
+		$shop   = $hidden && str_starts_with( $slug, self::SHOP_PREFIX );
 
 		if ( '' === ( $header['Title'] ?? '' ) ) {
 			$errors[] = 'Missing Title.';
@@ -252,7 +260,7 @@ final class Rules {
 		foreach ( array_unique( self::blocks( $markup ) ) as $block ) {
 			if ( in_array( $block, self::BANNED_BLOCKS, true ) ) {
 				$errors[] = "Block {$block} is not allowed.";
-			} elseif ( ! str_starts_with( $block, 'core/' ) && ! str_starts_with( $block, 'pergel/' ) ) {
+			} elseif ( ! str_starts_with( $block, 'core/' ) && ! str_starts_with( $block, 'pergel/' ) && ! ( $shop && str_starts_with( $block, 'woocommerce/' ) ) ) {
 				$errors[] = "Block {$block} is not a core or Pergel block.";
 			}
 		}

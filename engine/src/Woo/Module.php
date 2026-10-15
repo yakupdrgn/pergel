@@ -45,7 +45,10 @@ final class Module implements Core\Module {
 	 */
 	public function register(): void {
 		add_action( 'before_woocommerce_init', array( self::class, 'declare_compatibility' ) );
+		MiniCart::register();
+		Trail::register();
 		if ( ! is_admin() ) {
+			Markup::register();
 			add_filter( 'woocommerce_enqueue_styles', array( Assets::class, 'styles' ) );
 			add_action( 'wp_enqueue_scripts', array( Assets::class, 'scripts' ), 100 );
 		}

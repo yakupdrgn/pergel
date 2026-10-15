@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T16:17:35+03:00\n"
+"POT-Creation-Date: 2026-10-15T19:33:35+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -1293,6 +1293,60 @@ msgid "Message shown when a post list is empty."
 msgstr ""
 
 msgid "There are no posts here yet."
+msgstr ""
+
+#: patterns/hidden-product-details.php
+msgctxt "Pattern title"
+msgid "Product details"
+msgstr ""
+
+#: patterns/hidden-product-details.php
+msgctxt "Pattern description"
+msgid "The product's description, specifications and reviews in a block accordion, under the product summary."
+msgstr ""
+
+msgctxt "product details"
+msgid "Description"
+msgstr ""
+
+msgctxt "product details"
+msgid "Specifications"
+msgstr ""
+
+msgctxt "product details"
+msgid "Reviews"
+msgstr ""
+
+#: patterns/hidden-product-related.php
+msgctxt "Pattern title"
+msgid "Related products"
+msgstr ""
+
+#: patterns/hidden-product-related.php
+msgctxt "Pattern description"
+msgid "Products from the same categories and tags, as cards like the shop's, under the product details."
+msgstr ""
+
+msgctxt "product page"
+msgid "Related products"
+msgstr ""
+
+#: patterns/hidden-product-terms.php
+msgctxt "Pattern title"
+msgid "Product categories and tags"
+msgstr ""
+
+#: patterns/hidden-product-terms.php
+msgctxt "Pattern description"
+msgid "The product's categories and tags, under the add to cart form."
+msgstr ""
+
+msgctxt "product terms prefix"
+msgid "Category: "
+msgstr ""
+
+msgctxt "product terms prefix"
+msgid "Tags: "
 msgstr ""
 
 #: patterns/hidden-search-no-results.php

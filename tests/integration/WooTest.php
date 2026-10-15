@@ -18,6 +18,9 @@ use Pergel\Settings\Schema;
 use Pergel\Settings\Screen;
 use Pergel\Settings\Settings;
 use Pergel\Woo\Assets;
+use Pergel\Woo\Markup;
+use Pergel\Woo\MiniCart;
+use Pergel\Woo\Trail;
 use Pergel\Woo\Module as Woo;
 use PHPUnit\Framework\TestCase;
 
@@ -45,8 +48,10 @@ final class WooTest extends TestCase {
 			add_option( Settings::OPTION, $this->saved, '', true );
 			add_filter( 'sanitize_option_' . Settings::OPTION, array( \Pergel\Settings\Module::class, 'sanitize' ) );
 		}
-		remove_all_filters( 'pergel/woo/shop_request' );
+		remove_all_filters( 'pergel/woo/classic_files' );
+		remove_filter( 'woocommerce_is_cart', '__return_true' );
 		Settings::flush();
+		wp_reset_query();
 	}
 
 	/**
@@ -75,6 +80,7 @@ final class WooTest extends TestCase {
 	public function test_defaults_keep_shop_files_on_shop_pages(): void {
 		$this->assertSame(
 			array(
+				'mini_cart'         => true,
 				'shop_assets_only'  => true,
 				'no_cart_fragments' => true,
 			),
@@ -104,13 +110,13 @@ final class WooTest extends TestCase {
 		$this->needs_woocommerce();
 		$styles = array( 'woocommerce-general' => array( 'src' => 'x.css' ) );
 
-		// No main query has run: not a shop page.
-		$this->assertFalse( Assets::shop_request() );
+		// No main query has run: no classic shop markup.
+		$this->assertFalse( Assets::classic_request() );
 		$this->assertSame( array(), Assets::styles( $styles ) );
 
-		add_filter( 'pergel/woo/shop_request', '__return_true' );
+		add_filter( 'pergel/woo/classic_files', '__return_true' );
 		$this->assertSame( $styles, Assets::styles( $styles ) );
-		remove_all_filters( 'pergel/woo/shop_request' );
+		remove_all_filters( 'pergel/woo/classic_files' );
 
 		Settings::update( array( 'woo' => array( 'shop_assets_only' => false ) ) );
 		$this->assertSame( $styles, Assets::styles( $styles ) );
@@ -137,6 +143,123 @@ final class WooTest extends TestCase {
 			wp_deregister_script( $handle );
 		}
 		wp_deregister_style( 'woocommerce-blocktheme' );
+	}
+
+	public function test_mini_cart_follows_the_menu_of_pergel_headers_once(): void {
+		$this->needs_woocommerce();
+		$header = array(
+			'name'       => 'pergel/header-classic',
+			'categories' => array( 'header' ),
+			'content'    => '<!-- wp:navigation /-->',
+		);
+
+		$this->assertSame( array( MiniCart::BLOCK ), MiniCart::hook( array(), 'after', 'core/navigation', $header ) );
+		$this->assertSame( array(), MiniCart::hook( array(), 'before', 'core/navigation', $header ) );
+		$this->assertSame( array(), MiniCart::hook( array(), 'after', 'core/site-title', $header ) );
+		$this->assertSame( array(), MiniCart::hook( array(), 'after', null, $header ) );
+		$this->assertSame( array(), MiniCart::hook( array(), 'after', 'core/navigation', array( 'categories' => array( 'header' ) ) + array( 'name' => 'acme/header' ) ) );
+		$this->assertSame( array(), MiniCart::hook( array(), 'after', 'core/navigation', array( 'categories' => array( 'footer' ) ) + $header ) );
+		$this->assertSame( array(), MiniCart::hook( array(), 'after', 'core/navigation', array( 'content' => '<!-- wp:woocommerce/mini-cart /-->' ) + $header ) );
+		$this->assertSame( array( MiniCart::BLOCK ), MiniCart::hook( array( MiniCart::BLOCK ), 'after', 'core/navigation', $header ) );
+	}
+
+	public function test_no_mini_cart_on_the_cart_page(): void {
+		$this->needs_woocommerce();
+		// WooCommerce keeps its first answer for the page, so the test uses
+		// its filter instead of a cart page query.
+		add_filter( 'woocommerce_is_cart', '__return_true' );
+
+		$this->assertTrue( is_cart() );
+		$this->assertSame(
+			array(),
+			MiniCart::hook(
+				array(),
+				'after',
+				'core/navigation',
+				array(
+					'name'       => 'pergel/header-classic',
+					'categories' => array( 'header' ),
+				)
+			)
+		);
+	}
+
+	public function test_product_crumbs_pass_through_the_shop_and_its_category(): void {
+		$this->needs_woocommerce();
+		$parent  = wp_insert_term( 'Pergel test parent', 'product_cat' );
+		$child   = is_array( $parent ) ? wp_insert_term( 'Pergel test child', 'product_cat', array( 'parent' => $parent['term_id'] ) ) : $parent;
+		$product = wp_insert_post(
+			array(
+				'post_type'   => 'product',
+				'post_status' => 'publish',
+				'post_title'  => 'Pergel test product',
+			)
+		);
+		$this->assertIsArray( $child );
+		$this->assertIsInt( $product );
+		wp_set_object_terms( $product, array( $child['term_id'] ), 'product_cat' );
+
+		try {
+			$this->go_to(
+				array(
+					'p'         => $product,
+					'post_type' => 'product',
+				)
+			);
+			$home   = array(
+				'name' => 'Home',
+				'url'  => home_url( '/' ),
+			);
+			$self   = array(
+				'name' => 'Pergel test product',
+				'url'  => (string) get_permalink( $product ),
+			);
+			$names  = array_column( (array) Trail::crumbs( array( $home, $self ) ), 'name' );
+			$shop   = wc_get_page_id( 'shop' ) > 0 && (int) get_option( 'page_on_front' ) !== wc_get_page_id( 'shop' ) ? array( get_the_title( wc_get_page_id( 'shop' ) ) ) : array();
+			$expect = array_merge( array( 'Home' ), $shop, array( 'Pergel test parent', 'Pergel test child', 'Pergel test product' ) );
+
+			$this->assertSame( $expect, $names );
+			$this->assertSame( array( $home ), Trail::crumbs( array( $home ) ) );
+		} finally {
+			wp_delete_post( $product, true );
+			wp_delete_term( $child['term_id'], 'product_cat' );
+			wp_delete_term( $parent['term_id'], 'product_cat' );
+		}
+	}
+
+	public function test_variation_attributes_are_list_items(): void {
+		$this->assertSame( '<div role="listitem" class="a"><span>Size</span></div>', Markup::list_item( '<div class="a"><span>Size</span></div>' ) );
+		$this->assertSame( '<div role="group"></div>', Markup::list_item( '<div role="group"></div>' ) );
+	}
+
+	public function test_greyed_out_buttons_are_marked_disabled(): void {
+		$state = 'woocommerce/add-to-cart-with-options::!state.isFormValid';
+		$html  = Markup::disabled_button( '<div><button class="add_to_cart_button disabled" data-wp-class--disabled="' . $state . '">Add</button></div>' );
+		$tags  = new \WP_HTML_Tag_Processor( $html );
+		$tags->next_tag( array( 'tag_name' => 'button' ) );
+
+		$this->assertSame( 'true', $tags->get_attribute( 'aria-disabled' ) );
+		$this->assertSame( $state, $tags->get_attribute( 'data-wp-bind--aria-disabled' ) );
+		$this->assertSame( '<button class="add_to_cart_button">Add</button>', Markup::disabled_button( '<button class="add_to_cart_button">Add</button>' ) );
+	}
+
+	public function test_shop_templates_and_patterns_ship_with_the_theme(): void {
+		foreach ( array( 'archive-product', 'product-search-results', 'single-product', 'page-cart', 'page-checkout', 'order-confirmation' ) as $template ) {
+			$this->assertFileExists( get_theme_file_path( "templates/{$template}.html" ) );
+		}
+		foreach ( array( 'details', 'related', 'terms' ) as $part ) {
+			$this->assertIsArray( \WP_Block_Patterns_Registry::get_instance()->get_registered( "pergel/hidden-product-{$part}" ), $part );
+		}
+	}
+
+	/**
+	 * Runs the main query for the given query vars, as a page view would.
+	 *
+	 * @param array<string, mixed> $vars Query vars.
+	 */
+	private function go_to( array $vars ): void {
+		$GLOBALS['wp_the_query'] = new \WP_Query( $vars ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Test page view; reset in tearDown.
+		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query']; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- As above.
 	}
 
 	public function test_compatibility_is_declared(): void {

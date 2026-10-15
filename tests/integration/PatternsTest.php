@@ -48,7 +48,9 @@ final class PatternsTest extends TestCase {
 				}
 				continue;
 			}
-			if ( ! $registry->is_registered( (string) $name ) ) {
+			// Shop blocks are registered only while WooCommerce is active.
+			$shop = str_starts_with( (string) $name, 'woocommerce/' ) && ! class_exists( 'WooCommerce', false );
+			if ( ! $shop && ! $registry->is_registered( (string) $name ) ) {
 				$problems[] = 'unknown block ' . $name;
 			}
 			$inner    = is_array( $block['innerBlocks'] ?? null ) ? $block['innerBlocks'] : array();

@@ -1,0 +1,9 @@
+/*
+ * The closed mini cart drawer. WooCommerce only fades it out, so the
+ * keyboard could still tab into its links while it is hidden. It is taken
+ * out of reach once the fade has ended, and shows at once when opened.
+ */
+.wc-block-components-drawer__screen-overlay--is-hidden {
+	visibility: hidden;
+	transition: opacity 0.3s, visibility 0s 0.3s;
+}

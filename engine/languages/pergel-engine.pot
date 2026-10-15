@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T18:33:20+03:00\n"
+"POT-Creation-Date: 2026-10-15T19:33:36+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -354,6 +354,9 @@ msgstr ""
 msgid "Delivery"
 msgstr ""
 
+msgid "Header"
+msgstr ""
+
 msgid "Speed"
 msgstr ""
 
@@ -468,10 +471,16 @@ msgstr ""
 msgid "Leave empty to use the administration email address of the site."
 msgstr ""
 
-msgid "Load WooCommerce files on shop pages only"
+msgid "Show the mini cart in the header"
 msgstr ""
 
-msgid "Shop, product, category, cart, checkout and account pages, and pages with a WooCommerce shortcode. Other pages skip the classic WooCommerce styles and jQuery scripts; shop blocks still bring their own files."
+msgid "Adds the cart button after the menu in the theme headers. It shows the number of items and opens the cart in a side panel."
+msgstr ""
+
+msgid "Load classic WooCommerce files only where they are used"
+msgstr ""
+
+msgid "The classic WooCommerce styles and jQuery scripts load on account pages, on pages with a WooCommerce shortcode and with classic templates. The theme shop templates are made of blocks, which bring their own files."
 msgstr ""
 
 msgid "Turn off cart fragments"

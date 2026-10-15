@@ -112,7 +112,11 @@ final class Labels {
 				),
 			),
 			'woo'         => array(
-				'speed' => array(
+				'header' => array(
+					'title'  => __( 'Header', 'pergel-engine' ),
+					'fields' => array( 'mini_cart' ),
+				),
+				'speed'  => array(
 					'title'  => __( 'Speed', 'pergel-engine' ),
 					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
 				),
@@ -218,9 +222,13 @@ final class Labels {
 				),
 			),
 			'woo'         => array(
+				'mini_cart'         => array(
+					'label' => __( 'Show the mini cart in the header', 'pergel-engine' ),
+					'help'  => __( 'Adds the cart button after the menu in the theme headers. It shows the number of items and opens the cart in a side panel.', 'pergel-engine' ),
+				),
 				'shop_assets_only'  => array(
-					'label' => __( 'Load WooCommerce files on shop pages only', 'pergel-engine' ),
-					'help'  => __( 'Shop, product, category, cart, checkout and account pages, and pages with a WooCommerce shortcode. Other pages skip the classic WooCommerce styles and jQuery scripts; shop blocks still bring their own files.', 'pergel-engine' ),
+					'label' => __( 'Load classic WooCommerce files only where they are used', 'pergel-engine' ),
+					'help'  => __( 'The classic WooCommerce styles and jQuery scripts load on account pages, on pages with a WooCommerce shortcode and with classic templates. The theme shop templates are made of blocks, which bring their own files.', 'pergel-engine' ),
 				),
 				'no_cart_fragments' => array(
 					'label' => __( 'Turn off cart fragments', 'pergel-engine' ),

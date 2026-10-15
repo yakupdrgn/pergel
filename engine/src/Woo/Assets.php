@@ -13,43 +13,51 @@ use Pergel\Settings\Settings;
 
 /**
  * WooCommerce loads its classic styles and its jQuery scripts on every
- * page. Outside shop pages nothing uses them: the theme's blocks bring
- * their own files. The legacy cart fragments script asks the server for
- * the cart on each page view; the mini cart block does not need it.
+ * page, and its product scripts on every product. Only classic shop markup
+ * uses them: account pages, WooCommerce shortcodes and the blocks that
+ * print classic templates. The theme's shop templates are made of blocks
+ * that bring their own files, so elsewhere these files are left out. The
+ * legacy cart fragments script asks the server for the cart on each page
+ * view; the mini cart block does not need it.
  */
 final class Assets {
 
 	/**
-	 * Classic scripts that are only used on shop pages. Their helpers
+	 * Classic scripts, only used by classic shop markup. Their helpers
 	 * (jQuery, blockUI, js-cookie) load only as their dependencies.
 	 */
 	private const SHOP_SCRIPTS = array( 'woocommerce', 'wc-add-to-cart', 'wc-add-to-cart-variation', 'wc-single-product' );
 
 	/**
-	 * Shortcodes that print classic shop markup on an ordinary page.
+	 * Shortcodes that print classic shop markup.
 	 */
 	private const SHORTCODES = array( 'products', 'product', 'product_page', 'product_category', 'product_categories', 'add_to_cart', 'sale_products', 'best_selling_products', 'top_rated_products', 'featured_products', 'recent_products', 'shop_messages', 'woocommerce_cart', 'woocommerce_checkout', 'woocommerce_my_account', 'woocommerce_order_tracking' );
 
 	/**
-	 * Filter for woocommerce_enqueue_styles: none outside shop pages.
+	 * Blocks that print classic shop markup.
+	 */
+	private const CLASSIC_BLOCKS = array( 'woocommerce/legacy-template', 'woocommerce/classic-shortcode', 'woocommerce/add-to-cart-form', 'woocommerce/product-image-gallery' );
+
+	/**
+	 * Filter for woocommerce_enqueue_styles: none without classic markup.
 	 *
 	 * @param mixed $styles Stylesheets WooCommerce is about to load.
 	 * @return mixed
 	 */
 	public static function styles( mixed $styles ): mixed {
-		return self::limited() && ! self::shop_request() ? array() : $styles;
+		return self::limited() && ! self::classic_request() ? array() : $styles;
 	}
 
 	/**
-	 * Drops the classic scripts outside shop pages and the cart fragments
-	 * script everywhere, as configured.
+	 * Drops the classic files from pages without classic markup and the
+	 * cart fragments script everywhere, as configured.
 	 */
 	public static function scripts(): void {
 		$settings = Settings::all()['woo'];
 		if ( true === $settings['no_cart_fragments'] ) {
 			wp_dequeue_script( 'wc-cart-fragments' );
 		}
-		if ( ! self::limited() || self::shop_request() ) {
+		if ( ! self::limited() || self::classic_request() ) {
 			return;
 		}
 		foreach ( self::SHOP_SCRIPTS as $handle ) {
@@ -61,33 +69,50 @@ final class Assets {
 	}
 
 	/**
-	 * Whether the "shop pages only" setting is on.
+	 * Whether the "classic files only where needed" setting is on.
 	 */
 	private static function limited(): bool {
 		return true === Settings::all()['woo']['shop_assets_only'];
 	}
 
 	/**
-	 * Whether this page shows the shop: WooCommerce templates, cart,
-	 * checkout, account, or a post with a WooCommerce shortcode.
+	 * Whether this page shows classic shop markup: an account page, a
+	 * WooCommerce shortcode, or a classic block in the post or the template.
 	 */
-	public static function shop_request(): bool {
-		$shop = is_woocommerce() || is_cart() || is_checkout() || is_account_page();
-		if ( ! $shop && is_singular() ) {
-			$content = (string) get_post_field( 'post_content', get_queried_object_id() );
-			foreach ( self::SHORTCODES as $tag ) {
-				if ( has_shortcode( $content, $tag ) ) {
-					$shop = true;
-					break;
-				}
-			}
+	public static function classic_request(): bool {
+		$classic = is_account_page();
+		if ( ! $classic && is_singular() ) {
+			$classic = self::has_classic( (string) get_post_field( 'post_content', get_queried_object_id() ) );
+		}
+		if ( ! $classic && ( is_woocommerce() || is_cart() || is_checkout() ) ) {
+			global $_wp_current_template_content;
+			$classic = ! wp_is_block_theme() || ! is_string( $_wp_current_template_content ) || self::has_classic( $_wp_current_template_content );
 		}
 
 		/**
 		 * Filters whether WooCommerce's classic files load on this page.
 		 *
-		 * @param bool $shop True on shop pages.
+		 * @param bool $classic True when the page shows classic shop markup.
 		 */
-		return (bool) apply_filters( 'pergel/woo/shop_request', $shop );
+		return (bool) apply_filters( 'pergel/woo/classic_files', $classic );
+	}
+
+	/**
+	 * Whether block content holds a WooCommerce shortcode or classic block.
+	 *
+	 * @param string $content Post or template content.
+	 */
+	private static function has_classic( string $content ): bool {
+		foreach ( self::CLASSIC_BLOCKS as $block ) {
+			if ( has_block( $block, $content ) ) {
+				return true;
+			}
+		}
+		foreach ( self::SHORTCODES as $tag ) {
+			if ( has_shortcode( $content, $tag ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

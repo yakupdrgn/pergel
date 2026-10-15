@@ -1,0 +1,11 @@
+/*
+ * The sale badge, in the theme's colors. WooCommerce paints it white with
+ * dark grey text, which stands out on a dark style variation.
+ */
+.wp-block-woocommerce-product-sale-badge .wc-block-components-product-sale-badge,
+.wc-block-components-product-image .wc-block-components-product-sale-badge {
+	color: var(--wp--preset--color--contrast);
+	background-color: var(--wp--preset--color--base);
+	border-color: var(--wp--preset--color--contrast);
+	border-radius: var(--wp--custom--radius--small);
+}

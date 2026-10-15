@@ -467,10 +467,28 @@ görünmez (`Settings\Screen::shown`).
 - **Dosyalar (`Woo\Assets`, yalnızca ön yüz):** `woo.shop_assets_only` açıkken klasik CSS'ler
   (`woocommerce_enqueue_styles` boş döner, `woocommerce-blocktheme` ve `woocommerce-inline`
   kuyruktan çıkar) ve klasik jQuery betikleri (`woocommerce`, `wc-add-to-cart`,
-  `wc-add-to-cart-variation`, `wc-single-product`) yalnızca mağaza sayfalarında kalır.
-  Mağaza sayfası: `is_woocommerce()`, sepet, ödeme, hesap ya da WooCommerce kısa kodu içeren
-  tekil içerik; `pergel/woo/shop_request` süzgeci kararı değiştirir. `woo.no_cart_fragments`
-  `wc-cart-fragments` betiğini her yerde kaldırır.
+  `wc-add-to-cart-variation`, `wc-single-product`) yalnızca klasik işaretleme olan sayfada
+  kalır (`Assets::classic_request()`): hesap sayfası, WooCommerce kısa kodu ya da içerikte veya
+  mağaza şablonunda klasik blok (`legacy-template`, `classic-shortcode`, `add-to-cart-form`,
+  `product-image-gallery`). `pergel/woo/classic_files` süzgeci kararı değiştirir.
+  `woo.no_cart_fragments` `wc-cart-fragments` betiğini her yerde kaldırır.
+- **Şablonlar (tema):** `archive-product` (mağaza, kategori, etiket, öznitelik de buna düşer),
+  `product-search-results`, `single-product`, `page-cart`, `page-checkout`,
+  `order-confirmation`. Sabit metinler ve WooCommerce blokları gizli pattern'lerde:
+  `pergel/hidden-product-terms`, `-details` (açıklama, özellikler, yorumlar akordeonu),
+  `-related`. Pattern kuralları (`Patterns\Rules::SHOP_PREFIX`) WooCommerce bloklarına yalnızca
+  bu öneki taşıyan gizli pattern'lerde izin verir.
+- **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
+  `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
+  ödeme sayfasında eklenmez. `woo.mini_cart` ayarına bağlı.
+- **Yol (`Woo\Trail`):** `pergel/seo/crumbs` süzgeciyle ürün ve ürün kategorisi yoluna mağaza
+  sayfası ve kategori zinciri girer (`Seo\Head::term_trail`).
+- **İşaretleme düzeltmeleri (`Woo\Markup`, yalnızca ön yüz):** varyasyon özniteliklerine
+  `role="listitem"`; `data-wp-class--disabled` taşıyan ürün düğmesine aynı duruma bağlı
+  `aria-disabled` (`data-wp-bind--aria-disabled`).
+- **Blok başına stiller (`theme/assets/css/blocks/`, `functions.php`):** `woocommerce/catalog-sorting`,
+  `product-sale-badge`, `mini-cart` (kapalı çekmece klavyeden gizli) ve sepet ile ödemenin
+  ortak form alanları (`woocommerce-forms.css`); hepsi preset renk token'larını kullanır.
 
 ## WP-CLI (F2)
 

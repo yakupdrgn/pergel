@@ -145,6 +145,10 @@ final class Schema {
 			),
 			// WooCommerce; the tab is shown only while it is active.
 			'woo'         => array(
+				'mini_cart'         => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
 				'shop_assets_only'  => array(
 					'type'    => 'bool',
 					'default' => true,

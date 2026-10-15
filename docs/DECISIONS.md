@@ -544,12 +544,13 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   modül anahtarı ayar ekranında gösterilmez. Gizli alanlar kayıtlı değerlerini korur.
 - **HPOS ve blok sepet/ödeme uyumu bildirilir:** Motor `before_woocommerce_init` üzerinde iki
   özellik için de uyumlu olduğunu bildirir; WooCommerce uyumsuzluk uyarısı göstermez.
-- **WooCommerce'in klasik dosyaları yalnızca mağaza sayfalarında:** WooCommerce 11.2 klasik
+- **WooCommerce'in klasik dosyaları yalnızca klasik işaretlemede:** WooCommerce 11.2 klasik
   CSS'lerini (`woocommerce-general`, `-layout`, `-smallscreen`, `-blocktheme`) ve jQuery
-  betiklerini her sayfada yükler. Mağaza, ürün, kategori, sepet, ödeme ve hesap sayfaları ile
-  WooCommerce kısa kodu içeren sayfalar dışında bunlar kaldırılır (`pergel/woo/shop_request`
-  süzgeciyle genişletilebilir). Yerel ölçümde ön sayfa 15 yerine 5 JS/CSS dosyası, 83 yerine
-  24 KB yükledi ve jQuery kalktı. Ayar varsayılan açık, kapatılabilir.
+  betiklerini her sayfada yükler. Bunları yalnızca klasik işaretleme kullanır: hesap sayfaları,
+  WooCommerce kısa kodları ve klasik şablon basan bloklar. Temanın mağaza şablonları kendi
+  dosyasını getiren bloklardan oluştuğu için bu dosyalar mağaza sayfalarında da yüklenmez
+  (`pergel/woo/classic_files` süzgeciyle değiştirilebilir). Yerel ölçümde ön sayfa 15 yerine 5
+  JS/CSS dosyası, 83 yerine 24 KB yükledi ve jQuery kalktı. Ayar varsayılan açık, kapatılabilir.
 - **Sepet parçaları (cart fragments) kapalı:** Her sayfada sunucudan sepeti isteyen eski betik
   kaldırılır; mini sepet bloğu buna ihtiyaç duymaz. Ayar varsayılan açık.
 - **Sipariş kaynağı izleme dokunulmadı:** `sourcebuster` ve `wc-order-attribution` her sayfada
@@ -558,6 +559,43 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 - **Entegrasyon testleri iki sitede:** Test takımı WooCommerce'siz sitede mağaza testlerini
   atlar. Yerelde `PERGEL_WP_DIR=…/pergel-shop` ile de çalıştırılır; CI'daki WooCommerce'li iş
   F4c'de gelir.
+- **Mağaza şablonları blok şablonu, ön yüzde jQuery yok (K10):** Tema mağaza, ürün, kategori,
+  etiket, öznitelik, ürün araması, sepet, ödeme ve sipariş onayı için kendi blok şablonlarını
+  getirir. Ürün sayfası galeri ve `add-to-cart-with-options` bloklarını, açılır-kapanır ürün
+  ayrıntılarını (açıklama, özellikler, yorumlar) ve blok yorum formunu kullanır; klasik
+  galeri/sepete ekle şablonu ve onların jQuery betikleri yüklenmez. Basit ve varyasyonlu ürünle
+  tam satın alma akışı yerelde denendi.
+- **Mini sepet Block Hooks ile:** `woocommerce/mini-cart` Pergel header pattern'lerinin menüsünden
+  sonra eklenir; header'larda mağaza bloğu yazılı durmaz, WooCommerce'siz sitede hiç görünmez.
+  Ayar (`woo.mini_cart`) varsayılan açık. Sepet ve ödeme sayfalarında eklenmez: orada blok eski
+  işaretlemesini basar ve betiği Store API adresini bilmeden istek atıp 404 alır. Sayı oturumdan
+  gelir; sepet parçalarına gerek yoktur.
+- **Ürün yolunda mağaza sayfası ve kategori:** `pergel/breadcrumb` ve BreadcrumbList ürün ve
+  ürün kategorisi sayfalarında Ana sayfa → Mağaza → üst kategoriler → kategori → ürün yolunu
+  izler (`pergel/seo/crumbs` süzgeci, `Woo\Trail`). Kategori seçimi WooCommerce'in kendi
+  breadcrumb süzgecini (`woocommerce_breadcrumb_product_terms_args`) kullanır.
+- **WooCommerce bloklarına tema renkleri:** Sıralama, indirim etiketi ve sepet/ödeme form alanları
+  için blok başına küçük CSS dosyaları yalnızca blok sayfada varsa yüklenir. WooCommerce bu
+  parçalarda beyaz zemin ve gri yazıyı sabit verdiği için koyu varyasyonda (graphite) okunmuyordu;
+  artık varyasyon token'larını izler.
+- **İlgili ürünler `section` değil `div`:** WooCommerce'in Product Collection bloğu bildirim
+  kutusunu düzenli ifadeyle "ilk `<div`"in içine ekler; `tagName: section` iken bu ilk ürünün
+  görseli oluyor ve kartlar kayıyordu. Pattern `pergel/hidden-product-related` sarmalayıcı
+  olarak `div` kullanır.
+- **Gizli mağaza pattern'lerinde WooCommerce blokları:** Pattern kuralları WooCommerce
+  bloklarına yalnızca `pergel/hidden-product-*` pattern'lerinde izin verir; bunları yalnızca
+  mağaza şablonları kullanır. Ekleyicide görünen pattern'ler çekirdek ve Pergel bloklarıyla kalır.
+- **WooCommerce işaretlemesinde erişilebilirlik düzeltmeleri:** Mağaza sayfalarında axe üç sorun
+  buldu, üçü de düzeltildi (`Woo\Markup`, `woocommerce-mini-cart.css`):
+  kapalı mini sepet çekmecesi yalnızca saydamlaştığı için klavye içindeki bağlantılara
+  giriyordu, solma bitince `visibility: hidden` olur; varyasyon seçicisi `role="list"` olduğu
+  hâlde öznitelikleri liste öğesi değildi, `role="listitem"` alır; varyasyon seçilmeden
+  sepete ekle düğmesi yalnızca soluk görünüyordu, aynı duruma bağlı `aria-disabled` alır.
+  Ödeme sayfasındaki `aria-label`'lı iskeletler yüklenirken geçicidir, yüklenince kalkar.
+  Mağaza, kategori, iki ürün, arama, boş ve dolu sepet ile ödeme sayfaları üç varyasyonda ve
+  varsayılan stilde, 1280 ve 360 px'te axe temiz.
+- **Bilinen ve kabul edilen:** WooCommerce'in bazı metinleri ("Related products" gibi) yerel
+  sitede Türkçe çeviri paketi kurulmadığı için İngilizce görünür; tema metinleri `.pot`'ta.
 
 ## Aşamalar ve bitti tanımları
 
