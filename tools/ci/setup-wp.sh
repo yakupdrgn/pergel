@@ -26,11 +26,13 @@ WP_PHP="$WP_DIR"
 if command -v cygpath > /dev/null; then REPO_PHP="$(cygpath -m "$REPO")"; WP_PHP="$(cygpath -m "$WP_DIR")"; fi
 
 wp() { command wp --path="$WP_PHP" "$@"; }
+# Downloads from wordpress.org fail now and then on the runner (DNS timeouts).
+retry() { for i in 1 2 3; do "$@" && return 0; echo "Retrying in 15 s: $*"; sleep 15; done; return 1; }
 
 echo "::group::WordPress $WP_VERSION in $WP_DIR"
 rm -rf "$WP_DIR"
 mkdir -p "$WP_DIR"
-wp core download --version="$WP_VERSION" --skip-content --force
+retry wp core download --version="$WP_VERSION" --skip-content --force
 wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" \
 	--skip-check --force --extra-php <<'PHP'
 define( 'DISABLE_WP_CRON', true );

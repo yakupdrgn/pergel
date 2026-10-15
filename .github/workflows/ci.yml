@@ -29,7 +29,13 @@ jobs:
           php-version: '8.4'
           coverage: none
           tools: composer:v2
-      - run: composer install --no-interaction --no-progress
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+      - name: Composer install (retried; codeload.github.com answers 429 at times)
+        run: for i in 1 2 3; do composer install --no-interaction --no-progress && exit 0; sleep 20; done; exit 1
       - run: composer check
       - name: theme.json in sync with design tokens
         run: php tools/tokens.php --check
@@ -94,7 +100,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: composer install --no-interaction --no-progress
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+      - name: Composer install (retried; codeload.github.com answers 429 at times)
+        run: for i in 1 2 3; do composer install --no-interaction --no-progress && exit 0; sleep 20; done; exit 1
       - name: Install WordPress + Pergel
         run: bash tools/ci/setup-wp.sh
       - name: Integration tests (WordPress)
