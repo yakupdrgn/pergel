@@ -30,6 +30,25 @@ function register_pattern_categories(): void {
 add_action( 'init', __NAMESPACE__ . '\register_pattern_categories' );
 
 /**
+ * Loads the theme's per-block styles. Core prints each one only on pages
+ * that show the block, and inlines it, since it is small.
+ */
+function enqueue_block_styles(): void {
+	foreach ( array( 'site-logo' ) as $block ) {
+		wp_enqueue_block_style(
+			"core/{$block}",
+			array(
+				'handle' => "pergel-{$block}",
+				'src'    => get_theme_file_uri( "assets/css/blocks/{$block}.css" ),
+				'path'   => get_theme_file_path( "assets/css/blocks/{$block}.css" ),
+				'ver'    => wp_get_theme()->get( 'Version' ),
+			)
+		);
+	}
+}
+add_action( 'init', __NAMESPACE__ . '\enqueue_block_styles' );
+
+/**
  * Uses front-page.html only when a static page is the front page.
  *
  * The front-page.html template shows the page's own content without a title, so the

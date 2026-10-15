@@ -1,0 +1,1 @@
+{ "apiVersion": 2, "name": "acme/wrong", "textdomain": "acme", "style": "file:./missing.css", "render": "file:./render.php" }

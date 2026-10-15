@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T10:34:58+03:00\n"
+"POT-Creation-Date: 2026-10-15T11:41:05+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -32,6 +32,21 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://ariumlab.com/"
+msgstr ""
+
+msgid "Breadcrumb"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Parent page"
+msgstr ""
+
+msgid "Current page"
+msgstr ""
+
+msgid "Pergel"
 msgstr ""
 
 #. translators: 1: current year, 2: brand name.
@@ -60,9 +75,6 @@ msgid "%s profile"
 msgstr ""
 
 msgid "Pergel Brand"
-msgstr ""
-
-msgid "Home"
 msgstr ""
 
 #. translators: %s: search terms.
@@ -290,6 +302,30 @@ msgstr ""
 msgid "Choose image"
 msgstr ""
 
+msgid "Header behaviour"
+msgstr ""
+
+msgid "Sticky"
+msgstr ""
+
+msgid "Keeps the header at the top of the screen while the page scrolls."
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Always"
+msgstr ""
+
+msgid "Hide while scrolling down"
+msgstr ""
+
+msgid "Over the first section"
+msgstr ""
+
+msgid "The header sits over the first section, without its background until the page scrolls. Use it on templates that open with a full-width image."
+msgstr ""
+
 #. translators: 1: characters typed, 2: recommended maximum.
 #, js-format
 msgid "%1$d of about %2$d characters."
@@ -311,4 +347,28 @@ msgid "Hide from search engines"
 msgstr ""
 
 msgid "Adds noindex and leaves the page out of the sitemap."
+msgstr ""
+
+msgctxt "block title"
+msgid "Breadcrumb"
+msgstr ""
+
+msgctxt "block description"
+msgid "The path from the home page to the current page. With an SEO plugin the path comes from the plugin, so it matches the page's structured data."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "breadcrumbs"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "trail"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "navigation"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "path"
 msgstr ""

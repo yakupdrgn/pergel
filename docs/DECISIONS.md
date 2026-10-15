@@ -359,6 +359,31 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   gösterir, `wp pergel settings set` reddeder, `import` uyarıyla sıfırlar. SVG yükleme kapalıyken
   Marka sekmesindeki ters logo alanı Safe SVG'yi önerir (eklenti kurma yetkisi olana bağlantıyla).
 
+## F3 kararları (15 Ekim 2026)
+
+- **F3 üç PR'da:** F3a altyapı, header ve breadcrumb; F3b bloklar ve blok uzantıları; F3c
+  pattern kütüphanesi, görsel testler ve kurumsal starter. Her biri CI yeşilken birleşir.
+- **Dönen video hero F3'ten çıkarıldı:** Tema bittikten sonra, Pergel üzerine kurulan ilk
+  projede gerçek videolarla yapılacak (kullanıcı kararı). F3'ün bitti tanımı değişmedi.
+- **Bloklar manifest'ten kaydedilir:** `engine/blocks/manifest.php` tüm `block.json`'ları tek PHP
+  dizisinde tutar (`tools/blocks.php` üretir, CI denetler). Çekirdek blokları
+  `wp_register_block_types_from_metadata_collection` ile bu dosyadan kaydeder; blok sayısı artsa
+  da istek başına dosya okuma ve JSON çözme maliyeti sabit kalır. Blocks modülünün açma/kapama
+  anahtarı yok: kapatılsaydı Pergel bloklarıyla kurulan pattern'ler ve sayfalar bozulurdu.
+- **Logo yüksekliğe göre boyutlanır:** Pattern'lerdeki 40/48px sabit genişlik yatay yazı logosunu
+  ~40×5px'e düşürüyordu. Genişlik kaldırıldı; logo 40px yükseklik ve 240px üst sınırla çizilir
+  (token'lardan, variation başına değiştirilebilir). Kullanıcının editörde verdiği genişlik geçerli kalır.
+- **Header davranışı Template Part özniteliğidir:** Sticky/akıllı/overlay seçenekleri şablondaki
+  header örneğinde saklanır, global ayar değildir. Böylece yalnızca anasayfa overlay, diğer
+  sayfalar sticky olabilir ve ayar Site Editor'de, header'ın yanında durur. CSS ve küçük script
+  yalnızca seçenek açık olan sayfalarda yüklenir.
+- **Görünen breadcrumb = BreadcrumbList (K8):** Breadcrumb bloğu yolu aktif SEO eklentisinin
+  schema'ya giren listesinden okur, eklenti yoksa Pergel'in yolundan. Adı ve bağlantısı olan,
+  gizlenmemiş adımlar kalır; bu, eklentilerin BreadcrumbList kuralıyla aynıdır. SEOPress ücretsiz
+  sürümü yol üretmediği için Pergel'in yolu ve blokta basılan bir BreadcrumbList kullanılır.
+  Rank Math'in blog sayfasında bağlantısız bıraktığı son adıma sayfa adresi verilir; böylece o
+  sayfada da yol ve schema "Ana sayfa > Blog" olur.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
@@ -366,7 +391,7 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 | F0 | Ortam, repo, CI iskeleti, docs, junction'lar, boş tema + eklenti | Boş Pergel etkin, CI yeşil, bütçe ölçümü ilk raporu üretiyor |
 | F1 | Token formatı ve theme.json üreticisi, temel şablonlar, 3 style variation, 6 header + 6 footer | Bütçe içinde, axe temiz, Site Editor'den tüm görünüm değiştirilebiliyor |
 | F2 | Modül sistemi, ayar ekranı, marka + Block Bindings, SEO sözleşmesi, performans modülü, `wp pergel` | SEO matrisi 6 senaryoda temiz |
-| F3 | Pergel blokları ve uzantıları, 120+ pattern, kurumsal starter, dönen video hero | Tüm pattern'ler geçerli, görsel testler oturdu, kurumsal demo kuruluyor |
+| F3 | Pergel blokları ve uzantıları, 120+ pattern, kurumsal starter (dönen video hero ilk projeye kaldı) | Tüm pattern'ler geçerli, görsel testler oturdu, kurumsal demo kuruluyor |
 | F4 | WooCommerce şablonları, hızlı arama, satış modları, P2 özellikleri, ölçek testi | Mağaza bütçesi tutuyor, ödeme akışı test modunda geçiyor |
 | F5 | Proje paketi ve `wp pergel import`, Abilities/MCP, skill'ler, prova sitesi (hedef açık) | Prova sitesi paketten tek seferde ve tekrar üretilebiliyor |
 | F6 | Tam test matrisi, güvenlik incelemesi, çeviriler, WP 7.2 uyumu | Tüm kontroller yeşil, v1.0.0 |
@@ -376,5 +401,5 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
 - ~~Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor~~ → F2'de performans modülüyle çözüldü (bütçe `emoji = 0`).
-- K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi) → F3'te breadcrumb bloğuyla.
+- ~~K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi)~~ → F3a'da `pergel/breadcrumb` ile çözüldü (SEO matrisi görünen yolu BreadcrumbList ile karşılaştırır).
 - ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.

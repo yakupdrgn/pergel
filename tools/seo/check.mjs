@@ -8,8 +8,9 @@
  * Reads the head of a fixed set of pages (tools/fixtures/seed.php) and the
  * sitemaps, and fails when a tag is printed twice, a page has two
  * Organization or WebSite nodes, Pergel prints its fallback next to a
- * plugin, the Organization node lacks the brand details, or the site serves
- * more than one sitemap. tools/seo/matrix.sh runs it for every scenario.
+ * plugin, the Organization node lacks the brand details, the visible
+ * breadcrumb (pergel/breadcrumb) differs from the BreadcrumbList, or the site
+ * serves more than one sitemap. tools/seo/matrix.sh runs it for every scenario.
  */
 import { parseArgs } from 'node:util';
 
@@ -29,13 +30,15 @@ const BASE = args.base.replace( /\/$/, '' );
 const FALLBACK = 'none' === args.scenario;
 
 // Pages from tools/fixtures/seed.php. "indexable" pages need exactly one canonical,
-// "described" ones (content to describe) one description in the fallback.
+// "described" ones (content to describe) one description in the fallback,
+// "trail" ones a visible breadcrumb. The category is reached through the
+// canonical redirect, so any category base works.
 const PAGES = [
 	{ path: '/', indexable: true, described: true },
-	{ path: '/blog/', indexable: true },
-	{ path: '/pergel-sample-post/', indexable: true, described: true },
-	{ path: '/pergel-sample-page/', indexable: true, described: true },
-	{ path: '/category/pergel-test/', indexable: true },
+	{ path: '/blog/', indexable: true, trail: true },
+	{ path: '/pergel-sample-post/', indexable: true, described: true, trail: true },
+	{ path: '/pergel-sample-page/', indexable: true, described: true, trail: true },
+	{ path: '/?category_name=pergel-test', indexable: true, trail: true },
 	{ path: '/?s=pergel', indexable: false },
 	{ path: '/pergel-seo-missing/', indexable: false, status: 404 },
 ];
@@ -89,7 +92,71 @@ const isOrganization = ( node ) => {
 	return t.some( ( x ) => ORG_TYPES.has( x ) ) || String( node[ '@id' ] ?? '' ).endsWith( '#organization' );
 };
 
-async function page( { path, indexable, described = false, status = 200 } ) {
+/* ---- Breadcrumb ---------------------------------------------------------- */
+const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ldquo: '“', rdquo: '”', lsquo: '‘', rsquo: '’', ndash: '–', mdash: '—', hellip: '…', raquo: '»', laquo: '«' };
+const decode = ( text ) => String( text ?? '' )
+	.replace( /<[^>]*>/g, '' )
+	.replace( /&(?:#(\d+)|#x([0-9a-f]+)|(\w+));/gi, ( m, dec, hex, name ) => {
+		if ( dec || hex ) {
+			return String.fromCodePoint( parseInt( dec ?? hex, dec ? 10 : 16 ) );
+		}
+		return ENTITIES[ name.toLowerCase() ] ?? m;
+	} )
+	.trim();
+
+/** Steps of the visible pergel/breadcrumb trail, or null when the page has none. */
+const visibleTrail = ( html ) => {
+	const nav = html.match( /<nav\b[^>]*\bwp-block-pergel-breadcrumb\b[^>]*>([\s\S]*?)<\/nav>/i );
+	if ( ! nav ) {
+		return null;
+	}
+	return [ ...nav[ 1 ].matchAll( /<li\b[^>]*>([\s\S]*?)<\/li>/gi ) ].map( ( m ) => ( {
+		name: decode( m[ 1 ] ),
+		url: decode( attrs( m[ 1 ].match( /<a\b[^>]*>/i )?.[ 0 ] ?? '' ).href ?? '' ),
+	} ) );
+};
+
+/** Steps of a BreadcrumbList node; each plugin words its ListItems a little differently. */
+const schemaTrail = ( list ) => [ list.itemListElement ?? [] ].flat()
+	.slice()
+	.sort( ( a, b ) => ( a.position ?? 0 ) - ( b.position ?? 0 ) )
+	.map( ( el ) => ( {
+		name: decode( el.name ?? el.item?.name ),
+		url: 'string' === typeof el.item ? el.item : el.item?.[ '@id' ] ?? '',
+	} ) );
+
+/** Compares the visible trail with the BreadcrumbList; returns the number of visible steps. */
+function breadcrumb( where, html, all, trail ) {
+	const visible = visibleTrail( html );
+	const lists = all.filter( ( n ) => types( n ).includes( 'BreadcrumbList' ) );
+	if ( lists.length > 1 ) {
+		fail( where, `${ lists.length } BreadcrumbList nodes` );
+	}
+	if ( ! visible ) {
+		if ( trail ) {
+			fail( where, 'no visible breadcrumb' );
+		}
+		return 0;
+	}
+	if ( 1 !== lists.length ) {
+		fail( where, 'visible breadcrumb without a BreadcrumbList' );
+		return visible.length;
+	}
+	const schema = schemaTrail( lists[ 0 ] );
+	const names = ( steps ) => steps.map( ( s ) => s.name ).join( ' > ' );
+	if ( names( visible ) !== names( schema ) ) {
+		fail( where, `breadcrumb "${ names( visible ) }" but BreadcrumbList "${ names( schema ) }"` );
+	}
+	// The current page is not a link in the visible trail, so links are compared up to it.
+	visible.slice( 0, -1 ).forEach( ( step, i ) => {
+		if ( step.url !== schema[ i ]?.url ) {
+			fail( where, `breadcrumb step ${ i + 1 } links to ${ step.url }, BreadcrumbList to ${ schema[ i ]?.url }` );
+		}
+	} );
+	return visible.length;
+}
+
+async function page( { path, indexable, described = false, trail = false, status = 200 } ) {
 	const res = await fetch( BASE + path, { redirect: 'follow' } );
 	const html = await res.text();
 	const where = `${ args.scenario } ${ path }`;
@@ -129,7 +196,7 @@ async function page( { path, indexable, described = false, status = 200 } ) {
 	const pergel = scripts.filter( ( m ) => /\bpergel-schema\b/.test( attrs( m[ 1 ] ).class ?? '' ) ).length;
 	const orgs = all.filter( isOrganization );
 	const sites = all.filter( ( n ) => types( n ).includes( 'WebSite' ) );
-	Object.assign( row, { ld: scripts.length, pergel, organization: orgs.length, website: sites.length } );
+	Object.assign( row, { ld: scripts.length, pergel, organization: orgs.length, website: sites.length, trail: breadcrumb( where, html, all, trail ) } );
 	if ( orgs.length > 1 ) {
 		fail( where, `${ orgs.length } Organization nodes` );
 	}

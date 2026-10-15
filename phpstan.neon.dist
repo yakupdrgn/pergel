@@ -18,3 +18,4 @@ parameters:
 			- tools/stubs
 	scanFiles:
 		- tools/stubs/wp-cli.php
+		- tools/stubs/seo-plugins.php

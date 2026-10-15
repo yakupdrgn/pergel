@@ -28,6 +28,8 @@ jobs:
       - run: composer check
       - name: theme.json in sync with design tokens
         run: php tools/tokens.php --check
+      - name: Block rules and manifest
+        run: php tools/blocks.php --check
       - uses: actions/setup-node@v4
         with:
           node-version: 24

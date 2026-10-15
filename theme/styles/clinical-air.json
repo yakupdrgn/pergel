@@ -190,6 +190,10 @@
 				"button": "999px",
 				"card": "16px"
 			},
+			"logo": {
+				"height": "40px",
+				"max-width": "240px"
+			},
 			"font-weight": {
 				"body": 400,
 				"heading": 700,

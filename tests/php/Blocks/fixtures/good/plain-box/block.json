@@ -1,0 +1,9 @@
+{
+	"apiVersion": 3,
+	"name": "pergel/plain-box",
+	"title": "Plain box",
+	"category": "pergel",
+	"textdomain": "pergel-engine",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

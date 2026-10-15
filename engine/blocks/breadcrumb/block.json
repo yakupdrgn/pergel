@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/breadcrumb",
+	"title": "Breadcrumb",
+	"category": "pergel",
+	"icon": "arrow-right-alt2",
+	"description": "The path from the home page to the current page. With an SEO plugin the path comes from the plugin, so it matches the page's structured data.",
+	"keywords": [ "breadcrumbs", "trail", "navigation", "path" ],
+	"textdomain": "pergel-engine",
+	"supports": {
+		"autoRegister": true,
+		"html": false,
+		"align": [ "wide", "full" ],
+		"color": {
+			"text": true,
+			"link": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

@@ -66,7 +66,7 @@ Planlanan modüller ve yüklenme koşulları:
 | --- | --- |
 | Core | Her zaman |
 | Settings | Her zaman (hafif: hook'lar; ekran yalnızca admin) |
-| Blocks | Blok sayfadaysa CSS/JS |
+| Blocks | Her zaman, anahtarsız (pattern'ler bu bloklarla kurulur); blok CSS/JS'i yalnızca blok sayfadaysa |
 | Brand | Her zaman (hafif: `init` + editör script'i yalnızca editörde) |
 | Seo | Her zaman (meta kaydı admin/REST için; `Head` yalnızca ön yüzde, eklenti varsa yalnızca entegrasyon filtreleri) |
 | Ai | İsteğe bağlı |
@@ -179,6 +179,68 @@ Yalnızca ön yüzde yüklenir; dört anahtarın hepsi varsayılan açıktır (A
 
 Bütçe bunları denetler: `emoji = 0`, `fontPreloads ≤ 2`, `unusedPreloads = 0` (önyüklenip hiçbir
 `@font-face` kuralınca kullanılmayan dosya), `jsonld ≤ 1`.
+
+## Bloklar (F3)
+
+Pergel blokları sunucuda çizilir ve `engine/blocks/<slug>/` altında durur:
+
+- `block.json`: ad `pergel/<slug>`, `apiVersion` 3, `textdomain` `pergel-engine`, kategori
+  (`pergel` ekleyicide çekirdek kategorilerin ardından gelir), `render: file:./render.php`.
+- `render.php`: blok çıktısı; `$attributes`, `$content`, `$block` değişkenleriyle çağrılır.
+- `style.css` (isteğe bağlı): çekirdek yalnızca blok sayfada çizildiğinde ekler ve küçükse
+  satır içine alır; ayrı istek oluşmaz.
+- Derlenmiş editör betiği olmayan blok `supports.autoRegister: true` taşır. WP 7.0'dan beri
+  editör böyle bir bloğu sunucu önizlemesiyle kendisi kaydeder ve ayar alanlarını
+  `attributes`'tan üretir (K6: basit bloklar PHP-only). Karmaşık editör arayüzü gereken bloklar
+  `@wordpress/scripts` ile `engine/build/`'e derlenir ve `editorScript` taşır.
+
+`php tools/blocks.php` bu kuralları denetler ve tüm `block.json`'ları `engine/blocks/manifest.php`
+dosyasına yazar. `Blocks\Module` blokları bu dosyadan bir metadata koleksiyonu olarak kaydeder;
+istek başına JSON okunmaz. CI `--check` ile manifest'in güncel olduğunu, `npm run validate:json`
+ile `block.json`'ların WP 7.1 şemasına uyduğunu denetler.
+
+### Header seçenekleri
+
+`Blocks\Header`, header alanını gösteren Template Part bloğuna iki öznitelik ekler:
+`pergelSticky` (`""`, `always`, `smart`: aşağı kaydırırken gizlenir, yukarıda geri gelir) ve
+`pergelOverlay` (header sayfanın ilk bölümünün üstüne biner, sayfa kayana kadar arka planı
+yoktur). Seçenekler bloğun Ayarlar sekmesindeki "Header behaviour" panelindedir
+(`engine/assets/header-controls.js`, derlemesiz). Öznitelik şablondaki blok örneğinde durduğu için
+her şablon kendi davranışını seçer; overlay için olağan yer `front-page` şablonudur.
+
+Ön yüzde `render_block_core/template-part` süzgeci sarmalayıcıya `pergel-header` ve durum
+sınıflarını ekler, `header.css`'i (satır içi) ve `pergel/header` script modülünü yalnızca seçenek
+açıkken yükler. Script; gizleme, `is-scrolled` ve çapa bağlantıları için `--pergel-header-height`
+değişkenini yönetir. Odak header'a girerse ya da mobil menü açıksa header gizlenmez. Gizlenmemiş
+header'da `transform` bulunmaz; aksi halde `position: fixed` mobil menü header'ın içine hapsolurdu.
+
+### Logo boyutu
+
+Header ve footer pattern'lerindeki Site Logo bloklarında sabit genişlik yoktur. Genişliği
+verilmemiş logo (`is-default-size`) temanın `assets/css/blocks/site-logo.css` stiliyle
+yüksekliğe göre boyutlanır: `logo.height` (40px) ve `logo.max-width` (240px) token'ları
+`--wp--custom--logo--*` olur. Yatay yazı logosu da kare işaret de okunur kalır. Editörde genişlik
+verilirse sınıf kalkar ve o genişlik geçerlidir. Kural theme.json `css` alanında değildir:
+WordPress o alanı `:where()` ile sardığı için çekirdeğin 120px kuralını geçemez.
+
+### Breadcrumb
+
+`pergel/breadcrumb` sayfanın yolunu `<nav><ol>` olarak basar; son adım bağlantısız ve
+`aria-current="page"` taşır, iki adımdan kısa yolda hiçbir şey basmaz. Yolu `Seo\Trail` verir:
+
+- Rank Math, Yoast, AIOSEO ve TSF aktifse yol eklentinin kendi BreadcrumbList'ini ürettiği listeden
+  okunur (Rank Math `Breadcrumbs::get()->get_crumbs()`, Yoast `YoastSEO()->meta->for_current_page()`,
+  AIOSEO `breadcrumbs->frontend->getBreadcrumbs()`, TSF `Meta\Breadcrumbs::get_breadcrumb_list()`).
+- Eklenti yoksa yol Pergel'in yedek grafiğindeki yoldur (`Head::page()['crumbs']`).
+- SEOPress (ücretsiz) yol üretmez: Pergel'in yolu kullanılır ve blok BreadcrumbList'i kendisi
+  ekler (`pergel/breadcrumb/schema` filtresiyle kapatılabilir).
+
+Her kaynak `Trail::clean()`'den geçer: adı ve bağlantısı olan, schema'dan gizlenmemiş adımlar
+kalır. Eklentiler de BreadcrumbList'e tam bu adımları koyduğu için görünen yol ile schema aynıdır;
+SEO matrisi (`tools/seo/check.mjs`) bunu altı senaryoda denetler. Rank Math yolu yalnızca destek
+bildiren temalarda kurduğundan Pergel `rank-math-breadcrumbs` desteğini ekler; blog sayfası gibi
+bağlantısız bırakılan son adıma sayfanın adresini verir. Editörde blok örnek bir yol gösterir.
+Blok `single`, `page`, `archive` ve `home` şablonlarında başlığın üstündedir.
 
 ## WP-CLI (F2)
 

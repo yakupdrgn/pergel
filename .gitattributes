@@ -10,6 +10,7 @@
 
 # Derlenmiş editör JS'i repoya girer (K6) ama diff ve dil istatistiğinde sayılmaz.
 engine/build/** linguist-generated=true -diff
+engine/blocks/manifest.php linguist-generated=true
 composer.lock   -diff
 package-lock.json -diff
 

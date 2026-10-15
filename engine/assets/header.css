@@ -1,0 +1,55 @@
+/*
+ * Header part options (Header panel of the header template part).
+ * Loaded only on pages whose header uses one of them.
+ */
+.pergel-header.is-sticky,
+.pergel-header.is-smart {
+	position: sticky;
+	top: var(--wp-admin--admin-bar--height, 0px);
+	z-index: 100;
+	background-color: var(--wp--preset--color--base);
+}
+
+/* A transform would trap the mobile menu (position: fixed), so it is set only while hidden. */
+.pergel-header.is-smart {
+	transition: transform 0.25s ease;
+}
+
+.pergel-header.is-smart.is-hidden {
+	transform: translateY(calc(-100% - var(--wp-admin--admin-bar--height, 0px)));
+}
+
+.pergel-header.is-overlay {
+	position: absolute;
+	inset-inline: 0;
+	top: var(--wp-admin--admin-bar--height, 0px);
+	z-index: 100;
+	background-color: transparent;
+}
+
+.pergel-header.is-overlay:is(.is-sticky, .is-smart) {
+	position: fixed;
+}
+
+.pergel-header.is-overlay + * {
+	margin-block-start: 0;
+}
+
+/* Over the first section the header drops its own background; it comes back once the page scrolls. */
+.pergel-header.is-overlay:not(.is-scrolled) > .has-background {
+	background: transparent !important;
+}
+
+.pergel-header.is-overlay.is-scrolled {
+	background-color: var(--wp--preset--color--base);
+}
+
+html:has(.pergel-header:is(.is-sticky, .is-smart)) {
+	scroll-padding-block-start: calc(var(--pergel-header-height, 0px) + var(--wp-admin--admin-bar--height, 0px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pergel-header.is-smart {
+		transition: none;
+	}
+}

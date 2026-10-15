@@ -1,0 +1,11 @@
+{
+	"$schema": "https://schemas.wp.org/wp/7.1/block.json",
+	"apiVersion": 3,
+	"name": "pergel/card",
+	"title": "Card",
+	"category": "pergel",
+	"textdomain": "pergel-engine",
+	"supports": { "autoRegister": true },
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

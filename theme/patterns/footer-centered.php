@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <!-- wp:group {"tagName":"footer","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|60"}}},"backgroundColor":"surface","layout":{"type":"constrained"}} -->
 <footer class="wp-block-group alignfull has-surface-background-color has-background" style="padding-top:var(--wp--preset--spacing--70);padding-bottom:var(--wp--preset--spacing--60)"><!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"center"}} -->
-<div class="wp-block-group"><!-- wp:site-logo {"width":48} /-->
+<div class="wp-block-group"><!-- wp:site-logo /-->
 
 <!-- wp:site-title {"level":0,"textAlign":"center"} /-->
 

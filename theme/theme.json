@@ -191,6 +191,10 @@
 			"line-height": {
 				"body": 1.6,
 				"heading": 1.2
+			},
+			"logo": {
+				"height": "40px",
+				"max-width": "240px"
 			}
 		}
 	},

@@ -77,6 +77,11 @@
 		"button": { "$value": "{radius.small}" },
 		"card": { "$value": "{radius.medium}" }
 	},
+	"logo": {
+		"$type": "dimension",
+		"height": { "$value": { "value": 40, "unit": "px" } },
+		"max-width": { "$value": { "value": 240, "unit": "px" } }
+	},
 	"font-weight": {
 		"$type": "fontWeight",
 		"body": { "$value": 400 },
