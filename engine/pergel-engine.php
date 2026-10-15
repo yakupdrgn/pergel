@@ -43,4 +43,5 @@ spl_autoload_register(
 	}
 );
 
+register_activation_hook( __FILE__, array( Settings\Settings::class, 'install' ) );
 add_action( 'plugins_loaded', array( Core\Plugin::class, 'boot' ), 5 );

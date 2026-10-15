@@ -39,6 +39,8 @@ pergel/
 │  ├─ fixtures/seed.php   sabit test içeriği (idempotent)
 │  ├─ stubs/              statik analiz için WP-CLI stub'ları
 │  └─ validate-json.mjs   theme.json / block.json şema doğrulaması
+├─ tests/php/             birim testleri (WordPress olmadan)
+├─ tests/integration/     WordPress gerektiren testler (PERGEL_WP_DIR)
 ├─ tests/budget/          performans bütçesi (K11)
 └─ docs/
 ```
@@ -63,20 +65,141 @@ Planlanan modüller ve yüklenme koşulları:
 | Modül | Yüklenme |
 | --- | --- |
 | Core | Her zaman |
-| Settings | Yalnızca admin |
+| Settings | Her zaman (hafif: hook'lar; ekran yalnızca admin) |
 | Blocks | Blok sayfadaysa CSS/JS |
-| Brand | Her zaman (hafif) |
-| Seo | Ön yüz |
+| Brand | Her zaman (hafif: `init` + editör script'i yalnızca editörde) |
+| Seo | Her zaman (meta kaydı admin/REST için; `Head` yalnızca ön yüzde, eklenti varsa yalnızca entegrasyon filtreleri) |
 | Ai | İsteğe bağlı |
 | Content | Yalnızca açılan içerik türleri |
 | Woo | WooCommerce aktifse |
-| Performance | Ön yüz |
-| Import / Cli | Yalnızca WP-CLI (`Cli` şu an var: `wp pergel info`) |
+| Performance | Ön yüz (`is_admin()` dışı; her parça kendi ayar anahtarıyla) |
+| Import / Cli | Yalnızca WP-CLI (`Cli` şu an var; bkz. "WP-CLI") |
 
 ## Ayar modeli (F2)
 
 Tek option (`pergel_settings`), autoload ≤ 20 KB, REST şemasıyla doğrulanır. Tasarım ayarları bu
 option'da değil Global Styles'tadır (K5).
+
+- `Settings\Schema` — gruplar ve alanlar (`modules`, `brand`, `seo`, `performance`). Varsayılanlar, temizleme ve REST JSON Schema bu tek tanımdan üretilir.
+- `Settings\Settings` — okuma: `all()`, `get( 'brand.email' )`, `module_enabled( 'seo' )`,
+  yazma: `update( $değişiklikler )`. Değerler istek başına bir kez şemaya göre normalize edilir;
+  önbellek option her değiştiğinde düşer.
+- `Settings\Module` — her zaman yüklenir; `sanitize_option_pergel_settings` filtresi, önbellek
+  hook'ları ve `admin_init` / `rest_api_init` üzerinde `register_setting` (`/wp/v2/settings`,
+  yalnızca `manage_options`).
+- `Core\Plugin::boot` bir modülü yalnızca `modules.<id>` anahtarı açıksa (veya hiç yoksa) ve
+  `should_load()` doğruysa yükler.
+- Eklenti etkinleştirilirken varsayılanlar autoload ile yazılır; böylece okuma sorgu yapmaz.
+- `Settings\Screen` — yalnızca admin'de yüklenir. Üst düzey "Pergel" menüsü, her şema grubu
+  için bir sekme. Form `options.php`'ye gider ve yalnızca açık sekmenin alanlarını gönderir;
+  diğer gruplar birleştirerek yazma sayesinde korunur. Hatalı alanlar eski değerini korur,
+  hata hem üst bildirimde hem alanın altında (`aria-invalid`, `aria-describedby`) görünür.
+- `Settings\Labels` — sekme, bölüm, alan etiketleri ve hata metinleri; şemanın saf PHP
+  kalması için ayrı tutulur. Labels'ta yer almayan alan "Other" bölümünde yine gösterilir.
+- `engine/assets/settings.js` — build'siz; görsel alanları için çekirdek medya seçicisi.
+
+## Marka ve Block Bindings (F2)
+
+Şirket bilgileri bir kez ayarlarda girilir; bloklar ve yapılandırılmış veri aynı kaynaktan okur.
+
+- `Brand\Brand` — `brand` grubunu okur ve boşlukları doldurur: ad yoksa site başlığı, adres
+  için ana sayfa, ana logo için Site Logo. `value( $anahtar )` boş değerde `null` döner.
+- `Brand\Format` — saf PHP: `tel:` / `mailto:` bağlantısı, tek satır adres, profil URL'sinden
+  sosyal ağ, schema.org `Organization`. Birim testleriyle sınanır.
+- `Brand\Module` — `pergel/brand` bağlama kaynağı. Argümanlar: `{"key": "name"}`; sosyal için
+  `{"key": "social", "network": "linkedin"}`. Anahtarlar: tüm metin alanları ile `url`,
+  `address`, `email_url`, `phone_url`, `copyright`, `logo_inverse` (görselde `id`, `url`, `alt`).
+  Boş değer bloğun kayıtlı metnini korur. Zengin metin özelliklerinde (`content`, `text`,
+  `caption`) değer burada kaçışlanır; diğer özellikleri çekirdek yazarken kaçışlar.
+- `engine/assets/brand-bindings.js` — build'siz, yalnızca blok ve site editöründe: güncel
+  değerler ve bloğun "Özellikler" panelindeki alan listesi (`getFieldsList`). Değerler editörde
+  salt okunur.
+- `Brand::organization()` SEO modülünün `Organization` düğümünü besler.
+
+```html
+<!-- wp:paragraph {"metadata":{"bindings":{"content":{"source":"pergel/brand","args":{"key":"phone"}}}}} -->
+<p>+90 000 000 00 00</p>
+<!-- /wp:paragraph -->
+```
+
+## SEO (F2)
+
+K8 sözleşmesi: bir SEO eklentisi aktifse Pergel hiçbir SEO etiketi basmaz, yalnızca eklentinin
+`Organization` düğümünü marka bilgisiyle tamamlar. Eklenti yoksa çekirdek API'lerle bir yedek
+katman çalışır.
+
+- `Seo\Detect` — Rank Math, Yoast SEO, AIOSEO, SEOPress, TSF'yi sürüm sabitinden tanır (ilk
+  eşleşen kazanır); `pergel/seo/plugin` filtresiyle değiştirilebilir.
+- `Seo\Integrations` — eklenti başına tek filtre: `rank_math/json_ld` (100),
+  `wpseo_schema_organization`, `aioseo_schema_output`, `seopress_schemas_organization_html`
+  (JSON dizesi), `the_seo_framework_schema_graph_data`. Yalnızca boş özellikler doldurulur,
+  `sameAs` birleştirilir; `Person` düğümlerine dokunulmaz.
+- `Seo\Graph` — saf PHP: `Organization`, `WebSite` (+ `SearchAction`), `WebPage` türü,
+  yazıda `BlogPosting` / `Article`, en az iki halkada `BreadcrumbList`. Birim testli.
+- `Seo\Head` — yedek katman: belge başlığı, `wp_robots`, açıklama, Open Graph, Twitter
+  kartı, liste sayfalarında sayfa numaralı canonical (tekil sayfanın canonical'ı çekirdekte),
+  tek bir JSON-LD `@graph` (`pergel/seo/graph` filtresi). 404'te hiçbir şey basılmaz.
+  Açıklama sırası: SEO paneli → özet → içeriğin başı; ön sayfada site sloganı.
+- `Seo\Meta` — `_pergel_seo_title`, `_pergel_seo_description`, `_pergel_seo_noindex`
+  (REST'te, `edit_post` yetkisiyle) ve editörde build'siz "SEO" paneli
+  (`engine/assets/seo-panel.js`).
+- `Seo\Sitemap` — çekirdek site haritası: gizli yazılar çıkarılır, `lastmod` eklenir, yazar
+  sayfaları ayarla açılmadıkça listelenmez.
+- Ayarlardaki SEO sekmesi (paylaşım görseli, X kullanıcı adı, yazar site haritası) eklenti
+  aktifken bunu söyleyen bir bildirim gösterir.
+
+**SEO matrisi** (`tools/seo/`): `matrix.sh` Pergel'i önce tek başına, sonra her ücretsiz SEO
+eklentisiyle sırayla çalıştırır; `check.mjs` her senaryoda yedi sayfanın (ön sayfa, blog, yazı,
+sayfa, kategori, arama, 404) `<head>`'ini ve site haritalarını okur. Kurallar: tek `<title>`,
+en fazla bir açıklama / robots / Open Graph ve Twitter etiketi, dizine girecek sayfalarda tek
+canonical, sayfa başına en fazla bir `Organization` ve bir `WebSite`, eklenti varken Pergel
+JSON-LD'si yok (`class="pergel-schema"`), her `Organization` düğümünde marka telefonu ve sosyal
+profili, tek XML site haritası (robots.txt'teki de aynısı). CI'da `seo-matrix` işi eklentilerin
+wordpress.org'daki son sürümlerini kurar (`INSTALL=1`). Yerelde:
+
+```bash
+WP_DIR=/c/xampp/htdocs/pergel-tema SITE_URL=http://localhost/pergel-tema bash tools/seo/matrix.sh
+```
+
+## Performans modülü (F2)
+
+Yalnızca ön yüzde yüklenir; dört anahtarın hepsi varsayılan açıktır (Ayarlar → Performance).
+
+- **Emoji:** çekirdeğin emoji algılama script'i, stilleri ve `s.w.org` DNS prefetch'i sayfadan ve
+  embed'lerden kalkar. Akışlar ve e-postalar çekirdeğin görsel yedeğini korur.
+- **oEmbed keşif bağlantıları:** `<head>`'deki iki `alternate` bağlantısı kalkar. Başka siteler
+  sayfa adresinden embed kartı üretemez; site içi embed'ler çalışır (çekirdek onları HTTP'siz çözer).
+- **Dashicons:** giriş yapmamış ziyaretçide kuyruktan çıkar (`wp_enqueue_scripts` 100 ve `wp_footer` 1).
+  Dashicons'a bağımlı bir stil onu yine getirir.
+- **Font önyükleme:** `Performance\Fonts` (saf PHP, birim testli) birleşik Global Styles'tan kök ve
+  başlık (`heading`, `h1`–`h6`) font preset'lerini bulur; bu fontların düz (italik olmayan),
+  temel Latin'i kapsayan woff2 dosyaları `wp_preload_resources` ile önyüklenir. URL'ler çekirdeğin
+  `@font-face` adresiyle birebir aynıdır (`file:./` → `get_theme_file_uri()`). Sistem fontlu temel
+  temada hiçbir şey önyüklenmez. `pergel/performance/font_preloads` filtresi listeyi değiştirir.
+
+Bütçe bunları denetler: `emoji = 0`, `fontPreloads ≤ 2`, `unusedPreloads = 0` (önyüklenip hiçbir
+`@font-face` kuralınca kullanılmayan dosya), `jsonld ≤ 1`.
+
+## WP-CLI (F2)
+
+`Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.
+
+| Komut | İş |
+| --- | --- |
+| `wp pergel info` | Motor, tema, WordPress ve PHP sürümleri, yüklenen modüller |
+| `wp pergel tokens build [--check]` | Tasarım token'larından `theme.json` ve variation'ları üretir; `--check` yalnızca farkı denetler |
+| `wp pergel settings get [<yol>]` | Tüm ayarlar, bir grup (`brand`) veya bir alan (`brand.email`); metin düz, gerisi JSON |
+| `wp pergel settings set <grup.alan> <değer> [--format=json]` | Tek alan; açık/kapalı `true/false`, `1/0`, `yes/no` alır, listeler satır satır veya JSON dizi |
+| `wp pergel settings export [<dosya>]` | Tüm ayarlar JSON olarak (dosyaya veya çıktıya) |
+| `wp pergel settings import <dosya\|-> [--dry-run]` | JSON'dan okur; dosyada olmayan alanlar korunur, değişen alanlar listelenir |
+| `wp pergel modules list` | Modül, anahtar (`on`/`off`/`always`), bu komutta yüklendi mi |
+| `wp pergel modules enable\|disable <id>...` | Anahtarı olan modülleri açar/kapatır |
+
+Ayar komutları ekranla aynı şemadan geçer: geçersiz veya bilinmeyen bir alan varsa hiçbir şey
+kaydedilmez ve komut 1 ile çıkar (ekran ise geçerli kısmı kaydeder). Görsel alanları ek olarak
+bu sitede görsel olan bir ekin kimliğini ister: `set` başka bir değeri reddeder, `import` başka
+siteden gelen kimlikleri uyarıyla sıfırlar. `tools/ci/cli-smoke.sh` tüm komutları CI'da gerçek
+WP-CLI ile dener ve ayarları sonunda geri yükler.
 
 ## Ölçüm
 
@@ -84,7 +207,7 @@ option'da değil Global Styles'tadır (K5).
 istek sonunda bir JSON satırı yazar: süre, sorgu sayısı ve süresi, DB yazmaları, yüklenen dosya
 sayısı (toplam ve Pergel'e ait), bellek. `measure.mjs` her sayfayı 3 kez sıcak ölçer (medyan),
 Playwright ile tarayıcı tarafını (HTML KB, istek sayısı, JS KB, gövdedeki CSS bağlantıları, DOM,
-H1, JSON-LD, LCP, CLS) toplar ve `tests/budget/budget.json` ile karşılaştırır.
+H1, JSON-LD, emoji yükleyicisi, font önyüklemeleri ve kullanılmayanları, LCP, CLS) toplar ve `tests/budget/budget.json` ile karşılaştırır.
 
 ## Geliştirme ortamı
 

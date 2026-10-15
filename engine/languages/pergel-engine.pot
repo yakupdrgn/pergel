@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T06:41:52+03:00\n"
+"POT-Creation-Date: 2026-10-15T08:56:14+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -32,4 +32,274 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://ariumlab.com/"
+msgstr ""
+
+#. translators: 1: current year, 2: brand name.
+#, php-format
+msgid "© %1$s %2$s"
+msgstr ""
+
+msgid "Home page address"
+msgstr ""
+
+msgid "Address (one line)"
+msgstr ""
+
+msgid "Email link"
+msgstr ""
+
+msgid "Phone link"
+msgstr ""
+
+msgid "Copyright line"
+msgstr ""
+
+#. translators: %s: social network name, e.g. LinkedIn.
+#, php-format
+msgid "%s profile"
+msgstr ""
+
+msgid "Pergel Brand"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+#. translators: %s: search terms.
+#, php-format
+msgid "Search results for “%s”"
+msgstr ""
+
+msgid "Modules"
+msgstr ""
+
+msgid "Switch off what this site does not use. A switched-off module loads no code."
+msgstr ""
+
+msgid "Brand"
+msgstr ""
+
+msgid "Company details, entered once. Blocks show them through the Pergel Brand source, and search engines receive them as Organization data."
+msgstr ""
+
+msgid "SEO"
+msgstr ""
+
+msgid "Used only while no SEO plugin is active. With Rank Math, Yoast SEO, All in One SEO, SEOPress or The SEO Framework, Pergel hands over and only adds the brand details to its data."
+msgstr ""
+
+msgid "Performance"
+msgstr ""
+
+msgid "Front-end changes made while the Performance module is on. The admin area is not affected."
+msgstr ""
+
+msgid "Company"
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Social accounts"
+msgstr ""
+
+msgid "Logos"
+msgstr ""
+
+msgid "Sharing"
+msgstr ""
+
+msgid "Sitemap"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Load early"
+msgstr ""
+
+msgid "Brand details in blocks (Block Bindings) and in structured data."
+msgstr ""
+
+msgid "Hands over to an active SEO plugin and adds the brand details to its data. Without one, Pergel prints the meta tags and structured data itself."
+msgstr ""
+
+msgid "Removes front-end assets that most sites do not need."
+msgstr ""
+
+msgid "Brand name"
+msgstr ""
+
+msgid "The name customers know. Leave empty to use the site title."
+msgstr ""
+
+msgid "Legal name"
+msgstr ""
+
+msgid "Tax number"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "With the country code, e.g. +90 212 000 00 00."
+msgstr ""
+
+msgid "Street address"
+msgstr ""
+
+msgid "City or district"
+msgstr ""
+
+msgid "Region or province"
+msgstr ""
+
+msgid "Postal code"
+msgstr ""
+
+msgid "Country code"
+msgstr ""
+
+msgid "Two letters (ISO 3166-1), e.g. TR."
+msgstr ""
+
+msgid "Profile links"
+msgstr ""
+
+msgid "One full address per line (LinkedIn, Instagram, YouTube, ...). Up to 10."
+msgstr ""
+
+msgid "Logo for dark backgrounds"
+msgstr ""
+
+msgid "The main logo is the Site Logo in the Site Editor."
+msgstr ""
+
+msgid "Default share image"
+msgstr ""
+
+msgid "Shown when a shared page has no featured image. 1200 × 630 pixels works everywhere."
+msgstr ""
+
+msgid "X (Twitter) username"
+msgstr ""
+
+msgid "For example @ariumlab."
+msgstr ""
+
+msgid "List author pages in the sitemap"
+msgstr ""
+
+msgid "Off for most company sites: author pages repeat the blog."
+msgstr ""
+
+msgid "Remove the emoji script"
+msgstr ""
+
+msgid "Browsers draw emoji themselves. Feeds and emails keep the image fallback."
+msgstr ""
+
+msgid "Remove oEmbed discovery links"
+msgstr ""
+
+msgid "Other sites can no longer turn a pasted page address into an embed card. Embeds within this site keep working."
+msgstr ""
+
+msgid "No Dashicons for visitors"
+msgstr ""
+
+msgid "For visitors who are not logged in. A plugin style that needs the icon font still loads it."
+msgstr ""
+
+msgid "Preload the style variation fonts"
+msgstr ""
+
+msgid "The basic Latin files of the body and heading fonts start downloading with the page."
+msgstr ""
+
+msgid "The value is too long."
+msgstr ""
+
+msgid "Enter a valid email address."
+msgstr ""
+
+msgid "Enter full web addresses that start with https:// or http://."
+msgstr ""
+
+msgid "Use digits, spaces, + ( ) - and . only."
+msgstr ""
+
+msgid "Use a two-letter country code such as TR."
+msgstr ""
+
+msgid "Choose one of the listed options."
+msgstr ""
+
+msgid "The number is out of range."
+msgstr ""
+
+msgid "There are too many items."
+msgstr ""
+
+msgid "The value has the wrong type."
+msgstr ""
+
+msgid "Pergel Engine settings."
+msgstr ""
+
+msgid "Pergel settings"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+#. translators: 1: field label, 2: what is wrong.
+#, php-format
+msgid "%1$s was not saved. %2$s"
+msgstr ""
+
+msgid "Settings sections"
+msgstr ""
+
+#. translators: %s: SEO plugin name.
+#, php-format
+msgid "%s is active, so these settings are not used now."
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Use this image"
+msgstr ""
+
+msgid "Choose image"
+msgstr ""
+
+#. translators: 1: characters typed, 2: recommended maximum.
+#, js-format
+msgid "%1$d of about %2$d characters."
+msgstr ""
+
+msgid "Search title"
+msgstr ""
+
+msgid "Empty: the post title and the site title."
+msgstr ""
+
+msgid "Search description"
+msgstr ""
+
+msgid "Empty: the excerpt or the start of the content."
+msgstr ""
+
+msgid "Hide from search engines"
+msgstr ""
+
+msgid "Adds noindex and leaves the page out of the sitemap."
 msgstr ""

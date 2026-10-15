@@ -1,5 +1,5 @@
 {
-	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. A number is a maximum; [min, max] is a range. A page with \"variation\" is rendered with that style variation, \"header\"/\"footer\" swap in pergel/header-<name> and pergel/footer-<name>; a page's \"limits\" override the shared ones. axe runs at 1440 px, at 390 px and with the phone menu open; overflowX is sideways scroll at 390 px. Shop/catalog pages are added with the WooCommerce module (F4).",
+	"$comment": "Performance budget (plan K11). A change that breaks a limit is not merged. A number is a maximum; [min, max] is a range. A page with \"variation\" is rendered with that style variation, \"header\"/\"footer\" swap in pergel/header-<name> and pergel/footer-<name>; a page's \"limits\" override the shared ones. axe runs at 1440 px, at 390 px and with the phone menu open; overflowX is sideways scroll at 390 px. jsonld counts JSON-LD scripts (the SEO fallback prints one), emoji the core emoji loader, fontPreloads the preloaded font files and unusedPreloads those no @font-face rule loaded. Limits tightened in F2 after the performance module. Shop/catalog pages are added with the WooCommerce module (F4).",
 	"runs": 3,
 	"pages": [
 		{ "name": "front", "path": "/" },
@@ -24,16 +24,20 @@
 	],
 	"limits": {
 		"*": {
-			"pergel_files": 60,
-			"queries": 75,
+			"pergel_files": 45,
+			"queries": 50,
 			"writes": 0,
-			"htmlKB": 100,
-			"requests": 30,
-			"jsKB": 30,
+			"htmlKB": 90,
+			"requests": 20,
+			"jsKB": 25,
 			"cssKB": 60,
 			"fontKB": 0,
 			"bodyCssLinks": 0,
 			"h1": [ 1, 1 ],
+			"jsonld": 1,
+			"emoji": 0,
+			"fontPreloads": 2,
+			"unusedPreloads": 0,
 			"axe": 0,
 			"overflowX": 0
 		}

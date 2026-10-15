@@ -54,6 +54,7 @@ jobs:
     name: Smoke + performance budget (WP latest, PHP 8.4, MariaDB 11.8)
     runs-on: ubuntu-24.04
     needs: [lint, syntax]
+    timeout-minutes: 20
     services:
       mariadb:
         image: mariadb:11.8
@@ -77,15 +78,23 @@ jobs:
           coverage: none
           extensions: mysqli, gd, intl, zip, zlib
           ini-values: opcache.enable_cli=1
-          tools: wp-cli
+          tools: composer:v2, wp-cli
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: composer install --no-interaction --no-progress
       - name: Install WordPress + Pergel
         run: bash tools/ci/setup-wp.sh
+      - name: Integration tests (WordPress)
+        # PHPUnit itself crashes or hangs under PHP 8.4's JIT, which setup-php turns
+        # on with opcache.enable_cli (a bare PHPUnit test does it too). WP-CLI, the
+        # server and the budget below keep the JIT.
+        run: PERGEL_WP_DIR="$WP_DIR" php -d opcache.jit=disable vendor/bin/phpunit -c phpunit-integration.xml.dist
+      - name: WP-CLI commands
+        run: bash tools/ci/cli-smoke.sh
       - name: Start PHP server
         run: |
           php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
@@ -119,4 +128,53 @@ jobs:
           path: |
             reports/
             /tmp/php-server.log
+          if-no-files-found: ignore
+
+  seo-matrix:
+    name: SEO matrix (Pergel alone + 5 free SEO plugins)
+    runs-on: ubuntu-24.04
+    needs: [lint, syntax]
+    timeout-minutes: 20
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wordpress
+          MARIADB_PASSWORD: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_DIR: /tmp/pergel-wp
+      SITE_URL: http://127.0.0.1:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: mysqli, gd, intl, zip, zlib
+          tools: wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install WordPress + Pergel
+        run: bash tools/ci/setup-wp.sh
+      - name: Start PHP server
+        run: |
+          php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
+          cat /tmp/php-server.log; exit 1
+      - name: SEO matrix (latest plugin versions from wordpress.org)
+        run: INSTALL=1 bash tools/seo/matrix.sh
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: seo-matrix-logs
+          path: |
+            /tmp/php-server.log
+            /tmp/pergel-wp/wp-content/debug.log
           if-no-files-found: ignore

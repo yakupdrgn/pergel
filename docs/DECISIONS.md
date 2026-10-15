@@ -97,7 +97,7 @@ bir projeye ait; o adlar kullanılmaz.
 
 - **Autoload:** Plan "Composer classmap" diyordu. Engine kendi küçük PSR-4 `spl_autoload_register`
   yükleyicisini kullanır; `vendor/` dağıtıma girmez. Sebep: çalışma zamanı bağımlılığı yok, ek
-  dosya yok, yalnızca gereken sınıf yüklenir (bütçe: istek başına ≤ 60 Pergel dosyası). Üçüncü
+  dosya yok, yalnızca gereken sınıf yüklenir (bütçe: istek başına ≤ 60 Pergel dosyası, F2'de ≤ 45). Üçüncü
   taraf bir çalışma zamanı kütüphanesi gerekirse classmap'e geçilir.
 - **Yerel PHP:** Plan "XAMPP'in 8.2'si kalır, yalnızca CLI ve testler 8.4" diyordu. Uygulamada
   geliştirme sitesi de PHP 8.4'te çalışıyor: Apache yalnızca `pergel-tema` dizini için FastCGI ile
@@ -248,6 +248,107 @@ F5'teki "organik ürünler provası" plandaki bir örnekti; kullanıcı bu prova
 söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek seferde ve tekrar
 üretilebilen bir site) aynı kalır.
 
+## F2 kararları (15 Ekim 2026)
+
+- **Tek şema:** `Settings\Schema` her alanı bir kez tanımlar; varsayılanlar, temizleme ve REST
+  JSON Schema buradan üretilir. Saf PHP'dir, WordPress olmadan birim testlenir. Alan etiketleri
+  ve hata metinleri şemada değil ayar ekranındadır; şema yalnızca alan yolu ve hata kodu döndürür.
+- **Birleştirerek yazma:** Girdide olmayan grup ve alanlar kayıtlı değerini korur, bilinmeyen
+  anahtarlar atılır, geçersiz bir değer de kayıtlı değerinde kalır ve
+  `pergel/settings/invalid` eylemiyle bildirilir. Form, REST, CLI ve doğrudan `update_option`
+  aynı yoldan geçer (`sanitize_option_pergel_settings` filtresi her zaman bağlıdır).
+- **Uzunluk sınırı:** Metin alanlarında karakter, URL / e-posta / telefonda bayt olarak ölçülür.
+  En kötü durum (her alan en uzun hâlinde, metinler 4 baytlık karakterle) birim testte 20 KB
+  autoload sınırına karşı denetlenir; sonraki gruplar da aynı teste otomatik girer.
+- **Boş değer geçerlidir:** REST şemasında e-posta ve URL alanları `anyOf` ile boş dizeyi de kabul
+  eder; boş alan "ayarlanmamış" demektir.
+- **Modül anahtarları ayarın içinde:** `modules.brand|seo|performance`. Anahtarı olmayan
+  modüller (settings, cli, `pergel/modules` ile eklenenler) her zaman yüklenir.
+- **Etkinleştirmede varsayılanlar yazılır:** Seçenek yoksa `get_option` her istekte bir sorgu
+  yapar. Eklenti etkinleştirilirken varsayılanlar autoload ile kaydedilir (`Settings::install`).
+- **WordPress testleri wp-phpunit ile değil:** Çekirdek test kütüphanesi ayrı bir test veritabanı
+  ister ve PHPUnit 10'u desteklemez. `tests/integration/` kurulu bir siteyi (`PERGEL_WP_DIR`)
+  `wp-load.php` ile yükler; testler değiştirdiklerini geri koyar. CI'da kurulumdan sonra
+  `composer test:integration` çalışır; yerelde `PERGEL_WP_DIR=C:/xampp/htdocs/pergel-tema`.
+- **Ayar ekranı build'siz PHP formu:** Ekran şemadan üretilir; React/DataForm ve derleme adımı
+  yok. Üst düzey "Pergel" menüsü (eklenti listesinde "Settings" bağlantısı da var), grup başına
+  bir sekme. Kayıt `options.php` + `register_setting` ile; nonce ve yetki çekirdekte.
+- **Sekme başına kayıt:** Form yalnızca açık sekmenin alanlarını gönderir, şema eksik
+  anahtarları eski değerle birleştirir. Böylece bir sekmeyi kaydetmek diğerini silmez.
+- **Hata alanın yanında:** Geçersiz alan kaydedilmez, eski değer kalır; hata üstte bildirim ve
+  alanın altında metin olarak gösterilir. Tarayıcı doğrulaması (`type="email"`, `url`) ilk
+  savunmadır, sunucu şeması asıl kuraldır. Hata rengi `#b32d2e` (gri zeminde 4,5:1 üstü).
+- **Medya seçici çekirdekten:** Görsel alanları `wp.media` kullanır; build'siz küçük bir
+  script yalnızca ayar sayfasında yüklenir.
+- **Marka bilgisi tek kaynak, Block Bindings ile:** Telefon, e-posta, adres gibi bilgiler
+  pattern'lere yazılmaz; bloklar `pergel/brand` kaynağına bağlanır. Değer boşsa blok kayıtlı
+  metnini gösterir; modül kapalıysa da aynı metin görünür, sayfa bozulmaz.
+- **Editörde salt okunur:** Bağlı blokta değer editörde değiştirilemez (`canUserEditValue`
+  false); değişiklik ayar ekranından yapılır. Böylece bir sayfada yanlışlıkla marka bilgisi
+  değişmez.
+- **Ad yoksa site başlığı, ana logo Site Logo:** Ayarda ayrı bir ana logo alanı yok; Site Editor'deki
+  Site Logo kullanılır. Ayarda yalnızca koyu zemin logosu var.
+- **SEO eklentisine tam devir (K8):** Eklenti aktifse Pergel başlık, açıklama, canonical,
+  Open Graph, JSON-LD ve site haritası filtresi eklemez; panel ve meta kaydı da yüklenmez.
+  Tek katkı eklentinin `Organization` düğümüne marka bilgisi eklemektir.
+- **Zenginleştir, ezme:** Eklentinin doldurduğu bir özellik (ad, logo) korunur; Pergel yalnızca
+  boş olanları doldurur ve `sameAs` listelerini birleştirir. Kişi (`Person`) düğümlerine ve
+  diğer türlere dokunulmaz. Organization verisi marka modülü kapalı olsa da marka ayarlarından
+  gelir (veri ayarda, modül anahtarı yalnızca Block Bindings'i yönetir).
+- **Taşıma yok:** Pergel'in yazı başına SEO alanları bir eklenti kurulduğunda eklentiye
+  aktarılmaz; eklentinin içe aktarma araçları veya F5'teki proje paketi bunu üstlenir. Veri
+  silinmez, eklenti kaldırılınca yedek katman aynı alanları yeniden kullanır.
+- **Yedek katman çekirdekle çakışmaz:** Tekil sayfada canonical'ı çekirdek basar, Pergel yalnızca
+  liste sayfalarına ekler; robots `wp_robots` filtresinden, başlık `pre_get_document_title`'dan
+  geçer. Böylece her etiket tam bir kez basılır.
+- **Yazı başına küçük panel:** Başlık, açıklama ve "arama motorlarından gizle". Gizli yazı
+  `noindex, follow` alır ve site haritasından çıkar. Ücretsiz eklentilerin sunduğu odak kelime,
+  okunabilirlik gibi özellikler eklenmez.
+- **Yazar site haritası varsayılan kapalı:** Kurumsal sitelerde yazar sayfaları blog listesini
+  tekrarlar; ayardan açılabilir.
+- **SEO matrisi bir şirket sitesini taklit eder:** Geçici bir Site Logo ve marka telefonu / sosyal
+  profil girilir; Rank Math'te sihirbazın "Skip" seçeneği ve "şirket" türü, SEOPress'te bilgi
+  grafiği türü "Organization" yapılır. Bunlar olmadan Yoast (logosuz) ve SEOPress hiç
+  `Organization` basmaz, Rank Math sitenin bir kişi olduğunu varsayar. Lisans veya hesap
+  gerekmez. Kişi sitelerinde (`Person`) Pergel bilinçli olarak hiçbir şey eklemez.
+- **Rank Math kurulmadan önce de devredilir:** Rank Math, sihirbaz tamamlanana (veya atlanana)
+  kadar ön yüzde çıktı vermez. Pergel yine de devreder: iki katmanın birlikte basma riski, birkaç
+  dakikalık eksik etiketten daha kötüdür ve Rank Math yöneticiyi sihirbaza yönlendirir.
+- **İç içe publisher da zenginleşir, referans değil:** The SEO Framework iç sayfalarda
+  `Organization`'ı `WebSite.publisher` içinde yazar; bu düğüm de doldurulur. Yalnızca `@id`
+  taşıyan referanslara (Rank Math) dokunulmaz, yoksa ikinci bir `Organization` doğardı.
+- **"Tek site haritası" içerikle ölçülür:** Aynı haritayı iki adreste sunmak (TSF
+  `sitemap_index.xml` ve `sitemap.xml`) tek harita sayılır; AIOSEO'nun robots.txt'teki RSS
+  haritası XML haritası değildir.
+- **Performans anahtarları varsayılan açık:** Emoji, oEmbed keşif bağlantıları, ziyaretçiye
+  Dashicons ve font önyükleme ayrı ayrı kapatılabilir; modül anahtarı hepsini birden kapatır.
+  Dashicons yalnızca kuyruktan çıkarılır, kaydı silinmez: ona bağımlı bir eklenti stili bozulmaz.
+- **Yalnızca temel Latin fontu önyüklenir:** Variation'lar her fontu latin ve latin-ext olarak
+  böler. Her sayfada kesin kullanılan latin dosyasıdır; latin-ext'i önyüklemek İngilizce bir
+  sayfada boşa indirme olur. Türkçe metindeki ş/ğ/İ latin-ext'i normal yoldan indirir (bütçe
+  Türkçe fixture'la ölçer, `fontKB` sınırları bunu içerir). Çoğunlukla Türkçe bir site
+  `pergel/performance/font_preloads` filtresiyle latin-ext dosyalarını ekleyebilir. Önyükleme
+  gövde ve başlık fontlarıyla sınırlıdır (en fazla iki dosya); mono gibi alt öğe fontları
+  önyüklenmez.
+- **Bütçe sıkılaştırıldı (F2):** Pergel dosyası 60 → 45, sorgu 75 → 50, HTML 100 → 90 KB, istek
+  30 → 20, JS 30 → 25 KB. Ölçülen en yüksek değerler: 23 dosya, 25 sorgu, 73,6 KB HTML, 7 istek,
+  16 KB JS; F3 blokları için pay bırakıldı. Yeni sınırlar: `jsonld ≤ 1`, `emoji = 0`,
+  `fontPreloads ≤ 2`, `unusedPreloads = 0`.
+- **CLI ayar yazımı ya hep ya hiç:** Ekran geçerli alanları kaydedip hatalıları eski değerinde
+  tutar (formda kullanıcı hatayı yanında görür). Betik ve taşıma işlerinde yarım uygulanmış bir
+  dosya fark edilmeden kalır; bu yüzden `wp pergel settings set/import` tek bir sorunda hiçbir şey
+  yazmaz ve 1 ile çıkar. Bilinmeyen anahtarlar da hata sayılır (yazım hatası sessizce kaybolmasın).
+  Dışa aktarılan görsel alanları ek kimliğidir; başka sitede anlamsız olduğu için `import` onları
+  uyarıyla sıfırlar. CLI testi PHPUnit içinde sahte WP_CLI yerine gerçek WP-CLI ile koşar
+  (`tools/ci/cli-smoke.sh`): argüman ayrıştırma, `--format` ve çıkış kodları da denenmiş olur.
+- **PHPUnit CI'da JIT kapalı koşar:** setup-php `opcache.enable_cli` ile PHP 8.4 JIT'ini açıyor
+  (`opcache.jit=1235`). Bu ayarla PHPUnit 10.5 çöküyor (segfault) ya da takılıyor; Pergel kodu
+  içermeyen yalın bir data-provider testi de aynı şekilde çöküyor, `tracing` modu ise geçiyor.
+  Sorun JIT ile PHPUnit arasında, Pergel'de değil. Bu yüzden yalnızca entegrasyon adımı
+  `-d opcache.jit=disable` ile koşar; WP-CLI, PHP sunucusu ve bütçe ölçümü JIT açıkken çalışmaya
+  devam eder ve denendiği kadarıyla sorunsuzdur. İşlerde 20 dakikalık süre sınırı var; takılan
+  bir adım CI'ı saatlerce meşgul etmez.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
@@ -264,5 +365,6 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 ## Bilinen açık işler
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
-- Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor → F2 performans modülü kapatacak.
+- ~~Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor~~ → F2'de performans modülüyle çözüldü (bütçe `emoji = 0`).
+- K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi) → F3'te breadcrumb bloğuyla.
 - ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.
