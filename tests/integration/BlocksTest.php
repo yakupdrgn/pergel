@@ -54,6 +54,54 @@ final class BlocksTest extends TestCase {
 		}
 	}
 
+	public function test_a_page_view_registers_the_blocks_without_editor_assets(): void {
+		$carousel = \WP_Block_Type_Registry::get_instance()->get_registered( 'pergel/carousel' );
+
+		$this->assertFalse( Module::editor_request() );
+		$this->assertNotNull( $carousel );
+		$this->assertSame( array(), $carousel->editor_script_handles );
+		$this->assertNotSame( array(), $carousel->view_script_module_ids );
+		$this->assertNotSame( array(), $carousel->style_handles );
+	}
+
+	public function test_editor_requests_keep_the_editor_assets(): void {
+		$block = array(
+			'name'         => 'pergel/box',
+			'editorScript' => 'file:./index.js',
+			'editorStyle'  => 'file:./editor.css',
+			'style'        => 'file:./style.css',
+		);
+		$core  = array(
+			'name'         => 'core/paragraph',
+			'editorScript' => 'file:./index.js',
+		);
+		$this->assertSame(
+			array(
+				'name'  => 'pergel/box',
+				'style' => 'file:./style.css',
+			),
+			Module::without_editor_assets( $block )
+		);
+		$this->assertSame( $core, Module::without_editor_assets( $core ) );
+
+		$uri = $_SERVER['REQUEST_URI'] ?? null;
+		try {
+			$_SERVER['REQUEST_URI'] = '/blog/wp-json/wp/v2/block-types';
+			$this->assertTrue( Module::editor_request() );
+			$_SERVER['REQUEST_URI'] = '/blog/wp-jsonish/';
+			$this->assertFalse( Module::editor_request() );
+			$_GET['rest_route'] = '/wp/v2/block-types';
+			$this->assertTrue( Module::editor_request() );
+		} finally {
+			unset( $_GET['rest_route'] );
+			if ( null === $uri ) {
+				unset( $_SERVER['REQUEST_URI'] );
+			} else {
+				$_SERVER['REQUEST_URI'] = $uri;
+			}
+		}
+	}
+
 	public function test_template_part_block_has_the_header_attributes(): void {
 		$type = \WP_Block_Type_Registry::get_instance()->get_registered( 'core/template-part' );
 

@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/timeline",
+	"title": "Timeline",
+	"category": "pergel",
+	"icon": "backup",
+	"description": "Milestones in order, one under the other on phones and on both sides of a line on wider screens.",
+	"keywords": [ "history", "milestones", "steps", "process" ],
+	"textdomain": "pergel-engine",
+	"allowedBlocks": [ "pergel/timeline-item" ],
+	"supports": {
+		"html": false,
+		"align": [ "wide" ],
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

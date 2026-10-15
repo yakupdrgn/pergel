@@ -37,7 +37,7 @@ final class ManifestTest extends TestCase {
 
 		$this->assertStringContainsString( 'Bad_Name: folder name must be lowercase', $message );
 		$this->assertStringContainsString( 'empty: block.json is missing or not a JSON object', $message );
-		foreach ( array( 'name must be "pergel/wrong"', 'apiVersion must be 3', 'textdomain must be', 'title is missing', 'category is missing', 'render must be', 'a block without editorScript needs supports.autoRegister', 'style file file:./missing.css does not exist' ) as $problem ) {
+		foreach ( array( 'name must be "pergel/wrong"', 'apiVersion must be 3', 'textdomain must be', 'title is missing', 'category is missing', 'render must be', 'a block without editorScript needs supports.autoRegister', 'style file file:./missing.css does not exist', 'viewScriptModule file file:./view.js does not exist' ) as $problem ) {
 			$this->assertStringContainsString( "wrong: {$problem}", $message );
 		}
 	}

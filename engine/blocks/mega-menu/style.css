@@ -1,0 +1,87 @@
+/*
+ * The panel spans the header: the menu item and the Navigation block's
+ * wrappers stop being the positioned ancestor, the header template part
+ * becomes it (a sticky header already is). The open mobile overlay keeps
+ * its own positioning.
+ */
+:where(.wp-block-template-part:has(.wp-block-pergel-mega-menu)) {
+	position: relative;
+}
+
+.wp-block-navigation:has(.wp-block-pergel-mega-menu),
+.wp-block-navigation:has(.wp-block-pergel-mega-menu) :is(.wp-block-navigation__responsive-container:not(.is-menu-open), .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation__responsive-dialog),
+.wp-block-navigation .wp-block-navigation-item.wp-block-pergel-mega-menu {
+	position: static;
+}
+
+.wp-block-pergel-mega-menu__toggle {
+	align-items: center;
+	cursor: pointer;
+	display: inline-flex;
+	gap: 0.375em;
+}
+
+.wp-block-pergel-mega-menu__icon {
+	display: inline-flex;
+	transition: transform 0.2s;
+}
+
+.wp-block-pergel-mega-menu.is-open .wp-block-pergel-mega-menu__icon {
+	transform: rotate(180deg);
+}
+
+.wp-block-pergel-mega-menu__panel {
+	background: var(--wp--preset--color--base, #fff);
+	border-block: 1px solid var(--wp--preset--color--border, rgba(0, 0, 0, 0.12));
+	box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.08);
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast, #111);
+	display: none;
+	inset-inline: 0;
+	padding: var(--wp--preset--spacing--50, 2rem) var(--wp--style--root--padding-right, 1.5rem) var(--wp--preset--spacing--50, 2rem) var(--wp--style--root--padding-left, 1.5rem);
+	position: absolute;
+	text-align: start;
+	top: 100%;
+	z-index: 100;
+}
+
+.wp-block-pergel-mega-menu.is-open > .wp-block-pergel-mega-menu__panel,
+.wp-block-pergel-mega-menu:not(.is-ready):is(:hover, :focus-within) > .wp-block-pergel-mega-menu__panel {
+	display: block;
+}
+
+/* Lists in the panel are columns, not the Navigation block's row of items. */
+.wp-block-navigation .wp-block-pergel-mega-menu__panel :is(.wp-block-page-list, .wp-block-categories-list, .wp-block-latest-posts__list) {
+	align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+/* In the footer the panel opens upwards. */
+footer .wp-block-pergel-mega-menu__panel {
+	bottom: 100%;
+	top: auto;
+}
+
+/* In the mobile overlay menu the panel opens in place, under its item. */
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-pergel-mega-menu {
+	align-items: flex-start;
+	flex-direction: column;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-pergel-mega-menu__panel {
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	color: inherit;
+	padding: 1rem 0 0;
+	position: static;
+	width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wp-block-pergel-mega-menu__icon {
+		transition: none;
+	}
+}

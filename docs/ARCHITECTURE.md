@@ -189,10 +189,17 @@ Pergel blokları sunucuda çizilir ve `engine/blocks/<slug>/` altında durur:
 - `render.php`: blok çıktısı; `$attributes`, `$content`, `$block` değişkenleriyle çağrılır.
 - `style.css` (isteğe bağlı): çekirdek yalnızca blok sayfada çizildiğinde ekler ve küçükse
   satır içine alır; ayrı istek oluşmaz.
-- Derlenmiş editör betiği olmayan blok `supports.autoRegister: true` taşır. WP 7.0'dan beri
-  editör böyle bir bloğu sunucu önizlemesiyle kendisi kaydeder ve ayar alanlarını
-  `attributes`'tan üretir (K6: basit bloklar PHP-only). Karmaşık editör arayüzü gereken bloklar
-  `@wordpress/scripts` ile `engine/build/`'e derlenir ve `editorScript` taşır.
+- Editör betiği olmayan blok `supports.autoRegister: true` taşır. WP 7.0'dan beri editör böyle
+  bir bloğu sunucu önizlemesiyle kendisi kaydeder ve ayar alanlarını `attributes`'tan üretir
+  (breadcrumb böyledir).
+- İçerik tutan bloklar derlemesiz bir `index.js` (`editorScript: file:./index.js`) ve bağımlılıkları
+  sayan `index.asset.php` taşır. Ortak yardımcı `engine/assets/blocks-editor.js`
+  (`pergel-blocks-editor`) `window.pergelBlocks.container()` ile bloğu çekirdek bloklardan oluşan
+  bir InnerBlocks şablonu, isteğe bağlı sınıf ve Inspector kontrolleriyle kaydeder; `save` yalnızca
+  iç blokları yazar, sarmalayıcıyı `render.php` basar. Böylece metin, görsel ve bağlantılar çekirdek
+  blokların kendi araçlarıyla düzenlenir, contentOnly pattern'lerde de açık kalır ve çevrilebilir.
+- `render.php` ve `block.json`'un gösterdiği her dosya (`style`, `editorScript`,
+  `viewScriptModule`...) var olmalıdır; `tools/blocks.php` bunu da denetler.
 
 `php tools/blocks.php` bu kuralları denetler ve tüm `block.json`'ları `engine/blocks/manifest.php`
 dosyasına yazar. `Blocks\Module` blokları bu dosyadan bir metadata koleksiyonu olarak kaydeder;
@@ -241,6 +248,120 @@ SEO matrisi (`tools/seo/check.mjs`) bunu altı senaryoda denetler. Rank Math yol
 bildiren temalarda kurduğundan Pergel `rank-math-breadcrumbs` desteğini ekler; blog sayfası gibi
 bağlantısız bırakılan son adıma sayfanın adresini verir. Editörde blok örnek bir yol gösterir.
 Blok `single`, `page`, `archive` ve `home` şablonlarında başlığın üstündedir.
+
+### İçerik blokları (F3b)
+
+Hepsi sunucuda çizilir; CSS'leri yalnızca blok sayfadayken yüklenir. Ön yüz script'leri küçük
+script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
+
+- **Sayaç** (`pergel/counter`): sayı ve etiket paragrafı. Sunucu son sayıyı basar; script blok
+  görünür olunca sıfırdan sayar (binlik ayırıcı, ondalık ve çevresindeki metin korunur: `250+`,
+  `%98`, `1.200`). `prefers-reduced-motion`'da ve süre 0 iken sayı hiç değişmez. Süre 0–10000 ms.
+- **Zaman çizelgesi** (`pergel/timeline` > `pergel/timeline-item`): `<ol>`/`<li>`; dar ekranda tek
+  sütun, 48rem'den geniş ekranda çizginin iki yanında sırayla.
+- **Logo şeridi** (`pergel/logo-marquee`): Image blokları iki kez basılır, ikinci kopya
+  `aria-hidden` ve `inert`'tir ve id'leri silinir. Kayma saf CSS'tir (süre 5–120 sn), üzerine
+  gelince, logolara odaklanınca ve "Duraklat" düğmesiyle durur (WCAG 2.2.2); düğmeyi script
+  gösterir. Hareket azaltılmışsa logolar sabit, sarılan bir satırdır. Editörde de sabit satırdır.
+- **Fiyat tablosu** (`pergel/pricing-table` > `pergel/pricing-plan`): sığdığı kadar sütun, butonlar
+  altta hizalı; öne çıkan plan `is-featured` alır.
+- **Karşılaştırma tablosu:** yeni blok değil, `core/table` için `pergel-comparison` blok stili
+  (`Blocks\Styles`). İlk sütun yapışkan, tablo en az 32rem; dar ekranda tablo kendi içinde yatay
+  kayar ve çerçevesi klavyeyle kaydırılabilsin diye `tabindex="0"` alır.
+- **İçindekiler** (`pergel/table-of-contents`): yazının H2–H3 (ayarla H4'e kadar) başlıklarını
+  iç içe `<ol>` olarak listeler; iki başlıktan azsa hiçbir şey basmaz. Başlık listesi
+  `parse_blocks` ile içerikten çıkarılır. `Blocks\Toc` tekil sayfalarda içeriğin her başlığına
+  aynı id'yi verir: HTML çapası olan kendi id'sini korur, diğerleri metinden üretilir ve tekrar
+  edenler `-2`, `-3` alır. Eşleşme düzey+metin ve sıraya göredir; sıra her `the_content`
+  geçişinde baştan başlar (meta açıklaması için üretilen özet başlıkları önce bir kez çizer).
+  Editör önizlemesi kayıtlı içerikten gelir.
+- **Harita** (`pergel/map`): adres/yer ve yakınlık. Önce statik görsel (ya da adresli bir yer
+  tutucu) ve Google Maps'e giden bir bağlantı basılır; iframe yalnızca "Show the map"e basınca
+  oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez.
+
+### Etkileşimli bloklar (F3b)
+
+Bu üç blok çekirdeğin Interactivity API'sini kullanır (`supports.interactivity`, `data-wp-*`
+yönergeleri, `viewScriptModule`); jQuery yoktur. Sunucu tam HTML'i basar, script yalnızca durum
+ekler; JavaScript olmadan da içerik görünür ve kullanılabilir.
+
+- **Carousel** (`pergel/carousel` > `pergel/carousel-slide`): WAI-ARIA carousel deseni
+  (etiketli `region`, `aria-roledescription`, slayt başına "2 of 5" etiketi). Görünümde 1–4 slayt
+  (`perView`; dar ekranda bir sonraki slayt kenardan görünür), önceki/sonraki düğmeleri ve isteğe
+  bağlı noktalar. Kaydırma CSS scroll-snap'tir; script düğmeleri ve noktaları kaydırma konumuyla
+  eşler. Otomatik oynatma yoktur. Script'siz carousel dokunma, trackpad ya da odaktayken ok
+  tuşlarıyla kaydırılan bir şerittir.
+- **Mega menü** (`pergel/mega-menu`): Navigation bloğunun bir öğesidir (`Blocks\MegaMenu` blok
+  türünü `core/navigation`'ın izinli blokları arasına ekler). Paneli `pergel-mega-menu` alanındaki
+  bir template part'tır (tema varsayılanı `parts/mega-menu.html`, metinler
+  `patterns/hidden-mega-menu.php`'de); editörde blok listeden bir parça seçer ve parça Site
+  Editor'de header gibi bloklarla düzenlenir. Tıklama açar; Esc, dışarı tıklama ve odağın
+  dışarı çıkması kapatır (Esc mobil menüyü kapatmaz, yalnızca paneli). Header'da panel header
+  boyunca açılır, footer'da yukarı açılır, mobil menüde öğesinin altında yerinde açılır. Script'siz
+  panel üzerine gelince ve odakta açılır. İçeriği boş (metin ve medya yok) bir parça hiçbir şey
+  basmaz, boş kutu açılmaz.
+- **Form** (`pergel/form`): iletişim veya teklif formu; ayrıntılar aşağıda.
+
+### Formlar (F3b)
+
+`Forms` modülü (`modules.forms` ile kapatılır; kapalıyken Form bloğu hiçbir şey basmaz) Form
+bloğunun mesajlarını alır.
+
+- **Çizim** (`Forms\Form`): ad, e-posta ve mesaj zorunludur; telefon ve şirket bloğun ayarıyla
+  eklenir. Teklif formunda mesaj alanı "What do you need?" olur ve e-posta konusu değişir.
+  İsteğe bağlı onay kutusu gizlilik sayfasına bağlanır.
+  Formda imzalı bir belirteç (`Form::sign()`, HMAC: blok ayarları, sayfa, oluşturma zamanı) ve
+  `website` adlı bir tuzak alanı vardır. Belirteç nonce değildir: önbellekli sayfada da geçerli
+  kalır ve bloğun ayarlarını sunucuya taşır.
+- **Gönderim** (`Forms\Submit`): script `POST /wp-json/pergel/v1/form` kullanır; script'siz form
+  `admin-post.php` (`action=pergel_form`) üzerinden gider ve sonuç koduyla sayfaya geri döner.
+  İkisi de aynı sırayla denetler: dolu tuzak sessizce "gönderildi" alır; belirteç imzalı olmalı;
+  yüklemeden 3 saniye içinde gelen form geri çevrilir; bağlantı başına 10 dakikada 5 mesaj (IP
+  yalnızca özetlenerek sayaç anahtarında kullanılır); Turnstile anahtarları varsa doğrulanır;
+  sonra alanlar sunucuda doğrulanır. Geçen mesaj önce saklanır, sonra e-postayla gönderilir.
+- **Saklama** (`Forms\Inbox`): gizli `pergel_submission` yazı türü, yönetimde Pergel →
+  "Form messages" (ad, e-posta, form, sayfa, e-posta gönderildi mi, tarih). Yalnızca yöneticiler görür;
+  mesaj elle oluşturulamaz, okunur ve silinir. Kişisel veri dışa aktarma/silme araçlarına bağlıdır ve gizlilik
+  politikasına önerilen metin ekler. Yazı türü yalnızca yönetimde, WP-CLI'da ve mesaj
+  saklanmadan hemen önce kaydedilir.
+- **E-posta:** alıcı `forms.recipient`, boşsa site yönetici e-postası; `Reply-To` gönderendir.
+- **Turnstile:** `PERGEL_TURNSTILE_SITE_KEY` ve `PERGEL_TURNSTILE_SECRET_KEY` `wp-config.php`'de
+  tanımlıysa (ya da `pergel/forms/turnstile` süzgeciyle) kullanılır; Cloudflare script'i yalnızca
+  formlu sayfalarda yüklenir.
+
+### Ön yüzde yalın yükleme
+
+Sayfa görüntülemesinde Pergel bloklarının editör betik ve stilleri kaydedilmez:
+`Blocks\Module` kayıt sırasında `block_type_metadata` süzgeciyle `pergel/*` bloklarının
+`editorScript`/`editorStyle` alanlarını düşürür (yönetim, WP-CLI ve REST istekleri hariç).
+Böylece her blok için `index.asset.php` okunmaz. Form sınıfları da yalnızca Form bloğu çizildiğinde
+ya da bir mesaj geldiğinde yüklenir. Bütçe ölçümü (`pergel_files ≤ 45`) bunu denetler.
+
+### Blok uzantıları (F3b)
+
+Üç uzantıdan ikisini WordPress 7.0/7.1 çekirdeği zaten sağlar; Pergel onları açar ve ayarlar,
+yalnızca kaydırma animasyonunu kendisi ekler.
+
+- **Kaydırma animasyonu** (`Blocks\Animation`): bölüm ve içerik bloklarına "Scroll animation"
+  paneli (Fade in, Rise, Zoom in, Slide in from the side) ekler. Öznitelik `pergelAnimation`,
+  sunucuda `register_block_type_args`, editörde `blocks.registerBlockType` süzgeciyle aynı
+  listeye eklenir (`Animation::BLOCKS`, `pergel/animation/blocks` süzgeciyle değişir; carousel
+  slaytları, mega menü ve menü öğeleri dışarıda). Çizimde blok sarmalayıcısına
+  `pergel-animate pergel-animate--<efekt>` sınıfı eklenir ve küçük CSS satır içi yüklenir; ayar
+  kullanılmayan sayfaya hiçbir şey gelmez. Animasyon yalnızca CSS'tir (`animation-timeline:
+  view()`), script yoktur. Kural `prefers-reduced-motion: no-preference` ve
+  `@supports (animation-timeline: view())` içindedir: desteklemeyen tarayıcıda ve azaltılmış
+  hareket isteyen ziyaretçide blok olduğu gibi görünür. Aralık `entry 0% entry 90%`: blok
+  tamamen görünür olmadan animasyon biter, sayfanın son bloğu da soluk kalmaz. Bedeli, kısa
+  bloklar kendi yükseklikleri kadar kaydırmada belirir. Editörde bloklar durağan görünür.
+- **Cihaza göre gizleme** çekirdeğindir (`metadata.blockVisibility.viewport`): blok menüsünde
+  "Hide" (Ctrl+Shift+H) Masaüstü, Tablet ve Mobil seçeneklerini sunar. Sınırlar tema
+  `theme.json` içindeki `settings.viewport`'tan gelir: mobil ≤ 600px, tablet ≤ 1024px (çekirdek
+  varsayılanı 480/782). Çekirdek `wp-block-hidden-<cihaz>` sınıfı ve `@media (width <= …)`
+  kuralı basar.
+- **Yapışkan konum** çekirdeğindir (`position.sticky`, `appearanceTools` ile açık): Group bloğunun
+  Styles sekmesinde Position → Sticky. Header'ın yapışkan davranışı ise template part
+  özniteliğidir (yukarıda).
 
 ## WP-CLI (F2)
 

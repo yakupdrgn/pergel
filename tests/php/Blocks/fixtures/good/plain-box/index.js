@@ -1,0 +1,1 @@
+/* Editor script of the test block. */

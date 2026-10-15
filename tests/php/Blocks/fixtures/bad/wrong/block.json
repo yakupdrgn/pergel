@@ -1,1 +1,1 @@
-{ "apiVersion": 2, "name": "acme/wrong", "textdomain": "acme", "style": "file:./missing.css", "render": "file:./render.php" }
+{ "apiVersion": 2, "name": "acme/wrong", "textdomain": "acme", "style": "file:./missing.css", "viewScriptModule": "file:./view.js", "render": "file:./render.php" }

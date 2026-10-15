@@ -45,6 +45,8 @@ Bindings ile tek yerden bağlanır.
 Sunucuda Node gerekmez. Basit bloklar PHP-only. Karmaşık editör arayüzleri `@wordpress/scripts`
 ile derlenir; derlenmiş dosyalar (`engine/build/`) repoya girer.
 **Elenen:** tamamen build'siz yaklaşım; her şeyi derleyen ağır toolchain.
+**Değişiklik (F3b, 15 Ekim 2026):** Şimdiye kadarki editör arayüzleri derleme gerektirmedi;
+`engine/build/` yok. Gerekçe ve kural F3 kararlarında ("Blok editör betikleri derlemesiz").
 
 ## K7 — Asgari WordPress 7.1, PHP 8.1; destek: son iki major WP sürümü
 
@@ -383,6 +385,71 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   sürümü yol üretmediği için Pergel'in yolu ve blokta basılan bir BreadcrumbList kullanılır.
   Rank Math'in blog sayfasında bağlantısız bıraktığı son adıma sayfa adresi verilir; böylece o
   sayfada da yol ve schema "Ana sayfa > Blog" olur.
+- **F3b tek PR, üç commit:** içerik blokları, etkileşimli bloklar (carousel, mega menü, form),
+  blok uzantıları (kullanıcı kararı).
+- **Blok editör betikleri derlemesiz:** WP 7.0'ın `autoRegister` ile ürettiği ayar alanları blok
+  contentOnly modundayken (kilitli pattern'ler) gizlenir, yalnızca metin/sayı/boolean
+  özniteliklerini kapsar ve etiketleri çevrilmez. Bu yüzden içerik tutan bloklar içeriği çekirdek
+  bloklarda (InnerBlocks şablonu) tutar ve editör tarafını elle yazılmış, derlemesiz bir
+  `index.js` kaydeder (`wp.element.createElement`, ortak `pergel-blocks-editor` yardımcısı).
+  Gerekirse ileride derlemeye geçmek K6 içinde kalır; şimdilik Node yalnızca test aracıdır.
+- **Karşılaştırma tablosu blok stilidir:** Çekirdek tablo zaten doğru semantiği, başlık satırını
+  ve düzenleme araçlarını veriyor; ayrı blok aynı şeyi ikinci kez yazardı.
+- **İçindekiler id'leri tekil sayfadaki bütün başlıklara verilir:** Blok şablonda içerikten önce
+  de sonra da durabilir; id'ler yalnızca blok varken verilseydi sıraya bağlı kalırdı. Ayrıca her
+  bölüm bloksuz da bağlantılanabilir. HTML çapası olan başlığa dokunulmaz.
+- **Harita tıklayınca yüklenir:** Gizlilik (sayfa açılışında Google'a istek ve çerez yok) ve
+  performans (iframe ~1 MB). Bağlantı JavaScript olmadan da Google Maps'i açar.
+- **İletişim/teklif formu gönderimleri:** yöneticiye e-posta ve panelde gizli bir yazı türünde
+  kayıt; e-posta kaybolsa da talep kaybolmaz (kullanıcı kararı). Yalnızca yerelde, `pre_wp_mail`
+  ile yakalanarak test edilir.
+- **Etkileşim çekirdeğin Interactivity API'siyle:** Carousel, mega menü ve form aynı çekirdek
+  çalışma zamanını paylaşır (~15 KB, bir kez); jQuery ya da ayrı kütüphane yoktur. Sunucu tam
+  HTML'i bastığı için script'siz de çalışırlar.
+- **Form belirteci nonce değil, imzalı belirteçtir:** Nonce oturuma ve 12–24 saate bağlıdır;
+  LSCache/Cloudflare'de önbelleğe alınmış sayfada süresi geçer ve form bozulur. HMAC belirteci
+  önbellekte de geçerli kalır, blok ayarlarını (tür, isteğe bağlı alanlar, sayfa) sunucuya
+  değiştirilemez biçimde taşır. Spam'e karşı tuzak alanı, 3 saniye kuralı, bağlantı başına sınır
+  ve isteğe bağlı Turnstile vardır.
+- **Turnstile anahtarları sabitlerde:** Gizli anahtar veritabanına, ayar dışa aktarımına ve
+  proje paketlerine girmesin diye `wp-config.php` sabitlerinden okunur. Anahtar yoksa Turnstile
+  yoktur, form yine çalışır.
+- **IP adresi saklanmaz:** Sınır için yalnızca özetlenmiş hali 10 dakikalık bir transient
+  anahtarında kullanılır. Mesajla birlikte ad, e-posta, mesaj ve isteğe bağlı alanlar saklanır.
+- **Script'siz form admin-post'a gider:** Aynı denetimlerden geçer ve sonuç koduyla sayfaya döner;
+  JavaScript kapalı ya da yüklenememiş bir ziyaretçinin talebi de kaybolmaz.
+- **Carousel kendiliğinden dönmez:** Otomatik oynatma okunurluğu ve erişilebilirliği bozar
+  (WCAG 2.2.2), dönüşüm getirmez. Slaytlar ziyaretçinin denetimindedir.
+- **Mega menü paneli bir template part alanıdır:** Panel içeriği (sütunlar, listeler, görsel,
+  CTA) header gibi Site Editor'de bloklarla kurulur ve birden çok menü aynı parçayı kullanabilir;
+  menü bloğunun içine iç blok olarak gömülseydi Navigation bloğunun sınırlı izinli blok listesine
+  takılırdı. Footer'da panel yukarı açılır. Esc yalnızca paneli kapatır, mobil menüyü değil.
+  İçeriği boş parça hiçbir şey basmaz.
+- **Çekirdeğin page-list iç içe liste sorunu bizim değil:** Navigation'da Page List başka
+  öğelerle yan yana konunca çekirdek onu `<ul>` içine sarar ve axe `list` hatası verir. Pergel
+  header'ları buna düşmez; menüye elle öğe eklenecekse Page List yerine bağlantı öğeleri
+  kullanılır.
+- **Sayfa görüntülemesinde editör dosyaları kaydedilmez:** Blok sayısı arttıkça her istekte
+  okunan `index.asset.php` dosyaları bütçeyi (Pergel dosyası ≤ 45) aşıyordu (49–54). Editör
+  betikleri yalnızca yönetim, WP-CLI ve REST isteklerinde kaydedilir; ön yüz 31–37 dosyada kaldı.
+- **Geliştirme notu, pattern önbelleği:** WordPress tema pattern dosyalarının listesini site
+  transient'inde (`wp_theme_files_patterns-<hash>`) tutar; yeni bir `patterns/*.php` dosyası bu
+  silinene kadar görünmez ve CLI ile Apache ayrı anahtar kullanabilir. Yerelde bu transient'ler
+  silinir; canlıda tema sürümünü artırmak önbelleği geçersiz kılar.
+- **Cihaza göre gizleme ve yapışkan konum çekirdekten:** Plan üç blok uzantısı yazmaktı. WP 7.0/7.1
+  blok görünürlüğünü cihaz başına (`blockVisibility.viewport`), `appearanceTools` da Group için
+  sticky konumu zaten getiriyor. Aynısını yazmak editörde iki ayrı "gizle" ayarı ve iki CSS
+  yolu demekti; Pergel çekirdeğinkini açar ve sınırlarını verir, kendi kodu yalnızca
+  animasyondur.
+- **Cihaz sınırları 600 ve 1024 piksel:** 600px çekirdek Navigation'ın mobil menüye geçtiği
+  sınırla aynıdır, böylece "mobilde gizle" ile hamburger menü aynı genişlikte devreye girer.
+  1024px yatay tutulan tabletleri tablet sayar; çekirdeğin 782px'i onları masaüstüne atıyordu.
+- **Kaydırma animasyonu yalnızca CSS:** IntersectionObserver betiği her sayfaya JS ve kaydırma
+  sırasında iş ekler, betik gelmeden içeriği gizleyip sonra göstermek de LCP ve CLS riskidir.
+  `view()` zaman çizelgesi tarayıcıda, ana iş parçacığı dışında akar; desteklemeyen tarayıcı
+  içeriği hemen gösterir. Animasyon bir süsleme olduğu için bu kayıp kabul edildi.
+- **Animasyon blok tamamen görününce biter:** Aralık `entry 0%–90%`. `entry 0%–100%` blok tam
+  girdiğinde opaklığı 0,98'de bırakıyor ve sayfanın son bloğu hiç tamamlanmıyordu.
 
 ## Aşamalar ve bitti tanımları
 

@@ -65,6 +65,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				'forms'       => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
 			),
 			// Company details: block bindings and Organization schema.
 			'brand'       => array(
@@ -130,6 +134,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+			),
+			// Contact and quote forms.
+			'forms'       => array(
+				'recipient' => array( 'type' => 'email' ),
 			),
 		);
 	}

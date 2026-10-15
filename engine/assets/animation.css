@@ -1,0 +1,41 @@
+/*
+ * Scroll animation: the block comes in as it scrolls into view and is
+ * fully shown once it is fully in view (or, if taller than the screen,
+ * once it fills it). Only the start is given, so the end is the block's
+ * own opacity and transform. Without scroll-driven animations, or with
+ * reduced motion, the block is simply shown.
+ */
+@keyframes pergel-animate {
+	from {
+		opacity: 0;
+		transform: var(--pergel-animate-from, none);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+	@supports (animation-timeline: view()) {
+
+		.pergel-animate {
+			animation: pergel-animate linear both;
+			animation-range: entry 0% entry 90%;
+			animation-timeline: view();
+		}
+
+		.pergel-animate--rise {
+			--pergel-animate-from: translateY(2rem);
+		}
+
+		.pergel-animate--zoom {
+			--pergel-animate-from: scale(0.94);
+		}
+
+		.pergel-animate--slide {
+			--pergel-animate-from: translateX(-2rem);
+		}
+
+		.pergel-animate--slide:dir(rtl) {
+			--pergel-animate-from: translateX(2rem);
+		}
+	}
+}

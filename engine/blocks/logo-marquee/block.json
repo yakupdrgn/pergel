@@ -1,0 +1,35 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/logo-marquee",
+	"title": "Logo marquee",
+	"category": "pergel",
+	"icon": "images-alt2",
+	"description": "A row of logos that moves slowly sideways. Visitors can pause it; with reduced motion it stands still.",
+	"keywords": [ "logos", "clients", "partners", "brands", "ticker" ],
+	"textdomain": "pergel-engine",
+	"allowedBlocks": [ "core/image" ],
+	"attributes": {
+		"duration": {
+			"type": "integer",
+			"default": 30
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

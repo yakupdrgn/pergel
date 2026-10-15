@@ -38,6 +38,10 @@ final class Labels {
 				'title'       => __( 'Performance', 'pergel-engine' ),
 				'description' => __( 'Front-end changes made while the Performance module is on. The admin area is not affected.', 'pergel-engine' ),
 			),
+			'forms'       => array(
+				'title'       => __( 'Forms', 'pergel-engine' ),
+				'description' => __( 'Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive.', 'pergel-engine' ),
+			),
 		);
 	}
 
@@ -52,7 +56,7 @@ final class Labels {
 			'modules'     => array(
 				'modules' => array(
 					'title'  => __( 'Modules', 'pergel-engine' ),
-					'fields' => array( 'brand', 'seo', 'performance' ),
+					'fields' => array( 'brand', 'seo', 'performance', 'forms' ),
 				),
 			),
 			'brand'       => array(
@@ -97,6 +101,12 @@ final class Labels {
 					'fields' => array( 'preload_fonts' ),
 				),
 			),
+			'forms'       => array(
+				'delivery' => array(
+					'title'  => __( 'Delivery', 'pergel-engine' ),
+					'fields' => array( 'recipient' ),
+				),
+			),
 		);
 	}
 
@@ -119,6 +129,10 @@ final class Labels {
 				'performance' => array(
 					'label' => __( 'Performance', 'pergel-engine' ),
 					'help'  => __( 'Removes front-end assets that most sites do not need.', 'pergel-engine' ),
+				),
+				'forms'       => array(
+					'label' => __( 'Forms', 'pergel-engine' ),
+					'help'  => __( 'The contact and quote Form block: messages are emailed and kept in the admin area.', 'pergel-engine' ),
 				),
 			),
 			'brand'       => array(
@@ -181,6 +195,12 @@ final class Labels {
 				'preload_fonts'       => array(
 					'label' => __( 'Preload the style variation fonts', 'pergel-engine' ),
 					'help'  => __( 'The basic Latin files of the body and heading fonts start downloading with the page.', 'pergel-engine' ),
+				),
+			),
+			'forms'       => array(
+				'recipient' => array(
+					'label' => __( 'Send messages to', 'pergel-engine' ),
+					'help'  => __( 'Leave empty to use the administration email address of the site.', 'pergel-engine' ),
 				),
 			),
 		);
