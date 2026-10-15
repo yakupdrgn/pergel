@@ -112,7 +112,11 @@ bir projeye ait; o adlar kullanılmaz.
   güncelleme sorgusu atmasını bir must-use eklentiyle kapatır (F3c), böylece CI ağa bağlı kalmaz.
   setup-php, PHP 8.4'te JIT'i açık getirir. JIT, PHPUnit'i ve `wp-admin/post-new.php` isteğinde
   `php -S`'i çökertiyor: veritabanı "aborted connection" yazıyor, istek hiç bitmiyor. Bu yüzden
-  PHPUnit ve blok editörü kontrolü JIT kapalı çalışır. Bütçe ölçümü JIT açık kalır.
+  PHPUnit ve blok editörü kontrolü JIT kapalı çalışır. Bütçe ölçümü JIT açık kalır. JIT
+  kapalıyken de bir sayfa isteği ara sıra 30 saniyelik sınırı aşıp `php -S`'i sonlandırıyor
+  (yerelde yeniden üretilemedi). Bu yüzden sunucu `tools/ci/serve.sh` ile çalışır ve ölürse
+  yeniden başlar. Her istek `/tmp/pergel-requests.log`'a yazılır, böylece suçlu istek CI
+  çıktısından bulunabilir.
 - **Repo konumu:** `D:\dev\pergel` (önce `C:\dev\pergel`, kullanıcı isteğiyle taşındı).
 
 ## F1 kararları (15 Ekim 2026)

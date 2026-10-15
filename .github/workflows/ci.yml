@@ -118,7 +118,7 @@ jobs:
         run: bash tools/ci/cli-smoke.sh
       - name: Start PHP server
         run: |
-          php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: Smoke
@@ -143,8 +143,9 @@ jobs:
         # aborted connection and the request never ends), so the server is
         # restarted without it once the budget is measured.
         run: |
-          pkill -f 'php -S 127.0.0.1:8080' || true
-          php -d opcache.jit=disable -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php >> /tmp/php-server.log 2>&1 &
+          pkill -f tools/ci/serve.sh || true
+          pkill -f 'php.* -S 127.0.0.1:8080' || true
+          bash tools/ci/serve.sh -d opcache.jit=disable >> /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && break; sleep 1; done
           export PERGEL_QA_PASSWORD="$(head -c 18 /dev/urandom | base64)"
           wp --path="$WP_DIR" user create pergel-qa qa@example.invalid --role=administrator --user_pass="$PERGEL_QA_PASSWORD" --porcelain > /dev/null
@@ -160,6 +161,7 @@ jobs:
           path: |
             reports/
             /tmp/php-server.log
+            /tmp/pergel-requests.log
           if-no-files-found: ignore
 
   visual:
@@ -200,7 +202,7 @@ jobs:
         run: bash tools/ci/setup-wp.sh
       - name: Start PHP server
         run: |
-          php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: axe, overflow and screenshots
@@ -219,6 +221,7 @@ jobs:
             test-results/
             playwright-report/
             /tmp/php-server.log
+            /tmp/pergel-requests.log
           if-no-files-found: ignore
 
   seo-matrix:
@@ -256,7 +259,7 @@ jobs:
         run: bash tools/ci/setup-wp.sh
       - name: Start PHP server
         run: |
-          php -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php > /tmp/php-server.log 2>&1 &
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: SEO matrix (latest plugin versions from wordpress.org)
@@ -267,5 +270,6 @@ jobs:
           name: seo-matrix-logs
           path: |
             /tmp/php-server.log
+            /tmp/pergel-requests.log
             /tmp/pergel-wp/wp-content/debug.log
           if-no-files-found: ignore

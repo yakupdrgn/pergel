@@ -69,6 +69,31 @@ remove_action( 'admin_init', '_maybe_update_core' );
 remove_action( 'admin_init', '_maybe_update_plugins' );
 remove_action( 'admin_init', '_maybe_update_themes' );
 PHP
+# One line when a web request starts and one when it ends, so a request that
+# hangs or kills php -S can be named from the CI artifacts.
+cat > "$WP_DIR/wp-content/mu-plugins/pergel-ci-requests.php" <<'PHP'
+<?php
+// Pergel CI: request log in /tmp/pergel-requests.log (tools/ci/setup-wp.sh).
+if ( PHP_SAPI === 'cli-server' ) {
+	$pergel_ci_line = static function ( string $what ): void {
+		$headers = array();
+		foreach ( array( 'PATTERN', 'VARIATION', 'HEADER', 'FOOTER', 'PERF' ) as $name ) {
+			if ( ! empty( $_SERVER[ "HTTP_X_PERGEL_$name" ] ) ) {
+				$headers[] = strtolower( $name ) . '=' . $_SERVER[ "HTTP_X_PERGEL_$name" ];
+			}
+		}
+		$ms = round( ( microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'] ) * 1000 );
+		file_put_contents(
+			'/tmp/pergel-requests.log',
+			sprintf( "%s %s %dms pid=%d %s %s %s
+", gmdate( 'H:i:s' ), $what, $ms, getmypid(), $_SERVER['REQUEST_METHOD'] ?? '', $_SERVER['REQUEST_URI'] ?? '', implode( ' ', $headers ) ),
+			FILE_APPEND
+		);
+	};
+	$pergel_ci_line( 'start' );
+	register_shutdown_function( $pergel_ci_line, 'end  ' );
+}
+PHP
 wp theme activate pergel
 wp plugin activate pergel-engine
 MSYS_NO_PATHCONV=1 wp rewrite structure '/%postname%/' # keep Git Bash from rewriting the argument
