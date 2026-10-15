@@ -250,9 +250,28 @@ final class WooTest extends TestCase {
 		foreach ( array( 'archive-product', 'product-search-results', 'single-product', 'page-cart', 'page-checkout', 'order-confirmation' ) as $template ) {
 			$this->assertFileExists( get_theme_file_path( "templates/{$template}.html" ) );
 		}
-		foreach ( array( 'details', 'related', 'terms' ) as $part ) {
+		foreach ( array( 'details', 'filters', 'related', 'terms' ) as $part ) {
 			$this->assertIsArray( \WP_Block_Patterns_Registry::get_instance()->get_registered( "pergel/hidden-product-{$part}" ), $part );
 		}
+	}
+
+	public function test_the_shop_lists_products_beside_its_filters(): void {
+		$template = (string) file_get_contents( get_theme_file_path( 'templates/archive-product.html' ) );
+		$this->assertStringContainsString( '<!-- wp:pattern {"slug":"pergel/hidden-product-filters"} /-->', $template );
+
+		$pattern = \WP_Block_Patterns_Registry::get_instance()->get_registered( 'pergel/hidden-product-filters' );
+		$this->assertIsArray( $pattern );
+		$blocks = array_values( array_filter( parse_blocks( $pattern['content'] ), static fn ( array $block ): bool => null !== $block['blockName'] ) );
+		$this->assertCount( 1, $blocks );
+		$this->assertSame( 'woocommerce/product-filters', $blocks[0]['blockName'] );
+
+		$names = array_column( $blocks[0]['innerBlocks'], 'blockName' );
+		foreach ( array( 'woocommerce/product-filter-active', 'woocommerce/product-filter-price', 'woocommerce/product-filter-taxonomy', 'woocommerce/product-filter-status' ) as $filter ) {
+			$this->assertContains( $filter, $names, $filter );
+		}
+		// One attribute filter for each of the store's first three attributes.
+		$attributes = function_exists( 'wc_get_attribute_taxonomies' ) ? count( wc_get_attribute_taxonomies() ) : 0;
+		$this->assertCount( min( 3, $attributes ), array_keys( $names, 'woocommerce/product-filter-attribute', true ) );
 	}
 
 	/**
