@@ -48,6 +48,7 @@ final class Module implements Core\Module {
 		add_action( 'init', array( self::class, 'register_editor_script' ), 5 );
 		add_action( 'init', array( self::class, 'register_blocks' ) );
 		add_filter( 'block_categories_all', array( self::class, 'category' ) );
+		Animation::register();
 		Header::register();
 		MegaMenu::register();
 		Styles::register();
@@ -73,7 +74,7 @@ final class Module implements Core\Module {
 		wp_register_script(
 			'pergel-blocks-editor',
 			$src,
-			array( 'wp-blocks', 'wp-block-editor', 'wp-element' ),
+			array( 'wp-blocks', 'wp-block-editor', 'wp-element', Animation::SCRIPT ),
 			VERSION,
 			array( 'in_footer' => true )
 		);

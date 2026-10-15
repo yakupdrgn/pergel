@@ -337,6 +337,32 @@ Sayfa görüntülemesinde Pergel bloklarının editör betik ve stilleri kaydedi
 Böylece her blok için `index.asset.php` okunmaz. Form sınıfları da yalnızca Form bloğu çizildiğinde
 ya da bir mesaj geldiğinde yüklenir. Bütçe ölçümü (`pergel_files ≤ 45`) bunu denetler.
 
+### Blok uzantıları (F3b)
+
+Üç uzantıdan ikisini WordPress 7.0/7.1 çekirdeği zaten sağlar; Pergel onları açar ve ayarlar,
+yalnızca kaydırma animasyonunu kendisi ekler.
+
+- **Kaydırma animasyonu** (`Blocks\Animation`): bölüm ve içerik bloklarına "Scroll animation"
+  paneli (Fade in, Rise, Zoom in, Slide in from the side) ekler. Öznitelik `pergelAnimation`,
+  sunucuda `register_block_type_args`, editörde `blocks.registerBlockType` süzgeciyle aynı
+  listeye eklenir (`Animation::BLOCKS`, `pergel/animation/blocks` süzgeciyle değişir; carousel
+  slaytları, mega menü ve menü öğeleri dışarıda). Çizimde blok sarmalayıcısına
+  `pergel-animate pergel-animate--<efekt>` sınıfı eklenir ve küçük CSS satır içi yüklenir; ayar
+  kullanılmayan sayfaya hiçbir şey gelmez. Animasyon yalnızca CSS'tir (`animation-timeline:
+  view()`), script yoktur. Kural `prefers-reduced-motion: no-preference` ve
+  `@supports (animation-timeline: view())` içindedir: desteklemeyen tarayıcıda ve azaltılmış
+  hareket isteyen ziyaretçide blok olduğu gibi görünür. Aralık `entry 0% entry 90%`: blok
+  tamamen görünür olmadan animasyon biter, sayfanın son bloğu da soluk kalmaz. Bedeli, kısa
+  bloklar kendi yükseklikleri kadar kaydırmada belirir. Editörde bloklar durağan görünür.
+- **Cihaza göre gizleme** çekirdeğindir (`metadata.blockVisibility.viewport`): blok menüsünde
+  "Hide" (Ctrl+Shift+H) Masaüstü, Tablet ve Mobil seçeneklerini sunar. Sınırlar tema
+  `theme.json` içindeki `settings.viewport`'tan gelir: mobil ≤ 600px, tablet ≤ 1024px (çekirdek
+  varsayılanı 480/782). Çekirdek `wp-block-hidden-<cihaz>` sınıfı ve `@media (width <= …)`
+  kuralı basar.
+- **Yapışkan konum** çekirdeğindir (`position.sticky`, `appearanceTools` ile açık): Group bloğunun
+  Styles sekmesinde Position → Sticky. Header'ın yapışkan davranışı ise template part
+  özniteliğidir (yukarıda).
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.

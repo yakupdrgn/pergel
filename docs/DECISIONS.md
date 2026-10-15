@@ -436,6 +436,20 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   transient'inde (`wp_theme_files_patterns-<hash>`) tutar; yeni bir `patterns/*.php` dosyası bu
   silinene kadar görünmez ve CLI ile Apache ayrı anahtar kullanabilir. Yerelde bu transient'ler
   silinir; canlıda tema sürümünü artırmak önbelleği geçersiz kılar.
+- **Cihaza göre gizleme ve yapışkan konum çekirdekten:** Plan üç blok uzantısı yazmaktı. WP 7.0/7.1
+  blok görünürlüğünü cihaz başına (`blockVisibility.viewport`), `appearanceTools` da Group için
+  sticky konumu zaten getiriyor. Aynısını yazmak editörde iki ayrı "gizle" ayarı ve iki CSS
+  yolu demekti; Pergel çekirdeğinkini açar ve sınırlarını verir, kendi kodu yalnızca
+  animasyondur.
+- **Cihaz sınırları 600 ve 1024 piksel:** 600px çekirdek Navigation'ın mobil menüye geçtiği
+  sınırla aynıdır, böylece "mobilde gizle" ile hamburger menü aynı genişlikte devreye girer.
+  1024px yatay tutulan tabletleri tablet sayar; çekirdeğin 782px'i onları masaüstüne atıyordu.
+- **Kaydırma animasyonu yalnızca CSS:** IntersectionObserver betiği her sayfaya JS ve kaydırma
+  sırasında iş ekler, betik gelmeden içeriği gizleyip sonra göstermek de LCP ve CLS riskidir.
+  `view()` zaman çizelgesi tarayıcıda, ana iş parçacığı dışında akar; desteklemeyen tarayıcı
+  içeriği hemen gösterir. Animasyon bir süsleme olduğu için bu kayıp kabul edildi.
+- **Animasyon blok tamamen görününce biter:** Aralık `entry 0%–90%`. `entry 0%–100%` blok tam
+  girdiğinde opaklığı 0,98'de bırakıyor ve sayfanın son bloğu hiç tamamlanmıyordu.
 
 ## Aşamalar ve bitti tanımları
 
