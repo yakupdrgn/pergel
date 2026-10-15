@@ -30,7 +30,8 @@ final class Screen {
 	 * Adds the admin hooks.
 	 */
 	public static function register(): void {
-		add_action( 'admin_menu', array( self::class, 'menu' ) );
+		// Before the post type submenus (priority 10), so Settings stays the first item.
+		add_action( 'admin_menu', array( self::class, 'menu' ), 9 );
 		add_action( 'pergel/settings/invalid', array( self::class, 'report' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( FILE ), array( self::class, 'action_links' ) );
 	}
@@ -48,6 +49,7 @@ final class Screen {
 			self::icon(),
 			61
 		);
+		add_submenu_page( self::SLUG, __( 'Pergel settings', 'pergel-engine' ), __( 'Settings', 'pergel-engine' ), 'manage_options', self::SLUG, array( self::class, 'render' ) );
 		add_action( "load-$hook", array( self::class, 'load' ) );
 	}
 

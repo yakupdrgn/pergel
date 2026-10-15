@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/carousel",
+	"title": "Carousel",
+	"category": "pergel",
+	"icon": "slides",
+	"description": "Slides in a row that the visitor scrolls or steps through with the arrows and dots. It never moves on its own and works without JavaScript.",
+	"keywords": [ "slider", "slides", "gallery", "testimonials", "cards" ],
+	"textdomain": "pergel-engine",
+	"allowedBlocks": [ "pergel/carousel-slide" ],
+	"attributes": {
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"perView": {
+			"type": "integer",
+			"default": 1
+		},
+		"dots": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"interactivity": true,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"margin": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

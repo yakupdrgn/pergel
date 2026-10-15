@@ -328,6 +328,11 @@
 			"name": "footer",
 			"title": "Footer",
 			"area": "footer"
+		},
+		{
+			"name": "mega-menu",
+			"title": "Mega menu",
+			"area": "pergel-mega-menu"
 		}
 	]
 }

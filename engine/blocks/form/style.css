@@ -1,0 +1,115 @@
+.wp-block-pergel-form {
+	display: grid;
+	gap: 1rem 1.5rem;
+	grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 40rem) {
+	.wp-block-pergel-form {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+.wp-block-pergel-form > :not(.wp-block-pergel-form__field),
+.wp-block-pergel-form__field.is-message,
+.wp-block-pergel-form__field.is-consent {
+	grid-column: 1 / -1;
+}
+
+.wp-block-pergel-form__note,
+.wp-block-pergel-form__status {
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+	margin: 0;
+}
+
+.wp-block-pergel-form__status:empty {
+	display: none;
+}
+
+.wp-block-pergel-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+	min-width: 0;
+}
+
+.wp-block-pergel-form__field label {
+	font-weight: var(--wp--custom--font-weight--button, 600);
+}
+
+.wp-block-pergel-form__field input:not([type="checkbox"]),
+.wp-block-pergel-form__field textarea {
+	background: var(--wp--preset--color--base, #fff);
+	border: 1px solid var(--wp--preset--color--muted, #6b6b6b);
+	border-radius: var(--wp--custom--radius--small, 4px);
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast, #111);
+	font: inherit;
+	min-height: 2.75rem;
+	padding: 0.5rem 0.75rem;
+	width: 100%;
+}
+
+.wp-block-pergel-form__field textarea {
+	resize: vertical;
+}
+
+.wp-block-pergel-form__field :is(input, textarea):focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent, currentColor);
+	outline-offset: 1px;
+}
+
+.wp-block-pergel-form__field [aria-invalid="true"] {
+	border-color: currentColor;
+	border-width: 2px;
+}
+
+.wp-block-pergel-form__field.is-consent {
+	align-items: flex-start;
+	display: grid;
+	gap: 0.25rem 0.75rem;
+	grid-template-columns: auto 1fr;
+}
+
+.wp-block-pergel-form__field.is-consent input {
+	height: 1.25rem;
+	margin: 0.15em 0 0;
+	width: 1.25rem;
+}
+
+.wp-block-pergel-form__field.is-consent label {
+	font-weight: inherit;
+}
+
+.wp-block-pergel-form__field.is-consent .wp-block-pergel-form__error {
+	grid-column: 2;
+}
+
+.wp-block-pergel-form__error {
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+	font-weight: var(--wp--custom--font-weight--button, 600);
+	margin: 0;
+}
+
+.wp-block-pergel-form__error::before,
+.wp-block-pergel-form__status.is-error::before {
+	content: "⚠ ";
+}
+
+.wp-block-pergel-form__status {
+	border-inline-start: 4px solid var(--wp--preset--color--accent, currentColor);
+	padding: 0.5rem 0.75rem;
+}
+
+.wp-block-pergel-form__trap {
+	height: 1px;
+	inset-inline-start: -10000px;
+	overflow: hidden;
+	position: absolute;
+	width: 1px;
+}
+
+.wp-block-pergel-form__submit[aria-disabled="true"] {
+	cursor: progress;
+	opacity: 0.7;
+}

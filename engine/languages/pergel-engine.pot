@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T12:23:23+03:00\n"
+"POT-Creation-Date: 2026-10-15T13:03:45+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -46,6 +46,31 @@ msgstr ""
 msgid "Current page"
 msgstr ""
 
+msgid "Carousel"
+msgstr ""
+
+#. translators: %d: slide number.
+#, php-format
+msgid "Go to slide %d"
+msgstr ""
+
+msgid "carousel"
+msgstr ""
+
+msgid "Previous slide"
+msgstr ""
+
+msgid "Next slide"
+msgstr ""
+
+msgid "slide"
+msgstr ""
+
+#. translators: 1: slide number, 2: number of slides.
+#, php-format
+msgid "%1$d of %2$d"
+msgstr ""
+
 #. translators: %s: address or place shown on the map.
 #, php-format
 msgid "Map: %s"
@@ -61,6 +86,15 @@ msgid "Pause the moving logos"
 msgstr ""
 
 msgid "Pause"
+msgstr ""
+
+msgid "Mega menu"
+msgstr ""
+
+msgid "The wide panel that a Mega menu item of the navigation opens."
+msgstr ""
+
+msgid "Menu"
 msgstr ""
 
 msgid "Pergel"
@@ -103,6 +137,158 @@ msgstr ""
 msgid "Pergel Brand"
 msgstr ""
 
+msgid "The Forms module is switched off under Pergel → Settings → Modules, so this form is not shown."
+msgstr ""
+
+msgid "Request a quote"
+msgstr ""
+
+msgid "Send message"
+msgstr ""
+
+msgid "Fields marked with * are required."
+msgstr ""
+
+msgid "Leave this field empty"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Company"
+msgstr ""
+
+msgid "What do you need?"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Consent"
+msgstr ""
+
+msgid "Thank you. Your message has been sent; we will get back to you soon."
+msgstr ""
+
+msgid "Please check the fields marked below."
+msgstr ""
+
+msgid "That was very quick. Please wait a moment and send the form again."
+msgstr ""
+
+msgid "Too many messages were sent from your connection. Please try again in a few minutes."
+msgstr ""
+
+msgid "The spam check did not pass. Please try again."
+msgstr ""
+
+msgid "The message could not be sent. Check your connection and try again."
+msgstr ""
+
+msgid "This form has expired. Reload the page and send it again."
+msgstr ""
+
+msgid "I agree that my details are used to answer this message."
+msgstr ""
+
+#. translators: %s: link to the privacy policy.
+#, php-format
+msgid "I agree that my details are used to answer this message, as described in the %s."
+msgstr ""
+
+msgid "privacy policy"
+msgstr ""
+
+msgid "Form messages"
+msgstr ""
+
+msgid "Form message"
+msgstr ""
+
+msgid "View message"
+msgstr ""
+
+msgid "Search messages"
+msgstr ""
+
+msgid "No messages yet."
+msgstr ""
+
+msgid "No messages in the trash."
+msgstr ""
+
+msgid "Form"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "Email sent"
+msgstr ""
+
+msgid "Received"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+#. translators: %s: date and time.
+#, php-format
+msgid "Given on %s"
+msgstr ""
+
+msgid "Back to the messages"
+msgstr ""
+
+msgid "When you send a message with a form on this site, we keep your name, email address, the message and any phone number or company name you enter, so we can answer you. The message is also emailed to us. Your IP address is used only for a few minutes to stop spam and is not stored with the message."
+msgstr ""
+
+msgid "Quote request"
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+#. translators: %s: field label.
+#, php-format
+msgid "Fill in %s."
+msgstr ""
+
+msgid "Tick the box to agree, so we can answer you."
+msgstr ""
+
+#. translators: 1: site name, 2: sender's name.
+#, php-format
+msgid "[%1$s] Quote request from %2$s"
+msgstr ""
+
+#. translators: 1: site name, 2: sender's name.
+#, php-format
+msgid "[%1$s] Message from %2$s"
+msgstr ""
+
+#. translators: %s: page address.
+#, php-format
+msgid "Sent from: %s"
+msgstr ""
+
+#. translators: %s: admin address of the stored message.
+#, php-format
+msgid "Kept in the admin area: %s"
+msgstr ""
+
 #. translators: %s: search terms.
 #, php-format
 msgid "Search results for “%s”"
@@ -132,10 +318,10 @@ msgstr ""
 msgid "Front-end changes made while the Performance module is on. The admin area is not affected."
 msgstr ""
 
-msgid "Company"
+msgid "Forms"
 msgstr ""
 
-msgid "Contact"
+msgid "Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive."
 msgstr ""
 
 msgid "Address"
@@ -159,6 +345,9 @@ msgstr ""
 msgid "Load early"
 msgstr ""
 
+msgid "Delivery"
+msgstr ""
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr ""
 
@@ -166,6 +355,9 @@ msgid "Hands over to an active SEO plugin and adds the brand details to its data
 msgstr ""
 
 msgid "Removes front-end assets that most sites do not need."
+msgstr ""
+
+msgid "The contact and quote Form block: messages are emailed and kept in the admin area."
 msgstr ""
 
 msgid "Brand name"
@@ -178,12 +370,6 @@ msgid "Legal name"
 msgstr ""
 
 msgid "Tax number"
-msgstr ""
-
-msgid "Email"
-msgstr ""
-
-msgid "Phone"
 msgstr ""
 
 msgid "With the country code, e.g. +90 212 000 00 00."
@@ -262,6 +448,12 @@ msgid "Preload the style variation fonts"
 msgstr ""
 
 msgid "The basic Latin files of the body and heading fonts start downloading with the page."
+msgstr ""
+
+msgid "Send messages to"
+msgstr ""
+
+msgid "Leave empty to use the administration email address of the site."
 msgstr ""
 
 msgid "The value is too long."
@@ -375,6 +567,24 @@ msgstr ""
 msgid "Adds noindex and leaves the page out of the sitemap."
 msgstr ""
 
+msgid "Slide content"
+msgstr ""
+
+msgid "Name for screen readers"
+msgstr ""
+
+msgid "What the slides are, e.g. \"Customer stories\". Leave empty for \"Carousel\"."
+msgstr ""
+
+msgid "Slides in view"
+msgstr ""
+
+msgid "On phones a single slide is in view, with the edge of the next one."
+msgstr ""
+
+msgid "Show dots"
+msgstr ""
+
 msgid "Number, e.g. 250+"
 msgstr ""
 
@@ -388,6 +598,36 @@ msgid "Count duration (milliseconds)"
 msgstr ""
 
 msgid "The number counts up from zero when it scrolls into view. 0 shows it at once."
+msgstr ""
+
+msgid "Kind"
+msgstr ""
+
+msgid "Phone field"
+msgstr ""
+
+msgid "Company field"
+msgstr ""
+
+msgid "Ask for consent"
+msgstr ""
+
+msgid "A required checkbox that links to the privacy policy page (Settings → Privacy)."
+msgstr ""
+
+msgid "Texts"
+msgstr ""
+
+msgid "Button text"
+msgstr ""
+
+msgid "Leave empty for \"Send message\" or \"Request a quote\"."
+msgstr ""
+
+msgid "Thank-you text"
+msgstr ""
+
+msgid "Shown after a message is sent. Leave empty for the standard text."
 msgstr ""
 
 msgid "Movement"
@@ -411,6 +651,15 @@ msgstr ""
 msgid "Zoom"
 msgstr ""
 
+msgid "Panel"
+msgstr ""
+
+msgid "A template part in the Mega menu area. Edit it under Site Editor → Patterns."
+msgstr ""
+
+msgid "Menu item text"
+msgstr ""
+
 msgid "Plan name"
 msgstr ""
 
@@ -421,9 +670,6 @@ msgid "Who the plan is for"
 msgstr ""
 
 msgid "What is included"
-msgstr ""
-
-msgid "Button text"
 msgstr ""
 
 msgid "Plan"
@@ -487,6 +733,42 @@ msgid "path"
 msgstr ""
 
 msgctxt "block title"
+msgid "Slide"
+msgstr ""
+
+msgctxt "block description"
+msgid "One slide of a carousel. Holds any blocks."
+msgstr ""
+
+msgctxt "block title"
+msgid "Carousel"
+msgstr ""
+
+msgctxt "block description"
+msgid "Slides in a row that the visitor scrolls or steps through with the arrows and dots. It never moves on its own and works without JavaScript."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "slider"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "slides"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "gallery"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "testimonials"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "cards"
+msgstr ""
+
+msgctxt "block title"
 msgid "Counter"
 msgstr ""
 
@@ -508,6 +790,34 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "stat"
+msgstr ""
+
+msgctxt "block title"
+msgid "Form"
+msgstr ""
+
+msgctxt "block description"
+msgid "A contact or quote request form. Messages are emailed to you and kept under Pergel → Form messages. Works without JavaScript."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "contact"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "quote"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "email"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "message"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "enquiry"
 msgstr ""
 
 msgctxt "block title"
@@ -564,6 +874,26 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "google"
+msgstr ""
+
+msgctxt "block title"
+msgid "Mega menu"
+msgstr ""
+
+msgctxt "block description"
+msgid "A menu item that opens a wide panel. The panel is a template part in the Mega menu area, built with any blocks."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "menu"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "dropdown"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "panel"
 msgstr ""
 
 msgctxt "block title"

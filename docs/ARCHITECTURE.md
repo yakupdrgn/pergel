@@ -279,6 +279,64 @@ script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
   tutucu) ve Google Maps'e giden bir bağlantı basılır; iframe yalnızca "Show the map"e basınca
   oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez.
 
+### Etkileşimli bloklar (F3b)
+
+Bu üç blok çekirdeğin Interactivity API'sini kullanır (`supports.interactivity`, `data-wp-*`
+yönergeleri, `viewScriptModule`); jQuery yoktur. Sunucu tam HTML'i basar, script yalnızca durum
+ekler; JavaScript olmadan da içerik görünür ve kullanılabilir.
+
+- **Carousel** (`pergel/carousel` > `pergel/carousel-slide`): WAI-ARIA carousel deseni
+  (etiketli `region`, `aria-roledescription`, slayt başına "2 of 5" etiketi). Görünümde 1–4 slayt
+  (`perView`; dar ekranda bir sonraki slayt kenardan görünür), önceki/sonraki düğmeleri ve isteğe
+  bağlı noktalar. Kaydırma CSS scroll-snap'tir; script düğmeleri ve noktaları kaydırma konumuyla
+  eşler. Otomatik oynatma yoktur. Script'siz carousel dokunma, trackpad ya da odaktayken ok
+  tuşlarıyla kaydırılan bir şerittir.
+- **Mega menü** (`pergel/mega-menu`): Navigation bloğunun bir öğesidir (`Blocks\MegaMenu` blok
+  türünü `core/navigation`'ın izinli blokları arasına ekler). Paneli `pergel-mega-menu` alanındaki
+  bir template part'tır (tema varsayılanı `parts/mega-menu.html`, metinler
+  `patterns/hidden-mega-menu.php`'de); editörde blok listeden bir parça seçer ve parça Site
+  Editor'de header gibi bloklarla düzenlenir. Tıklama açar; Esc, dışarı tıklama ve odağın
+  dışarı çıkması kapatır (Esc mobil menüyü kapatmaz, yalnızca paneli). Header'da panel header
+  boyunca açılır, footer'da yukarı açılır, mobil menüde öğesinin altında yerinde açılır. Script'siz
+  panel üzerine gelince ve odakta açılır. İçeriği boş (metin ve medya yok) bir parça hiçbir şey
+  basmaz, boş kutu açılmaz.
+- **Form** (`pergel/form`): iletişim veya teklif formu; ayrıntılar aşağıda.
+
+### Formlar (F3b)
+
+`Forms` modülü (`modules.forms` ile kapatılır; kapalıyken Form bloğu hiçbir şey basmaz) Form
+bloğunun mesajlarını alır.
+
+- **Çizim** (`Forms\Form`): ad, e-posta ve mesaj zorunludur; telefon ve şirket bloğun ayarıyla
+  eklenir. Teklif formunda mesaj alanı "What do you need?" olur ve e-posta konusu değişir.
+  İsteğe bağlı onay kutusu gizlilik sayfasına bağlanır.
+  Formda imzalı bir belirteç (`Form::sign()`, HMAC: blok ayarları, sayfa, oluşturma zamanı) ve
+  `website` adlı bir tuzak alanı vardır. Belirteç nonce değildir: önbellekli sayfada da geçerli
+  kalır ve bloğun ayarlarını sunucuya taşır.
+- **Gönderim** (`Forms\Submit`): script `POST /wp-json/pergel/v1/form` kullanır; script'siz form
+  `admin-post.php` (`action=pergel_form`) üzerinden gider ve sonuç koduyla sayfaya geri döner.
+  İkisi de aynı sırayla denetler: dolu tuzak sessizce "gönderildi" alır; belirteç imzalı olmalı;
+  yüklemeden 3 saniye içinde gelen form geri çevrilir; bağlantı başına 10 dakikada 5 mesaj (IP
+  yalnızca özetlenerek sayaç anahtarında kullanılır); Turnstile anahtarları varsa doğrulanır;
+  sonra alanlar sunucuda doğrulanır. Geçen mesaj önce saklanır, sonra e-postayla gönderilir.
+- **Saklama** (`Forms\Inbox`): gizli `pergel_submission` yazı türü, yönetimde Pergel →
+  "Form messages" (ad, e-posta, form, sayfa, e-posta gönderildi mi, tarih). Yalnızca yöneticiler görür;
+  mesaj elle oluşturulamaz, okunur ve silinir. Kişisel veri dışa aktarma/silme araçlarına bağlıdır ve gizlilik
+  politikasına önerilen metin ekler. Yazı türü yalnızca yönetimde, WP-CLI'da ve mesaj
+  saklanmadan hemen önce kaydedilir.
+- **E-posta:** alıcı `forms.recipient`, boşsa site yönetici e-postası; `Reply-To` gönderendir.
+- **Turnstile:** `PERGEL_TURNSTILE_SITE_KEY` ve `PERGEL_TURNSTILE_SECRET_KEY` `wp-config.php`'de
+  tanımlıysa (ya da `pergel/forms/turnstile` süzgeciyle) kullanılır; Cloudflare script'i yalnızca
+  formlu sayfalarda yüklenir.
+
+### Ön yüzde yalın yükleme
+
+Sayfa görüntülemesinde Pergel bloklarının editör betik ve stilleri kaydedilmez:
+`Blocks\Module` kayıt sırasında `block_type_metadata` süzgeciyle `pergel/*` bloklarının
+`editorScript`/`editorStyle` alanlarını düşürür (yönetim, WP-CLI ve REST istekleri hariç).
+Böylece her blok için `index.asset.php` okunmaz. Form sınıfları da yalnızca Form bloğu çizildiğinde
+ya da bir mesaj geldiğinde yüklenir. Bütçe ölçümü (`pergel_files ≤ 45`) bunu denetler.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.

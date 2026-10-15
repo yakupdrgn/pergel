@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/mega-menu",
+	"title": "Mega menu",
+	"category": "pergel",
+	"icon": "menu-alt3",
+	"description": "A menu item that opens a wide panel. The panel is a template part in the Mega menu area, built with any blocks.",
+	"keywords": [ "menu", "navigation", "dropdown", "panel" ],
+	"textdomain": "pergel-engine",
+	"parent": [ "core/navigation" ],
+	"attributes": {
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"menu": {
+			"type": "string",
+			"default": "mega-menu"
+		}
+	},
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"interactivity": true
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

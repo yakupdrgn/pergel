@@ -19,7 +19,9 @@ use const Pergel\VERSION;
  * block brings its own CSS, which core prints only on pages that show the
  * block. Blocks that hold core blocks have a small editor script built on
  * the shared pergel-blocks-editor script (no build step). Has no switch:
- * patterns are built from these blocks.
+ * patterns are built from these blocks. A page view registers the blocks
+ * without their editor script and style, so it reads none of their
+ * index.asset.php files.
  */
 final class Module implements Core\Module {
 
@@ -47,6 +49,7 @@ final class Module implements Core\Module {
 		add_action( 'init', array( self::class, 'register_blocks' ) );
 		add_filter( 'block_categories_all', array( self::class, 'category' ) );
 		Header::register();
+		MegaMenu::register();
 		Styles::register();
 		Toc::register();
 	}
@@ -80,8 +83,44 @@ final class Module implements Core\Module {
 	 * Registers every block listed in the manifest. Hooked on init.
 	 */
 	public static function register_blocks(): void {
-		$dir = self::dir();
+		$dir  = self::dir();
+		$lean = ! self::editor_request();
+		if ( $lean ) {
+			add_filter( 'block_type_metadata', array( self::class, 'without_editor_assets' ) );
+		}
 		wp_register_block_types_from_metadata_collection( $dir, $dir . '/' . Manifest::FILE );
+		if ( $lean ) {
+			remove_filter( 'block_type_metadata', array( self::class, 'without_editor_assets' ) );
+		}
+	}
+
+	/**
+	 * Drops the editor script and style of a Pergel block.
+	 *
+	 * @param mixed $metadata Block metadata.
+	 * @return mixed
+	 */
+	public static function without_editor_assets( mixed $metadata ): mixed {
+		if ( is_array( $metadata ) && str_starts_with( (string) ( $metadata['name'] ?? '' ), 'pergel/' ) ) {
+			unset( $metadata['editorScript'], $metadata['editorStyle'] );
+		}
+		return $metadata;
+	}
+
+	/**
+	 * Whether this request may show a block editor or describe the blocks to
+	 * one: wp-admin (with admin-ajax and admin-post), the REST API, WP-CLI.
+	 */
+	public static function editor_request(): bool {
+		if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			return true;
+		}
+		if ( isset( $_GET['rest_route'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only routes the request.
+			return true;
+		}
+		$uri  = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		$path = (string) wp_parse_url( $uri, PHP_URL_PATH );
+		return str_contains( $path . '/', '/' . rest_get_url_prefix() . '/' );
 	}
 
 	/**

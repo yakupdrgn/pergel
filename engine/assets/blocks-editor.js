@@ -21,13 +21,15 @@
 	 *
 	 * @param {string} name    Block name, registered on the server.
 	 * @param {Object} options tagName, template, templateLock, orientation,
-	 *                         className( attributes ) and controls( props ).
+	 *                         className( attributes ), style( attributes )
+	 *                         and controls( props ).
 	 */
 	function container( name, options ) {
 		wp.blocks.registerBlockType( name, {
 			edit: function ( props ) {
 				var blockProps = be.useBlockProps( {
 					className: options.className ? options.className( props.attributes ) : undefined,
+					style: options.style ? options.style( props.attributes ) : undefined,
 				} );
 				var innerProps = be.useInnerBlocksProps( blockProps, {
 					template: options.template,

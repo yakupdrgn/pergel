@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/carousel-slide",
+	"title": "Slide",
+	"category": "pergel",
+	"icon": "slides",
+	"description": "One slide of a carousel. Holds any blocks.",
+	"textdomain": "pergel-engine",
+	"parent": [ "pergel/carousel" ],
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

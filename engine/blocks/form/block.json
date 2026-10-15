@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/form",
+	"title": "Form",
+	"category": "pergel",
+	"icon": "email-alt",
+	"description": "A contact or quote request form. Messages are emailed to you and kept under Pergel → Form messages. Works without JavaScript.",
+	"keywords": [ "contact", "quote", "email", "message", "enquiry" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId" ],
+	"attributes": {
+		"kind": {
+			"type": "string",
+			"enum": [ "contact", "quote" ],
+			"default": "contact"
+		},
+		"phone": {
+			"type": "boolean",
+			"default": true
+		},
+		"company": {
+			"type": "boolean",
+			"default": false
+		},
+		"consent": {
+			"type": "boolean",
+			"default": false
+		},
+		"submitLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"successMessage": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"multiple": true,
+		"interactivity": true,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

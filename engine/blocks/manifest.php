@@ -53,6 +53,94 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'carousel' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/carousel',
+    'title' => 'Carousel',
+    'category' => 'pergel',
+    'icon' => 'slides',
+    'description' => 'Slides in a row that the visitor scrolls or steps through with the arrows and dots. It never moves on its own and works without JavaScript.',
+    'keywords' => 
+    array (
+      0 => 'slider',
+      1 => 'slides',
+      2 => 'gallery',
+      3 => 'testimonials',
+      4 => 'cards',
+    ),
+    'textdomain' => 'pergel-engine',
+    'allowedBlocks' => 
+    array (
+      0 => 'pergel/carousel-slide',
+    ),
+    'attributes' => 
+    array (
+      'label' => 
+      array (
+        'type' => 'string',
+        'default' => '',
+      ),
+      'perView' => 
+      array (
+        'type' => 'integer',
+        'default' => 1,
+      ),
+      'dots' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'interactivity' => true,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'carousel-slide' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/carousel-slide',
+    'title' => 'Slide',
+    'category' => 'pergel',
+    'icon' => 'slides',
+    'description' => 'One slide of a carousel. Holds any blocks.',
+    'textdomain' => 'pergel-engine',
+    'parent' => 
+    array (
+      0 => 'pergel/carousel',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'reusable' => false,
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'padding' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'render' => 'file:./render.php',
+  ),
   'counter' => 
   array (
     'apiVersion' => 3,
@@ -93,6 +181,86 @@ return array (
       'typography' => 
       array (
         'textAlign' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'form' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/form',
+    'title' => 'Form',
+    'category' => 'pergel',
+    'icon' => 'email-alt',
+    'description' => 'A contact or quote request form. Messages are emailed to you and kept under Pergel → Form messages. Works without JavaScript.',
+    'keywords' => 
+    array (
+      0 => 'contact',
+      1 => 'quote',
+      2 => 'email',
+      3 => 'message',
+      4 => 'enquiry',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+    ),
+    'attributes' => 
+    array (
+      'kind' => 
+      array (
+        'type' => 'string',
+        'enum' => 
+        array (
+          0 => 'contact',
+          1 => 'quote',
+        ),
+        'default' => 'contact',
+      ),
+      'phone' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+      'company' => 
+      array (
+        'type' => 'boolean',
+        'default' => false,
+      ),
+      'consent' => 
+      array (
+        'type' => 'boolean',
+        'default' => false,
+      ),
+      'submitLabel' => 
+      array (
+        'type' => 'string',
+        'default' => '',
+      ),
+      'successMessage' => 
+      array (
+        'type' => 'string',
+        'default' => '',
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => true,
+      'interactivity' => true,
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
       ),
     ),
     'editorScript' => 'file:./index.js',
@@ -200,6 +368,50 @@ return array (
       array (
         'margin' => true,
       ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'mega-menu' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/mega-menu',
+    'title' => 'Mega menu',
+    'category' => 'pergel',
+    'icon' => 'menu-alt3',
+    'description' => 'A menu item that opens a wide panel. The panel is a template part in the Mega menu area, built with any blocks.',
+    'keywords' => 
+    array (
+      0 => 'menu',
+      1 => 'navigation',
+      2 => 'dropdown',
+      3 => 'panel',
+    ),
+    'textdomain' => 'pergel-engine',
+    'parent' => 
+    array (
+      0 => 'core/navigation',
+    ),
+    'attributes' => 
+    array (
+      'label' => 
+      array (
+        'type' => 'string',
+        'default' => '',
+      ),
+      'menu' => 
+      array (
+        'type' => 'string',
+        'default' => 'mega-menu',
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'reusable' => false,
+      'interactivity' => true,
     ),
     'editorScript' => 'file:./index.js',
     'viewScriptModule' => 'file:./view.js',
