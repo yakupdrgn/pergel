@@ -306,6 +306,20 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   okunabilirlik gibi özellikler eklenmez.
 - **Yazar site haritası varsayılan kapalı:** Kurumsal sitelerde yazar sayfaları blog listesini
   tekrarlar; ayardan açılabilir.
+- **SEO matrisi bir şirket sitesini taklit eder:** Geçici bir Site Logo ve marka telefonu / sosyal
+  profil girilir; Rank Math'te sihirbazın "Skip" seçeneği ve "şirket" türü, SEOPress'te bilgi
+  grafiği türü "Organization" yapılır. Bunlar olmadan Yoast (logosuz) ve SEOPress hiç
+  `Organization` basmaz, Rank Math sitenin bir kişi olduğunu varsayar. Lisans veya hesap
+  gerekmez. Kişi sitelerinde (`Person`) Pergel bilinçli olarak hiçbir şey eklemez.
+- **Rank Math kurulmadan önce de devredilir:** Rank Math, sihirbaz tamamlanana (veya atlanana)
+  kadar ön yüzde çıktı vermez. Pergel yine de devreder: iki katmanın birlikte basma riski, birkaç
+  dakikalık eksik etiketten daha kötüdür ve Rank Math yöneticiyi sihirbaza yönlendirir.
+- **İç içe publisher da zenginleşir, referans değil:** The SEO Framework iç sayfalarda
+  `Organization`'ı `WebSite.publisher` içinde yazar; bu düğüm de doldurulur. Yalnızca `@id`
+  taşıyan referanslara (Rank Math) dokunulmaz, yoksa ikinci bir `Organization` doğardı.
+- **"Tek site haritası" içerikle ölçülür:** Aynı haritayı iki adreste sunmak (TSF
+  `sitemap_index.xml` ve `sitemap.xml`) tek harita sayılır; AIOSEO'nun robots.txt'teki RSS
+  haritası XML haritası değildir.
 
 ## Aşamalar ve bitti tanımları
 

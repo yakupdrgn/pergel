@@ -223,6 +223,29 @@ final class GraphTest extends TestCase {
 		$this->assertSame( null, Graph::enrich_all( null, array() ) );
 	}
 
+	public function test_enrich_all_fills_a_written_out_publisher_but_not_a_reference(): void {
+		$org   = array( 'telephone' => '+90 212 000 00 00' );
+		$graph = Graph::enrich_all(
+			array(
+				array(
+					'@type'     => 'WebSite',
+					'publisher' => array(
+						'@type' => 'Organization',
+						'@id'   => 'https://example.com/#/schema/Organization',
+					),
+				),
+				array(
+					'@type'     => 'WebPage',
+					'publisher' => array( '@id' => 'https://example.com/#organization' ),
+				),
+			),
+			$org
+		);
+		$this->assertSame( '+90 212 000 00 00', $graph[0]['publisher']['telephone'] );
+		$this->assertSame( array( '@id' => 'https://example.com/#organization' ), $graph[1]['publisher'] );
+		$this->assertSame( array( '@id' => 'https://example.com/#organization' ), Graph::enrich( array( '@id' => 'https://example.com/#organization' ), $org ) );
+	}
+
 	public function test_clip(): void {
 		$this->assertSame( 'Short text.', Graph::clip( "  Short\n text. " ) );
 		$long = str_repeat( 'kelime ', 40 );

@@ -24,6 +24,9 @@ namespace {
 		public static function log( $message ): void {}
 
 		/** @param string $message */
+		public static function line( $message = '' ): void {}
+
+		/** @param string $message */
 		public static function warning( $message ): void {}
 
 		/**

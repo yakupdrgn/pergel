@@ -146,13 +146,14 @@ final class Graph {
 
 	/**
 	 * Fills the gaps in an SEO plugin's organization node. Existing values
-	 * win; social profiles are merged. Other nodes are returned unchanged.
+	 * win; social profiles are merged. Other nodes, and references that carry
+	 * only an @id, are returned unchanged.
 	 *
 	 * @param mixed                $node         A graph node from the plugin.
 	 * @param array<string, mixed> $organization Organization node from the brand settings.
 	 */
 	public static function enrich( mixed $node, array $organization ): mixed {
-		if ( ! is_array( $node ) || ! self::is_organization( $node ) ) {
+		if ( ! is_array( $node ) || ! isset( $node['@type'] ) || ! self::is_organization( $node ) ) {
 			return $node;
 		}
 		foreach ( $organization as $key => $value ) {
@@ -172,7 +173,10 @@ final class Graph {
 	}
 
 	/**
-	 * Enrich() over a list or map of nodes; keys are kept.
+	 * Enrich() over a list or map of nodes; keys are kept. A publisher written
+	 * out inside a node (The SEO Framework nests the Organization in WebSite on
+	 * inner pages) is filled too. Other nested nodes are left alone: an
+	 * Organization deeper in the graph may be another company.
 	 *
 	 * @param mixed                $graph        Nodes from the plugin.
 	 * @param array<string, mixed> $organization Organization node from the brand settings.
@@ -182,7 +186,11 @@ final class Graph {
 			return $graph;
 		}
 		foreach ( $graph as $key => $node ) {
-			$graph[ $key ] = self::enrich( $node, $organization );
+			$node = self::enrich( $node, $organization );
+			if ( is_array( $node ) && is_array( $node['publisher'] ?? null ) ) {
+				$node['publisher'] = self::enrich( $node['publisher'], $organization );
+			}
+			$graph[ $key ] = $node;
 		}
 		return $graph;
 	}

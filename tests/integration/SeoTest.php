@@ -115,7 +115,7 @@ final class SeoTest extends TestCase {
 	 */
 	private static function graph(): array {
 		$html = self::capture( 'print_graph' );
-		self::assertSame( 1, preg_match( '#<script type="application/ld\+json">(.+)</script>#', $html, $match ) );
+		self::assertSame( 1, preg_match( '#<script type="application/ld\+json" class="pergel-schema">(.+)</script>#', $html, $match ) );
 		$data = json_decode( $match[1], true );
 		self::assertIsArray( $data );
 		return $data['@graph'];

@@ -149,6 +149,19 @@ katman çalışır.
 - Ayarlardaki SEO sekmesi (paylaşım görseli, X kullanıcı adı, yazar site haritası) eklenti
   aktifken bunu söyleyen bir bildirim gösterir.
 
+**SEO matrisi** (`tools/seo/`): `matrix.sh` Pergel'i önce tek başına, sonra her ücretsiz SEO
+eklentisiyle sırayla çalıştırır; `check.mjs` her senaryoda yedi sayfanın (ön sayfa, blog, yazı,
+sayfa, kategori, arama, 404) `<head>`'ini ve site haritalarını okur. Kurallar: tek `<title>`,
+en fazla bir açıklama / robots / Open Graph ve Twitter etiketi, dizine girecek sayfalarda tek
+canonical, sayfa başına en fazla bir `Organization` ve bir `WebSite`, eklenti varken Pergel
+JSON-LD'si yok (`class="pergel-schema"`), her `Organization` düğümünde marka telefonu ve sosyal
+profili, tek XML site haritası (robots.txt'teki de aynısı). CI'da `seo-matrix` işi eklentilerin
+wordpress.org'daki son sürümlerini kurar (`INSTALL=1`). Yerelde:
+
+```bash
+WP_DIR=/c/xampp/htdocs/pergel-tema SITE_URL=http://localhost/pergel-tema bash tools/seo/matrix.sh
+```
+
 ## Ölçüm
 
 `tools/budget/perf-probe.php` yalnızca `X-Pergel-Perf` başlığı taşıyan isteklerde çalışır ve
