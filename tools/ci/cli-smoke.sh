@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Runs every `wp pergel settings`, `wp pergel modules` and `wp pergel starter`
-# command against a site set up like tools/ci/setup-wp.sh and checks output
+# Runs every `wp pergel settings`, `wp pergel modules`, `wp pergel search` and
+# `wp pergel starter` command against a site set up like tools/ci/setup-wp.sh and checks output
 # and exit codes.
 #
 #   tools/ci/cli-smoke.sh
@@ -113,6 +113,19 @@ expect 0 'false' wp pergel settings get modules.performance
 expect 0 'performance, seo enabled' wp pergel modules enable performance seo
 expect 0 '"module":"seo","switch":"on","loaded":"yes"' wp pergel modules list --format=json
 expect 1 'No switch for: cli, nope' wp pergel modules disable cli nope
+echo "::endgroup::"
+
+echo "::group::wp pergel search"
+expect 0 'Index rebuilt' wp pergel search reindex
+expect 0 '{"key":"ready","value":"yes"}' wp pergel search status --format=json
+expect 0 'Pergel sample post' wp pergel search query 'PERGEL sample'
+expect 0 'Results: 0' wp pergel search query 'pergelyokboyle'
+# Switching the module back on starts a rebuild (tests/integration/SearchTest.php);
+# WP-Cron may finish it before the next command, so only the result is checked.
+expect 0 'search disabled' wp pergel modules disable search
+expect 0 'search enabled' wp pergel modules enable search
+expect 0 'Index rebuilt' wp pergel search reindex
+expect 0 'Pergel sample post' wp pergel search query 'sample'
 echo "::endgroup::"
 
 # By path, so it also works when setup-wp.sh copies the plugin (LINK_MODE=copy).

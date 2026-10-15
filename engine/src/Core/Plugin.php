@@ -14,6 +14,7 @@ use Pergel\Brand;
 use Pergel\Cli;
 use Pergel\Forms;
 use Pergel\Performance;
+use Pergel\Search;
 use Pergel\Seo;
 use Pergel\Settings;
 use Pergel\Woo;
@@ -44,6 +45,7 @@ final class Plugin {
 			Seo\Module::class,
 			Performance\Module::class,
 			Forms\Module::class,
+			Search\Module::class,
 			Woo\Module::class,
 			Cli\Module::class,
 		);
@@ -85,6 +87,25 @@ final class Plugin {
 		 * Fires after the engine has registered every module for this request.
 		 */
 		do_action( 'pergel/loaded' );
+	}
+
+	/**
+	 * Tells modules that were switched on. A module may define a static
+	 * enabled() method to catch up on what happened while it was off.
+	 * Hooked on update_option_pergel_settings.
+	 *
+	 * @param mixed $old_value Settings before the change.
+	 * @param mixed $value     Settings after it.
+	 */
+	public static function switched( mixed $old_value, mixed $value ): void {
+		$before = is_array( $old_value ) && is_array( $old_value['modules'] ?? null ) ? $old_value['modules'] : array();
+		$after  = is_array( $value ) && is_array( $value['modules'] ?? null ) ? $value['modules'] : array();
+		foreach ( self::modules() as $class_name ) {
+			$id = $class_name::id();
+			if ( true === ( $after[ $id ] ?? null ) && false === ( $before[ $id ] ?? null ) && method_exists( $class_name, 'enabled' ) ) {
+				$class_name::enabled();
+			}
+		}
 	}
 
 	/**

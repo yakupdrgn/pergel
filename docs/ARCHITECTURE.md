@@ -551,6 +551,36 @@ görünmez (`Settings\Screen::shown`).
   sağlayıcı "gönderilmedi" sayılır. Sonuçlar mesajın `_pergel_handoff` meta'sında tutulur ve
   "Form messages" ekranında "Passed on to" satırında görünür.
 
+## Arama (F4b)
+
+`Search` modülü kendi indeksini kullanır. Sayfa görüntülenirken indeks yalnızca okunur;
+içerik değiştiğinde güncellenir.
+
+- **Metin (`Search\Text`):** Metin küçük harfe çevrilir; aksanlar ve Türkçe harfler katlanır
+  (ı/İ → i, ş → s…); harf ve rakam dışındaki her şey boşluk olur. Token'lar en fazla 32 karakterdir.
+  Tek harfler atılır, tek rakamlar tutulur. SKU ayrıca noktalamasız biçimiyle de indekslenir.
+  Bir sorgu en fazla 6 terimden oluşur.
+- **İndeks (`Search\Index`):** `{prefix}pergel_search` tablosu (kind, token `utf8mb4_bin`,
+  object_id, weight). Ağırlıklar: başlık 10, SKU 9, terimler 5, öznitelikler 4, özet 3, içerik 1.
+  İçerikten en fazla 600 token alınır. Değişiklikler istek sonunda (shutdown) yazılır.
+  Yeniden adlandırılan bir kategorinin yazıları cron'da parti parti güncellenir. Tam kurulum
+  `pergel/search/build` cron'uyla yapılır. Hangi içeriğin indeksleneceği şu süzgeçlerle
+  ayarlanır: `pergel/search/post_types`, `pergel/search/taxonomies`, `pergel/search/searchable`,
+  `pergel/search/fields`.
+- **Sorgu (`Search\Query`):** Her terim tam bir token ya da bir token'ın başı olarak eşleşmelidir.
+  Puan, her terimin en iyi ağırlığının toplamıdır; tam kelime eşleşmesi +2 alır. Eşitlikte daha
+  yeni içerik öne geçer. Ön yüz aramaları `pre_get_posts` (öncelik 20) üzerinden `post__in`
+  olur; ziyaretçi bir sıralama seçmediyse sonuçlar puan sırasıyla gelir. Yönetim paneli, REST
+  ve feed'ler WordPress'in kendi aramasını kullanır (`pergel/search/applies`).
+- **Öneriler (`Search\Suggest`):** `GET pergel/v1/search?q=&type=product`. Yanıtta en fazla
+  `search.live_limit` sonuç ve 4 kategori, toplam sayı ve arama sayfasının adresi bulunur.
+  Fiyat yalnızca `sale` modundaki ürünlerde verilir.
+- **Kutu (`Search\Box`):** `render_block_core/search` süzgeci formu ARIA combobox'a çevirir
+  (listbox ve status alanı eklenir). `search.js` (script modülü) ve `search.css` yalnızca Search
+  bloğu olan sayfalarda yüklenir. Ürün aramasına ayarlı bir Search bloğu yalnızca ürün önerir.
+- **WP-CLI:** `wp pergel search status`, `wp pergel search reindex`,
+  `wp pergel search query <metin> [--type=product]`.
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.
@@ -565,6 +595,7 @@ görünmez (`Settings\Screen::shown`).
 | `wp pergel settings import <dosya\|-> [--dry-run]` | JSON'dan okur; dosyada olmayan alanlar korunur, değişen alanlar listelenir |
 | `wp pergel modules list` | Modül, anahtar (`on`/`off`/`always`), bu komutta yüklendi mi |
 | `wp pergel modules enable\|disable <id>...` | Anahtarı olan modülleri açar/kapatır |
+| `wp pergel search status\|reindex\|query <metin>` | İndeksin durumu, hemen yeniden kurulum, deneme araması |
 | `wp pergel starter list` | Pergel'le gelen starter'lar |
 | `wp pergel starter install <ad\|klasör> [--dry-run] [--reset]` | Starter'ın sayfalarını, menüsünü ve okuma ayarlarını kurar; tekrar çalışınca bir şey değiştirmez |
 | `wp pergel starter remove <ad> [--dry-run] [--yes]` | Starter'ın yaptığı sayfa ve menüleri kalıcı siler, okuma ayarlarını düzeltir |

@@ -40,6 +40,7 @@ final class Module implements Core\Module {
 		foreach ( array( 'add_option_', 'update_option_', 'delete_option_' ) as $hook ) {
 			add_action( $hook . Settings::OPTION, array( Settings::class, 'flush' ) );
 		}
+		add_action( 'update_option_' . Settings::OPTION, array( Core\Plugin::class, 'switched' ), 10, 2 );
 		add_action( 'admin_init', array( self::class, 'register_setting' ) );
 		add_action( 'rest_api_init', array( self::class, 'register_setting' ) );
 		if ( is_admin() ) {
