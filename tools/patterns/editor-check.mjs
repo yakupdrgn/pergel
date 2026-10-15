@@ -9,6 +9,10 @@
  *        --base http://localhost/pergel-tema [--user pergel-qa] [--channel chrome]
  *
  * The user must be an administrator. Exit code 1 = a pattern failed.
+ * The hidden shop patterns (pergel/hidden-product-*) hold WooCommerce blocks
+ * that WooCommerce offers in the Site Editor only, so they are checked there,
+ * in the product template. Without WooCommerce they are skipped; run it on a
+ * shop site too.
  */
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
@@ -65,9 +69,12 @@ const patterns = await page.evaluate( async () => {
 	} ) );
 } );
 
-const results = [];
-for ( const pattern of patterns ) {
-	const result = await page.evaluate( async ( { name, content, inserter, templatePart } ) => {
+/**
+ * Defines window.pergelBlockProblems( content ) in the editor: unknown and
+ * invalid blocks of a pattern.
+ */
+const defineChecks = () => page.evaluate( () => {
+	window.pergelBlockProblems = ( content ) => {
 		const problems = [];
 		const walk = ( blocks ) => blocks.forEach( ( block ) => {
 			if ( 'core/missing' === block.name ) {
@@ -88,6 +95,23 @@ for ( const pattern of patterns ) {
 			walk( block.innerBlocks || [] );
 		} );
 		walk( wp.blocks.parse( content ) );
+		return problems;
+	};
+} );
+await defineChecks();
+
+const SHOP_PREFIX = 'pergel/hidden-product-';
+const shop = await page.evaluate( () => wp.blocks.getBlockTypes().some( ( t ) => t.name.startsWith( 'woocommerce/' ) ) );
+const shopPatterns = patterns.filter( ( p ) => p.name.startsWith( SHOP_PREFIX ) && p.content.includes( '<!-- wp:woocommerce/' ) );
+
+const results = [];
+const skipped = shop ? [] : shopPatterns.map( ( p ) => p.name );
+for ( const pattern of patterns ) {
+	if ( shopPatterns.includes( pattern ) ) {
+		continue;
+	}
+	const result = await page.evaluate( async ( { name, content, inserter, templatePart } ) => {
+		const problems = window.pergelBlockProblems( content );
 		if ( ! inserter || templatePart || problems.length ) {
 			return { problems };
 		}
@@ -124,6 +148,15 @@ for ( const pattern of patterns ) {
 	}, pattern );
 	results.push( { name: pattern.name, ...result } );
 }
+
+if ( shop && shopPatterns.length ) {
+	await page.goto( `${ base }/wp-admin/site-editor.php?p=${ encodeURIComponent( '/wp_template/pergel//single-product' ) }&canvas=edit` );
+	await page.waitForFunction( () => window.wp?.blocks?.getBlockType( 'core/template-part' ) && window.wp.blocks.getBlockTypes().some( ( t ) => t.name.startsWith( 'woocommerce/' ) ), null, { timeout: 90000 } );
+	await defineChecks();
+	for ( const pattern of shopPatterns ) {
+		results.push( { name: pattern.name, problems: await page.evaluate( ( content ) => window.pergelBlockProblems( content ), pattern.content ) } );
+	}
+}
 await browser.close();
 
 const failed = results.filter( ( r ) => r.problems.length );
@@ -133,5 +166,5 @@ for ( const r of failed ) {
 if ( consoleErrors.length ) {
 	console.error( `Console errors:\n  ${ [ ...new Set( consoleErrors ) ].join( '\n  ' ) }` );
 }
-console.log( `Patterns in the editor: ${ results.length } checked, ${ failed.length } failed.` );
+console.log( `Patterns in the editor: ${ results.length } checked, ${ failed.length } failed${ skipped.length ? `, ${ skipped.length } skipped without WooCommerce (${ skipped.join( ', ' ) })` : '' }.` );
 process.exit( failed.length || consoleErrors.length ? 1 : 0 );

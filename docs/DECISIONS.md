@@ -649,6 +649,11 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   - Konu alanları genel Forms modülünde süzgeçlerle; Forms WooCommerce'i bilmez.
 - **Ürün yorumu formu dar ekranda:** WooCommerce'in `cols="45"` yorum kutusu 360 px'te sağdan
   kesiliyordu (sayfa kaymıyordu, axe'ın taşma denetimi buldu). Alanlar form genişliğini alır.
+- **Mağaza pattern'lerinin editör denetimi:** `woocommerce/product-reviews` WooCommerce'te
+  yalnızca Site Editor'de kayıtlı, yazı editöründe değil. `editor-check.mjs` gizli mağaza
+  pattern'lerini (`pergel/hidden-product-*`) Site Editor'de, ürün şablonunda denetler;
+  WooCommerce yoksa onları atlar ve adlarını yazar. WooCommerce'li CI işi F4c'de gelir; o zamana
+  kadar yerel mağaza sitesinde çalıştırılır.
 
 ## Aşamalar ve bitti tanımları
 
