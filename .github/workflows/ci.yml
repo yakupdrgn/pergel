@@ -112,7 +112,7 @@ jobs:
       - name: Integration tests (WordPress)
         # PHPUnit itself crashes or hangs under PHP 8.4's JIT, which setup-php turns
         # on with opcache.enable_cli (a bare PHPUnit test does it too). WP-CLI, the
-        # server and the budget below keep the JIT.
+        # server and the budget below keep the JIT; the block editor step does not.
         run: PERGEL_WP_DIR="$WP_DIR" php -d opcache.jit=disable vendor/bin/phpunit -c phpunit-integration.xml.dist
       - name: WP-CLI commands
         run: bash tools/ci/cli-smoke.sh
@@ -139,7 +139,13 @@ jobs:
       - name: Performance budget
         run: npm run budget -- --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label ci
       - name: Patterns in the block editor
+        # The JIT crashes php -S on wp-admin/post-new.php (the database logs an
+        # aborted connection and the request never ends), so the server is
+        # restarted without it once the budget is measured.
         run: |
+          pkill -f 'php -S 127.0.0.1:8080' || true
+          php -d opcache.jit=disable -S 127.0.0.1:8080 -t "$WP_DIR" tools/ci/router.php >> /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && break; sleep 1; done
           export PERGEL_QA_PASSWORD="$(head -c 18 /dev/urandom | base64)"
           wp --path="$WP_DIR" user create pergel-qa qa@example.invalid --role=administrator --user_pass="$PERGEL_QA_PASSWORD" --porcelain > /dev/null
           node tools/patterns/editor-check.mjs --base "$SITE_URL"

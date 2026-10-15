@@ -60,8 +60,8 @@ cat > "$WP_DIR/wp-content/mu-plugins/pergel-perf-probe.php" <<PHP
 require '$REPO_PHP/tools/budget/perf-probe.php';
 PHP
 # Admin pages would otherwise ask api.wordpress.org for updates on every
-# visit while the update transients are empty; with slow DNS on the runner
-# that holds up the single-threaded php -S and the block editor check.
+# visit while the update transients are empty, which slows the single-threaded
+# php -S and makes CI depend on the network.
 cat > "$WP_DIR/wp-content/mu-plugins/pergel-ci-offline.php" <<'PHP'
 <?php
 // Pergel CI: no update checks from admin pages (tools/ci/setup-wp.sh).
