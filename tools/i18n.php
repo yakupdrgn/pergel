@@ -157,6 +157,9 @@ foreach ( LOCALES as $pergel_locale ) {
 			unset( $pergel_data['generator'] );
 			put( $pergel_json, (string) json_encode( $pergel_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- runs without WordPress loaded.
 		}
+		// make-php ends the opening tag with PHP_EOL; the repository keeps LF.
+		$pergel_php = "{$pergel_work}/out/{$pergel_prefix}.l10n.php";
+		put( $pergel_php, str_replace( "\r\n", "\n", (string) file_get_contents( $pergel_php ) ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file.
 
 		$pergel_built   = compiled( "{$pergel_work}/out", $pergel_prefix );
 		$pergel_current = compiled( $pergel_dir, $pergel_prefix );
