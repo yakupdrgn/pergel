@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T10:03:19+03:00\n"
+"POT-Creation-Date: 2026-10-16T11:28:11+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -431,6 +431,9 @@ msgstr ""
 msgid "Wishlist and compare"
 msgstr ""
 
+msgid "Product page"
+msgstr ""
+
 msgid "Header"
 msgstr ""
 
@@ -633,6 +636,18 @@ msgid "Compare page"
 msgstr ""
 
 msgid "Address of the page that shows the products side by side with the Compare block. With an address, the theme headers link to it."
+msgstr ""
+
+msgid "Theme style for product options"
+msgstr ""
+
+msgid "Gives the colour swatches and option buttons of variable products the theme's look: larger touch targets, a clear ring on the chosen and the focused option, unavailable options crossed out, and the chosen colour's name under the swatches. For colour swatches, turn on \"Color swatches for attributes\" under WooCommerce → Settings → Advanced → Features and give the attribute the \"Color / image\" type."
+msgstr ""
+
+msgid "Sticky add-to-cart bar"
+msgstr ""
+
+msgid "When the add-to-cart button scrolls out of view on a product page, a bar with the product's image, name, price and button appears at the bottom of the screen. For a product with options it first takes the visitor to the options."
 msgstr ""
 
 msgid "The value is too long."
@@ -849,6 +864,12 @@ msgstr ""
 #. translators: %s: stock keeping unit.
 #, php-format
 msgid "SKU: %s"
+msgstr ""
+
+msgid "Shown on product pages: a bar with the add-to-cart button while the form is out of view."
+msgstr ""
+
+msgid "Choose options"
 msgstr ""
 
 msgid "Scroll animation"
@@ -1397,6 +1418,34 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "comparison"
+msgstr ""
+
+msgctxt "block title"
+msgid "Sticky add-to-cart bar"
+msgstr ""
+
+msgctxt "block description"
+msgid "A bar at the bottom of the screen with the product's image, name, price and add-to-cart button, shown while the add-to-cart form is out of view. Turn it on under Pergel → Settings → Shop; product pages then show it by themselves."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "sticky"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "cart"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "add to cart"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "bar"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "buy"
 msgstr ""
 
 msgctxt "block title"

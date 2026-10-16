@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-16 07:03+0000\n"
-"PO-Revision-Date: 2026-10-16 07:03+0000\n"
+"POT-Creation-Date: 2026-10-16 08:29+0000\n"
+"PO-Revision-Date: 2026-10-16 08:29+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -413,6 +413,9 @@ msgstr "Ürün soruları"
 msgid "Wishlist and compare"
 msgstr "İstek listesi ve karşılaştırma"
 
+msgid "Product page"
+msgstr "Ürün sayfası"
+
 msgid "Header"
 msgstr "Üst bilgi"
 
@@ -616,6 +619,18 @@ msgstr "Karşılaştırma sayfası"
 
 msgid "Address of the page that shows the products side by side with the Compare block. With an address, the theme headers link to it."
 msgstr "Ürünleri Karşılaştırma bloğuyla yan yana gösteren sayfanın adresi. Adres girildiğinde temanın üst bilgileri bu sayfaya bağlantı verir."
+
+msgid "Theme style for product options"
+msgstr "Ürün seçenekleri için tema görünümü"
+
+msgid "Gives the colour swatches and option buttons of variable products the theme's look: larger touch targets, a clear ring on the chosen and the focused option, unavailable options crossed out, and the chosen colour's name under the swatches. For colour swatches, turn on \"Color swatches for attributes\" under WooCommerce → Settings → Advanced → Features and give the attribute the \"Color / image\" type."
+msgstr "Değişken ürünlerin renk örneklerine ve seçenek düğmelerine temanın görünümünü verir: daha büyük dokunma alanları, seçili ve odaktaki seçenekte belirgin bir halka, stokta olmayan seçeneklerin üstü çizili ve seçilen rengin adı örneklerin altında. Renk örnekleri için WooCommerce → Ayarlar → Gelişmiş → Özellikler altında \"Özellikler için renk swatchları\" seçeneğini açın ve niteliğe \"Renk / görsel\" türünü verin."
+
+msgid "Sticky add-to-cart bar"
+msgstr "Sabit sepete ekle çubuğu"
+
+msgid "When the add-to-cart button scrolls out of view on a product page, a bar with the product's image, name, price and button appears at the bottom of the screen. For a product with options it first takes the visitor to the options."
+msgstr "Ürün sayfasında sepete ekle düğmesi kaydırılıp görünmez olduğunda ekranın altında ürünün görseli, adı, fiyatı ve düğmesiyle bir çubuk belirir. Seçenekli bir üründe ziyaretçiyi önce seçeneklere götürür."
 
 msgid "The value is too long."
 msgstr "Değer çok uzun."
@@ -823,6 +838,12 @@ msgstr "1 ile %s arasında bir tam sayı girin."
 #. translators: %s: stock keeping unit.
 msgid "SKU: %s"
 msgstr "Stok kodu: %s"
+
+msgid "Shown on product pages: a bar with the add-to-cart button while the form is out of view."
+msgstr "Ürün sayfalarında gösterilir: form görünmezken sepete ekle düğmesini taşıyan bir çubuk."
+
+msgid "Choose options"
+msgstr "Seçenekleri seçin"
 
 msgid "Scroll animation"
 msgstr "Kaydırma animasyonu"
@@ -1370,6 +1391,34 @@ msgstr "Ziyaretçinin istek listesine kaydettiği veya karşılaştırmak için 
 msgctxt "block keyword"
 msgid "comparison"
 msgstr "karşılaştırma"
+
+msgctxt "block title"
+msgid "Sticky add-to-cart bar"
+msgstr "Sabit sepete ekle çubuğu"
+
+msgctxt "block description"
+msgid "A bar at the bottom of the screen with the product's image, name, price and add-to-cart button, shown while the add-to-cart form is out of view. Turn it on under Pergel → Settings → Shop; product pages then show it by themselves."
+msgstr "Sepete ekle formu görünmezken ekranın altında gösterilen, ürünün görseli, adı, fiyatı ve sepete ekle düğmesini taşıyan bir çubuk. Pergel → Ayarlar → Mağaza altında açın; ürün sayfaları onu kendiliğinden gösterir."
+
+msgctxt "block keyword"
+msgid "sticky"
+msgstr "sabit"
+
+msgctxt "block keyword"
+msgid "cart"
+msgstr "sepet"
+
+msgctxt "block keyword"
+msgid "add to cart"
+msgstr "sepete ekle"
+
+msgctxt "block keyword"
+msgid "bar"
+msgstr "çubuk"
+
+msgctxt "block keyword"
+msgid "buy"
+msgstr "satın al"
 
 msgctxt "block title"
 msgid "Table of contents"

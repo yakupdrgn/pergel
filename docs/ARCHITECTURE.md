@@ -573,6 +573,19 @@ görünmez (`Settings\Screen::shown`).
     ürünler, `{ids, html}`) ve `POST pergel/v1/wishlist` (`is_user_logged_in`; `add`, `remove`,
     `merge`; user meta yalnızca liste değiştiyse yazılır).
   - Sayfa görüntülemesi veritabanına yazmaz; liste sayfası ve REST isteği de yazmaz.
+- **Ürün sayfası: seçenek görünümü ve yapışkan sepete ekle (`Woo\Swatches`,
+  `Woo\StickyCart`, F4b P2-2):** `woo.swatches` / `woo.sticky_cart` açık değilse
+  `Woo\Module` sınıfları yüklemez. Açıkken:
+  - `Swatches`: `render_block_woocommerce/add-to-cart-with-options-variation-selector`
+    süzgeci, boş olmayan içerikte `pergel-swatches` stilini kuyruğa alır (`path` verisiyle
+    satır içi). Veri ve işaretleme WooCommerce'indir.
+  - `StickyCart`: `pergel/sticky-add-to-cart` bloğu (WooCommerce yoksa kaydedilmez,
+    `Blocks\Module::SHOP_BLOCKS`). Block hooks (`hooked_block_types`, öncelik 22) onu
+    `woocommerce/add-to-cart-with-options`'dan sonra ekler; bloğu zaten içeren içerikte
+    eklenmez. Basit/değişken, satın alınabilir, stoktaki ürün yoksa boş döner; editörde
+    sunucu bir açıklama çizer.
+  - `view.js` (script modülü): formun gerçek düğmesine basar, eksik seçenekte forma odaklar,
+    fiyatı ve düğme metnini izler, `--pergel-sticky-cart` ile sayfaya alt boşluk verir.
 
 ## Arama (F4b)
 

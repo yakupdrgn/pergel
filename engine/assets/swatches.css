@@ -1,0 +1,118 @@
+/**
+ * Option buttons and colour swatches in the add-to-cart form
+ * (Pergel\Woo\Swatches). WooCommerce draws them; this sets the theme's
+ * look: 44px touch targets, a clear ring on the chosen and the focused
+ * option, unavailable options crossed out, and the chosen colour's name
+ * under the swatches.
+ */
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .wc-block-product-filter-chips__items {
+	gap: 0.5rem;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .wp-block-woocommerce-product-filter-chips {
+	font-size: var(--wp--preset--font-size--small, 0.9375rem);
+}
+
+/* Option buttons. */
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .wc-block-product-filter-chips__item {
+	background: var(--wp--preset--color--base, #fff);
+	border: 1px solid color-mix(in srgb, currentcolor 45%, transparent);
+	border-radius: var(--wp--custom--radius--button, 6px);
+	min-height: 44px;
+	min-width: 44px;
+	padding: 0 1rem;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .wc-block-product-filter-chips__item:hover:not(:disabled, [aria-checked="true"]) {
+	border-color: currentcolor;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .wc-block-product-filter-chips__item[aria-checked="true"] {
+	background: var(--wp--preset--color--contrast, #111);
+	border-color: var(--wp--preset--color--contrast, #111);
+	color: var(--wp--preset--color--base, #fff);
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .wc-block-product-filter-chips__item:focus {
+	outline: none;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .wc-block-product-filter-chips__item:focus-visible {
+	outline: 2px solid var(--wp--preset--color--contrast, #111);
+	outline-offset: 2px;
+}
+
+/* Colour swatches: a circle in a ring. */
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__items {
+	gap: 0.375rem;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__item {
+	background: transparent;
+	border: 2px solid transparent;
+	border-radius: 50%;
+	color: inherit;
+	padding: 2px;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__item:hover:not(:disabled, [aria-checked="true"]) {
+	border-color: color-mix(in srgb, currentcolor 45%, transparent);
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__item[aria-checked="true"] {
+	background: transparent;
+	border-color: var(--wp--preset--color--contrast, #111);
+	color: inherit;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__swatch {
+	/* A white or pale colour keeps a visible edge on a white page. */
+	border: 1px solid color-mix(in srgb, currentcolor 45%, transparent);
+	height: 2.25rem;
+	position: relative;
+	width: 2.25rem;
+}
+
+/* Not available in this combination, or out of stock. */
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__item:disabled .wc-block-product-filter-chips__swatch::after {
+	background: linear-gradient(to top right, transparent calc(50% - 1px), currentcolor calc(50% - 1px), currentcolor calc(50% + 1px), transparent calc(50% + 1px));
+	border-radius: 50%;
+	content: "";
+	inset: -1px;
+	position: absolute;
+}
+
+/* The chosen colour's name, under the row. Screen readers already hear the
+   name from the button's label. */
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__fieldset {
+	border: 0;
+	display: block;
+	margin: 0;
+	min-width: 0;
+	padding: 0 0 1.5em;
+	position: relative;
+}
+
+.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch [aria-checked="true"] .wc-block-product-filter-chips__text {
+	clip: auto;
+	clip-path: none;
+	color: var(--wp--preset--color--muted, currentcolor);
+	height: auto;
+	inset-block-end: 0;
+	inset-inline-start: 0;
+	line-height: 1.5;
+	overflow: visible;
+	width: auto;
+}
+
+@media (forced-colors: active) {
+
+	.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__item[aria-checked="true"] {
+		border-color: Highlight;
+	}
+
+	.wp-block-woocommerce-add-to-cart-with-options-variation-selector .is-style-swatch .wc-block-product-filter-chips__swatch {
+		forced-color-adjust: none;
+	}
+}

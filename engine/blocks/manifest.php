@@ -684,6 +684,38 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'sticky-add-to-cart' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/sticky-add-to-cart',
+    'title' => 'Sticky add-to-cart bar',
+    'category' => 'pergel',
+    'icon' => 'cart',
+    'description' => 'A bar at the bottom of the screen with the product\'s image, name, price and add-to-cart button, shown while the add-to-cart form is out of view. Turn it on under Pergel → Settings → Shop; product pages then show it by themselves.',
+    'keywords' => 
+    array (
+      0 => 'sticky',
+      1 => 'cart',
+      2 => 'add to cart',
+      3 => 'bar',
+      4 => 'buy',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => false,
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'table-of-contents' => 
   array (
     'apiVersion' => 3,

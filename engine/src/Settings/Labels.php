@@ -134,6 +134,10 @@ final class Labels {
 					'title'  => __( 'Wishlist and compare', 'pergel-engine' ),
 					'fields' => array( 'wishlist', 'wishlist_url', 'compare', 'compare_url' ),
 				),
+				'product'   => array(
+					'title'  => __( 'Product page', 'pergel-engine' ),
+					'fields' => array( 'swatches', 'sticky_cart' ),
+				),
 				'header'    => array(
 					'title'  => __( 'Header', 'pergel-engine' ),
 					'fields' => array( 'mini_cart' ),
@@ -303,6 +307,14 @@ final class Labels {
 				'compare_url'       => array(
 					'label' => __( 'Compare page', 'pergel-engine' ),
 					'help'  => __( 'Address of the page that shows the products side by side with the Compare block. With an address, the theme headers link to it.', 'pergel-engine' ),
+				),
+				'swatches'          => array(
+					'label' => __( 'Theme style for product options', 'pergel-engine' ),
+					'help'  => __( 'Gives the colour swatches and option buttons of variable products the theme\'s look: larger touch targets, a clear ring on the chosen and the focused option, unavailable options crossed out, and the chosen colour\'s name under the swatches. For colour swatches, turn on "Color swatches for attributes" under WooCommerce → Settings → Advanced → Features and give the attribute the "Color / image" type.', 'pergel-engine' ),
+				),
+				'sticky_cart'       => array(
+					'label' => __( 'Sticky add-to-cart bar', 'pergel-engine' ),
+					'help'  => __( 'When the add-to-cart button scrolls out of view on a product page, a bar with the product\'s image, name, price and button appears at the bottom of the screen. For a product with options it first takes the visitor to the options.', 'pergel-engine' ),
 				),
 			),
 		);

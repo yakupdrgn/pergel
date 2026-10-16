@@ -56,6 +56,12 @@ final class Module implements Core\Module {
 		if ( true === Settings::get( 'woo.wishlist' ) || true === Settings::get( 'woo.compare' ) ) {
 			Lists::register();
 		}
+		if ( true === Settings::get( 'woo.swatches' ) ) {
+			Swatches::register();
+		}
+		if ( true === Settings::get( 'woo.sticky_cart' ) ) {
+			StickyCart::register();
+		}
 		// The Product enquiry block's quote form.
 		add_filter( 'pergel/forms/subject_fields', array( Quote::class, 'fields' ), 10, 3 );
 		add_filter( 'pergel/forms/subject_values', array( Quote::class, 'values' ), 10, 3 );

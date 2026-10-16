@@ -769,6 +769,29 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   - Sayfa şablonu (`page.html`) `post-content`'i `align: full` yapar; önceden içerikteki
     geniş/tam bloklar 720 px'lik sütunda kalıyordu. Paragraflar yine 720 px'tir.
     `single.html` aynı durumda; görsel taban çizgilerini değiştireceği için ayrı bir işe kaldı.
+- **P2-2 swatch ve yapışkan sepete ekle (16 Ekim 2026):**
+  - Ayarlar: `woo.swatches` ve `woo.sticky_cart` (Mağaza sekmesi, "Product page" bölümü),
+    ikisi de varsayılan kapalı.
+  - Swatch verisi WooCommerce'in kendi altyapısıdır: "Color / image" öznitelik türü ve
+    `woocommerce/add-to-cart-with-options-variation-selector` bloğu. Kendi veri modelimiz,
+    term meta'mız ya da script'imiz yok; Pergel yalnızca CSS ekler (`engine/assets/swatches.css`)
+    ve bu CSS seçenek bloğu sayfada çizildiğinde satır içi yüklenir. 44 px dokunma alanı,
+    seçili ve odaktaki seçenekte halka, stokta olmayanın üstü çizili, seçilen rengin adı
+    örneklerin altında; forced-colors kuralları dahil. WooCommerce'in "Color swatches for
+    attributes" özellik bayrağını açmayız; mağaza sahibinin kararıdır, yardım metni yerini
+    gösterir.
+  - Çubuk (`pergel/sticky-add-to-cart`) sepet formundan sonra block hooks ile gelir; yalnızca
+    basit ve değişken, satın alınabilir (satış modları dahil) ve stoktaki üründe çizilir.
+    Kendi sepet isteği yoktur: düğmesi formun gerçek düğmesine basar, böylece adet, seçenekler,
+    AJAX ve mini sepet WooCommerce'te kalır. Form gönderilemiyorsa (seçenek eksik) ziyaretçiyi
+    forma kaydırıp seçilmemiş ilk seçeneğe odaklar. Fiyat ve düğme metni formu izler.
+  - Çubuk yalnızca düğme ekranın üstünde kaldığında görünür: IntersectionObserver alanı
+    ekranın çok altına uzatılır (`rootMargin` alt 100000 px), böylece End tuşu ya da bağlantı
+    gibi ekranı hiç kesmeyen atlamalarda da doğru çalışır. Odak çubuktayken gizlenmez; sayfa
+    çubuk yüksekliği kadar alt boşluk ve `scroll-padding` alır, odak çubuğun altında kalmaz.
+  - Script'siz ziyaretçi çubuğu görmez (`hidden`, script kaldırır).
+  - Bilinen: seçenek bloğundaki axe `aria-required-children` uyarısı WooCommerce'in kendi
+    işaretlemesidir; ayarlar kapalıyken de çıkar.
 
 ## Aşamalar ve bitti tanımları
 
