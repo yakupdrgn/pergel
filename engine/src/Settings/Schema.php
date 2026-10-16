@@ -183,6 +183,17 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				// Wishlist and compare; see Pergel\Woo\Lists.
+				'wishlist'          => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'wishlist_url'      => array( 'type' => 'url' ),
+				'compare'           => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'compare_url'       => array( 'type' => 'url' ),
 			),
 		);
 	}

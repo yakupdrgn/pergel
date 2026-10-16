@@ -86,6 +86,10 @@ final class WooTest extends TestCase {
 				'mini_cart'         => true,
 				'shop_assets_only'  => true,
 				'no_cart_fragments' => true,
+				'wishlist'          => false,
+				'wishlist_url'      => '',
+				'compare'           => false,
+				'compare_url'       => '',
 			),
 			Schema::defaults()['woo']
 		);

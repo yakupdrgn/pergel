@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T00:41:46+03:00\n"
+"POT-Creation-Date: 2026-10-16T10:03:19+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -428,6 +428,9 @@ msgstr ""
 msgid "Product enquiries"
 msgstr ""
 
+msgid "Wishlist and compare"
+msgstr ""
+
 msgid "Header"
 msgstr ""
 
@@ -608,6 +611,30 @@ msgstr ""
 msgid "An old script that asks the server for the cart on every page view. The mini cart block does not need it."
 msgstr ""
 
+msgid "Wishlist"
+msgstr ""
+
+msgid "Adds a heart button to product cards and product pages. Visitors keep their list in the browser; a logged-in customer's list is kept in their account."
+msgstr ""
+
+msgid "Wishlist page"
+msgstr ""
+
+msgid "Address of the page that shows the list with the Wishlist block. With an address, the theme headers link to it and show the number of saved products."
+msgstr ""
+
+msgid "Compare"
+msgstr ""
+
+msgid "Adds a compare button to product cards and product pages. Up to four products, kept in the visitor's browser."
+msgstr ""
+
+msgid "Compare page"
+msgstr ""
+
+msgid "Address of the page that shows the products side by side with the Compare block. With an address, the theme headers link to it."
+msgstr ""
+
 msgid "The value is too long."
 msgstr ""
 
@@ -713,6 +740,99 @@ msgid "Applies to the products of this category and its subcategories, unless a 
 msgstr ""
 
 msgid "Same as the parent category or the shop"
+msgstr ""
+
+msgid "Added to the wishlist."
+msgstr ""
+
+msgid "Removed from the wishlist."
+msgstr ""
+
+#. translators: %d: most products that can be compared.
+#, php-format
+msgid "You can compare up to %d products. Remove one first."
+msgstr ""
+
+msgid "Added to compare."
+msgstr ""
+
+msgid "Removed from compare."
+msgstr ""
+
+msgid "The list could not be updated. Try again."
+msgstr ""
+
+msgid "No products to compare yet. Press Compare on a product to add it here."
+msgstr ""
+
+msgid "Your wishlist is empty. Press the heart on a product to save it here."
+msgstr ""
+
+msgid "Shown on products: buttons that add the product to the wishlist or to compare."
+msgstr ""
+
+#. translators: 1: Wishlist or Compare, 2: product name.
+#, php-format
+msgctxt "list button"
+msgid "%1$s: %2$s"
+msgstr ""
+
+msgid "Turn on the wishlist and compare under Pergel → Settings → Shop to show the list here."
+msgstr ""
+
+msgid "Your lists are kept in this browser and need JavaScript to show."
+msgstr ""
+
+msgid "Products to compare"
+msgstr ""
+
+msgid "Links to the wishlist and compare pages. Set the pages under Pergel → Settings → Shop."
+msgstr ""
+
+msgid "Price"
+msgstr ""
+
+msgid "Rating"
+msgstr ""
+
+msgid "Availability"
+msgstr ""
+
+msgid "SKU"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "Dimensions"
+msgstr ""
+
+msgid "Buy"
+msgstr ""
+
+msgid "Product comparison, scrolls sideways"
+msgstr ""
+
+msgid "Product comparison"
+msgstr ""
+
+#. translators: 1: average rating, 2: number of reviews.
+#, php-format
+msgid "%1$s out of 5 (%2$d review)"
+msgid_plural "%1$s out of 5 (%2$d reviews)"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "In stock"
+msgstr ""
+
+msgid "Out of stock"
+msgstr ""
+
+msgid "Add to cart"
+msgstr ""
+
+msgid "View product"
 msgstr ""
 
 msgid "Choose an option"
@@ -898,9 +1018,6 @@ msgstr ""
 msgid "Plan name"
 msgstr ""
 
-msgid "Price"
-msgstr ""
-
 msgid "Who the plan is for"
 msgstr ""
 
@@ -914,6 +1031,15 @@ msgid "Highlight this plan"
 msgstr ""
 
 msgid "Gives the plan an accent border. Say why in its text too, for example \"Most popular\"."
+msgstr ""
+
+msgid "Buttons"
+msgstr ""
+
+msgid "Show labels"
+msgstr ""
+
+msgid "Words next to the icons, as on the product page. Product cards show icons only."
 msgstr ""
 
 msgid "Product enquiry"
@@ -944,6 +1070,18 @@ msgid "Links on products for sale too"
 msgstr ""
 
 msgid "Otherwise the block shows only where a product has no price or cart."
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "Show"
+msgstr ""
+
+msgid "Visitors see the products they chose to compare here, side by side."
+msgstr ""
+
+msgid "Visitors see the products they saved here. Logged-in customers keep their wishlist in their account."
 msgstr ""
 
 msgid "Headings"
@@ -1194,6 +1332,30 @@ msgid "pricing"
 msgstr ""
 
 msgctxt "block title"
+msgid "Wishlist and compare buttons"
+msgstr ""
+
+msgctxt "block description"
+msgid "Buttons that add the product to the wishlist or to compare. Turn the lists on under Pergel → Settings → Shop; the buttons then appear on product cards and product pages by themselves."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "wishlist"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "compare"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "favourites"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "heart"
+msgstr ""
+
+msgctxt "block title"
 msgid "Product enquiry"
 msgstr ""
 
@@ -1211,6 +1373,30 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "lead"
+msgstr ""
+
+msgctxt "block title"
+msgid "Wishlist and compare links"
+msgstr ""
+
+msgctxt "block description"
+msgid "Header links to the wishlist and compare pages with the number of products in each. Pergel's headers show them by themselves once the pages are set under Pergel → Settings → Shop."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "header"
+msgstr ""
+
+msgctxt "block title"
+msgid "Wishlist or compare list"
+msgstr ""
+
+msgctxt "block description"
+msgid "The products a visitor saved to the wishlist or chose to compare. Put it on the page set under Pergel → Settings → Shop."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "comparison"
 msgstr ""
 
 msgctxt "block title"

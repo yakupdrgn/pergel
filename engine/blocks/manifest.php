@@ -500,6 +500,47 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'product-actions' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/product-actions',
+    'title' => 'Wishlist and compare buttons',
+    'category' => 'pergel',
+    'icon' => 'heart',
+    'description' => 'Buttons that add the product to the wishlist or to compare. Turn the lists on under Pergel → Settings → Shop; the buttons then appear on product cards and product pages by themselves.',
+    'keywords' => 
+    array (
+      0 => 'wishlist',
+      1 => 'compare',
+      2 => 'favourites',
+      3 => 'heart',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'attributes' => 
+    array (
+      'labels' => 
+      array (
+        'type' => 'boolean',
+        'default' => false,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'spacing' => 
+      array (
+        'margin' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'product-cta' => 
   array (
     'apiVersion' => 3,
@@ -564,6 +605,82 @@ return array (
     ),
     'editorScript' => 'file:./index.js',
     'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'shop-links' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/shop-links',
+    'title' => 'Wishlist and compare links',
+    'category' => 'pergel',
+    'icon' => 'heart',
+    'description' => 'Header links to the wishlist and compare pages with the number of products in each. Pergel\'s headers show them by themselves once the pages are set under Pergel → Settings → Shop.',
+    'keywords' => 
+    array (
+      0 => 'wishlist',
+      1 => 'compare',
+      2 => 'header',
+      3 => 'count',
+    ),
+    'textdomain' => 'pergel-engine',
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => false,
+      'spacing' => 
+      array (
+        'margin' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'shop-list' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/shop-list',
+    'title' => 'Wishlist or compare list',
+    'category' => 'pergel',
+    'icon' => 'list-view',
+    'description' => 'The products a visitor saved to the wishlist or chose to compare. Put it on the page set under Pergel → Settings → Shop.',
+    'keywords' => 
+    array (
+      0 => 'wishlist',
+      1 => 'compare',
+      2 => 'favourites',
+      3 => 'comparison',
+    ),
+    'textdomain' => 'pergel-engine',
+    'attributes' => 
+    array (
+      'kind' => 
+      array (
+        'type' => 'string',
+        'enum' => 
+        array (
+          0 => 'wishlist',
+          1 => 'compare',
+        ),
+        'default' => 'wishlist',
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),

@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/product-actions",
+	"title": "Wishlist and compare buttons",
+	"category": "pergel",
+	"icon": "heart",
+	"description": "Buttons that add the product to the wishlist or to compare. Turn the lists on under Pergel → Settings → Shop; the buttons then appear on product cards and product pages by themselves.",
+	"keywords": [ "wishlist", "compare", "favourites", "heart" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId", "postType" ],
+	"attributes": {
+		"labels": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"html": false,
+		"spacing": {
+			"margin": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

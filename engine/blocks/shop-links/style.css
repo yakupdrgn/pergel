@@ -1,0 +1,78 @@
+.wp-block-pergel-shop-links {
+	align-items: center;
+	display: flex;
+	gap: 0.25rem;
+}
+
+.wp-block-pergel-shop-links__link {
+	align-items: center;
+	color: inherit;
+	display: inline-flex;
+	justify-content: center;
+	min-height: 44px;
+	min-width: 44px;
+	position: relative;
+	text-decoration: none;
+}
+
+.wp-block-pergel-shop-links__link:focus-visible {
+	outline: 2px solid currentcolor;
+	outline-offset: 2px;
+}
+
+/* Narrow headers keep the menu button, the links and the cart on one row:
+   the links get narrower, and a phone shows the wishlist only, since four
+   products side by side need a wider screen anyway. */
+@media (max-width: 599px) {
+
+	.wp-block-pergel-shop-links {
+		gap: 0;
+	}
+
+	.wp-block-pergel-shop-links__link {
+		min-width: 2.25rem;
+	}
+}
+
+@media (max-width: 479px) {
+
+	.wp-block-pergel-shop-links__link.is-compare {
+		display: none;
+	}
+
+	/* A row that also holds the search button has no room left. */
+	:has(> .wp-block-search) > .wp-block-pergel-shop-links {
+		display: none;
+	}
+}
+
+.wp-block-pergel-shop-links__count {
+	background: var(--wp--preset--color--contrast, #111);
+	border-radius: 999px;
+	color: var(--wp--preset--color--base, #fff);
+	font-size: 0.6875rem;
+	font-weight: 600;
+	inset-block-start: 4px;
+	inset-inline-end: 2px;
+	line-height: 1.125rem;
+	min-width: 1.125rem;
+	padding: 0 0.25rem;
+	position: absolute;
+	text-align: center;
+}
+
+.wp-block-pergel-shop-links__count[hidden] {
+	display: none;
+}
+
+.wp-block-pergel-shop-links .pergel-sr {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}

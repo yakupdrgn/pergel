@@ -739,6 +739,37 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   - Bilinen: eklentide "Remove" hem Performans bölümü başlığı hem düğme olarak aynı metin;
     ikisi de "Kaldır". Gerekirse bağlam (`_x`) eklenir.
 
+- **F4b P2 planı (16 Ekim 2026, kullanıcı kararları):** P2 dört ayrı PR'da, bu sırayla:
+  (1) karşılaştırma ve istek listesi, (2) swatch ve yapışkan sepete ekle, (3) tahmini teslimat
+  ve stok bildirimi, (4) beden rehberi ve birlikte al. Her `woo.*` anahtarı varsayılan kapalıdır
+  ve yalnızca açıkken kaydedilir; kapalıyken hiçbir dosya yüklenmez. Sayfa görüntülemede
+  veritabanına yazılmaz, `Modes::hidden()` gözetilir, derleme adımı yoktur. Stok bildirimi
+  çift onaylı (double opt-in) olacak.
+- **P2-1 istek listesi ve karşılaştırma (16 Ekim 2026):**
+  - Ayarlar: `woo.wishlist`, `woo.wishlist_url`, `woo.compare`, `woo.compare_url` (Mağaza
+    sekmesi, "Wishlist and compare" bölümü). Liste sayfası sitenin normal bir sayfasıdır;
+    adres girilince header'larda bağlantı ve sayı görünür.
+  - Ziyaretçinin listeleri tarayıcıda (localStorage) tutulur: önbelleğe alınan sayfa herkese
+    aynıdır, sunucuda oturum ya da çerez açılmaz. Oturum açmış müşterinin istek listesi hesabında
+    (`_pergel_wishlist` user meta) tutulur ve cihazlar arası izler; girişten önce tarayıcıda
+    biriken liste girişte hesaba birleştirilir. Karşılaştırma her zaman tarayıcıdadır, en fazla
+    4 ürün; istek listesi en fazla 100.
+  - Düğmeler ürün kartına ve ürün sayfasına block hooks ile kendiliğinden gelir; elle de
+    yerleştirilebilir (`pergel/product-actions`). WooCommerce'in sepet formu şablon parçası
+    kendi ürün düğmesini taşıdığı için o parçaya eklenmez (çift düğme oluyordu). Düğmeler
+    script çalışana kadar `hidden`'dır; script'siz ziyaretçi işlemeyen bir düğme görmez.
+  - Liste sayfası (`pergel/shop-list`) ürünleri REST'ten ister (`GET pergel/v1/shop-list`);
+    ziyaretçi isteği çerezsiz gider, yanıt herkese aynıdır. Müşterinin istek listesi sunucuda
+    çizilir. Silinen ya da gizlenen ürünler listeden düşer.
+  - Karşılaştırma tablosu: fiyat, puan, stok durumu, SKU, ağırlık, boyutlar ve görünür
+    öznitelikler; hiçbir üründe değeri olmayan satır basılmaz. Fiyatı gizli üründe fiyat
+    satırı boştur. "Sepete ekle" yalnızca basit, satın alınabilir, stoktaki üründe; diğerlerinde
+    "Ürünü gör".
+  - Simgeler kendi satır içi SVG'lerimiz; her blok kendi `style.css`'ini taşır.
+  - Sayfa şablonu (`page.html`) `post-content`'i `align: full` yapar; önceden içerikteki
+    geniş/tam bloklar 720 px'lik sütunda kalıyordu. Paragraflar yine 720 px'tir.
+    `single.html` aynı durumda; görsel taban çizgilerini değiştireceği için ayrı bir işe kaldı.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

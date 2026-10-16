@@ -30,7 +30,7 @@ final class Module implements Core\Module {
 	/**
 	 * Blocks that need WooCommerce; without it they are not registered.
 	 */
-	public const SHOP_BLOCKS = array( 'pergel/product-cta' );
+	public const SHOP_BLOCKS = array( 'pergel/product-actions', 'pergel/product-cta', 'pergel/shop-links', 'pergel/shop-list' );
 
 	/**
 	 * {@inheritDoc}
