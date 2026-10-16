@@ -117,12 +117,15 @@ function perf_log(): void {
 		)
 	);
 
+	// Pergel code files. Compiled translations (languages/*.l10n.php) are data that core loads
+	// on a translated site only; counting them would make a Turkish site fail where CI's
+	// English site passes.
 	$files  = get_included_files();
 	$pergel = 0;
 	foreach ( $files as $file ) {
 		$file = perf_norm( $file );
 		foreach ( $roots as $root ) {
-			if ( str_starts_with( $file, $root ) ) {
+			if ( str_starts_with( $file, $root ) && ! str_starts_with( substr( $file, strlen( $root ) ), 'languages/' ) ) {
 				++$pergel;
 				break;
 			}

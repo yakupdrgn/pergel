@@ -16,6 +16,16 @@ namespace Pergel\Theme;
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Points the theme's text domain at its bundled translations (languages/).
+ * This only records the folder: WordPress reads a language file the first
+ * time a string of the domain is needed.
+ */
+function load_translations(): void {
+	load_theme_textdomain( 'pergel', get_template_directory() . '/languages' );
+}
+add_action( 'after_setup_theme', __NAMESPACE__ . '\load_translations' );
+
+/**
  * Registers the pattern categories that core does not have. The library
  * also files patterns under core's own categories (banner, services, about,
  * team, testimonials, call-to-action, contact, posts, portfolio, gallery).

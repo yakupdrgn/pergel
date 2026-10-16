@@ -136,6 +136,8 @@ jobs:
           wp i18n make-pot engine /tmp/pergel-engine.pot --slug=pergel-engine --domain=pergel-engine --exclude=build --no-location
           diff -I '^"POT-Creation-Date' theme/languages/pergel.pot /tmp/pergel.pot
           diff -I '^"POT-Creation-Date' engine/languages/pergel-engine.pot /tmp/pergel-engine.pot
+      - name: Bundled translations complete and compiled
+        run: php tools/i18n.php --check
       - name: Performance budget
         run: npm run budget -- --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label ci
       - name: Patterns in the block editor

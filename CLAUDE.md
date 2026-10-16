@@ -49,6 +49,7 @@ composer check                     # PHPCS (WPCS 3 + PHPCompatibilityWP 8.1) + P
 php tools/tokens.php               # theme/tokens/*.json → theme.json + styles/ (--check: yalnızca karşılaştır)
 php tools/blocks.php               # engine/blocks/*/block.json kurallarını denetle → engine/blocks/manifest.php (--check)
 composer pot                       # theme/languages/pergel.pot + engine/languages/pergel-engine.pot
+composer i18n                      # .pot → tr_TR .po birleştir + .mo/.l10n.php/.json derle (--check; --export/--import JSON)
 npm run validate:json              # theme.json ve block.json'u wp/7.1 şemasına göre doğrula
 wp --path=C:/xampp/htdocs/pergel-tema eval-file tools/fixtures/seed.php   # sabit test içeriği; pattern önbelleğini de temizler
 npm run budget -- --base http://localhost/pergel-tema --log C:/xampp/htdocs/pergel-tema/wp-content/pergel-perf.jsonl --channel chrome
