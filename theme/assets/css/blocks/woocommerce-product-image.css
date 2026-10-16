@@ -1,0 +1,8 @@
+/*
+ * The placeholder for a product without an image is a thin outline on a
+ * transparent ground; the surface color behind it makes it a quiet tile in
+ * every style variation, on the product page as well as on cards.
+ */
+.wc-block-components-product-image img.woocommerce-placeholder {
+	background-color: var(--wp--preset--color--surface);
+}

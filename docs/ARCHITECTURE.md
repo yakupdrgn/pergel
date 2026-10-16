@@ -530,7 +530,9 @@ görünmez (`Settings\Screen::shown`).
   `role="listitem"`; `data-wp-class--disabled` taşıyan ürün düğmesine aynı duruma bağlı
   `aria-disabled` (`data-wp-bind--aria-disabled`).
 - **Blok başına stiller (`theme/assets/css/blocks/`, `functions.php`):** `woocommerce/catalog-sorting`,
-  `product-sale-badge`, `mini-cart` (kapalı çekmece klavyeden gizli), `product-filters`
+  `product-sale-badge` (küçük dolu etiket), `product-image` (placeholder `surface` zemin), `product-template`
+  (ürün kartı: `contrast` başlık, çerçeveli düğme, kare `contain` görsel), `mini-cart` (kapalı
+  çekmece klavyeden gizli), `product-filters`
   (WooCommerce custom property'leri token'lara bağlı; kapalı filtre çekmecesi klavyeden gizli)
   ve sepet ile ödemenin
   ortak form alanları (`woocommerce-forms.css`); hepsi preset renk token'larını kullanır.

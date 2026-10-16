@@ -65,7 +65,9 @@ function enqueue_block_styles(): void {
 		'woocommerce/mini-cart'           => 'woocommerce-mini-cart',
 		'woocommerce/product-filters'     => 'woocommerce-product-filters',
 		'woocommerce/product-review-form' => 'woocommerce-product-review-form',
+		'woocommerce/product-image'       => 'woocommerce-product-image',
 		'woocommerce/product-sale-badge'  => 'woocommerce-product-sale-badge',
+		'woocommerce/product-template'    => 'woocommerce-product-template',
 		'woocommerce/cart'                => 'woocommerce-forms',
 		'woocommerce/checkout'            => 'woocommerce-forms',
 	);
@@ -123,6 +125,7 @@ function navigation_fallback( array $blocks ): array {
 			'parent'      => 0,
 			'sort_column' => 'menu_order,post_title',
 			'number'      => 12,
+			'exclude'     => shop_utility_pages(),
 		)
 	);
 	if ( false === $pages ) {
@@ -147,3 +150,43 @@ function navigation_fallback( array $blocks ): array {
 	return $links;
 }
 add_filter( 'block_core_navigation_render_fallback', __NAMESPACE__ . '\navigation_fallback' );
+
+/**
+ * The shop's cart, checkout and account pages. The header reaches them
+ * through its icons, so the fallback menu leaves them out.
+ *
+ * @return int[]
+ */
+function shop_utility_pages(): array {
+	if ( ! function_exists( 'wc_get_page_id' ) ) {
+		return array();
+	}
+	$ids = array_map( 'wc_get_page_id', array( 'cart', 'checkout', 'myaccount' ) );
+	return array_values( array_filter( $ids, static fn ( int $id ): bool => $id > 0 ) );
+}
+
+/**
+ * Shows the theme's own placeholder for a product without an image.
+ *
+ * WooCommerce's grey placeholder carries its own background, which shows
+ * as a pale box on a dark style variation. The theme's image is a thin
+ * outline on a transparent ground, so the surface color behind it sets the
+ * tone. A placeholder the shop owner chose in the WooCommerce settings is
+ * kept; only WooCommerce's own default image is replaced.
+ *
+ * @param mixed $src Placeholder URL.
+ * @return mixed
+ */
+function product_placeholder( mixed $src ): mixed {
+	$chosen = get_option( 'woocommerce_placeholder_image', 0 );
+	if ( is_numeric( $chosen ) && (int) $chosen > 0 ) {
+		$file = (string) get_attached_file( (int) $chosen );
+		if ( ! str_starts_with( wp_basename( $file ), 'woocommerce-placeholder' ) ) {
+			return $src;
+		}
+	} elseif ( is_string( $chosen ) && '' !== $chosen ) {
+		return $src;
+	}
+	return get_theme_file_uri( 'assets/images/placeholders/product.svg' );
+}
+add_filter( 'woocommerce_placeholder_img_src', __NAMESPACE__ . '\product_placeholder' );

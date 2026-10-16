@@ -1,11 +1,20 @@
 /*
- * The sale badge, in the theme's colors. WooCommerce paints it white with
- * dark grey text, which stands out on a dark style variation.
+ * The sale badge as a small filled label in the theme's colors, in sentence
+ * case. WooCommerce draws an outlined, upper-case box in fixed greys, which
+ * is loud on a product card and stands out on a dark style variation.
  */
 .wp-block-woocommerce-product-sale-badge .wc-block-components-product-sale-badge,
 .wc-block-components-product-image .wc-block-components-product-sale-badge {
-	color: var(--wp--preset--color--contrast);
-	background-color: var(--wp--preset--color--base);
-	border-color: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+	background-color: var(--wp--preset--color--contrast);
+	border: 0;
 	border-radius: var(--wp--custom--radius--small);
+	font-size: 0.75rem;
+	letter-spacing: 0.01em;
+	padding: 0.2em 0.6em;
+	text-transform: none;
+}
+
+.wc-block-components-product-image .wc-block-components-product-sale-badge {
+	margin: var(--wp--preset--spacing--20);
 }

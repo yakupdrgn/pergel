@@ -697,6 +697,23 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     `wp transient delete` ile değil, ilgili satırlar silinerek görünür olur (yalnızca
     `WP_DEVELOPMENT_MODE` `theme` değilken; canlıda tema güncellemesi sürümü değiştirdiği için
     önbellek yenilenir).
+- **Tasarım hızlı düzeltmeleri (16 Ekim 2026, kullanıcı kararı "önce hızlı düzeltmeler"):** Stil
+  seçimi (D1) beklerken, her stilde geçerli olan üç düzeltme yapıldı.
+  - Görseli olmayan ürün, temanın `placeholders/product.svg` görselini gösterir: şeffaf zemin
+    üzerinde ince bir çerçeve, arkada `surface` rengi. WooCommerce'in gri görseli koyu stilde
+    açık bir kutu olarak görünüyordu. Filtre `woocommerce_placeholder_img_src`. Mağaza sahibi
+    ayarlarda kendi görselini seçtiyse ona dokunulmaz; dosya adı `woocommerce-placeholder`
+    ile başlayan varsayılan görsel temanınkiyle değiştirilir. Tek filtre hem ürün görseli
+    bloğunu hem ürün galerisini kapsar.
+  - Ürün kartı: başlık accent bağlantı rengi yerine `contrast` renktedir (600, altı çizgisiz;
+    üzerine gelince çizgili). Karttaki düğme çerçevelidir, üzerine gelince dolar; dolu düğme
+    ürün sayfasında kalır. WooCommerce düğme çerçevesini daha özgül bir seçiciyle kapattığı için
+    çerçeve iç gölgeyle (`inset box-shadow`) çizilir. Kart görseli kare ve `contain` ölçeklidir,
+    `surface` zemin üzerindedir; laboratuvar ürünlerinin fotoğrafları kırpılmaz. İndirim rozeti
+    büyük harfli çerçeveli kutu yerine küçük, dolu (`contrast` zemin) bir etikettir.
+  - Yedek menü (menü atanmamış Navigation bloğu) WooCommerce'in sepet, ödeme ve hesap
+    sayfalarını listelemez; bunlara header ikonlarından ulaşılır. Header ve footer aynı yedeği
+    kullanır.
 
 ## Aşamalar ve bitti tanımları
 
