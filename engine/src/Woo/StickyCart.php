@@ -93,7 +93,7 @@ final class StickyCart {
 			. $image
 			. '<div class="wp-block-pergel-sticky-add-to-cart__info">'
 			. '<p class="wp-block-pergel-sticky-add-to-cart__name">' . esc_html( $name ) . '</p>'
-			. '<p class="wp-block-pergel-sticky-add-to-cart__price">' . wp_kses_post( $product->get_price_html() ) . '</p>'
+			. '<p class="wp-block-pergel-sticky-add-to-cart__price">' . Price::html( $product->get_price_html() ) . '</p>'
 			. '</div>'
 			. '<button type="button" class="wp-block-pergel-sticky-add-to-cart__button wp-element-button">' . esc_html( '' !== $choose ? $choose : $product->single_add_to_cart_text() ) . '</button>'
 			. '</div></div>';

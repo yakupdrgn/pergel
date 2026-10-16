@@ -627,6 +627,39 @@ görünmez (`Settings\Screen::shown`).
     `pergel_back_in_stock`); ortak gövde `StockEmail`'dedir (HTML ve düz metin).
     `woocommerce_prepare_email_for_preview` önizlemeye örnek bir ürün verir.
   - Yönetim listesi: `admin.php?page=pergel-stock-alerts` (WooCommerce menüsü).
+- **Beden rehberi (`Woo\SizeGuide`, F4b P2-4):** `woo.size_guide` açık değilse `Woo\Module`
+  sınıfı yüklemez. Açıkken:
+  - `pergel/size-guide` bloğu (WooCommerce yoksa kaydedilmez, `Blocks\Module::SHOP_BLOCKS`).
+    Block hooks (`hooked_block_types`, öncelik 22) onu `woocommerce/add-to-cart-with-options`'dan
+    önce ekler; bloğu zaten içeren içerikte eklenmez. Editörde sunucu bir açıklama çizer.
+  - Rehber seçimi `SizeGuide::guide()`: ürünün post meta'sı `pergel_size_guide` (desen kimliği
+    ya da `none`), yoksa ürün kategorileri ve ataları arasında term meta'sı olan en yakın
+    kategori (eşitlikte düşük kimlik). Yalnızca yayımlanmış, parolasız `wp_block` geçerlidir.
+    Meta anahtarları `init`'te sanitize ve yetki geri çağrılarıyla kaydedilir.
+  - Desen `core/block` (`ref`) olarak çizilir; çekirdeğin özyineleme koruması geçerlidir. Stil
+    ve `view.js` (script modülü) yalnızca rehber çizildiğinde kuyruğa alınır.
+  - Yönetim: ürün verisi → Genel sekmesinde seçim kutusu
+    (`woocommerce_product_options_general_product_data`, `woocommerce_admin_process_product_object`),
+    kategori ekleme/düzenleme formlarında alan (`product_cat_*_form_fields`,
+    `created_/edited_product_cat`).
+- **Birlikte sık alınanlar (`Woo\BoughtTogether`, F4b P2-4):** `woo.bought_together` açık
+  değilse `Woo\Module` sınıfı yüklemez. Açıkken:
+  - `pergel/bought-together` bloğu sepet formundan sonra gelir (block hooks, öncelik 22).
+    Basit/değişken, satın alınabilir, stoktaki ürün ve gösterilecek en az bir çapraz satış
+    (yayımlanmış, görünür, stokta; en fazla `LIMIT` = 3) yoksa boş döner.
+  - Satırlar: ürünün kendisi ve `addable()` çapraz satışlar onay kutusuyla (`data-price` =
+    `wc_get_price_to_display`), diğerleri bağlantıyla. Değişken ana ürün kapalı başlar;
+    `data-pergel-together` içindeki `variations` (öznitelikler, fiyat, satın alınabilirlik;
+    en fazla 100) `view.js`'in sepet formunun `attribute_*` alanlarıyla eşleştirmesi içindir.
+  - `view.js` (script modülü): toplamı günceller; gönderimde `GET wc/store/v1/cart`'tan
+    `Nonce` başlığını alır, `POST wc/store/v1/batch` ile her ürün için `cart/add-item` yollar,
+    başarıda `wc-blocks_store_sync_required` ve `wc-blocks_added_to_cart` olaylarını gönderir.
+  - Script'siz: form `pergel_together_product` + `pergel_together[]` ile ürün sayfasına
+    gönderilir; `BoughtTogether::submit()` (`wp_loaded`, öncelik 30) yalnızca izin verilen
+    kimlikleri ekler, `wc_add_to_cart_message` ile sepete yönlendirir.
+- **Fiyat HTML'i (`Woo\Price`):** `Price::html()` WooCommerce fiyat HTML'ini `post` izin
+  listesi + `<bdi>` + `span[translate]` ile süzer; `BoughtTogether`, `StickyCart` ve
+  `ListView` kullanır.
 
 ## Arama (F4b)
 

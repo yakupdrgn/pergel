@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T14:50:28+03:00\n"
+"POT-Creation-Date: 2026-10-16T16:52:25+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -659,6 +659,18 @@ msgstr ""
 msgid "Sold-out products and options show a form where visitors leave their email address; when the product is back in stock, each address gets one email. Visitors who are not logged in first confirm their address with a link we email them. The addresses are listed under WooCommerce → Stock alerts, and both emails can be edited under WooCommerce → Settings → Emails."
 msgstr ""
 
+msgid "Size guide"
+msgstr ""
+
+msgid "A \"Size guide\" button above the add-to-cart button opens the guide in a window. A guide is a synced pattern made under Appearance → Editor → Patterns; choose it on a product category (its subcategories and products follow) or on a product, under Product data → General. Products without a guide show nothing."
+msgstr ""
+
+msgid "Frequently bought together"
+msgstr ""
+
+msgid "Under the add-to-cart button, the product and up to three of its cross-sells (Product data → Linked products) with checkboxes, a total and one button that adds the chosen ones to the cart. Cross-sells with options get a link to their page. Each product keeps its own price."
+msgstr ""
+
 msgid "Show the estimated delivery date"
 msgstr ""
 
@@ -802,6 +814,49 @@ msgstr ""
 
 msgid "Delete it now"
 msgstr ""
+
+msgid "Shown on product pages with cross-sells: the product and up to three of them, added to the cart with one button."
+msgstr ""
+
+#. translators: %s: product name.
+#, php-format
+msgid "This product: %s"
+msgstr ""
+
+msgid "Choose at least one product."
+msgstr ""
+
+msgid "The products could not be added to the cart. Please try again."
+msgstr ""
+
+msgid "View cart"
+msgstr ""
+
+msgid "Add selected to cart"
+msgstr ""
+
+msgid "Choose its options above first."
+msgstr ""
+
+msgid "Choose its options on its page."
+msgstr ""
+
+msgid "Details on its page."
+msgstr ""
+
+#. translators: %d: number of products.
+#, php-format
+msgid "Total for %d product:"
+msgid_plural "Total for %d products:"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of products.
+#, php-format
+msgid "%d product added to your cart."
+msgid_plural "%d products added to your cart."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
 msgstr ""
@@ -972,6 +1027,32 @@ msgstr ""
 msgid "SKU: %s"
 msgstr ""
 
+msgid "Shown on product pages that have a size guide: a button that opens the guide."
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+#. translators: %d: pattern id.
+#, php-format
+msgid "Pattern %d"
+msgstr ""
+
+msgid "Same as its categories"
+msgstr ""
+
+msgid "No size guide"
+msgstr ""
+
+msgid "A synced pattern (Appearance → Editor → Patterns) shown in a window from a button above the add-to-cart button."
+msgstr ""
+
+msgid "A synced pattern (Appearance → Editor → Patterns) for the products of this category and its subcategories, unless a subcategory or a product chooses its own."
+msgstr ""
+
+msgid "None"
+msgstr ""
+
 msgid "Shown on product pages: a bar with the add-to-cart button while the form is out of view."
 msgstr ""
 
@@ -1120,9 +1201,6 @@ msgid "Effect"
 msgstr ""
 
 msgid "Plays on the published page as the block scrolls into view. Visitors who prefer reduced motion see the block without it."
-msgstr ""
-
-msgid "None"
 msgstr ""
 
 msgid "Fade in"
@@ -1371,6 +1449,34 @@ msgid "Milestone"
 msgstr ""
 
 msgid "What happened"
+msgstr ""
+
+msgctxt "block title"
+msgid "Frequently bought together"
+msgstr ""
+
+msgctxt "block description"
+msgid "The product and up to three of its cross-sells, each with a checkbox, a live total and one button that adds the chosen ones to the cart. Turn it on under Pergel → Settings → Shop; product pages with cross-sells then show it under the add-to-cart button by themselves."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "bought together"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "bundle"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "cross-sells"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "cart"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "linked products"
 msgstr ""
 
 msgctxt "block title"
@@ -1690,6 +1796,34 @@ msgid "comparison"
 msgstr ""
 
 msgctxt "block title"
+msgid "Size guide"
+msgstr ""
+
+msgctxt "block description"
+msgid "A button that opens the product's size guide in a window. The guide is a synced pattern chosen on the product category or the product. Turn it on under Pergel → Settings → Shop; product pages then show it above the add-to-cart button by themselves."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "size"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "guide"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "chart"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "fit"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "measurements"
+msgstr ""
+
+msgctxt "block title"
 msgid "Sticky add-to-cart bar"
 msgstr ""
 
@@ -1699,10 +1833,6 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "sticky"
-msgstr ""
-
-msgctxt "block keyword"
-msgid "cart"
 msgstr ""
 
 msgctxt "block keyword"

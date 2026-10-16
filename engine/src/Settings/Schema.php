@@ -246,6 +246,15 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// See Pergel\Woo\SizeGuide and Pergel\Woo\BoughtTogether.
+				'size_guide'        => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'bought_together'   => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 		);
 	}

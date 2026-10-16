@@ -59,6 +59,9 @@ final class Module implements Core\Module {
 		if ( true === Settings::get( 'woo.swatches' ) ) {
 			Swatches::register();
 		}
+		if ( true === Settings::get( 'woo.size_guide' ) ) {
+			SizeGuide::register();
+		}
 		// Before the bar, so the estimate comes right after the add-to-cart form.
 		if ( true === Settings::get( 'woo.delivery' ) ) {
 			Delivery::register();
@@ -69,6 +72,9 @@ final class Module implements Core\Module {
 		// Also with the alerts off, so the stored addresses stay listed and erasable.
 		if ( StockAlertStore::installed() ) {
 			StockAlertStore::register();
+		}
+		if ( true === Settings::get( 'woo.bought_together' ) ) {
+			BoughtTogether::register();
 		}
 		if ( true === Settings::get( 'woo.sticky_cart' ) ) {
 			StickyCart::register();

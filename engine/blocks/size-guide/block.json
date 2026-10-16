@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/size-guide",
+	"title": "Size guide",
+	"category": "pergel",
+	"icon": "editor-table",
+	"description": "A button that opens the product's size guide in a window. The guide is a synced pattern chosen on the product category or the product. Turn it on under Pergel → Settings → Shop; product pages then show it above the add-to-cart button by themselves.",
+	"keywords": [ "size", "guide", "chart", "fit", "measurements" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId", "postType" ],
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

@@ -136,7 +136,7 @@ final class Labels {
 				),
 				'product'   => array(
 					'title'  => __( 'Product page', 'pergel-engine' ),
-					'fields' => array( 'swatches', 'sticky_cart', 'stock_alert' ),
+					'fields' => array( 'swatches', 'sticky_cart', 'stock_alert', 'size_guide', 'bought_together' ),
 				),
 				'delivery'  => array(
 					'title'  => __( 'Delivery estimate', 'pergel-engine' ),
@@ -323,6 +323,14 @@ final class Labels {
 				'stock_alert'       => array(
 					'label' => __( 'Back-in-stock alerts', 'pergel-engine' ),
 					'help'  => __( 'Sold-out products and options show a form where visitors leave their email address; when the product is back in stock, each address gets one email. Visitors who are not logged in first confirm their address with a link we email them. The addresses are listed under WooCommerce → Stock alerts, and both emails can be edited under WooCommerce → Settings → Emails.', 'pergel-engine' ),
+				),
+				'size_guide'        => array(
+					'label' => __( 'Size guide', 'pergel-engine' ),
+					'help'  => __( 'A "Size guide" button above the add-to-cart button opens the guide in a window. A guide is a synced pattern made under Appearance → Editor → Patterns; choose it on a product category (its subcategories and products follow) or on a product, under Product data → General. Products without a guide show nothing.', 'pergel-engine' ),
+				),
+				'bought_together'   => array(
+					'label' => __( 'Frequently bought together', 'pergel-engine' ),
+					'help'  => __( 'Under the add-to-cart button, the product and up to three of its cross-sells (Product data → Linked products) with checkboxes, a total and one button that adds the chosen ones to the cart. Cross-sells with options get a link to their page. Each product keeps its own price.', 'pergel-engine' ),
 				),
 				'delivery'          => array(
 					'label' => __( 'Show the estimated delivery date', 'pergel-engine' ),

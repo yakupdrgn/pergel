@@ -842,6 +842,44 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     - Eklenti silinince tablo kalır; arama indeksiyle aynı şekilde `uninstall.php` işi F6'dadır.
     - E2E testlerinde Playwright'ın `page.clock`'u Interactivity API'yi durduruyor; tarih
       testleri yalnızca `Date`'i `addInitScript` ile sabitler.
+- **P2-4 beden rehberi ve birlikte sık alınanlar (16 Ekim 2026, kullanıcı kararları):**
+  - Ayarlar: `woo.size_guide` ve `woo.bought_together`, Mağaza sekmesinde, ikisi de varsayılan
+    kapalı.
+  - Beden rehberi eşitlenmiş bir desendir (`wp_block`): tablo, görsel ve metin blok
+    düzenleyicide hazırlanır, bir rehber birçok ürüne hizmet eder. Ürün kategorisi rehberini
+    seçer (term meta `pergel_size_guide`), alt kategoriler ve ürünler onu izler; ürün kendi
+    rehberini ya da "rehber yok"u seçebilir (post meta `pergel_size_guide`, `none`). En yakın
+    kategori kazanır; eşit uzaklıkta düşük kimlikli kategori. Varyasyon ana ürünü izler.
+  - Gösterim: sepet formunun üstünde "Size guide" düğmesi, rehber `<dialog>` içinde açılır.
+    Düğme invoker command'la (`commandfor` / `command="show-modal"`) açar, `closedby="any"`
+    Esc ve dışarı tıklamayla kapatır, odak düğmeye döner; güncel tarayıcıda script gerekmez.
+    Küçük `view.js` yalnızca bu özellikleri tanımayan tarayıcılar içindir. Rehberi olmayan
+    üründe blok hiçbir şey çizmez ve dosya yüklemez.
+  - Birlikte sık alınanlar: ürün ve en fazla 3 çapraz satış ürünü (Ürün verisi → Bağlantılı
+    ürünler) onay kutuları, canlı toplam ve tek düğmeyle. Paket indirimi yok; her ürün kendi
+    fiyatındadır. Yalnızca basit, satın alınabilir, stoktaki, en az 1 adet satılan çapraz
+    satışlar onay kutusu alır; seçenekli ya da başka yolla satılanlar (teklif/katalog modu,
+    gruplu ürün…) kendi sayfasına bağlantı alır.
+  - Ana ürün seçenekliyse onay kutusu kapalı başlar, yukarıdaki formda seçenekler
+    tamamlanınca açılır ve ilk kez seçilir; fiyat aralığının yerine seçilen varyasyonun fiyatı
+    yazılır.
+  - Ekleme Store API'nin toplu isteğiyle (`wc/store/v1/batch`) yapılır; nonce sayfadan değil bir
+    Store API yanıtından alınır, böylece önbelleğe alınmış sayfa da çalışır. Sonra mini sepet
+    yenilenir. Script'siz form ürün sayfasına gönderilir, `wp_loaded`'da ürünleri ekleyip
+    sepete yönlendirir.
+  - Fiyat HTML'i için `Woo\Price::html()` eklendi: `wp_kses_post()` WooCommerce'in `<bdi>`
+    etiketini ve `translate="no"` özniteliğini siliyordu. `StickyCart` ve `ListView` de buna
+    geçti.
+  - Bilinen sınırlar:
+    - Rehberin script'siz açılması invoker command'ı tanıyan tarayıcı ister; eski tarayıcıda
+      düğme yalnızca script'le çalışır.
+    - Script'siz gönderim nonce taşımaz (WooCommerce'in kendi `add-to-cart` bağlantıları
+      gibi); yalnızca ziyaretçinin kendi sepetine, izin verilen ürünlerden ekler.
+    - Mini sepetin yenilenmesi WooCommerce'in iç olayına dayanır:
+      `wc-blocks_store_sync_required` (`type: 'from_@wordpress/data'`). WooCommerce bunu
+      değiştirirse sepet sayfası yine doğrudur, rozet bir sonraki sayfada güncellenir.
+    - 100'den fazla varyasyonu olan ana ürün pakete katılmaz (varyasyonlar sayfaya basılır).
+    - Seçenekli çapraz satışlar onay kutusu almaz, bağlantı alır.
 
 ## Aşamalar ve bitti tanımları
 
