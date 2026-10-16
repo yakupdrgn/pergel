@@ -39,6 +39,9 @@ function register_pattern_categories(): void {
 		'pergel-faq'     => array( _x( 'FAQ', 'pattern category', 'pergel' ), __( 'Frequently asked questions.', 'pergel' ) ),
 		'pergel-pages'   => array( _x( 'Full pages', 'pattern category', 'pergel' ), __( 'Whole pages made of Pergel sections.', 'pergel' ) ),
 	);
+	if ( class_exists( 'WooCommerce', false ) ) {
+		$categories['pergel-shop'] = array( _x( 'Shop', 'pattern category', 'pergel' ), __( 'Product lists, categories and shop sections.', 'pergel' ) );
+	}
 	foreach ( $categories as $slug => $category ) {
 		register_block_pattern_category(
 			$slug,
@@ -50,6 +53,27 @@ function register_pattern_categories(): void {
 	}
 }
 add_action( 'init', __NAMESPACE__ . '\register_pattern_categories' );
+
+/**
+ * Drops the shop patterns (pergel/shop-*) on a site without WooCommerce:
+ * their product blocks would show as missing. Core registers the theme's
+ * patterns on init at the default priority. The names come from the file
+ * names, so no pattern file is read.
+ */
+function drop_shop_patterns(): void {
+	if ( class_exists( 'WooCommerce', false ) ) {
+		return;
+	}
+	$files    = glob( get_template_directory() . '/patterns/shop-*.php' );
+	$registry = \WP_Block_Patterns_Registry::get_instance();
+	foreach ( false === $files ? array() : $files as $file ) {
+		$name = 'pergel/' . basename( $file, '.php' );
+		if ( $registry->is_registered( $name ) ) {
+			$registry->unregister( $name );
+		}
+	}
+}
+add_action( 'init', __NAMESPACE__ . '\drop_shop_patterns', 20 );
 
 /**
  * Leaves the inserter to the theme's library: core's bundled patterns and

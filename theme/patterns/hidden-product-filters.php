@@ -31,8 +31,8 @@ $pergel_attributes = function_exists( 'wc_get_attribute_taxonomies' ) ? array_sl
 
 <!-- wp:woocommerce/product-filter-clear-button -->
 <!-- wp:buttons {"layout":{"type":"flex","verticalAlignment":"stretched"}} -->
-<div class="wp-block-buttons"><!-- wp:button {"width":100,"className":"wc-block-product-filter-clear-button is-style-outline"} -->
-<div class="wp-block-button has-custom-width wp-block-button__width-100 wc-block-product-filter-clear-button is-style-outline"><a class="wp-block-button__link wp-element-button"><?php echo esc_html_x( 'Clear filters', 'product filters', 'pergel' ); ?></a></div>
+<div class="wp-block-buttons"><!-- wp:button {"className":"wc-block-product-filter-clear-button is-style-outline","style":{"dimensions":{"width":"100%"}}} -->
+<div class="wp-block-button wc-block-product-filter-clear-button is-style-outline"><a class="wp-block-button__link wp-element-button"><?php echo esc_html_x( 'Clear filters', 'product filters', 'pergel' ); ?></a></div>
 <!-- /wp:button --></div>
 <!-- /wp:buttons -->
 <!-- /wp:woocommerce/product-filter-clear-button --></div>

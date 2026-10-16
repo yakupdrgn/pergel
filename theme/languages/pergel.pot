@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T01:23:05+03:00\n"
+"POT-Creation-Date: 2026-10-16T18:41:38+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -74,6 +74,13 @@ msgid "Full pages"
 msgstr ""
 
 msgid "Whole pages made of Pergel sections."
+msgstr ""
+
+msgctxt "pattern category"
+msgid "Shop"
+msgstr ""
+
+msgid "Product lists, categories and shop sections."
 msgstr ""
 
 #: patterns/about-centered.php
@@ -2355,6 +2362,211 @@ msgid "Everything under one contract"
 msgstr ""
 
 msgid "Choose a single service or let us look after the whole system."
+msgstr ""
+
+#: patterns/shop-benefits.php
+msgctxt "Pattern title"
+msgid "Shop benefits"
+msgstr ""
+
+#: patterns/shop-benefits.php
+msgctxt "Pattern description"
+msgid "Four short promises in a row: shipping, returns, secure payment and support."
+msgstr ""
+
+msgid "Why shop with us"
+msgstr ""
+
+msgctxt "shop benefit number"
+msgid "01"
+msgstr ""
+
+msgid "Free shipping"
+msgstr ""
+
+msgid "On orders over a set amount, sent within one business day."
+msgstr ""
+
+msgctxt "shop benefit number"
+msgid "02"
+msgstr ""
+
+msgid "Easy returns"
+msgstr ""
+
+msgid "Changed your mind? Send it back within 14 days."
+msgstr ""
+
+msgctxt "shop benefit number"
+msgid "03"
+msgstr ""
+
+msgid "Secure payment"
+msgstr ""
+
+msgid "Your payment details are encrypted and never stored by us."
+msgstr ""
+
+msgctxt "shop benefit number"
+msgid "04"
+msgstr ""
+
+msgid "Real support"
+msgstr ""
+
+msgid "Questions about an order? Write to us and a person answers."
+msgstr ""
+
+#: patterns/shop-best-sellers.php
+msgctxt "Pattern title"
+msgid "Best sellers"
+msgstr ""
+
+#: patterns/shop-best-sellers.php
+msgctxt "Pattern description"
+msgid "The four best-selling products as cards on a light background."
+msgstr ""
+
+msgid "Popular"
+msgstr ""
+
+msgid "Best sellers"
+msgstr ""
+
+msgid "See all products"
+msgstr ""
+
+#: patterns/shop-categories.php
+msgctxt "Pattern title"
+msgid "Product categories"
+msgstr ""
+
+#: patterns/shop-categories.php
+msgctxt "Pattern description"
+msgid "The top-level product categories with their images, names and product counts."
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Shop by category"
+msgstr ""
+
+#: patterns/shop-featured.php
+msgctxt "Pattern title"
+msgid "Featured products"
+msgstr ""
+
+#: patterns/shop-featured.php
+msgctxt "Pattern description"
+msgid "Four products marked as featured, as cards with a link to the shop."
+msgstr ""
+
+msgid "Our picks"
+msgstr ""
+
+msgid "Featured products"
+msgstr ""
+
+msgid "Browse the shop"
+msgstr ""
+
+#: patterns/shop-hero.php
+msgctxt "Pattern title"
+msgid "Shop hero"
+msgstr ""
+
+#: patterns/shop-hero.php
+msgctxt "Pattern description"
+msgid "The shop page heading with a short pitch, a button to the shop and a large image."
+msgstr ""
+
+msgid "New season"
+msgstr ""
+
+msgid "Everyday things, made to last"
+msgstr ""
+
+msgid "Clothing, home goods and gifts chosen with care. Free shipping on larger orders and easy returns."
+msgstr ""
+
+msgid "Shop now"
+msgstr ""
+
+msgid "See what is new"
+msgstr ""
+
+#: patterns/shop-new-arrivals.php
+msgctxt "Pattern title"
+msgid "New arrivals"
+msgstr ""
+
+#: patterns/shop-new-arrivals.php
+msgctxt "Pattern description"
+msgid "The four newest products as cards, with a link to the shop."
+msgstr ""
+
+msgid "Just in"
+msgstr ""
+
+msgid "New arrivals"
+msgstr ""
+
+#: patterns/shop-on-sale.php
+msgctxt "Pattern title"
+msgid "Products on sale"
+msgstr ""
+
+#: patterns/shop-on-sale.php
+msgctxt "Pattern description"
+msgid "Four discounted products on a dark background, with their sale badges."
+msgstr ""
+
+msgid "Limited time"
+msgstr ""
+
+msgid "On sale now"
+msgstr ""
+
+msgid "Shop all deals"
+msgstr ""
+
+#: patterns/shop-page-home.php
+msgctxt "Pattern title"
+msgid "Shop home page"
+msgstr ""
+
+#: patterns/shop-page-home.php
+msgctxt "Pattern description"
+msgid "Shop hero, categories, new arrivals, two promotions, best sellers, deals and shop benefits."
+msgstr ""
+
+#: patterns/shop-promo-pair.php
+msgctxt "Pattern title"
+msgid "Two promotions"
+msgstr ""
+
+#: patterns/shop-promo-pair.php
+msgctxt "Pattern description"
+msgid "Two image cards side by side, each with a short offer and a button to the shop."
+msgstr ""
+
+msgid "New collection"
+msgstr ""
+
+msgid "Layers for cooler days"
+msgstr ""
+
+msgid "Shop clothing"
+msgstr ""
+
+msgid "Gift ideas"
+msgstr ""
+
+msgid "Ready-made sets for every occasion"
+msgstr ""
+
+msgid "Shop gifts"
 msgstr ""
 
 #: patterns/stats-accent.php

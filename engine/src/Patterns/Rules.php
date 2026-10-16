@@ -16,8 +16,10 @@ namespace Pergel\Patterns;
  * - The header names the pattern: Title, Slug `pergel/<file name>`, known
  *   Categories and a Description (hidden patterns need only Title and Slug).
  * - Only core and Pergel blocks; no Custom HTML, Classic or Shortcode block.
- *   Hidden shop patterns (`pergel/hidden-product-*`), which only the shop's
- *   templates use, may also hold WooCommerce blocks.
+ *   Shop patterns may also hold WooCommerce blocks: the hidden ones only the
+ *   shop's templates use (`pergel/hidden-product-*`) and the shop sections
+ *   (`pergel/shop-*`), which are filed under pergel-shop and exist only
+ *   while WooCommerce is active.
  * - No hard-coded text: every visible string, alt text and label comes from a
  *   translation function with the `pergel` text domain.
  * - At most one H1, and only in hero (banner) and full-page patterns.
@@ -48,6 +50,7 @@ final class Rules {
 		'pergel-pages',
 		'pergel-pricing',
 		'pergel-process',
+		'pergel-shop',
 		'pergel-stats',
 	);
 
@@ -65,6 +68,16 @@ final class Rules {
 	 * Slug prefix of the hidden patterns that may hold WooCommerce blocks.
 	 */
 	public const SHOP_PREFIX = 'pergel/hidden-product-';
+
+	/**
+	 * Slug prefix of the shop sections, which may hold WooCommerce blocks.
+	 */
+	public const SHOP_SECTION_PREFIX = 'pergel/shop-';
+
+	/**
+	 * Category of the shop sections.
+	 */
+	public const SHOP_CATEGORY = 'pergel-shop';
 
 	/**
 	 * Block attributes that hold text a visitor sees or hears.
@@ -222,11 +235,12 @@ final class Rules {
 	 * @return list<string>
 	 */
 	public static function check( string $file, string $source ): array {
-		$errors = array();
-		$header = self::header( $source );
-		$slug   = 'pergel/' . basename( $file, '.php' );
-		$hidden = 'no' === strtolower( $header['Inserter'] ?? '' );
-		$shop   = $hidden && str_starts_with( $slug, self::SHOP_PREFIX );
+		$errors  = array();
+		$header  = self::header( $source );
+		$slug    = 'pergel/' . basename( $file, '.php' );
+		$hidden  = 'no' === strtolower( $header['Inserter'] ?? '' );
+		$section = str_starts_with( $slug, self::SHOP_SECTION_PREFIX );
+		$shop    = $section || ( $hidden && str_starts_with( $slug, self::SHOP_PREFIX ) );
 
 		if ( '' === ( $header['Title'] ?? '' ) ) {
 			$errors[] = 'Missing Title.';
@@ -245,6 +259,10 @@ final class Rules {
 		}
 		foreach ( array_diff( $categories, self::CATEGORIES ) as $unknown ) {
 			$errors[] = "Unknown category {$unknown}.";
+		}
+		$filed = in_array( self::SHOP_CATEGORY, $categories, true );
+		if ( $filed !== $section ) {
+			$errors[] = 'Shop sections are named pergel/shop-* and filed under ' . self::SHOP_CATEGORY . ', and only they are.';
 		}
 		if ( ! str_contains( $source, "defined( 'ABSPATH' ) || exit;" ) ) {
 			$errors[] = "Missing defined( 'ABSPATH' ) || exit;.";

@@ -15,7 +15,8 @@ use WP_CLI;
 
 /**
  * Installs and removes starter sites: pages built from Pergel's full-page
- * patterns, a main menu and the front page and posts page settings.
+ * patterns, a main menu and the front page and posts page settings, and for
+ * a shop starter product categories, attributes, products and their images.
  */
 final class StarterCommand {
 
@@ -60,9 +61,11 @@ final class StarterCommand {
 	/**
 	 * Makes a starter's pages, menu and reading settings.
 	 *
-	 * Running it again finds what it made before and changes nothing (or,
-	 * with --reset, puts those pages and the menu back to the starter's
-	 * content). Page titles and addresses follow the site language where the
+	 * A shop starter also makes product categories, attributes and products,
+	 * with images drawn from the active style's colours; it needs
+	 * WooCommerce. Running it again finds what it made before and changes
+	 * nothing (or, with --reset, puts what it made back to the starter's
+	 * content). Titles and addresses follow the site language where the
 	 * starter has them, English otherwise.
 	 *
 	 * ## OPTIONS
@@ -74,7 +77,7 @@ final class StarterCommand {
 	 * : Show what would happen without saving anything.
 	 *
 	 * [--reset]
-	 * : Rewrite pages and the menu this starter made before, losing edits to them.
+	 * : Rewrite what this starter made before, losing edits to it.
 	 *
 	 * [--format=<format>]
 	 * : Output format.
@@ -89,6 +92,7 @@ final class StarterCommand {
 	 *
 	 *     wp pergel starter install corporate --dry-run
 	 *     wp pergel starter install corporate
+	 *     wp pergel starter install shop
 	 *
 	 * @param string[]              $args       Positional arguments.
 	 * @param array<string, string> $assoc_args Associative arguments.
@@ -106,11 +110,12 @@ final class StarterCommand {
 	}
 
 	/**
-	 * Deletes every page and menu a starter made, edited or not.
+	 * Deletes everything a starter made, edited or not.
 	 *
-	 * A front page or posts page setting that points at a deleted page goes
-	 * back to showing the latest posts. Pages are deleted permanently, not
-	 * moved to the trash.
+	 * Pages, the menu and, for a shop starter, its products, variations,
+	 * images, categories and the attributes it created. A front page or posts
+	 * page setting that points at a deleted page goes back to showing the
+	 * latest posts. Everything is deleted permanently, not moved to the trash.
 	 *
 	 * ## OPTIONS
 	 *
@@ -144,7 +149,7 @@ final class StarterCommand {
 		$name    = $args[0] ?? '';
 		$dry_run = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
 		if ( ! $dry_run ) {
-			WP_CLI::confirm( "Permanently delete every page and menu the $name starter made?", $assoc_args );
+			WP_CLI::confirm( "Permanently delete everything the $name starter made?", $assoc_args );
 		}
 		$rows = Starter::remove( $name, $dry_run );
 		WP_CLI\Utils\format_items( $assoc_args['format'] ?? 'table', $rows, self::COLUMNS );

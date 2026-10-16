@@ -114,6 +114,17 @@ final class RulesTest extends TestCase {
 		);
 	}
 
+	public function test_shop_sections_may_hold_woocommerce_blocks(): void {
+		$price = '<!-- wp:group --><div class="wp-block-group"><!-- wp:woocommerce/product-price /--></div><!-- /wp:group -->';
+		$shop  = " * Categories: pergel-shop\n * Description: Prices.\n";
+		$rule  = 'Shop sections are named pergel/shop-* and filed under pergel-shop, and only they are.';
+
+		$this->assertSame( array(), Rules::check( 'shop-x.php', self::file( $price, $shop, 'shop-x' ) ) );
+		$this->assertContains( $rule, Rules::check( 'shop-x.php', self::file( self::PARAGRAPH, " * Categories: services\n * Description: Prices.\n", 'shop-x' ) ) );
+		$this->assertContains( $rule, Rules::check( 'cards.php', self::file( self::PARAGRAPH, $shop ) ) );
+		$this->assertContains( 'Block woocommerce/product-price is not a core or Pergel block.', Rules::check( 'cards.php', self::file( $price ) ) );
+	}
+
 	public function test_h1_only_in_heroes_and_pages(): void {
 		$h1 = '<!-- wp:heading {"level":1} --><h1 class="wp-block-heading"><?php esc_html_e( "Hi", "pergel" ); ?></h1><!-- /wp:heading -->';
 		$h1 = '<!-- wp:group --><div class="wp-block-group">' . $h1 . '</div><!-- /wp:group -->';

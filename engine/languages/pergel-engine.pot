@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T16:52:25+03:00\n"
+"POT-Creation-Date: 2026-10-16T18:41:38+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1442,6 +1442,24 @@ msgstr ""
 msgid "Levels 2 to 4"
 msgstr ""
 
+msgid "Aspect ratio"
+msgstr ""
+
+msgid "Square"
+msgstr ""
+
+msgid "Landscape"
+msgstr ""
+
+msgid "Portrait"
+msgstr ""
+
+msgid "Wide"
+msgstr ""
+
+msgid "Link to the category"
+msgstr ""
+
 msgid "Date"
 msgstr ""
 
@@ -1901,6 +1919,30 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "summary"
+msgstr ""
+
+msgctxt "block title"
+msgid "Term image"
+msgstr ""
+
+msgctxt "block description"
+msgid "The image of a category inside a Terms Query, linked to the category. Product categories show the image set on the category; without one, a plain tile keeps the grid even."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "category"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "term"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "image"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "thumbnail"
 msgstr ""
 
 msgctxt "block title"

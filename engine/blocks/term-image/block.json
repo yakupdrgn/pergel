@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/term-image",
+	"title": "Term image",
+	"category": "pergel",
+	"icon": "format-image",
+	"description": "The image of a category inside a Terms Query, linked to the category. Product categories show the image set on the category; without one, a plain tile keeps the grid even.",
+	"keywords": [ "category", "term", "image", "thumbnail" ],
+	"textdomain": "pergel-engine",
+	"ancestor": [ "core/term-template" ],
+	"usesContext": [ "termId", "taxonomy" ],
+	"attributes": {
+		"aspectRatio": {
+			"type": "string",
+			"enum": [ "1", "4/3", "3/4", "16/9" ],
+			"default": "4/3"
+		},
+		"isLink": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"spacing": {
+			"margin": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

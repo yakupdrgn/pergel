@@ -11,8 +11,9 @@
  * The user must be an administrator. Exit code 1 = a pattern failed.
  * The hidden shop patterns (pergel/hidden-product-*) hold WooCommerce blocks
  * that WooCommerce offers in the Site Editor only, so they are checked there,
- * in the product template. Without WooCommerce they are skipped; run it on a
- * shop site too.
+ * in the product template. The shop sections (pergel/shop-*) exist only
+ * while WooCommerce is active and are checked like other sections. Without
+ * WooCommerce both are skipped; run it on a shop site too.
  */
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';

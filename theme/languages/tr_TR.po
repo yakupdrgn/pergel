@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/pergel\n"
-"POT-Creation-Date: 2026-10-16 06:08+0000\n"
-"PO-Revision-Date: 2026-10-16 06:08+0000\n"
+"POT-Creation-Date: 2026-10-16 15:41+0000\n"
+"PO-Revision-Date: 2026-10-16 15:41+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -74,6 +74,13 @@ msgstr "Tam sayfalar"
 
 msgid "Whole pages made of Pergel sections."
 msgstr "Pergel bölümlerinden oluşan tam sayfalar."
+
+msgctxt "pattern category"
+msgid "Shop"
+msgstr "Mağaza"
+
+msgid "Product lists, categories and shop sections."
+msgstr "Ürün listeleri, kategoriler ve mağaza bölümleri."
 
 #: patterns/about-centered.php
 msgctxt "Pattern title"
@@ -2354,6 +2361,211 @@ msgstr "Her şey tek sözleşme kapsamında"
 
 msgid "Choose a single service or let us look after the whole system."
 msgstr "Tek bir hizmet seçin ya da tüm sistemin bakımını bize bırakın."
+
+#: patterns/shop-benefits.php
+msgctxt "Pattern title"
+msgid "Shop benefits"
+msgstr "Mağaza avantajları"
+
+#: patterns/shop-benefits.php
+msgctxt "Pattern description"
+msgid "Four short promises in a row: shipping, returns, secure payment and support."
+msgstr "Yan yana dört kısa söz: kargo, iade, güvenli ödeme ve destek."
+
+msgid "Why shop with us"
+msgstr "Neden bizden alışveriş yapmalı"
+
+msgctxt "shop benefit number"
+msgid "01"
+msgstr "01"
+
+msgid "Free shipping"
+msgstr "Ücretsiz kargo"
+
+msgid "On orders over a set amount, sent within one business day."
+msgstr "Belirli tutarın üzerindeki siparişlerde; bir iş günü içinde kargoda."
+
+msgctxt "shop benefit number"
+msgid "02"
+msgstr "02"
+
+msgid "Easy returns"
+msgstr "Kolay iade"
+
+msgid "Changed your mind? Send it back within 14 days."
+msgstr "Fikrinizi mi değiştirdiniz? 14 gün içinde geri gönderin."
+
+msgctxt "shop benefit number"
+msgid "03"
+msgstr "03"
+
+msgid "Secure payment"
+msgstr "Güvenli ödeme"
+
+msgid "Your payment details are encrypted and never stored by us."
+msgstr "Ödeme bilgileriniz şifrelenir ve bizde hiçbir zaman saklanmaz."
+
+msgctxt "shop benefit number"
+msgid "04"
+msgstr "04"
+
+msgid "Real support"
+msgstr "Gerçek destek"
+
+msgid "Questions about an order? Write to us and a person answers."
+msgstr "Siparişinizle ilgili bir sorunuz mu var? Bize yazın, bir insan yanıtlasın."
+
+#: patterns/shop-best-sellers.php
+msgctxt "Pattern title"
+msgid "Best sellers"
+msgstr "Çok satanlar"
+
+#: patterns/shop-best-sellers.php
+msgctxt "Pattern description"
+msgid "The four best-selling products as cards on a light background."
+msgstr "En çok satan dört ürün, açık zeminde kartlar halinde."
+
+msgid "Popular"
+msgstr "Popüler"
+
+msgid "Best sellers"
+msgstr "Çok satanlar"
+
+msgid "See all products"
+msgstr "Tüm ürünleri gör"
+
+#: patterns/shop-categories.php
+msgctxt "Pattern title"
+msgid "Product categories"
+msgstr "Ürün kategorileri"
+
+#: patterns/shop-categories.php
+msgctxt "Pattern description"
+msgid "The top-level product categories with their images, names and product counts."
+msgstr "En üst düzey ürün kategorileri; görselleri, adları ve ürün sayılarıyla."
+
+msgid "Categories"
+msgstr "Kategoriler"
+
+msgid "Shop by category"
+msgstr "Kategoriye göre alışveriş"
+
+#: patterns/shop-featured.php
+msgctxt "Pattern title"
+msgid "Featured products"
+msgstr "Öne çıkan ürünler"
+
+#: patterns/shop-featured.php
+msgctxt "Pattern description"
+msgid "Four products marked as featured, as cards with a link to the shop."
+msgstr "Öne çıkan olarak işaretlenmiş dört ürün, kartlar halinde ve mağazaya bağlantıyla."
+
+msgid "Our picks"
+msgstr "Seçtiklerimiz"
+
+msgid "Featured products"
+msgstr "Öne çıkan ürünler"
+
+msgid "Browse the shop"
+msgstr "Mağazayı gez"
+
+#: patterns/shop-hero.php
+msgctxt "Pattern title"
+msgid "Shop hero"
+msgstr "Mağaza hero"
+
+#: patterns/shop-hero.php
+msgctxt "Pattern description"
+msgid "The shop page heading with a short pitch, a button to the shop and a large image."
+msgstr "Kısa bir tanıtım, mağazaya giden bir düğme ve büyük bir görselle mağaza sayfası başlığı."
+
+msgid "New season"
+msgstr "Yeni sezon"
+
+msgid "Everyday things, made to last"
+msgstr "Her gün kullanılan, uzun ömürlü şeyler"
+
+msgid "Clothing, home goods and gifts chosen with care. Free shipping on larger orders and easy returns."
+msgstr "Özenle seçilmiş giyim, ev ürünleri ve hediyeler. Büyük siparişlerde ücretsiz kargo ve kolay iade."
+
+msgid "Shop now"
+msgstr "Alışverişe başla"
+
+msgid "See what is new"
+msgstr "Yenilere göz at"
+
+#: patterns/shop-new-arrivals.php
+msgctxt "Pattern title"
+msgid "New arrivals"
+msgstr "Yeni gelenler"
+
+#: patterns/shop-new-arrivals.php
+msgctxt "Pattern description"
+msgid "The four newest products as cards, with a link to the shop."
+msgstr "En yeni dört ürün, kartlar halinde ve mağazaya bağlantıyla."
+
+msgid "Just in"
+msgstr "Yeni geldi"
+
+msgid "New arrivals"
+msgstr "Yeni gelenler"
+
+#: patterns/shop-on-sale.php
+msgctxt "Pattern title"
+msgid "Products on sale"
+msgstr "İndirimdeki ürünler"
+
+#: patterns/shop-on-sale.php
+msgctxt "Pattern description"
+msgid "Four discounted products on a dark background, with their sale badges."
+msgstr "Koyu zeminde, indirim rozetleriyle dört indirimli ürün."
+
+msgid "Limited time"
+msgstr "Sınırlı süre"
+
+msgid "On sale now"
+msgstr "Şimdi indirimde"
+
+msgid "Shop all deals"
+msgstr "Tüm fırsatları gör"
+
+#: patterns/shop-page-home.php
+msgctxt "Pattern title"
+msgid "Shop home page"
+msgstr "Mağaza ana sayfası"
+
+#: patterns/shop-page-home.php
+msgctxt "Pattern description"
+msgid "Shop hero, categories, new arrivals, two promotions, best sellers, deals and shop benefits."
+msgstr "Mağaza hero, kategoriler, yeni gelenler, iki kampanya, çok satanlar, fırsatlar ve mağaza avantajları."
+
+#: patterns/shop-promo-pair.php
+msgctxt "Pattern title"
+msgid "Two promotions"
+msgstr "İki kampanya"
+
+#: patterns/shop-promo-pair.php
+msgctxt "Pattern description"
+msgid "Two image cards side by side, each with a short offer and a button to the shop."
+msgstr "Yan yana iki görselli kart; her birinde kısa bir teklif ve mağazaya giden bir düğme."
+
+msgid "New collection"
+msgstr "Yeni koleksiyon"
+
+msgid "Layers for cooler days"
+msgstr "Serin günler için katmanlar"
+
+msgid "Shop clothing"
+msgstr "Giyime göz at"
+
+msgid "Gift ideas"
+msgstr "Hediye fikirleri"
+
+msgid "Ready-made sets for every occasion"
+msgstr "Her vesileye hazır setler"
+
+msgid "Shop gifts"
+msgstr "Hediyelere göz at"
 
 #: patterns/stats-accent.php
 msgctxt "Pattern title"

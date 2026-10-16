@@ -880,6 +880,41 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
       değiştirirse sepet sayfası yine doğrudur, rozet bir sonraki sayfada güncellenir.
     - 100'den fazla varyasyonu olan ana ürün pakete katılmaz (varyasyonlar sayfaya basılır).
     - Seçenekli çapraz satışlar onay kutusu almaz, bağlantı alır.
+- **F4c kararları (16 Ekim 2026):**
+  - Üç PR'da: F4c-1 mağaza pattern'leri ve `starters/shop`; F4c-2 CI'da WooCommerce'li iş
+    (entegrasyon testleri, mağaza pattern'lerinin editör denetimi, ödeme e2e) ve mağaza bütçesi;
+    F4c-3 sahte ürün üreticisiyle ölçek testi (kullanıcı kararı).
+  - Mağaza starter'ı ~24 ürün ve 5 kategoriyle gelir: basit, seçenekli (renk/beden), gruplu ve
+    harici ürünler, indirimli, öne çıkan ve stokta olmayan örneklerle (kullanıcı kararı).
+  - Ürün ve kategori görselleri depoya girmez; kurulumda GD ile WebP olarak üretilir (WebP
+    yoksa PNG), etkin stilin renkleriyle düz bir şekil taşır (kullanıcı kararı). Plan baş harf
+    de diyordu; temada yalnızca woff2 yazı tipi var ve GD onu okuyamıyor, sistem yazı tipi de
+    her sunucuda yok. Harf yerine şekil anahtardan seçilir (daire, kare, kemer, karo, halka,
+    hap), böylece aynı ürün her kurulumda aynı resmi alır.
+  - CI'daki mağaza işi WooCommerce'in son sürümü ve 11.2.1 ile çalışır (kullanıcı kararı).
+  - Ödeme e2e yalnızca WooCommerce'in çevrimdışı yöntemleriyle (havale, çek, kapıda ödeme);
+    blok ve klasik ödeme, misafir ve üye, teklif/katalog modunda engellenen ödeme ve axe.
+  - Ölçek testi: CI'da 5.000 ürün; yerelde bir kez 50.000 ürün ve 10.000 yazı, sonuçlar buraya
+    yazılır.
+- **F4c-1 uygulama notları (16 Ekim 2026):**
+  - Kategori görselleri için yeni `pergel/term-image` bloğu: çekirdekte Terms Query içinde
+    terimin görselini basan blok yok. WooCommerce'in kategori görseli term meta'sı
+    (`thumbnail_id`) okunur, başka taksonomiler süzgeçle bağlanır; WooCommerce gerektirmez.
+  - Mağaza bölümleri ayrı `pergel-shop` kategorisinde, yalnızca WooCommerce etkinken; böylece
+    mağazasız sitenin ekleyicisinde çalışmayan bölüm görünmez. Pattern kurallarına `shop-*`
+    adı ile bu kategorinin birlikte gelmesi eklendi.
+  - Ürün kartının başlığı ve düğmesi metin rengini zeminden alır (`color: inherit`): koyu
+    zeminli "indirimdekiler" bölümünde başlıklar ve düğme görünmüyordu.
+  - `hidden-product-filters` pattern'indeki düğme genişliği WP 7.1'in biçimine çevrildi;
+    editör denetimi eski biçimi geçersiz blok sayıyordu.
+  - Mağaza starter'ı WooCommerce'in kendi nesneleriyle (`WC_Product_*`) kurulur, REST veya
+    içe aktarma dosyası kullanılmaz. Öznitelik zaten varsa (ör. sitede `pa_color`) yeniden
+    kullanılır ve kaldırmada silinmez; yalnızca starter'ın yarattığı öznitelikler
+    (`pergel_starter_attributes`) silinir.
+  - Kurulum bir çağrıda ~20 saniye sürer (36 görsel ve 40 varyasyon); `--dry-run` hiçbir
+    görsel çizmez.
+  - Yerel not: WP-CLI ile web sunucusu tema kökünü farklı yazdığından (`C:/…` ve `C:\…`)
+    pattern önbelleğinin anahtarı farklıdır; CLI'dan temizlemek web'deki önbelleği silmez.
 
 ## Aşamalar ve bitti tanımları
 
