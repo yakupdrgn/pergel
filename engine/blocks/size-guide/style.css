@@ -1,0 +1,110 @@
+.wp-block-pergel-size-guide {
+	margin-block: 0.5rem;
+}
+
+.wp-block-pergel-size-guide__open {
+	align-items: center;
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	font-size: var(--wp--preset--font-size--small, 0.9375rem);
+	gap: 0.375rem;
+	min-height: 2.75rem;
+	padding: 0;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.wp-block-pergel-size-guide__open:hover {
+	text-decoration-thickness: 2px;
+}
+
+.wp-block-pergel-size-guide__open:focus-visible,
+.wp-block-pergel-size-guide__close:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent, currentColor);
+	outline-offset: 2px;
+}
+
+.wp-block-pergel-size-guide__icon {
+	flex: none;
+}
+
+.wp-block-pergel-size-guide__dialog {
+	background: var(--wp--preset--color--base, #fff);
+	border: 0;
+	border-radius: var(--wp--custom--radius--large, 16px);
+	box-shadow: 0 1rem 3rem rgb(0 0 0 / 0.25);
+	box-sizing: border-box;
+	color: var(--wp--preset--color--contrast, #111);
+	max-height: min(90dvh, 48rem);
+	max-width: min(calc(100vw - 2rem), 52rem);
+	padding: 0;
+	width: 100%;
+}
+
+.wp-block-pergel-size-guide__dialog::backdrop {
+	background: rgb(0 0 0 / 0.5);
+}
+
+/* The panel fills the dialog, so a click on the backdrop is the only one on the dialog itself. */
+.wp-block-pergel-size-guide__panel {
+	padding: 1rem 1.25rem 1.5rem;
+}
+
+.wp-block-pergel-size-guide__header {
+	align-items: center;
+	background: inherit;
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
+	margin-block-end: 0.75rem;
+}
+
+.wp-block-pergel-size-guide__title {
+	font-size: var(--wp--preset--font-size--large, 1.25rem);
+	margin: 0;
+}
+
+.wp-block-pergel-size-guide__close {
+	align-items: center;
+	background: none;
+	border: 0;
+	border-radius: var(--wp--custom--radius--small, 4px);
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	flex: none;
+	height: 2.75rem;
+	justify-content: center;
+	padding: 0;
+	width: 2.75rem;
+}
+
+.wp-block-pergel-size-guide__close:hover {
+	background: var(--wp--preset--color--surface, #f4f5f7);
+}
+
+.wp-block-pergel-size-guide__content > :first-child {
+	margin-block-start: 0;
+}
+
+.wp-block-pergel-size-guide__content > :last-child {
+	margin-block-end: 0;
+}
+
+/* Wide tables scroll inside the window, not the page; words stay whole. */
+.wp-block-pergel-size-guide__content .wp-block-table {
+	overflow-x: auto;
+}
+
+.wp-block-pergel-size-guide__content :is(th, td) {
+	overflow-wrap: normal;
+	word-break: normal;
+}
+
+:root:has(.wp-block-pergel-size-guide__dialog[open]) {
+	overflow: hidden;
+}

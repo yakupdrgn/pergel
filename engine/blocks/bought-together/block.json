@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/bought-together",
+	"title": "Frequently bought together",
+	"category": "pergel",
+	"icon": "cart",
+	"description": "The product and up to three of its cross-sells, each with a checkbox, a live total and one button that adds the chosen ones to the cart. Turn it on under Pergel → Settings → Shop; product pages with cross-sells then show it under the add-to-cart button by themselves.",
+	"keywords": [ "bought together", "bundle", "cross-sells", "cart", "linked products" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId", "postType" ],
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

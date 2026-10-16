@@ -1,0 +1,128 @@
+.wp-block-pergel-bought-together {
+	border: 1px solid var(--wp--preset--color--line, #dde0e6);
+	border-radius: var(--wp--custom--radius--medium, 8px);
+	font-size: var(--wp--preset--font-size--small, 0.9375rem);
+	line-height: 1.5;
+	margin-block: 1.5rem;
+	padding: 1rem;
+}
+
+.wp-block-pergel-bought-together__title {
+	font-size: var(--wp--preset--font-size--medium, 1.125rem);
+	margin: 0 0 0.75rem;
+}
+
+.wp-block-pergel-bought-together__form {
+	display: grid;
+	gap: 0.75rem;
+	margin: 0;
+}
+
+.wp-block-pergel-bought-together__items {
+	display: grid;
+	gap: 0.75rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.wp-block-pergel-bought-together__item {
+	align-items: center;
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: 1.5rem 3.5rem minmax(0, 1fr);
+	margin: 0;
+}
+
+.wp-block-pergel-bought-together__item input[type="checkbox"] {
+	accent-color: var(--wp--preset--color--accent, currentColor);
+	cursor: pointer;
+	height: 1.25rem;
+	margin: 0;
+	width: 1.25rem;
+}
+
+.wp-block-pergel-bought-together__item input[type="checkbox"]:disabled {
+	cursor: not-allowed;
+}
+
+.wp-block-pergel-bought-together__item input[type="checkbox"]:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent, currentColor);
+	outline-offset: 2px;
+}
+
+.wp-block-pergel-bought-together__image {
+	aspect-ratio: 1;
+	border-radius: var(--wp--custom--radius--small, 4px);
+	display: block;
+	height: auto;
+	object-fit: cover;
+	width: 3.5rem;
+}
+
+.wp-block-pergel-bought-together__info {
+	display: grid;
+	gap: 0.125rem;
+	min-width: 0;
+}
+
+.wp-block-pergel-bought-together__name {
+	cursor: pointer;
+	font-weight: var(--wp--custom--font-weight--button, 600);
+	overflow-wrap: anywhere;
+}
+
+a.wp-block-pergel-bought-together__name {
+	color: inherit;
+}
+
+.wp-block-pergel-bought-together__price del {
+	opacity: 0.7;
+}
+
+.wp-block-pergel-bought-together__hint {
+	color: var(--wp--preset--color--muted, currentColor);
+}
+
+.wp-block-pergel-bought-together__hint[hidden] {
+	display: none;
+}
+
+.wp-block-pergel-bought-together__total {
+	border-top: 1px solid var(--wp--preset--color--line, #dde0e6);
+	margin: 0;
+	padding-top: 0.75rem;
+}
+
+.wp-block-pergel-bought-together__amount {
+	font-size: var(--wp--preset--font-size--medium, 1.125rem);
+}
+
+.wp-block-pergel-bought-together__button {
+	cursor: pointer;
+	justify-self: start;
+	min-height: 2.75rem;
+}
+
+.wp-block-pergel-bought-together__button[aria-disabled="true"] {
+	cursor: progress;
+	opacity: 0.7;
+}
+
+.wp-block-pergel-bought-together__status {
+	margin: 0;
+}
+
+.wp-block-pergel-bought-together__status:empty {
+	display: none;
+}
+
+.wp-block-pergel-bought-together__status.is-error {
+	font-weight: var(--wp--custom--font-weight--button, 600);
+}
+
+@media (max-width: 480px) {
+	.wp-block-pergel-bought-together__button {
+		justify-self: stretch;
+	}
+}

@@ -8,6 +8,36 @@
 // phpcs:ignoreFile
 
 return array (
+  'bought-together' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/bought-together',
+    'title' => 'Frequently bought together',
+    'category' => 'pergel',
+    'icon' => 'cart',
+    'description' => 'The product and up to three of its cross-sells, each with a checkbox, a live total and one button that adds the chosen ones to the cart. Turn it on under Pergel → Settings → Shop; product pages with cross-sells then show it under the add-to-cart button by themselves.',
+    'keywords' => 
+    array (
+      0 => 'bought together',
+      1 => 'bundle',
+      2 => 'cross-sells',
+      3 => 'cart',
+      4 => 'linked products',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => false,
+    ),
+    'editorScript' => 'file:./index.js',
+    'render' => 'file:./render.php',
+  ),
   'breadcrumb' => 
   array (
     'apiVersion' => 3,
@@ -714,6 +744,36 @@ return array (
     ),
     'editorScript' => 'file:./index.js',
     'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'size-guide' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/size-guide',
+    'title' => 'Size guide',
+    'category' => 'pergel',
+    'icon' => 'editor-table',
+    'description' => 'A button that opens the product\'s size guide in a window. The guide is a synced pattern chosen on the product category or the product. Turn it on under Pergel → Settings → Shop; product pages then show it above the add-to-cart button by themselves.',
+    'keywords' => 
+    array (
+      0 => 'size',
+      1 => 'guide',
+      2 => 'chart',
+      3 => 'fit',
+      4 => 'measurements',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => false,
+    ),
+    'editorScript' => 'file:./index.js',
     'render' => 'file:./render.php',
   ),
   'sticky-add-to-cart' => 

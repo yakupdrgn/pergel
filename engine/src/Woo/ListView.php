@@ -134,7 +134,7 @@ final class ListView {
 			$items .= '<li class="wp-block-pergel-shop-list__item">'
 				. '<a class="wp-block-pergel-shop-list__image" href="' . esc_url( $link ) . '" tabindex="-1" aria-hidden="true">' . $product->get_image( 'woocommerce_thumbnail' ) . '</a>'
 				. '<h2 class="wp-block-pergel-shop-list__name"><a href="' . esc_url( $link ) . '">' . esc_html( $product->get_name() ) . '</a></h2>'
-				. ( '' !== $price ? '<p class="wp-block-pergel-shop-list__price">' . wp_kses_post( $price ) . '</p>' : '' )
+				. ( '' !== $price ? '<p class="wp-block-pergel-shop-list__price">' . Price::html( $price ) . '</p>' : '' )
 				. '<p class="wp-block-pergel-shop-list__actions">' . self::buy( $product ) . self::remove( 'wishlist', $product ) . '</p>'
 				. '</li>';
 		}
@@ -150,7 +150,7 @@ final class ListView {
 	 */
 	private static function table( array $products ): string {
 		$rows = array(
-			__( 'Price', 'pergel-engine' )        => static fn ( \WC_Product $product ): string => wp_kses_post( (string) $product->get_price_html() ),
+			__( 'Price', 'pergel-engine' )        => static fn ( \WC_Product $product ): string => Price::html( (string) $product->get_price_html() ),
 			__( 'Rating', 'pergel-engine' )       => static fn ( \WC_Product $product ): string => self::rating( $product ),
 			__( 'Availability', 'pergel-engine' ) => static fn ( \WC_Product $product ): string => esc_html( self::availability( $product ) ),
 			__( 'SKU', 'pergel-engine' )          => static fn ( \WC_Product $product ): string => esc_html( (string) $product->get_sku() ),

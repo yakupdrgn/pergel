@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-16 11:51+0000\n"
-"PO-Revision-Date: 2026-10-16 11:51+0000\n"
+"POT-Creation-Date: 2026-10-16 13:53+0000\n"
+"PO-Revision-Date: 2026-10-16 13:53+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -641,6 +641,18 @@ msgstr "Stok bildirimleri"
 msgid "Sold-out products and options show a form where visitors leave their email address; when the product is back in stock, each address gets one email. Visitors who are not logged in first confirm their address with a link we email them. The addresses are listed under WooCommerce → Stock alerts, and both emails can be edited under WooCommerce → Settings → Emails."
 msgstr "Tükenen ürünlerde ve seçeneklerde ziyaretçilerin e-posta adresini bırakabileceği bir form gösterilir; ürün yeniden stoğa girdiğinde her adrese tek bir e-posta gider. Oturum açmamış ziyaretçiler önce adreslerini, e-postayla gönderdiğimiz bir bağlantıyla onaylar. Adresler WooCommerce → Stok bildirimleri altında listelenir; iki e-posta da WooCommerce → Ayarlar → E-postalar altında düzenlenebilir."
 
+msgid "Size guide"
+msgstr "Beden rehberi"
+
+msgid "A \"Size guide\" button above the add-to-cart button opens the guide in a window. A guide is a synced pattern made under Appearance → Editor → Patterns; choose it on a product category (its subcategories and products follow) or on a product, under Product data → General. Products without a guide show nothing."
+msgstr "Sepete ekle düğmesinin üstündeki \"Beden rehberi\" düğmesi rehberi bir pencerede açar. Rehber, Görünüm → Düzenleyici → Desenler altında hazırlanan eşitlenmiş bir desendir; onu bir ürün kategorisinde (alt kategorileri ve ürünleri de onu izler) ya da bir üründe, Ürün verisi → Genel altında seçin. Rehberi olmayan ürünlerde hiçbir şey gösterilmez."
+
+msgid "Frequently bought together"
+msgstr "Birlikte sık alınanlar"
+
+msgid "Under the add-to-cart button, the product and up to three of its cross-sells (Product data → Linked products) with checkboxes, a total and one button that adds the chosen ones to the cart. Cross-sells with options get a link to their page. Each product keeps its own price."
+msgstr "Sepete ekle düğmesinin altında ürün ve en fazla üç çapraz satış ürünü (Ürün verisi → Bağlantılı ürünler) onay kutularıyla, bir toplamla ve seçilenleri sepete ekleyen tek bir düğmeyle gösterilir. Seçenekli çapraz satış ürünleri için kendi sayfalarına bağlantı verilir. Her ürün kendi fiyatıyla satılır."
+
 msgid "Show the estimated delivery date"
 msgstr "Tahmini teslimat tarihini göster"
 
@@ -781,6 +793,46 @@ msgstr "Bu e-postayı istediğiniz için bir kez alıyorsunuz. Adresinizi bugün
 
 msgid "Delete it now"
 msgstr "Hemen sil"
+
+msgid "Shown on product pages with cross-sells: the product and up to three of them, added to the cart with one button."
+msgstr "Çapraz satış ürünü olan ürün sayfalarında gösterilir: ürün ve en fazla üç çapraz satış ürünü, tek düğmeyle sepete eklenir."
+
+#. translators: %s: product name.
+msgid "This product: %s"
+msgstr "Bu ürün: %s"
+
+msgid "Choose at least one product."
+msgstr "En az bir ürün seçin."
+
+msgid "The products could not be added to the cart. Please try again."
+msgstr "Ürünler sepete eklenemedi. Lütfen yeniden deneyin."
+
+msgid "View cart"
+msgstr "Sepeti görüntüle"
+
+msgid "Add selected to cart"
+msgstr "Seçilenleri sepete ekle"
+
+msgid "Choose its options above first."
+msgstr "Önce yukarıdan seçeneklerini belirleyin."
+
+msgid "Choose its options on its page."
+msgstr "Seçeneklerini kendi sayfasında belirleyin."
+
+msgid "Details on its page."
+msgstr "Ayrıntılar kendi sayfasında."
+
+#. translators: %d: number of products.
+msgid "Total for %d product:"
+msgid_plural "Total for %d products:"
+msgstr[0] "%d ürün için toplam:"
+msgstr[1] "%d ürün için toplam:"
+
+#. translators: %d: number of products.
+msgid "%d product added to your cart."
+msgid_plural "%d products added to your cart."
+msgstr[0] "%d ürün sepetinize eklendi."
+msgstr[1] "%d ürün sepetinize eklendi."
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
 msgstr "Ürün sayfalarında gösterilir: Bir ürün ziyaretçiye satışa sunulmadığında ziyaretçinin yapabilecekleri."
@@ -943,6 +995,31 @@ msgstr "1 ile %s arasında bir tam sayı girin."
 msgid "SKU: %s"
 msgstr "Stok kodu: %s"
 
+msgid "Shown on product pages that have a size guide: a button that opens the guide."
+msgstr "Beden rehberi olan ürün sayfalarında gösterilir: rehberi açan bir düğme."
+
+msgid "Close"
+msgstr "Kapat"
+
+#. translators: %d: pattern id.
+msgid "Pattern %d"
+msgstr "Desen %d"
+
+msgid "Same as its categories"
+msgstr "Kategorileriyle aynı"
+
+msgid "No size guide"
+msgstr "Beden rehberi yok"
+
+msgid "A synced pattern (Appearance → Editor → Patterns) shown in a window from a button above the add-to-cart button."
+msgstr "Sepete ekle düğmesinin üstündeki bir düğmeyle pencerede açılan eşitlenmiş desen (Görünüm → Düzenleyici → Desenler)."
+
+msgid "A synced pattern (Appearance → Editor → Patterns) for the products of this category and its subcategories, unless a subcategory or a product chooses its own."
+msgstr "Bu kategorinin ve alt kategorilerinin ürünleri için eşitlenmiş desen (Görünüm → Düzenleyici → Desenler); bir alt kategori ya da ürün kendi rehberini seçmişse o kullanılır."
+
+msgid "None"
+msgstr "Yok"
+
 msgid "Shown on product pages: a bar with the add-to-cart button while the form is out of view."
 msgstr "Ürün sayfalarında gösterilir: form görünmezken sepete ekle düğmesini taşıyan bir çubuk."
 
@@ -1089,9 +1166,6 @@ msgstr "Efekt"
 
 msgid "Plays on the published page as the block scrolls into view. Visitors who prefer reduced motion see the block without it."
 msgstr "Yayımlanan sayfada blok görünür alana kaydırıldığında oynatılır. Azaltılmış hareket tercih eden ziyaretçiler bloğu animasyonsuz görür."
-
-msgid "None"
-msgstr "Yok"
 
 msgid "Fade in"
 msgstr "Belirme"
@@ -1339,6 +1413,34 @@ msgstr "Kilometre taşı"
 
 msgid "What happened"
 msgstr "Ne oldu"
+
+msgctxt "block title"
+msgid "Frequently bought together"
+msgstr "Birlikte sık alınanlar"
+
+msgctxt "block description"
+msgid "The product and up to three of its cross-sells, each with a checkbox, a live total and one button that adds the chosen ones to the cart. Turn it on under Pergel → Settings → Shop; product pages with cross-sells then show it under the add-to-cart button by themselves."
+msgstr "Ürün ve en fazla üç çapraz satış ürünü; her biri bir onay kutusuyla, anında güncellenen bir toplamla ve seçilenleri sepete ekleyen tek bir düğmeyle. Pergel → Ayarlar → Mağaza altında açın; çapraz satış ürünü olan ürün sayfaları onu sepete ekle düğmesinin altında kendiliğinden gösterir."
+
+msgctxt "block keyword"
+msgid "bought together"
+msgstr "birlikte alınan"
+
+msgctxt "block keyword"
+msgid "bundle"
+msgstr "paket"
+
+msgctxt "block keyword"
+msgid "cross-sells"
+msgstr "çapraz satış"
+
+msgctxt "block keyword"
+msgid "cart"
+msgstr "sepet"
+
+msgctxt "block keyword"
+msgid "linked products"
+msgstr "bağlantılı ürünler"
 
 msgctxt "block title"
 msgid "Breadcrumb"
@@ -1657,6 +1759,34 @@ msgid "comparison"
 msgstr "karşılaştırma"
 
 msgctxt "block title"
+msgid "Size guide"
+msgstr "Beden rehberi"
+
+msgctxt "block description"
+msgid "A button that opens the product's size guide in a window. The guide is a synced pattern chosen on the product category or the product. Turn it on under Pergel → Settings → Shop; product pages then show it above the add-to-cart button by themselves."
+msgstr "Ürünün beden rehberini bir pencerede açan düğme. Rehber, ürün kategorisinde ya da üründe seçilen eşitlenmiş bir desendir. Pergel → Ayarlar → Mağaza altında açın; ürün sayfaları onu sepete ekle düğmesinin üstünde kendiliğinden gösterir."
+
+msgctxt "block keyword"
+msgid "size"
+msgstr "beden"
+
+msgctxt "block keyword"
+msgid "guide"
+msgstr "rehber"
+
+msgctxt "block keyword"
+msgid "chart"
+msgstr "tablo"
+
+msgctxt "block keyword"
+msgid "fit"
+msgstr "kalıp"
+
+msgctxt "block keyword"
+msgid "measurements"
+msgstr "ölçüler"
+
+msgctxt "block title"
 msgid "Sticky add-to-cart bar"
 msgstr "Sabit sepete ekle çubuğu"
 
@@ -1667,10 +1797,6 @@ msgstr "Sepete ekle formu görünmezken ekranın altında gösterilen, ürünün
 msgctxt "block keyword"
 msgid "sticky"
 msgstr "sabit"
-
-msgctxt "block keyword"
-msgid "cart"
-msgstr "sepet"
 
 msgctxt "block keyword"
 msgid "add to cart"

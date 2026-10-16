@@ -100,6 +100,8 @@ final class WooTest extends TestCase {
 				'delivery_days'     => 'mon_fri',
 				'delivery_holidays' => array(),
 				'stock_alert'       => false,
+				'size_guide'        => false,
+				'bought_together'   => false,
 			),
 			Schema::defaults()['woo']
 		);
