@@ -130,6 +130,10 @@ final class Labels {
 					'title'  => __( 'Product enquiries', 'pergel-engine' ),
 					'fields' => array( 'whatsapp', 'contact_url' ),
 				),
+				'lists'     => array(
+					'title'  => __( 'Wishlist and compare', 'pergel-engine' ),
+					'fields' => array( 'wishlist', 'wishlist_url', 'compare', 'compare_url' ),
+				),
 				'header'    => array(
 					'title'  => __( 'Header', 'pergel-engine' ),
 					'fields' => array( 'mini_cart' ),
@@ -283,6 +287,22 @@ final class Labels {
 				'no_cart_fragments' => array(
 					'label' => __( 'Turn off cart fragments', 'pergel-engine' ),
 					'help'  => __( 'An old script that asks the server for the cart on every page view. The mini cart block does not need it.', 'pergel-engine' ),
+				),
+				'wishlist'          => array(
+					'label' => __( 'Wishlist', 'pergel-engine' ),
+					'help'  => __( 'Adds a heart button to product cards and product pages. Visitors keep their list in the browser; a logged-in customer\'s list is kept in their account.', 'pergel-engine' ),
+				),
+				'wishlist_url'      => array(
+					'label' => __( 'Wishlist page', 'pergel-engine' ),
+					'help'  => __( 'Address of the page that shows the list with the Wishlist block. With an address, the theme headers link to it and show the number of saved products.', 'pergel-engine' ),
+				),
+				'compare'           => array(
+					'label' => __( 'Compare', 'pergel-engine' ),
+					'help'  => __( 'Adds a compare button to product cards and product pages. Up to four products, kept in the visitor\'s browser.', 'pergel-engine' ),
+				),
+				'compare_url'       => array(
+					'label' => __( 'Compare page', 'pergel-engine' ),
+					'help'  => __( 'Address of the page that shows the products side by side with the Compare block. With an address, the theme headers link to it.', 'pergel-engine' ),
 				),
 			),
 		);

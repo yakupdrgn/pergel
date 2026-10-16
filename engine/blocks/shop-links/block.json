@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/shop-links",
+	"title": "Wishlist and compare links",
+	"category": "pergel",
+	"icon": "heart",
+	"description": "Header links to the wishlist and compare pages with the number of products in each. Pergel's headers show them by themselves once the pages are set under Pergel → Settings → Shop.",
+	"keywords": [ "wishlist", "compare", "header", "count" ],
+	"textdomain": "pergel-engine",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"spacing": {
+			"margin": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

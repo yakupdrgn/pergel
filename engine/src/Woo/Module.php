@@ -11,6 +11,7 @@ namespace Pergel\Woo;
 
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use Pergel\Core;
+use Pergel\Settings\Settings;
 
 /**
  * Pergel's WooCommerce support. Loads only while WooCommerce is active, so
@@ -51,6 +52,10 @@ final class Module implements Core\Module {
 		Pages::register();
 		MiniCart::register();
 		Trail::register();
+		// Read here, so a shop without the lists does not load their class.
+		if ( true === Settings::get( 'woo.wishlist' ) || true === Settings::get( 'woo.compare' ) ) {
+			Lists::register();
+		}
 		// The Product enquiry block's quote form.
 		add_filter( 'pergel/forms/subject_fields', array( Quote::class, 'fields' ), 10, 3 );
 		add_filter( 'pergel/forms/subject_values', array( Quote::class, 'values' ), 10, 3 );

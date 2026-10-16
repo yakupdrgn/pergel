@@ -556,6 +556,23 @@ görünmez (`Settings\Screen::shown`).
   (`pergel/woo/quote_providers` süzgeci; varsayılan boş). Çağrılar eşzamanlıdır; hata veren
   sağlayıcı "gönderilmedi" sayılır. Sonuçlar mesajın `_pergel_handoff` meta'sında tutulur ve
   "Form messages" ekranında "Passed on to" satırında görünür.
+- **İstek listesi ve karşılaştırma (`Woo\Lists`, `Woo\ListView`, F4b P2-1):** `woo.wishlist`
+  ya da `woo.compare` açık değilse `Woo\Module` sınıfı hiç yüklemez. Açıkken:
+  - Bloklar: `pergel/product-actions` (düğmeler; ürün sayfasında `labels` ile yazılı),
+    `pergel/shop-list` (`kind`: `wishlist`|`compare`) ve `pergel/shop-links` (header
+    bağlantıları ve sayılar). WooCommerce yoksa kaydedilmezler (`Blocks\Module::SHOP_BLOCKS`).
+  - Block hooks (`hooked_block_types`, öncelik 21): düğmeler `woocommerce/product-button` ve
+    `woocommerce/add-to-cart-with-options`'dan sonra gelir; sepet formu şablon parçasında
+    (`*add-to-cart-with-options`) ve bloğu zaten içeren içerikte eklenmez. Bağlantılar Pergel
+    header pattern'lerinde `core/navigation`'dan sonra, mini sepetten önce ve yalnızca bir liste
+    sayfası adresi varsa eklenir.
+  - `shop-lists.js` (script modülü, `fetchpriority=low`) ve verisi
+    (`script_module_data_pergel/shop-lists`): REST adresleri, sınırlar, metinler; oturum açmış
+    müşteride nonce ve kayıtlı istek listesi.
+  - REST: `GET pergel/v1/shop-list?kind=&ids=` (herkese açık; yalnızca yayımlanmış ve görünür
+    ürünler, `{ids, html}`) ve `POST pergel/v1/wishlist` (`is_user_logged_in`; `add`, `remove`,
+    `merge`; user meta yalnızca liste değiştiyse yazılır).
+  - Sayfa görüntülemesi veritabanına yazmaz; liste sayfası ve REST isteği de yazmaz.
 
 ## Arama (F4b)
 

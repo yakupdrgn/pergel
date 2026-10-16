@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-16 06:08+0000\n"
-"PO-Revision-Date: 2026-10-16 06:08+0000\n"
+"POT-Creation-Date: 2026-10-16 07:03+0000\n"
+"PO-Revision-Date: 2026-10-16 07:03+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -410,6 +410,9 @@ msgstr "Satış"
 msgid "Product enquiries"
 msgstr "Ürün soruları"
 
+msgid "Wishlist and compare"
+msgstr "İstek listesi ve karşılaştırma"
+
 msgid "Header"
 msgstr "Üst bilgi"
 
@@ -590,6 +593,30 @@ msgstr "Sepet parçalarını (cart fragments) kapat"
 msgid "An old script that asks the server for the cart on every page view. The mini cart block does not need it."
 msgstr "Her sayfa görüntülemede sepeti sunucudan isteyen eski bir betik. Mini sepet bloğunun buna ihtiyacı yoktur."
 
+msgid "Wishlist"
+msgstr "İstek listesi"
+
+msgid "Adds a heart button to product cards and product pages. Visitors keep their list in the browser; a logged-in customer's list is kept in their account."
+msgstr "Ürün kartlarına ve ürün sayfalarına bir kalp düğmesi ekler. Ziyaretçilerin listesi tarayıcılarında, oturum açmış müşterilerin listesi hesaplarında saklanır."
+
+msgid "Wishlist page"
+msgstr "İstek listesi sayfası"
+
+msgid "Address of the page that shows the list with the Wishlist block. With an address, the theme headers link to it and show the number of saved products."
+msgstr "Listeyi İstek listesi bloğuyla gösteren sayfanın adresi. Adres girildiğinde temanın üst bilgileri bu sayfaya bağlantı verir ve kayıtlı ürün sayısını gösterir."
+
+msgid "Compare"
+msgstr "Karşılaştır"
+
+msgid "Adds a compare button to product cards and product pages. Up to four products, kept in the visitor's browser."
+msgstr "Ürün kartlarına ve ürün sayfalarına bir karşılaştırma düğmesi ekler. En fazla dört ürün, ziyaretçinin tarayıcısında saklanır."
+
+msgid "Compare page"
+msgstr "Karşılaştırma sayfası"
+
+msgid "Address of the page that shows the products side by side with the Compare block. With an address, the theme headers link to it."
+msgstr "Ürünleri Karşılaştırma bloğuyla yan yana gösteren sayfanın adresi. Adres girildiğinde temanın üst bilgileri bu sayfaya bağlantı verir."
+
 msgid "The value is too long."
 msgstr "Değer çok uzun."
 
@@ -692,6 +719,96 @@ msgstr "Kendi modunu seçen ürünler dışında, bu kategorinin ve alt kategori
 
 msgid "Same as the parent category or the shop"
 msgstr "Üst kategoriyle veya mağazayla aynı"
+
+msgid "Added to the wishlist."
+msgstr "İstek listesine eklendi."
+
+msgid "Removed from the wishlist."
+msgstr "İstek listesinden çıkarıldı."
+
+#. translators: %d: most products that can be compared.
+msgid "You can compare up to %d products. Remove one first."
+msgstr "En fazla %d ürünü karşılaştırabilirsiniz. Önce birini çıkarın."
+
+msgid "Added to compare."
+msgstr "Karşılaştırmaya eklendi."
+
+msgid "Removed from compare."
+msgstr "Karşılaştırmadan çıkarıldı."
+
+msgid "The list could not be updated. Try again."
+msgstr "Liste güncellenemedi. Yeniden deneyin."
+
+msgid "No products to compare yet. Press Compare on a product to add it here."
+msgstr "Henüz karşılaştırılacak ürün yok. Buraya eklemek için bir üründe Karşılaştır düğmesine basın."
+
+msgid "Your wishlist is empty. Press the heart on a product to save it here."
+msgstr "İstek listeniz boş. Buraya kaydetmek için bir üründeki kalbe basın."
+
+msgid "Shown on products: buttons that add the product to the wishlist or to compare."
+msgstr "Ürünlerde gösterilir: ürünü istek listesine veya karşılaştırmaya ekleyen düğmeler."
+
+#. translators: 1: Wishlist or Compare, 2: product name.
+msgctxt "list button"
+msgid "%1$s: %2$s"
+msgstr "%1$s: %2$s"
+
+msgid "Turn on the wishlist and compare under Pergel → Settings → Shop to show the list here."
+msgstr "Listeyi burada göstermek için Pergel → Ayarlar → Mağaza altında istek listesini ve karşılaştırmayı açın."
+
+msgid "Your lists are kept in this browser and need JavaScript to show."
+msgstr "Listeleriniz bu tarayıcıda saklanır ve görünmeleri için JavaScript gerekir."
+
+msgid "Products to compare"
+msgstr "Karşılaştırılacak ürünler"
+
+msgid "Links to the wishlist and compare pages. Set the pages under Pergel → Settings → Shop."
+msgstr "İstek listesi ve karşılaştırma sayfalarına bağlantılar. Sayfaları Pergel → Ayarlar → Mağaza altında seçin."
+
+msgid "Price"
+msgstr "Fiyat"
+
+msgid "Rating"
+msgstr "Puan"
+
+msgid "Availability"
+msgstr "Stok durumu"
+
+msgid "SKU"
+msgstr "Stok kodu"
+
+msgid "Weight"
+msgstr "Ağırlık"
+
+msgid "Dimensions"
+msgstr "Boyutlar"
+
+msgid "Buy"
+msgstr "Satın al"
+
+msgid "Product comparison, scrolls sideways"
+msgstr "Ürün karşılaştırması, yana kaydırılır"
+
+msgid "Product comparison"
+msgstr "Ürün karşılaştırması"
+
+#. translators: 1: average rating, 2: number of reviews.
+msgid "%1$s out of 5 (%2$d review)"
+msgid_plural "%1$s out of 5 (%2$d reviews)"
+msgstr[0] "5 üzerinden %1$s (%2$d değerlendirme)"
+msgstr[1] "5 üzerinden %1$s (%2$d değerlendirme)"
+
+msgid "In stock"
+msgstr "Stokta"
+
+msgid "Out of stock"
+msgstr "Stokta yok"
+
+msgid "Add to cart"
+msgstr "Sepete ekle"
+
+msgid "View product"
+msgstr "Ürünü gör"
 
 msgid "Choose an option"
 msgstr "Bir seçenek belirleyin"
@@ -873,9 +990,6 @@ msgstr "Menü öğesi metni"
 msgid "Plan name"
 msgstr "Paket adı"
 
-msgid "Price"
-msgstr "Fiyat"
-
 msgid "Who the plan is for"
 msgstr "Paketin kimler için olduğu"
 
@@ -890,6 +1004,15 @@ msgstr "Bu paketi öne çıkar"
 
 msgid "Gives the plan an accent border. Say why in its text too, for example \"Most popular\"."
 msgstr "Pakete vurgu renginde bir kenarlık ekler. Nedenini metninde de belirtin, örneğin \"En popüler\"."
+
+msgid "Buttons"
+msgstr "Düğmeler"
+
+msgid "Show labels"
+msgstr "Etiketleri göster"
+
+msgid "Words next to the icons, as on the product page. Product cards show icons only."
+msgstr "Ürün sayfasındaki gibi simgelerin yanında yazı. Ürün kartları yalnızca simge gösterir."
 
 msgid "Product enquiry"
 msgstr "Ürün sorusu"
@@ -920,6 +1043,18 @@ msgstr "Satıştaki ürünlerde de bağlantıları göster"
 
 msgid "Otherwise the block shows only where a product has no price or cart."
 msgstr "Aksi halde blok yalnızca fiyatı veya sepeti olmayan ürünlerde görünür."
+
+msgid "List"
+msgstr "Liste"
+
+msgid "Show"
+msgstr "Göster"
+
+msgid "Visitors see the products they chose to compare here, side by side."
+msgstr "Ziyaretçiler karşılaştırmak için seçtikleri ürünleri burada yan yana görür."
+
+msgid "Visitors see the products they saved here. Logged-in customers keep their wishlist in their account."
+msgstr "Ziyaretçiler kaydettikleri ürünleri burada görür. Oturum açmış müşterilerin istek listesi hesaplarında saklanır."
 
 msgid "Headings"
 msgstr "Başlıklar"
@@ -1169,6 +1304,30 @@ msgid "pricing"
 msgstr "fiyatlandırma"
 
 msgctxt "block title"
+msgid "Wishlist and compare buttons"
+msgstr "İstek listesi ve karşılaştırma düğmeleri"
+
+msgctxt "block description"
+msgid "Buttons that add the product to the wishlist or to compare. Turn the lists on under Pergel → Settings → Shop; the buttons then appear on product cards and product pages by themselves."
+msgstr "Ürünü istek listesine veya karşılaştırmaya ekleyen düğmeler. Listeleri Pergel → Ayarlar → Mağaza altında açın; düğmeler ürün kartlarında ve ürün sayfalarında kendiliğinden görünür."
+
+msgctxt "block keyword"
+msgid "wishlist"
+msgstr "istek listesi"
+
+msgctxt "block keyword"
+msgid "compare"
+msgstr "karşılaştır"
+
+msgctxt "block keyword"
+msgid "favourites"
+msgstr "favoriler"
+
+msgctxt "block keyword"
+msgid "heart"
+msgstr "kalp"
+
+msgctxt "block title"
 msgid "Product enquiry"
 msgstr "Ürün sorusu"
 
@@ -1187,6 +1346,30 @@ msgstr "telefon"
 msgctxt "block keyword"
 msgid "lead"
 msgstr "potansiyel müşteri"
+
+msgctxt "block title"
+msgid "Wishlist and compare links"
+msgstr "İstek listesi ve karşılaştırma bağlantıları"
+
+msgctxt "block description"
+msgid "Header links to the wishlist and compare pages with the number of products in each. Pergel's headers show them by themselves once the pages are set under Pergel → Settings → Shop."
+msgstr "İstek listesi ve karşılaştırma sayfalarına, her birindeki ürün sayısıyla birlikte üst bilgi bağlantıları. Sayfalar Pergel → Ayarlar → Mağaza altında seçildiğinde Pergel'in üst bilgileri bunları kendiliğinden gösterir."
+
+msgctxt "block keyword"
+msgid "header"
+msgstr "üst bilgi"
+
+msgctxt "block title"
+msgid "Wishlist or compare list"
+msgstr "İstek listesi veya karşılaştırma listesi"
+
+msgctxt "block description"
+msgid "The products a visitor saved to the wishlist or chose to compare. Put it on the page set under Pergel → Settings → Shop."
+msgstr "Ziyaretçinin istek listesine kaydettiği veya karşılaştırmak için seçtiği ürünler. Pergel → Ayarlar → Mağaza altında seçilen sayfaya yerleştirin."
+
+msgctxt "block keyword"
+msgid "comparison"
+msgstr "karşılaştırma"
 
 msgctxt "block title"
 msgid "Table of contents"
