@@ -123,6 +123,10 @@ final class SchemaTest extends TestCase {
 			'type' => 'urls',
 			'max'  => 2,
 		);
+		$dates = array(
+			'type' => 'dates',
+			'max'  => 2,
+		);
 		return array(
 			'bool true'            => array( array( 'type' => 'bool' ), true, true ),
 			'bool form "1"'        => array( array( 'type' => 'bool' ), '1', true ),
@@ -204,6 +208,20 @@ final class SchemaTest extends TestCase {
 			'urls bad item'        => array( $urls, array( 'https://a.com', 'ftp://b.com' ), 'invalid_url' ),
 			'urls too many'        => array( $urls, array( 'https://a.com', 'https://b.com', 'https://c.com' ), 'too_many' ),
 			'urls not list'        => array( $urls, 5, 'invalid_type' ),
+			'time ok'              => array( array( 'type' => 'time' ), ' 9.30 ', '09:30' ),
+			'time empty'           => array( array( 'type' => 'time' ), '', '' ),
+			'time out of range'    => array( array( 'type' => 'time' ), '24:00', 'invalid_time' ),
+			'time words'           => array( array( 'type' => 'time' ), 'noon', 'invalid_time' ),
+			'dates sorted ranges'  => array(
+				array( 'type' => 'dates' ),
+				"2026-10-29\r\n\r\n2026-03-22 - 2026-03-19\n2026-01-01..2026-01-01\n2026-10-29",
+				array( '2026-01-01', '2026-03-19/2026-03-22', '2026-10-29' ),
+			),
+			'dates slash range'    => array( $dates, array( '2026-05-26/2026-05-30' ), array( '2026-05-26/2026-05-30' ) ),
+			'dates impossible day' => array( $dates, '2026-02-30', 'invalid_date' ),
+			'dates wrong format'   => array( $dates, '29.10.2026', 'invalid_date' ),
+			'dates too many'       => array( $dates, array( '2026-01-01', '2026-01-02', '2026-01-03' ), 'too_many' ),
+			'dates not list'       => array( $dates, 5, 'invalid_type' ),
 		);
 	}
 
@@ -253,6 +271,8 @@ final class SchemaTest extends TestCase {
 					'int', 'image'  => PHP_INT_MAX,
 					'enum'          => array_reduce( $field['options'] ?? array(), static fn ( string $a, string $b ): string => strlen( $b ) > strlen( $a ) ? $b : $a, '' ),
 					'urls'          => array_fill( 0, $max ?? 10, 'https://' . str_repeat( 'a', 492 ) ),
+					'dates'         => array_fill( 0, $max ?? 10, '2026-01-01/2026-12-31' ),
+					'time'          => '23:59',
 					'country'       => 'TR',
 					'email', 'url', 'tel' => str_repeat(
 						'a',

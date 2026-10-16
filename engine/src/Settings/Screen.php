@@ -314,6 +314,7 @@ final class Screen {
 
 			case 'textarea':
 			case 'urls':
+			case 'dates':
 				printf(
 					'<textarea %1$s class="large-text" rows="4">%2$s</textarea>',
 					$attrs, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
@@ -373,9 +374,10 @@ final class Screen {
 			'email' => 'email',
 			'url'   => 'url',
 			'tel'   => 'tel',
+			'time'  => 'time',
 			default => 'text',
 		};
-		$size = 'country' === $field['type'] ? 'small-text' : 'regular-text';
+		$size = in_array( $field['type'], array( 'country', 'time' ), true ) ? 'small-text' : 'regular-text';
 		$max  = 'country' === $field['type'] ? 2 : ( $field['max'] ?? 0 );
 		printf(
 			'<input type="%1$s" %2$s class="%3$s" value="%4$s"%5$s>',

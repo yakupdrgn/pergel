@@ -586,6 +586,47 @@ görünmez (`Settings\Screen::shown`).
     sunucu bir açıklama çizer.
   - `view.js` (script modülü): formun gerçek düğmesine basar, eksik seçenekte forma odaklar,
     fiyatı ve düğme metnini izler, `--pergel-sticky-cart` ile sayfaya alt boşluk verir.
+- **Tahmini teslimat (`Woo\Delivery`, F4b P2-3):** `woo.delivery` açık değilse `Woo\Module`
+  sınıfı yüklemez. Açıkken:
+  - `pergel/delivery-estimate` bloğu (WooCommerce yoksa kaydedilmez,
+    `Blocks\Module::SHOP_BLOCKS`). Block hooks (`hooked_block_types`, öncelik 22) onu
+    `woocommerce/add-to-cart-with-options`'dan sonra ekler; bloğu zaten içeren içerikte
+    eklenmez. Kargo açık değilse ya da basit/değişken, satın alınabilir, stoktaki, sanal
+    olmayan ürün yoksa boş döner.
+  - Sunucu `data-pergel-delivery` içinde kuralları basar: son saat (dakika), hazırlama, en
+    kısa/en uzun süre, iş günleri, tatiller, saat dilimi (`tz` ya da sabit `offset`), dil ve
+    değişken üründe tahmini olmayan seçeneklerin değerleri (`skip`).
+  - `view.js` (script modülü) tarihleri sayfa açılınca hesaplar ve `Intl.DateTimeFormat` ile
+    yazar; seçenek değişince `skip`'e göre gizler/gösterir.
+  - Kargo sınıfı: WooCommerce'in sınıf tablosuna "Delivery time" sütunu ve alanı eklenir
+    (`woocommerce_shipping_classes_*`), değer term meta `pergel_delivery_days`'tedir.
+- **Stok bildirimi (`Woo\StockAlert`, `StockAlertStore`, `StockAlertList`, `StockEmail`,
+  F4b P2-3):** `woo.stock_alert` açık değilse `Woo\Module` `StockAlert`'i yüklemez; tablo
+  kuruluysa `StockAlertStore::register()` yine çalışır: gizlilik araçları ayar kapansa da
+  çalışır; kuyruktaki gönderim ise ayar kapalıyken hiçbir şey göndermez, satırlar bekler.
+  - `pergel/stock-alert` bloğu sepet formundan sonra gelir (block hooks, öncelik 22). Tükenmiş
+    basit/değişken üründe formu çizer; bazı seçenekleri tükenmiş üründe `hidden` başlar ve
+    `view.js` tükenmiş bir seçenek seçilince formu o varyasyonla gösterir. Linkten dönen sonuç
+    (`?pergel_stock_alert=`) formsuz da gösterilir.
+  - Gönderim: `POST pergel/v1/stock-alert` (script) ya da `admin-post.php`
+    (`action=pergel_stock_alert`, script'siz; ürün sayfasına sonuçla döner). İkisi de
+    `StockAlert::handle()`'a gider. Belirteç `ürün.zaman.HMAC`; varyasyon, belirteçteki ürünün
+    tükenmiş bir çocuğu olmalıdır.
+  - Tablo `{prefix}pergel_stock_alerts` (`id`, `product_id`, `email`, `user_id`, `status`,
+    `created`, `confirmed`, `sent`; `product_id + email` benzersiz). İlk gönderimde ya da
+    yönetim panelinde kurulur; sürüm `pergel_stock_alert_db` option'ındadır.
+  - E-posta bağlantıları `?pergel_stock=confirm|remove&pergel_stock_id=&pergel_stock_key=` biçimindedir;
+    anahtar satırın `id`, adres ve `created` değerinden HMAC'tir, satır yeniden başlayınca eski
+    bağlantı 410 döner. `template_redirect` (öncelik 5) bağlantıyı işler ve ürüne yönlendirir.
+  - Stok dönüşü: `woocommerce_(product|variation)_set_stock_status` `instock` olunca
+    `pergel/stock_alert/send` Action Scheduler işini kuyruğa alır (Action Scheduler yoksa
+    WP-Cron). İş 50 adres gönderir, kalan varsa bir sonrakini kuyruğa alır; gönderimden önce
+    ürünün hâlâ stokta ve satın alınabilir olduğuna, ayarın açık olduğuna bakar. Süresi dolan satırlar (`pending` 7, `sent` 30 gün)
+    gönderimde ve yeni kayıtta silinir.
+  - E-postalar `woocommerce_email_classes` ile eklenir (`pergel_stock_alert_confirm`,
+    `pergel_back_in_stock`); ortak gövde `StockEmail`'dedir (HTML ve düz metin).
+    `woocommerce_prepare_email_for_preview` önizlemeye örnek bir ürün verir.
+  - Yönetim listesi: `admin.php?page=pergel-stock-alerts` (WooCommerce menüsü).
 
 ## Arama (F4b)
 

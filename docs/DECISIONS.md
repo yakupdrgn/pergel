@@ -792,6 +792,56 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   - Script'siz ziyaretçi çubuğu görmez (`hidden`, script kaldırır).
   - Bilinen: seçenek bloğundaki axe `aria-required-children` uyarısı WooCommerce'in kendi
     işaretlemesidir; ayarlar kapalıyken de çıkar.
+- **P2-3 tahmini teslimat ve stok bildirimi (16 Ekim 2026, kullanıcı kararları):**
+  - Ayarlar: `woo.delivery` (+ `delivery_cutoff`, `delivery_handling`, `delivery_min`,
+    `delivery_max`, `delivery_days`, `delivery_holidays`) ve `woo.stock_alert`, Mağaza
+    sekmesinde, ikisi de varsayılan kapalı. Şemaya iki tür eklendi: `time` (`SS:DD`) ve
+    `dates` (satır başına `YYYY-AA-GG` ya da `başlangıç/bitiş`, en fazla 40).
+  - Teslimat verisi genel ayar + kargo sınıfıdır: sınıf kendi teslimat süresini ("3" ya da
+    "2-4" iş günü) WooCommerce → Ayarlar → Kargo → Sınıflar'da taşır (term meta
+    `pergel_delivery_days`), boşsa genel ayar geçer. Ürün başına alan yoktur.
+  - Tarih aralığı ziyaretçinin tarayıcısında, sitenin saat dilimiyle hesaplanır; sunucu
+    yalnızca kuralları basar. Böylece önbelleğe alınmış sayfa ertesi gün de doğru tarihi
+    gösterir. Son sipariş saati yalnızca hazırlama süresi 0 iken "bugün kargoda" satırı verir.
+    Tarihler `Intl.DateTimeFormat` ile sitenin dilinde yazılır.
+  - Sanal, tükenmiş, satılmayan (satış modları dahil) ürün ve seçenekte tahmin gösterilmez;
+    değişken üründe bu seçenekler seçilince script tahmini gizler.
+  - Stok bildirimi çift onaylıdır: oturum açmamış ziyaretçi adresini e-postadaki bağlantıyla
+    onaylar, onaylanmayan adres 7 gün sonra silinir. Oturum açmış müşteri kendi hesap adresini
+    girerse onaysız kaydedilir; başka bir adres girerse yine onay e-postası gider.
+  - Adresler kendi tablomuzda tutulur (`{prefix}pergel_stock_alerts`): ürün başına adres
+    benzersizdir, durumlar `pending` / `active` / `sent`. Post meta ya da option kullanılmadı;
+    çok sayıda adreste ürün kaydını şişirmesin ve ürün başına sorgulanabilsin diye.
+  - E-postalar WooCommerce'in e-posta sistemindedir (`WC_Email`): "Back-in-stock alert
+    confirmation" ve "Back in stock", WooCommerce → Ayarlar → E-postalar'da konu, başlık ve ek
+    metinleriyle düzenlenir, önizlemesi örnek ürünle çizilir. Düğme rengi WooCommerce'in e-posta
+    ana rengidir.
+  - Her adres bir kez e-posta alır; gönderimden 30 gün sonra satır silinir. Gönderim Action
+    Scheduler'la arka planda, 50'şer adres hâlinde yapılır; ürün sayfası isteği e-posta
+    göndermez.
+  - Kötüye kullanım: formun imzalı belirteci (ürün + zaman, HMAC), en az 3 saniye bekleme, bal
+    küpü alanı ve iletişim formuyla ortak IP sınırı (`Forms\Submit::within_limit`). Aynı adres
+    ve ürüne saatte en fazla bir onay e-postası gider; form tekrar gönderilse de.
+  - Kişisel veri: WordPress'in dışa aktarma ve silme araçlarına bağlıdır, gizlilik politikası
+    kılavuzuna metin ekler. Onay kutusu zorunludur; gizlilik sayfası varsa bağlantısını taşır.
+  - Yönetim: WooCommerce → Stok bildirimleri listesi (durum süzgeci, en çok beklenen ürünler,
+    tek tek silme; `manage_woocommerce`).
+  - Bilinen sınırlar:
+    - Teslimat süresinde yalnızca ana ürünün kargo sınıfı sayılır; varyasyonun kendi sınıfı
+      dikkate alınmaz.
+    - E-posta bağlantı tarayıcıları (kurumsal güvenlik yazılımları) onay bağlantısını GET ile
+      açıp adresi kendiliğinden onaylayabilir. Bağlantı yalnızca ilgili ürün için tek e-posta
+      doğurduğundan kabul edildi.
+    - Bildirim formunda Turnstile yok; korumayı belirteç, bekleme, bal küpü ve IP sınırı
+      sağlar.
+    - Boş ya da geçersiz alanı tarayıcının kendi doğrulaması durdurur; sunucu hataları (alan
+      yanında, `aria-invalid`) script'siz gönderimde ve tarayıcı doğrulamasını aşan istekte
+      görünür. İletişim formu da aynı yoldadır.
+    - Bir seçenek stoğa girince ana ürünü bekleyenler de kuyruğa alınır; WooCommerce ana ürünü
+      isteğin sonunda eşitlediği için bu kuyruk ana ürün eşitlendikten sonra işler.
+    - Eklenti silinince tablo kalır; arama indeksiyle aynı şekilde `uninstall.php` işi F6'dadır.
+    - E2E testlerinde Playwright'ın `page.clock`'u Interactivity API'yi durduruyor; tarih
+      testleri yalnızca `Date`'i `addInitScript` ile sabitler.
 
 ## Aşamalar ve bitti tanımları
 

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-16 08:29+0000\n"
-"PO-Revision-Date: 2026-10-16 08:29+0000\n"
+"POT-Creation-Date: 2026-10-16 11:51+0000\n"
+"PO-Revision-Date: 2026-10-16 11:51+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -416,6 +416,9 @@ msgstr "İstek listesi ve karşılaştırma"
 msgid "Product page"
 msgstr "Ürün sayfası"
 
+msgid "Delivery estimate"
+msgstr "Tahmini teslimat"
+
 msgid "Header"
 msgstr "Üst bilgi"
 
@@ -632,6 +635,63 @@ msgstr "Sabit sepete ekle çubuğu"
 msgid "When the add-to-cart button scrolls out of view on a product page, a bar with the product's image, name, price and button appears at the bottom of the screen. For a product with options it first takes the visitor to the options."
 msgstr "Ürün sayfasında sepete ekle düğmesi kaydırılıp görünmez olduğunda ekranın altında ürünün görseli, adı, fiyatı ve düğmesiyle bir çubuk belirir. Seçenekli bir üründe ziyaretçiyi önce seçeneklere götürür."
 
+msgid "Back-in-stock alerts"
+msgstr "Stok bildirimleri"
+
+msgid "Sold-out products and options show a form where visitors leave their email address; when the product is back in stock, each address gets one email. Visitors who are not logged in first confirm their address with a link we email them. The addresses are listed under WooCommerce → Stock alerts, and both emails can be edited under WooCommerce → Settings → Emails."
+msgstr "Tükenen ürünlerde ve seçeneklerde ziyaretçilerin e-posta adresini bırakabileceği bir form gösterilir; ürün yeniden stoğa girdiğinde her adrese tek bir e-posta gider. Oturum açmamış ziyaretçiler önce adreslerini, e-postayla gönderdiğimiz bir bağlantıyla onaylar. Adresler WooCommerce → Stok bildirimleri altında listelenir; iki e-posta da WooCommerce → Ayarlar → E-postalar altında düzenlenebilir."
+
+msgid "Show the estimated delivery date"
+msgstr "Tahmini teslimat tarihini göster"
+
+msgid "Product pages show a date range under the add-to-cart button, and before the cut-off time on a working day also that an order ships today. It is worked out in the visitor's browser from the settings below, so it stays right on cached pages. Not shown for virtual, sold-out or hidden products."
+msgstr "Ürün sayfalarında sepete ekle düğmesinin altında bir tarih aralığı, iş günlerinde son sipariş saatinden önce de siparişin bugün kargoya verileceği gösterilir. Hesap aşağıdaki ayarlarla ziyaretçinin tarayıcısında yapılır; bu yüzden önbelleğe alınmış sayfalarda da doğru kalır. Sanal, tükenmiş ve gizli ürünlerde gösterilmez."
+
+msgid "Order cut-off time"
+msgstr "Son sipariş saati"
+
+msgid "Orders placed on a working day before this time count as placed that day; later ones count from the next working day. In the site's time zone (Settings → General). Leave empty for no cut-off."
+msgstr "Bir iş gününde bu saatten önce verilen siparişler o gün verilmiş sayılır; sonrakiler bir sonraki iş gününden sayılır. Sitenin saat dilimine göredir (Ayarlar → Genel). Son saat olmasın istiyorsanız boş bırakın."
+
+msgid "Days to prepare an order"
+msgstr "Sipariş hazırlama süresi (gün)"
+
+msgid "Working days from the order until it is handed to the carrier. 0: it ships the same day."
+msgstr "Siparişten kargoya teslim edilene kadar geçen iş günü. 0: aynı gün kargoya verilir."
+
+msgid "Shortest delivery time"
+msgstr "En kısa teslimat süresi"
+
+msgid "Working days the carrier needs at best. A shipping class can set its own delivery time under WooCommerce → Settings → Shipping → Classes."
+msgstr "Kargonun en iyi durumda ihtiyaç duyduğu iş günü. Bir kargo sınıfı kendi teslimat süresini WooCommerce → Ayarlar → Kargo → Sınıflar altında belirleyebilir."
+
+msgid "Longest delivery time"
+msgstr "En uzun teslimat süresi"
+
+msgid "Working days the carrier needs at most."
+msgstr "Kargonun en fazla ihtiyaç duyduğu iş günü."
+
+msgid "Working days"
+msgstr "İş günleri"
+
+msgid "The days orders are prepared, shipped and delivered."
+msgstr "Siparişlerin hazırlandığı, kargoya verildiği ve teslim edildiği günler."
+
+msgid "Monday to Friday"
+msgstr "Pazartesi–Cuma"
+
+msgid "Monday to Saturday"
+msgstr "Pazartesi–Cumartesi"
+
+msgid "Every day"
+msgstr "Her gün"
+
+msgid "Days off"
+msgstr "Tatil günleri"
+
+msgid "Public holidays and other days without shipping. One per line, as 2026-10-29, or a range as 2026-03-19/2026-03-22. Up to 40 lines."
+msgstr "Resmî tatiller ve kargo yapılmayan diğer günler. Her satıra bir tane, 2026-10-29 biçiminde ya da aralık olarak 2026-03-19/2026-03-22. En fazla 40 satır."
+
 msgid "The value is too long."
 msgstr "Değer çok uzun."
 
@@ -655,6 +715,12 @@ msgstr "Sayı izin verilen aralığın dışında."
 
 msgid "There are too many items."
 msgstr "Çok fazla öğe var."
+
+msgid "Enter a time such as 15:00."
+msgstr "15:00 gibi bir saat girin."
+
+msgid "Write each date as 2026-10-29, or a range as 2026-03-19/2026-03-22."
+msgstr "Her tarihi 2026-10-29 biçiminde ya da aralık olarak 2026-03-19/2026-03-22 biçiminde yazın."
 
 msgid "Social networks do not show SVG images. Choose a JPG, PNG or WebP image."
 msgstr "Sosyal ağlar SVG görselleri göstermez. JPG, PNG veya WebP biçiminde bir görsel seçin."
@@ -694,6 +760,28 @@ msgstr "Bu görseli kullan"
 msgid "Choose image"
 msgstr "Görsel seç"
 
+msgid "Back in stock"
+msgstr "Yeniden stokta"
+
+msgid "Sent once to each address that asked to be told when a sold-out product or option is back in stock."
+msgstr "Tükenen bir ürün ya da seçenek yeniden stoğa girdiğinde haber almak isteyen her adrese bir kez gönderilir."
+
+msgid "{product_name} is back in stock"
+msgstr "{product_name} yeniden stokta"
+
+#. translators: %s: product name.
+msgid "Good news: %s is back in stock. Stock can run out quickly, so order soon if you want it."
+msgstr "Müjde: %s yeniden stokta. Stok çabuk tükenebilir; istiyorsanız siparişinizi geciktirmeyin."
+
+msgid "View the product"
+msgstr "Ürünü görüntüle"
+
+msgid "You get this email once, because you asked for it. We delete your address 30 days from now."
+msgstr "Bu e-postayı istediğiniz için bir kez alıyorsunuz. Adresinizi bugünden 30 gün sonra sileriz."
+
+msgid "Delete it now"
+msgstr "Hemen sil"
+
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
 msgstr "Ürün sayfalarında gösterilir: Bir ürün ziyaretçiye satışa sunulmadığında ziyaretçinin yapabilecekleri."
 
@@ -722,6 +810,22 @@ msgstr "Bize ulaşın"
 
 msgid "Get in touch about this product"
 msgstr "Bu ürün hakkında bize ulaşın"
+
+msgid "Shown on product pages: the estimated delivery dates, counted when the page opens."
+msgstr "Ürün sayfalarında gösterilir: sayfa açıldığında hesaplanan tahmini teslimat tarihleri."
+
+#. translators: %s: cut-off time, such as 15:00.
+msgid "Order by %s and it ships today."
+msgstr "Bugün kargoda: son sipariş saati %s."
+
+msgid "Estimated delivery:"
+msgstr "Tahmini teslimat:"
+
+msgid "Delivery time"
+msgstr "Teslimat süresi"
+
+msgid "Working days from shipping to delivery, such as 3 or 2-4, for products of this class. Leave it empty to use Pergel → Settings → Shop."
+msgstr "Bu sınıftaki ürünler için kargoya verilişten teslimata kadar geçen iş günü; 3 ya da 2-4 gibi. Pergel → Ayarlar → Mağaza ayarını kullanmak için boş bırakın."
 
 msgid "Same as its categories or the shop"
 msgstr "Kategorileriyle veya mağazayla aynı"
@@ -844,6 +948,138 @@ msgstr "Ürün sayfalarında gösterilir: form görünmezken sepete ekle düğme
 
 msgid "Choose options"
 msgstr "Seçenekleri seçin"
+
+msgid "Shown on product pages: a form for an email when a sold-out product or option is back in stock."
+msgstr "Ürün sayfalarında gösterilir: tükenen bir ürün ya da seçenek yeniden stoğa girdiğinde e-posta almak için bir form."
+
+msgid "I agree that my email address is kept to tell me when this product is back in stock."
+msgstr "Bu ürün yeniden stoğa girdiğinde bana haber verilmesi için e-posta adresimin saklanmasını kabul ediyorum."
+
+#. translators: %s: link to the privacy policy.
+msgid "I agree that my email address is kept to tell me when this product is back in stock, as described in the %s."
+msgstr "Bu ürün yeniden stoğa girdiğinde bana haber verilmesi için e-posta adresimin %s içinde anlatıldığı gibi saklanmasını kabul ediyorum."
+
+msgid "Get an email when it is back in stock"
+msgstr "Yeniden stoğa girince e-posta alın"
+
+msgid "Email address"
+msgstr "E-posta adresi"
+
+msgid "Notify me"
+msgstr "Haber ver"
+
+msgid "Tick the box to agree, so we can email you."
+msgstr "Size e-posta gönderebilmemiz için kutuyu işaretleyerek onay verin."
+
+msgid "Back-in-stock alert"
+msgstr "Stok bildirimi"
+
+msgid "Go to the home page"
+msgstr "Ana sayfaya git"
+
+msgid "Almost done: we have sent you an email. Click the link in it to confirm your alert."
+msgstr "Az kaldı: size bir e-posta gönderdik. Bildiriminizi onaylamak için içindeki bağlantıya tıklayın."
+
+msgid "Done. We will email you once when it is back in stock."
+msgstr "Tamam. Yeniden stoğa girdiğinde size bir kez e-posta göndereceğiz."
+
+msgid "Thank you, your alert is confirmed. We will email you once when the product is back in stock."
+msgstr "Teşekkürler, bildiriminiz onaylandı. Ürün yeniden stoğa girdiğinde size bir kez e-posta göndereceğiz."
+
+msgid "Your email address has been removed. You will not get an email about this product."
+msgstr "E-posta adresiniz silindi. Bu ürünle ilgili e-posta almayacaksınız."
+
+msgid "This link has expired or has already been used."
+msgstr "Bu bağlantının süresi dolmuş ya da bağlantı daha önce kullanılmış."
+
+msgid "This product can be ordered again, or no alert is offered for it. Reload the page."
+msgstr "Bu ürün yeniden sipariş edilebiliyor ya da bu ürün için bildirim sunulmuyor. Sayfayı yenileyin."
+
+msgid "Stock alerts"
+msgstr "Stok bildirimleri"
+
+msgid "You are not allowed to do that."
+msgstr "Bunu yapma izniniz yok."
+
+msgid "The alert has been deleted."
+msgstr "Bildirim silindi."
+
+msgid "Addresses waiting for a sold-out product or option. When it is back in stock, each gets one email; addresses that are not confirmed are deleted after 7 days, emailed ones after 30 days."
+msgstr "Tükenen bir ürünü ya da seçeneği bekleyen adresler. Ürün yeniden stoğa girdiğinde her birine tek bir e-posta gider; onaylanmayan adresler 7 gün, e-posta gönderilenler 30 gün sonra silinir."
+
+msgid "All"
+msgstr "Tümü"
+
+msgid "Most wanted"
+msgstr "En çok beklenenler"
+
+msgid "Waiting"
+msgstr "Bekleyen"
+
+msgid "All alerts"
+msgstr "Tüm bildirimler"
+
+msgid "Status"
+msgstr "Durum"
+
+msgid "Asked on"
+msgstr "İstek tarihi"
+
+msgid "Emailed on"
+msgstr "Gönderim tarihi"
+
+msgid "Actions"
+msgstr "İşlemler"
+
+msgid "No alerts yet."
+msgstr "Henüz bildirim yok."
+
+msgid "customer"
+msgstr "müşteri"
+
+msgid "Delete"
+msgstr "Sil"
+
+#. translators: %d: product id.
+msgid "Deleted product #%d"
+msgstr "Silinmiş ürün #%d"
+
+msgid "out of stock"
+msgstr "stokta yok"
+
+msgid "When you ask to be told that a sold-out product is back in stock, we keep your email address, the product and the time you asked. Unless you are logged in, we first email you a link to confirm the address; an address that is not confirmed is deleted after 7 days. When the product is back, we email you once and delete the address 30 days later. Every such email has a link to remove your address sooner."
+msgstr "Tükenen bir ürün yeniden stoğa girdiğinde haber almak istediğinizde e-posta adresinizi, ürünü ve isteğin zamanını saklarız. Oturum açmadıysanız önce adresi onaylamanız için size bir bağlantı göndeririz; onaylanmayan adres 7 gün sonra silinir. Ürün yeniden stoğa girdiğinde size bir kez e-posta gönderir, adresi 30 gün sonra sileriz. Bu e-postaların her birinde adresinizi daha önce silmek için bir bağlantı bulunur."
+
+msgid "Awaiting confirmation"
+msgstr "Onay bekliyor"
+
+msgid "Emailed"
+msgstr "Gönderildi"
+
+msgid "Back-in-stock alert confirmation"
+msgstr "Stok bildirimi onayı"
+
+msgid "Sent to visitors who are not logged in when they ask to be told that a product is back in stock, with a link to confirm their email address."
+msgstr "Bir ürün yeniden stoğa girdiğinde haber almak isteyen, oturum açmamış ziyaretçilere e-posta adreslerini onaylamaları için bir bağlantıyla gönderilir."
+
+msgid "Confirm your back-in-stock alert for {product_name}"
+msgstr "{product_name} için stok bildiriminizi onaylayın"
+
+msgid "Confirm your alert"
+msgstr "Bildiriminizi onaylayın"
+
+#. translators: %s: product name.
+msgid "You asked us to email you when %s is back in stock. Please confirm your email address with the button below."
+msgstr "%s yeniden stoğa girdiğinde size e-posta göndermemizi istediniz. Lütfen aşağıdaki düğmeyle e-posta adresinizi onaylayın."
+
+msgid "Confirm my alert"
+msgstr "Bildirimimi onayla"
+
+msgid "If you did not ask for this, ignore this email: without confirmation your address is deleted in 7 days and we will not write again."
+msgstr "Bunu siz istemediyseniz bu e-postayı dikkate almayın: onaylanmayan adresiniz 7 gün içinde silinir ve size bir daha yazmayız."
+
+msgid "Sample product"
+msgstr "Örnek ürün"
 
 msgid "Scroll animation"
 msgstr "Kaydırma animasyonu"
@@ -1189,6 +1425,34 @@ msgid "stat"
 msgstr "rakam"
 
 msgctxt "block title"
+msgid "Delivery estimate"
+msgstr "Tahmini teslimat"
+
+msgctxt "block description"
+msgid "The estimated delivery dates of the product, and before the cut-off time that an order ships today. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves."
+msgstr "Ürünün tahmini teslimat tarihleri ve son sipariş saatinden önce siparişin bugün kargoya verileceği bilgisi. Pergel → Ayarlar → Mağaza altında açın; ürün sayfaları onu sepete ekle düğmesinin altında kendiliğinden gösterir."
+
+msgctxt "block keyword"
+msgid "delivery"
+msgstr "teslimat"
+
+msgctxt "block keyword"
+msgid "shipping"
+msgstr "kargo"
+
+msgctxt "block keyword"
+msgid "date"
+msgstr "tarih"
+
+msgctxt "block keyword"
+msgid "cut-off"
+msgstr "son saat"
+
+msgctxt "block keyword"
+msgid "estimate"
+msgstr "tahmin"
+
+msgctxt "block title"
 msgid "Form"
 msgstr "Form"
 
@@ -1419,6 +1683,34 @@ msgstr "çubuk"
 msgctxt "block keyword"
 msgid "buy"
 msgstr "satın al"
+
+msgctxt "block title"
+msgid "Back-in-stock alert"
+msgstr "Stok bildirimi"
+
+msgctxt "block description"
+msgid "A form where visitors leave their email address for a sold-out product or option, and get one email when it is back in stock. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves."
+msgstr "Ziyaretçilerin tükenen bir ürün ya da seçenek için e-posta adresini bıraktığı ve ürün yeniden stoğa girince tek bir e-posta aldığı form. Pergel → Ayarlar → Mağaza altında açın; ürün sayfaları onu sepete ekle düğmesinin altında kendiliğinden gösterir."
+
+msgctxt "block keyword"
+msgid "stock"
+msgstr "stok"
+
+msgctxt "block keyword"
+msgid "out of stock"
+msgstr "stokta yok"
+
+msgctxt "block keyword"
+msgid "sold out"
+msgstr "tükendi"
+
+msgctxt "block keyword"
+msgid "notify"
+msgstr "haber ver"
+
+msgctxt "block keyword"
+msgid "alert"
+msgstr "bildirim"
 
 msgctxt "block title"
 msgid "Table of contents"

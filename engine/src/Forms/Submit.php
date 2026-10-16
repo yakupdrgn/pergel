@@ -289,11 +289,12 @@ final class Submit {
 	}
 
 	/**
-	 * Counts this message against the connection's limit.
+	 * Counts this message against the connection's limit. Back-in-stock
+	 * alerts (Woo\StockAlert) share it.
 	 *
 	 * @param string $ip Visitor's address.
 	 */
-	private static function within_limit( string $ip ): bool {
+	public static function within_limit( string $ip ): bool {
 		$key   = 'pergel_form_' . substr( wp_hash( $ip, 'nonce' ), 0, 20 );
 		$count = get_transient( $key );
 		$count = is_numeric( $count ) ? (int) $count : 0;

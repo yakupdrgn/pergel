@@ -1,0 +1,22 @@
+.wp-block-pergel-delivery-estimate {
+	font-size: var(--wp--preset--font-size--small, 0.9375rem);
+	line-height: 1.5;
+	margin-block: 0.75rem;
+}
+
+.wp-block-pergel-delivery-estimate[hidden],
+.wp-block-pergel-delivery-estimate__today[hidden] {
+	display: none;
+}
+
+.wp-block-pergel-delivery-estimate p {
+	margin: 0;
+}
+
+.wp-block-pergel-delivery-estimate__range {
+	font-weight: 600;
+}
+
+.wp-block-pergel-delivery-estimate__today {
+	color: var(--wp--preset--color--muted, currentcolor);
+}

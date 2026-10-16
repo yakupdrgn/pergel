@@ -20,3 +20,4 @@ parameters:
 		- tools/stubs/wp-cli.php
 		- tools/stubs/seo-plugins.php
 		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+		- vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
