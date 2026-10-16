@@ -1,0 +1,2816 @@
+# Copyright (C) 2026 Ariumlab
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Pergel 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/pergel\n"
+"POT-Creation-Date: 2026-10-16 06:08+0000\n"
+"PO-Revision-Date: 2026-10-16 06:08+0000\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Domain: pergel\n"
+
+#. Theme Name of the theme
+msgid "Pergel"
+msgstr "Pergel"
+
+#. Theme URI of the theme
+msgid "https://ariumlab.com/pergel/"
+msgstr "https://ariumlab.com/pergel/"
+
+#. Description of the theme
+msgid "A fast, clean block theme designed entirely from the Site Editor. Pair it with the Pergel Engine plugin for blocks, SEO and AI layers, WooCommerce and content types."
+msgstr "Tamamen Site düzenleyiciden tasarlanan hızlı ve sade bir blok teması. Bloklar, SEO ve yapay zekâ katmanları, WooCommerce ve içerik türleri için Pergel Engine eklentisiyle birlikte kullanın."
+
+#. Author of the theme
+msgid "Ariumlab"
+msgstr "Ariumlab"
+
+#. Author URI of the theme
+msgid "https://ariumlab.com/"
+msgstr "https://ariumlab.com/"
+
+msgctxt "pattern category"
+msgid "Numbers"
+msgstr "Rakamlar"
+
+msgid "Counters and key figures."
+msgstr "Sayaçlar ve önemli rakamlar."
+
+msgctxt "pattern category"
+msgid "Process"
+msgstr "Süreç"
+
+msgid "Steps, timelines and how-it-works sections."
+msgstr "Adımlar, zaman çizelgeleri ve “nasıl çalışır” bölümleri."
+
+msgctxt "pattern category"
+msgid "Clients"
+msgstr "Müşteriler"
+
+msgid "Client and partner logos."
+msgstr "Müşteri ve iş ortağı logoları."
+
+msgctxt "pattern category"
+msgid "Pricing"
+msgstr "Fiyatlandırma"
+
+msgid "Plans, prices and comparisons."
+msgstr "Paketler, fiyatlar ve karşılaştırmalar."
+
+msgctxt "pattern category"
+msgid "FAQ"
+msgstr "SSS"
+
+msgid "Frequently asked questions."
+msgstr "Sıkça sorulan sorular."
+
+msgctxt "pattern category"
+msgid "Full pages"
+msgstr "Tam sayfalar"
+
+msgid "Whole pages made of Pergel sections."
+msgstr "Pergel bölümlerinden oluşan tam sayfalar."
+
+#: patterns/about-centered.php
+msgctxt "Pattern title"
+msgid "About, centered text"
+msgstr "Hakkımızda, ortalanmış metin"
+
+#: patterns/about-centered.php
+msgctxt "Pattern description"
+msgid "A centered label, heading and two short paragraphs."
+msgstr "Ortalanmış bir etiket, başlık ve iki kısa paragraf."
+
+msgid "About us"
+msgstr "Hakkımızda"
+
+msgid "Careful work, explained in plain words"
+msgstr "Özenli iş, sade bir dille"
+
+msgid "We started as a two-person workshop and grew into a team of engineers, planners and support staff."
+msgstr "İki kişilik bir atölye olarak başladık; bugün mühendisler, planlamacılar ve destek personelinden oluşan bir ekibiz."
+
+msgid "What has not changed is how we work: we listen first, explain our choices and stay for the long run."
+msgstr "Çalışma biçimimiz ise hiç değişmedi: Önce dinler, tercihlerimizi açıklar ve uzun vadede yanınızda kalırız."
+
+#: patterns/about-image-grid.php
+msgctxt "Pattern title"
+msgid "About with image grid"
+msgstr "Görsel ızgaralı hakkımızda"
+
+#: patterns/about-image-grid.php
+msgctxt "Pattern description"
+msgid "Heading and text above a row of three images."
+msgstr "Yan yana üç görselin üzerinde başlık ve metin."
+
+msgid "Where the work happens"
+msgstr "İşin yapıldığı yer"
+
+msgid "Our workshop, our team on site and the systems we look after every day."
+msgstr "Atölyemiz, sahadaki ekibimiz ve her gün bakımını üstlendiğimiz sistemler."
+
+#: patterns/about-inverse.php
+msgctxt "Pattern title"
+msgid "About on a dark background"
+msgstr "Koyu zeminde hakkımızda"
+
+#: patterns/about-inverse.php
+msgctxt "Pattern description"
+msgid "Company story and a button on a dark background, with an image."
+msgstr "Koyu zeminde firma hikâyesi ve düğme, bir görselle birlikte."
+
+msgid "A team that stays after the job is done"
+msgstr "İş bittikten sonra da yanınızda kalan bir ekip"
+
+msgid "We started as a two-person workshop and grew into a team of engineers, planners and support staff. What has not changed is how we work: we listen first, explain our choices and stay for the long run."
+msgstr "İki kişilik bir atölye olarak başladık; bugün mühendisler, planlamacılar ve destek personelinden oluşan bir ekibiz. Çalışma biçimimiz ise hiç değişmedi: Önce dinler, tercihlerimizi açıklar ve uzun vadede yanınızda kalırız."
+
+msgid "Today we look after hundreds of sites, from small offices to large production halls, and most of our new work comes from people our clients recommend."
+msgstr "Bugün küçük ofislerden büyük üretim tesislerine kadar yüzlerce yerin bakımını üstleniyoruz. Yeni işlerimizin çoğu, müşterilerimizin bizi tavsiye ettiği kişilerden geliyor."
+
+msgid "Meet the team"
+msgstr "Ekibimizle tanışın"
+
+#: patterns/about-mission-values.php
+msgctxt "Pattern title"
+msgid "Mission and values"
+msgstr "Misyon ve değerler"
+
+#: patterns/about-mission-values.php
+msgctxt "Pattern description"
+msgid "A mission statement followed by three values."
+msgstr "Bir misyon cümlesi ve ardından üç değer."
+
+msgid "Our mission"
+msgstr "Misyonumuz"
+
+msgid "Make technical work simple to buy and easy to live with"
+msgstr "Teknik işleri satın alması kolay, kullanması rahat hâle getirmek"
+
+msgid "Every decision we make starts with one question: will this still make sense for the client in five years?"
+msgstr "Verdiğimiz her karar tek bir soruyla başlar: Bu, beş yıl sonra da müşteri için doğru bir seçim olacak mı?"
+
+msgid "Honest advice"
+msgstr "Dürüst tavsiye"
+
+msgid "We recommend what you need, even when it is the smaller job."
+msgstr "Daha küçük bir iş olsa bile size gerçekten ne gerekiyorsa onu öneririz."
+
+msgid "Clean work"
+msgstr "Temiz işçilik"
+
+msgid "Tidy sites, labelled systems and documents you can actually use."
+msgstr "Derli toplu çalışma alanları, etiketlenmiş sistemler ve gerçekten işinize yarayan belgeler."
+
+msgid "Long-term care"
+msgstr "Uzun vadeli bakım"
+
+msgid "We plan for the years after handover, not just the day of it."
+msgstr "Yalnızca teslim gününü değil, sonrasındaki yılları da planlarız."
+
+#: patterns/about-quote.php
+msgctxt "Pattern title"
+msgid "About with founder quote"
+msgstr "Kurucu alıntılı hakkımızda"
+
+#: patterns/about-quote.php
+msgctxt "Pattern description"
+msgid "Company story beside a quote from the founder."
+msgstr "Kurucudan bir alıntının yanında firma hikâyesi."
+
+msgid "Built on recommendations"
+msgstr "Tavsiyelerle büyüdük"
+
+msgid "We would rather lose a sale than sell something a client does not need. That is how we have kept the clients we have."
+msgstr "Müşterinin ihtiyaç duymadığı bir şeyi satmaktansa satışı kaybetmeyi tercih ederiz. Müşterilerimizi bugüne kadar bu sayede koruduk."
+
+msgctxt "job title"
+msgid "Founder"
+msgstr "Kurucu"
+
+#: patterns/about-split-image.php
+msgctxt "Pattern title"
+msgid "About with image"
+msgstr "Görselli hakkımızda"
+
+#: patterns/about-split-image.php
+msgctxt "Pattern description"
+msgid "Short story about the company beside an image, with a button."
+msgstr "Bir görselin yanında firma hakkında kısa bir hikâye ve düğme."
+
+#: patterns/about-story-stats.php
+msgctxt "Pattern title"
+msgid "Story with key figures"
+msgstr "Önemli rakamlarla hikâye"
+
+#: patterns/about-story-stats.php
+msgctxt "Pattern description"
+msgid "Company story on the left and four counting figures on the right."
+msgstr "Solda firma hikâyesi, sağda dört sayaç."
+
+msgid "Our story"
+msgstr "Hikâyemiz"
+
+msgid "Fifteen years of steady growth"
+msgstr "On beş yıllık istikrarlı büyüme"
+
+msgid "Founded"
+msgstr "Kuruluş"
+
+msgid "Team members"
+msgstr "Ekip üyesi"
+
+msgid "Projects delivered"
+msgstr "Tamamlanan proje"
+
+msgid "Offices"
+msgstr "Ofis"
+
+#: patterns/about-two-columns-text.php
+msgctxt "Pattern title"
+msgid "About in two text columns"
+msgstr "İki metin sütunlu hakkımızda"
+
+#: patterns/about-two-columns-text.php
+msgctxt "Pattern description"
+msgid "A large heading on the left and two paragraphs on the right."
+msgstr "Solda büyük bir başlık, sağda iki paragraf."
+
+msgid "Engineers, planners and people who pick up the phone"
+msgstr "Mühendisler, planlamacılar ve telefonu açan insanlar"
+
+msgid "Read our story"
+msgstr "Hikâyemizi okuyun"
+
+#: patterns/contact-details-cards.php
+msgctxt "Pattern title"
+msgid "Contact details in cards"
+msgstr "Kartlarda iletişim bilgileri"
+
+#: patterns/contact-details-cards.php
+msgctxt "Pattern description"
+msgid "Centered heading and three cards for phone, email and address."
+msgstr "Ortalanmış başlık ve telefon, e-posta ve adres için üç kart."
+
+msgid "Contact"
+msgstr "İletişim"
+
+msgid "Talk to our team"
+msgstr "Ekibimizle görüşün"
+
+msgid "Tell us what you need. We reply within one working day."
+msgstr "İhtiyacınızı anlatın. Bir iş günü içinde yanıt veriyoruz."
+
+msgid "Call us"
+msgstr "Bizi arayın"
+
+msgid "Weekdays from 9:00 to 18:00."
+msgstr "Hafta içi 09:00–18:00 arası."
+
+msgid "Write to us"
+msgstr "Bize yazın"
+
+msgid "We answer within one working day."
+msgstr "Bir iş günü içinde yanıtlıyoruz."
+
+msgctxt "sample email address"
+msgid "hello@example.com"
+msgstr "hello@example.com"
+
+msgid "Visit us"
+msgstr "Bizi ziyaret edin"
+
+msgid "Please call ahead so we can welcome you."
+msgstr "Sizi karşılayabilmemiz için lütfen önceden arayın."
+
+msgctxt "sample address"
+msgid "1 Sample Street, 34000 Istanbul"
+msgstr "Örnek Sokak No: 1, 34000 İstanbul"
+
+#: patterns/contact-details-list.php
+msgctxt "Pattern title"
+msgid "Contact details list"
+msgstr "İletişim bilgileri listesi"
+
+#: patterns/contact-details-list.php
+msgctxt "Pattern description"
+msgid "A heading beside a list of phone, email, address and opening hours."
+msgstr "Telefon, e-posta, adres ve çalışma saatlerinden oluşan bir listenin yanında başlık."
+
+msgid "How to reach us"
+msgstr "Bize nasıl ulaşabilirsiniz"
+
+msgid "Use whichever suits you. For urgent faults, please call."
+msgstr "Size en uygun yolu seçin. Acil arızalar için lütfen arayın."
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Email"
+msgstr "E-posta"
+
+msgid "Address"
+msgstr "Adres"
+
+msgid "Opening hours"
+msgstr "Çalışma saatleri"
+
+msgid "Monday to Friday, 9:00 to 18:00"
+msgstr "Pazartesi–Cuma, 09:00–18:00"
+
+#: patterns/contact-form-centered.php
+msgctxt "Pattern title"
+msgid "Centered contact form"
+msgstr "Ortalanmış iletişim formu"
+
+#: patterns/contact-form-centered.php
+msgctxt "Pattern description"
+msgid "Centered heading with a contact form below it."
+msgstr "Ortalanmış başlık ve altında iletişim formu."
+
+#: patterns/contact-form-split.php
+msgctxt "Pattern title"
+msgid "Contact form with details"
+msgstr "İletişim formu ve bilgileri"
+
+#: patterns/contact-form-split.php
+msgctxt "Pattern description"
+msgid "Phone, email and address on the left, a contact form on the right."
+msgstr "Solda telefon, e-posta ve adres, sağda iletişim formu."
+
+#: patterns/contact-inverse.php
+msgctxt "Pattern title"
+msgid "Contact on a dark background"
+msgstr "Koyu zeminde iletişim"
+
+#: patterns/contact-inverse.php
+msgctxt "Pattern description"
+msgid "Contact details on a dark background and a form in a light card."
+msgstr "Koyu zeminde iletişim bilgileri ve açık renkli bir kartta form."
+
+#: patterns/contact-map-full.php
+msgctxt "Pattern title"
+msgid "Full width map with details"
+msgstr "Tam genişlikte harita ve bilgiler"
+
+#: patterns/contact-map-full.php
+msgctxt "Pattern description"
+msgid "A wide map of the brand address with the address, directions and opening hours in a row below."
+msgstr "Marka adresini gösteren geniş bir harita; altında yan yana adres, ulaşım bilgileri ve çalışma saatleri."
+
+msgid "Location"
+msgstr "Konum"
+
+msgid "Find us"
+msgstr "Bizi bulun"
+
+msgid "We are easy to reach by car or public transport."
+msgstr "Bize araçla ya da toplu taşımayla kolayca ulaşabilirsiniz."
+
+msgid "By car"
+msgstr "Araçla"
+
+msgid "Free parking in front of the building."
+msgstr "Binanın önünde ücretsiz otopark."
+
+msgid "By public transport"
+msgstr "Toplu taşımayla"
+
+msgid "The nearest bus stop is a two-minute walk away."
+msgstr "En yakın otobüs durağı iki dakikalık yürüme mesafesinde."
+
+#: patterns/contact-map-split.php
+msgctxt "Pattern title"
+msgid "Contact details with map"
+msgstr "Haritalı iletişim bilgileri"
+
+#: patterns/contact-map-split.php
+msgctxt "Pattern description"
+msgid "Contact details on the left and a map of the brand address on the right."
+msgstr "Solda iletişim bilgileri, sağda marka adresinin haritası."
+
+#: patterns/contact-quote-form.php
+msgctxt "Pattern title"
+msgid "Quote request form"
+msgstr "Teklif talebi formu"
+
+#: patterns/contact-quote-form.php
+msgctxt "Pattern description"
+msgid "What happens after a request on the left, a quote form on the right."
+msgstr "Solda talepten sonraki adımlar, sağda teklif formu."
+
+msgid "Free quote"
+msgstr "Ücretsiz teklif"
+
+msgid "Get a fixed price for your project"
+msgstr "Projeniz için sabit fiyat alın"
+
+msgid "Describe the job in a few words. A planner calls you to agree a site visit."
+msgstr "İşi birkaç cümleyle anlatın. Planlamacımız keşif günü belirlemek için sizi arasın."
+
+msgid "Step 1"
+msgstr "1. adım"
+
+msgid "You send the form"
+msgstr "Formu gönderirsiniz"
+
+msgid "It takes about two minutes."
+msgstr "Yaklaşık iki dakika sürer."
+
+msgid "Step 2"
+msgstr "2. adım"
+
+msgid "We call you back"
+msgstr "Sizi geri ararız"
+
+msgid "Within one working day, to agree a visit."
+msgstr "Keşif günü belirlemek için bir iş günü içinde."
+
+msgid "Step 3"
+msgstr "3. adım"
+
+msgid "You get a written quote"
+msgstr "Yazılı teklifinizi alırsınız"
+
+msgid "A fixed price, valid for 30 days."
+msgstr "30 gün geçerli sabit fiyat."
+
+msgid "Request a quote"
+msgstr "Teklif iste"
+
+#: patterns/cta-accent.php
+msgctxt "Pattern title"
+msgid "Call to action on the accent color"
+msgstr "Vurgu renginde eylem çağrısı"
+
+#: patterns/cta-accent.php
+msgctxt "Pattern description"
+msgid "Centered heading and button on the brand accent color."
+msgstr "Marka vurgu renginde ortalanmış başlık ve düğme."
+
+msgid "Let us take this off your plate"
+msgstr "Bu işi bize bırakın"
+
+msgid "Send us the details today. An engineer will call you back."
+msgstr "Ayrıntıları bugün gönderin, mühendislerimizden biri sizi geri arasın."
+
+msgid "Get in touch"
+msgstr "Bize ulaşın"
+
+#: patterns/cta-banner-slim.php
+msgctxt "Pattern title"
+msgid "Slim call-to-action bar"
+msgstr "İnce eylem çağrısı şeridi"
+
+#: patterns/cta-banner-slim.php
+msgctxt "Pattern description"
+msgid "A narrow bar with one line of text and a button, for use between sections."
+msgstr "Bölümler arasında kullanılmak üzere tek satır metin ve düğme içeren dar bir şerit."
+
+msgid "Planning a project this year? Get a free first survey."
+msgstr "Bu yıl bir proje mi planlıyorsunuz? İlk keşif ücretsiz."
+
+msgid "Book a survey"
+msgstr "Keşif randevusu al"
+
+#: patterns/cta-card.php
+msgctxt "Pattern title"
+msgid "Call to action in a card"
+msgstr "Kartta eylem çağrısı"
+
+#: patterns/cta-card.php
+msgctxt "Pattern description"
+msgid "A bordered card with a heading, text and two buttons in the middle of the page."
+msgstr "Sayfanın ortasında başlık, metin ve iki düğme içeren kenarlıklı bir kart."
+
+msgid "Not sure where to start?"
+msgstr "Nereden başlayacağınızdan emin değil misiniz?"
+
+msgid "Book a free 30-minute call. We will listen, ask a few questions and suggest the next step."
+msgstr "30 dakikalık ücretsiz bir görüşme planlayın. Sizi dinler, birkaç soru sorar ve sonraki adımı öneririz."
+
+msgid "Book a call"
+msgstr "Görüşme planla"
+
+msgid "Send an email"
+msgstr "E-posta gönder"
+
+#: patterns/cta-centered.php
+msgctxt "Pattern title"
+msgid "Call to action, centered"
+msgstr "Eylem çağrısı, ortalanmış"
+
+#: patterns/cta-centered.php
+msgctxt "Pattern description"
+msgid "Centered heading, one line of text and two buttons."
+msgstr "Ortalanmış başlık, tek satır metin ve iki düğme."
+
+msgid "Ready to start your project?"
+msgstr "Projenize başlamaya hazır mısınız?"
+
+msgid "Tell us what you need and we will send a clear plan and price within two working days."
+msgstr "İhtiyacınızı anlatın; iki iş günü içinde size net bir plan ve fiyat gönderelim."
+
+msgid "Contact us"
+msgstr "İletişime geçin"
+
+#: patterns/cta-cover.php
+msgctxt "Pattern title"
+msgid "Call to action on an image"
+msgstr "Görsel üzerinde eylem çağrısı"
+
+#: patterns/cta-cover.php
+msgctxt "Pattern description"
+msgid "Centered heading and button over a darkened full-width image."
+msgstr "Koyulaştırılmış, tam genişlikte bir görselin üzerinde ortalanmış başlık ve düğme."
+
+msgid "See what we can build together"
+msgstr "Birlikte neler yapabileceğimizi görün"
+
+msgid "Visit us or invite us to your site. The first survey is on us."
+msgstr "Bizi ziyaret edin ya da bizi kendi mekânınıza davet edin. İlk keşif bizden."
+
+msgid "Book a visit"
+msgstr "Ziyaret planla"
+
+#: patterns/cta-inverse.php
+msgctxt "Pattern title"
+msgid "Call to action on a dark background"
+msgstr "Koyu zeminde eylem çağrısı"
+
+#: patterns/cta-inverse.php
+msgctxt "Pattern description"
+msgid "Short label, heading, text and two buttons on a dark background."
+msgstr "Koyu zeminde kısa etiket, başlık, metin ve iki düğme."
+
+msgid "Service and support"
+msgstr "Servis ve destek"
+
+msgid "Your systems, looked after by people who know them"
+msgstr "Sistemleriniz, onları iyi tanıyan ellerde"
+
+msgid "Maintenance contracts with fixed response times and one point of contact."
+msgstr "Sabit müdahale süreleri ve tek muhatapla bakım sözleşmeleri."
+
+msgid "Ask about contracts"
+msgstr "Sözleşmeler hakkında bilgi al"
+
+msgid "Our services"
+msgstr "Hizmetlerimiz"
+
+#: patterns/cta-phone.php
+msgctxt "Pattern title"
+msgid "Call to action with phone number"
+msgstr "Telefon numaralı eylem çağrısı"
+
+#: patterns/cta-phone.php
+msgctxt "Pattern description"
+msgid "Heading with a call button filled from the brand settings."
+msgstr "Marka ayarlarından doldurulan arama düğmesiyle başlık."
+
+msgid "Prefer to talk it through?"
+msgstr "Konuşarak ilerlemeyi mi tercih edersiniz?"
+
+msgid "Call us on weekdays between 9:00 and 18:00."
+msgstr "Hafta içi 09:00–18:00 arasında bizi arayın."
+
+#: patterns/cta-split.php
+msgctxt "Pattern title"
+msgid "Call to action with buttons on the right"
+msgstr "Düğmeleri sağda eylem çağrısı"
+
+#: patterns/cta-split.php
+msgctxt "Pattern description"
+msgid "Heading and text on the left, buttons on the right, on a light background."
+msgstr "Açık zeminde solda başlık ve metin, sağda düğmeler."
+
+msgid "Need a reliable partner for your next job?"
+msgstr "Bir sonraki işiniz için güvenilir bir ortak mı arıyorsunuz?"
+
+msgid "One team for planning, delivery and support."
+msgstr "Planlama, uygulama ve destek için tek ekip."
+
+#: patterns/cta-two-options.php
+msgctxt "Pattern title"
+msgid "Two calls to action side by side"
+msgstr "Yan yana iki eylem çağrısı"
+
+#: patterns/cta-two-options.php
+msgctxt "Pattern description"
+msgid "Two cards, each with its own heading, text and button."
+msgstr "Her biri kendi başlığı, metni ve düğmesi olan iki kart."
+
+msgid "Start a new project"
+msgstr "Yeni bir proje başlatın"
+
+msgid "Tell us about your plans and get a proposal with a fixed price."
+msgstr "Planlarınızı anlatın, sabit fiyatlı bir teklif alın."
+
+msgid "Get support"
+msgstr "Destek alın"
+
+msgid "Already a client? Reach the support team and track your request."
+msgstr "Zaten müşterimiz misiniz? Destek ekibine ulaşın ve talebinizi takip edin."
+
+msgid "Contact support"
+msgstr "Desteğe ulaş"
+
+#: patterns/cta-with-image.php
+msgctxt "Pattern title"
+msgid "Call to action with image"
+msgstr "Görselli eylem çağrısı"
+
+#: patterns/cta-with-image.php
+msgctxt "Pattern description"
+msgid "Image on one side, heading, text and a button on the other."
+msgstr "Bir yanda görsel, diğer yanda başlık, metin ve düğme."
+
+msgid "Let us visit your site"
+msgstr "Mekânınızı ziyaret edelim"
+
+msgid "We look at the space, listen to your plans and leave you with a written proposal."
+msgstr "Alanı inceler, planlarınızı dinler ve size yazılı bir teklif bırakırız."
+
+msgid "Arrange a visit"
+msgstr "Randevu al"
+
+#: patterns/faq-accordion.php
+msgctxt "Pattern title"
+msgid "FAQ accordion"
+msgstr "SSS akordeonu"
+
+#: patterns/faq-accordion.php
+msgctxt "Pattern description"
+msgid "Centered heading and questions that open to show the answer."
+msgstr "Ortalanmış başlık ve açıldığında yanıtı gösteren sorular."
+
+msgid "FAQ"
+msgstr "SSS"
+
+msgid "Frequently asked questions"
+msgstr "Sıkça sorulan sorular"
+
+msgid "How quickly can you start?"
+msgstr "Ne kadar sürede başlayabilirsiniz?"
+
+msgid "Most surveys happen within a week of your first call. Work usually starts two weeks after you approve the plan."
+msgstr "Keşiflerin çoğu ilk görüşmeden sonraki bir hafta içinde yapılır. Çalışmalar genellikle planı onaylamanızdan iki hafta sonra başlar."
+
+msgid "Is the price in the quote final?"
+msgstr "Teklifteki fiyat kesin mi?"
+
+msgid "Yes. The quote is a fixed price for the work described. If you ask for changes, we price them before we do them."
+msgstr "Evet. Teklif, tanımlanan iş için sabit bir fiyattır. Değişiklik isterseniz bunları uygulamadan önce fiyatlandırırız."
+
+msgid "Do you work outside office hours?"
+msgstr "Mesai saatleri dışında çalışıyor musunuz?"
+
+msgid "Yes, at no extra cost for planned work. Emergency call-outs at night are included in the Premium plan."
+msgstr "Evet, planlı işlerde ek ücret almadan. Gece yapılan acil müdahaleler Premium pakete dahildir."
+
+msgid "What happens after the warranty ends?"
+msgstr "Garanti süresi bittikten sonra ne olur?"
+
+msgid "You can continue with a maintenance plan or call us when you need us. Your documents stay valid either way."
+msgstr "Bir bakım paketiyle devam edebilir ya da ihtiyaç duyduğunuzda bizi arayabilirsiniz. Belgeleriniz her iki durumda da geçerliliğini korur."
+
+msgid "Can you work with our existing systems?"
+msgstr "Mevcut sistemlerimizle çalışabilir misiniz?"
+
+msgid "In most cases, yes. We check compatibility during the survey and tell you before quoting."
+msgstr "Çoğu durumda evet. Uyumluluğu keşif sırasında kontrol eder, teklif vermeden önce size bildiririz."
+
+msgid "How do I pay?"
+msgstr "Ödemeyi nasıl yaparım?"
+
+msgid "By bank transfer. Projects are paid in two parts; plans are paid monthly or yearly."
+msgstr "Banka havalesiyle. Projeler iki taksitte, paketler ise aylık veya yıllık olarak ödenir."
+
+#: patterns/faq-cards.php
+msgctxt "Pattern title"
+msgid "FAQ cards"
+msgstr "SSS kartları"
+
+#: patterns/faq-cards.php
+msgctxt "Pattern description"
+msgid "Six questions with their answers in cards on a light background."
+msgstr "Açık zeminde kartlar içinde altı soru ve yanıtları."
+
+#: patterns/faq-inverse.php
+msgctxt "Pattern title"
+msgid "FAQ on a dark background"
+msgstr "Koyu zeminde SSS"
+
+#: patterns/faq-inverse.php
+msgctxt "Pattern description"
+msgid "Centered heading and questions that open, on a dark background."
+msgstr "Koyu zeminde ortalanmış başlık ve açılabilen sorular."
+
+#: patterns/faq-split-intro.php
+msgctxt "Pattern title"
+msgid "FAQ with introduction"
+msgstr "Tanıtım metinli SSS"
+
+#: patterns/faq-split-intro.php
+msgctxt "Pattern description"
+msgid "Heading and contact link on the left, questions on the right."
+msgstr "Solda başlık ve iletişim bağlantısı, sağda sorular."
+
+msgid "Questions we hear most"
+msgstr "En sık duyduğumuz sorular"
+
+msgid "Cannot find your answer? Our team replies within one working day."
+msgstr "Aradığınız yanıtı bulamadınız mı? Ekibimiz bir iş günü içinde yanıt verir."
+
+msgid "Ask a question"
+msgstr "Soru sor"
+
+#: patterns/faq-two-columns.php
+msgctxt "Pattern title"
+msgid "FAQ in two columns"
+msgstr "İki sütunlu SSS"
+
+#: patterns/faq-two-columns.php
+msgctxt "Pattern description"
+msgid "Questions and answers shown open, in two columns."
+msgstr "İki sütunda açık olarak gösterilen sorular ve yanıtlar."
+
+#: patterns/faq-with-contact.php
+msgctxt "Pattern title"
+msgid "FAQ with contact box"
+msgstr "İletişim kutulu SSS"
+
+#: patterns/faq-with-contact.php
+msgctxt "Pattern description"
+msgid "Questions on the left and a box with a contact button on the right."
+msgstr "Solda sorular, sağda iletişim düğmeli bir kutu."
+
+msgid "Still have a question?"
+msgstr "Başka sorunuz mu var?"
+
+msgid "Call or write to us. A real person answers."
+msgstr "Bizi arayın ya da yazın. Karşınızda gerçek bir insan olacak."
+
+#: patterns/footer-centered.php
+msgctxt "Pattern title"
+msgid "Centered footer"
+msgstr "Ortalanmış alt bilgi"
+
+#: patterns/footer-centered.php
+msgctxt "Pattern description"
+msgid "Logo, site title, tagline and footer menu stacked in the center."
+msgstr "Ortada alt alta logo, site başlığı, slogan ve alt bilgi menüsü."
+
+msgctxt "footer menu label"
+msgid "Footer"
+msgstr "Alt bilgi"
+
+#: patterns/footer-columns.php
+msgctxt "Pattern title"
+msgid "Footer with columns"
+msgstr "Sütunlu alt bilgi"
+
+#: patterns/footer-columns.php
+msgctxt "Pattern description"
+msgid "Site title and tagline beside lists of pages, recent posts and categories."
+msgstr "Sayfa, son yazı ve kategori listelerinin yanında site başlığı ve slogan."
+
+msgctxt "footer column heading"
+msgid "Pages"
+msgstr "Sayfalar"
+
+msgctxt "footer column heading"
+msgid "Recent posts"
+msgstr "Son yazılar"
+
+msgctxt "footer column heading"
+msgid "Topics"
+msgstr "Konular"
+
+#. translators: %s: link to WordPress.org
+msgid "Proudly powered by %s"
+msgstr "%s ile hazırlanmıştır"
+
+#: patterns/footer-cta.php
+msgctxt "Pattern title"
+msgid "Footer with call to action"
+msgstr "Eylem çağrılı alt bilgi"
+
+#: patterns/footer-cta.php
+msgctxt "Pattern description"
+msgid "A call-to-action band in the accent color above the site title and footer menu."
+msgstr "Site başlığı ve alt bilgi menüsünün üzerinde vurgu renginde bir eylem çağrısı bandı."
+
+msgctxt "footer call to action"
+msgid "Have a project in mind?"
+msgstr "Aklınızda bir proje mi var?"
+
+msgctxt "footer call to action"
+msgid "Tell us what you are building. We reply within one working day."
+msgstr "Ne yapmak istediğinizi anlatın. Bir iş günü içinde yanıt veriyoruz."
+
+msgctxt "header button"
+msgid "Get in touch"
+msgstr "Bize ulaşın"
+
+#: patterns/footer-inverse.php
+msgctxt "Pattern title"
+msgid "Inverse footer"
+msgstr "Ters renkli alt bilgi"
+
+#: patterns/footer-inverse.php
+msgctxt "Pattern description"
+msgid "Footer in the contrast color with the site title, a page list and categories."
+msgstr "Kontrast renginde; site başlığı, sayfa listesi ve kategoriler içeren alt bilgi."
+
+#: patterns/footer-search.php
+msgctxt "Pattern title"
+msgid "Footer with search"
+msgstr "Aramalı alt bilgi"
+
+#: patterns/footer-search.php
+msgctxt "Pattern description"
+msgid "Site title and tagline beside a search form, with the footer menu below."
+msgstr "Arama formunun yanında site başlığı ve slogan, altında alt bilgi menüsü."
+
+#: patterns/footer-simple.php
+msgctxt "Pattern title"
+msgid "Simple footer"
+msgstr "Sade alt bilgi"
+
+#: patterns/footer-simple.php
+msgctxt "Pattern description"
+msgid "Site title and tagline on the left, footer menu on the right."
+msgstr "Solda site başlığı ve slogan, sağda alt bilgi menüsü."
+
+#: patterns/gallery-carousel.php
+msgctxt "Pattern title"
+msgid "Image carousel"
+msgstr "Görsel kaydırıcı"
+
+#: patterns/gallery-carousel.php
+msgctxt "Pattern description"
+msgid "Heading and images in a carousel, one at a time."
+msgstr "Başlık ve görsellerin tek tek gösterildiği bir kaydırıcı."
+
+msgid "Gallery"
+msgstr "Galeri"
+
+msgid "A look at our work"
+msgstr "Çalışmalarımızdan kareler"
+
+#: patterns/gallery-grid.php
+msgctxt "Pattern title"
+msgid "Image gallery"
+msgstr "Görsel galerisi"
+
+#: patterns/gallery-grid.php
+msgctxt "Pattern description"
+msgid "Heading and six images in three columns."
+msgstr "Başlık ve üç sütunda altı görsel."
+
+#: patterns/gallery-mosaic.php
+msgctxt "Pattern title"
+msgid "Image mosaic"
+msgstr "Görsel mozaiği"
+
+#: patterns/gallery-mosaic.php
+msgctxt "Pattern description"
+msgid "One large image and four smaller ones in a mosaic."
+msgstr "Mozaik düzeninde bir büyük ve dört küçük görsel."
+
+msgid "Inside our projects"
+msgstr "Projelerimizin içinden"
+
+#: patterns/gallery-wide.php
+msgctxt "Pattern title"
+msgid "Full width image strip"
+msgstr "Tam genişlikte görsel şeridi"
+
+#: patterns/gallery-wide.php
+msgctxt "Pattern description"
+msgid "Four images edge to edge across the full width."
+msgstr "Tam genişlik boyunca kenardan kenara dört görsel."
+
+#: patterns/header-centered.php
+msgctxt "Pattern title"
+msgid "Centered header"
+msgstr "Ortalanmış üst bilgi"
+
+#: patterns/header-centered.php
+msgctxt "Pattern description"
+msgid "Logo and site title centered above a centered menu, with a bottom border."
+msgstr "Ortalanmış menünün üzerinde ortalanmış logo ve site başlığı, alt kenarlıklı."
+
+msgctxt "header menu label"
+msgid "Primary"
+msgstr "Ana menü"
+
+#: patterns/header-classic.php
+msgctxt "Pattern title"
+msgid "Classic header"
+msgstr "Klasik üst bilgi"
+
+#: patterns/header-classic.php
+msgctxt "Pattern description"
+msgid "Logo and site title on the left, menu on the right."
+msgstr "Solda logo ve site başlığı, sağda menü."
+
+#: patterns/header-cta.php
+msgctxt "Pattern title"
+msgid "Header with button"
+msgstr "Düğmeli üst bilgi"
+
+#: patterns/header-cta.php
+msgctxt "Pattern description"
+msgid "Logo and site title, menu and a contact button. The button is hidden on phones."
+msgstr "Logo ve site başlığı, menü ve iletişim düğmesi. Düğme telefonlarda gizlenir."
+
+#: patterns/header-inverse.php
+msgctxt "Pattern title"
+msgid "Inverse header"
+msgstr "Ters renkli üst bilgi"
+
+#: patterns/header-inverse.php
+msgctxt "Pattern description"
+msgid "Header in the contrast color with an outline contact button. The button is hidden on phones."
+msgstr "Kontrast renginde, çerçeveli iletişim düğmesi olan üst bilgi. Düğme telefonlarda gizlenir."
+
+#: patterns/header-search.php
+msgctxt "Pattern title"
+msgid "Header with search"
+msgstr "Aramalı üst bilgi"
+
+#: patterns/header-search.php
+msgctxt "Pattern description"
+msgid "Logo and site title, menu and a search button that opens a search field."
+msgstr "Logo ve site başlığı, menü ve bir arama alanı açan arama düğmesi."
+
+msgctxt "search form label"
+msgid "Search"
+msgstr "Ara"
+
+msgctxt "search input placeholder"
+msgid "Search…"
+msgstr "Ara…"
+
+msgctxt "search button text"
+msgid "Search"
+msgstr "Ara"
+
+#: patterns/header-topbar.php
+msgctxt "Pattern title"
+msgid "Header with top bar"
+msgstr "Üst çubuklu üst bilgi"
+
+#: patterns/header-topbar.php
+msgctxt "Pattern description"
+msgid "A dark top bar with the tagline and a contact link above the classic header. The top bar is hidden on phones."
+msgstr "Klasik üst bilginin üzerinde slogan ve iletişim bağlantısı içeren koyu bir üst çubuk. Üst çubuk telefonlarda gizlenir."
+
+#: patterns/hero-accent.php
+msgctxt "Pattern title"
+msgid "Hero in the accent color"
+msgstr "Vurgu renginde manşet"
+
+#: patterns/hero-accent.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons on the accent color, for campaign and landing pages."
+msgstr "Kampanya ve açılış sayfaları için vurgu rengi üzerinde ortalanmış sayfa başlığı ve düğmeler."
+
+msgid "New this season"
+msgstr "Bu sezon yeni"
+
+msgid "Everything your project needs, from one team"
+msgstr "Projenizin ihtiyaç duyduğu her şey, tek ekipten"
+
+msgid "We plan, deliver and support the systems your daily work depends on, with clear prices and one team you can call."
+msgstr "Günlük işlerinizin dayandığı sistemleri planlıyor, kuruyor ve destekliyoruz; net fiyatlar ve tek telefonla ulaşabileceğiniz bir ekiple."
+
+#: patterns/hero-centered.php
+msgctxt "Pattern title"
+msgid "Hero, centered"
+msgstr "Manşet, ortalanmış"
+
+#: patterns/hero-centered.php
+msgctxt "Pattern description"
+msgid "Page title, short introduction and two buttons, centered."
+msgstr "Sayfa başlığı, kısa bir giriş ve iki düğme, ortalanmış."
+
+msgid "Since 2009"
+msgstr "2009'dan beri"
+
+msgid "Precise work for teams that cannot afford mistakes"
+msgstr "Hataya yer olmayan ekipler için titiz işçilik"
+
+#: patterns/hero-checklist.php
+msgctxt "Pattern title"
+msgid "Hero with benefits list"
+msgstr "Avantaj listeli manşet"
+
+#: patterns/hero-checklist.php
+msgctxt "Pattern description"
+msgid "Page title, a short list of benefits and buttons beside a tall image."
+msgstr "Uzun bir görselin yanında sayfa başlığı, kısa bir avantaj listesi ve düğmeler."
+
+msgid "Less downtime, fewer surprises, one point of contact"
+msgstr "Daha az kesinti, daha az sürpriz, tek muhatap"
+
+msgid "From the first survey to yearly maintenance, our engineers keep your systems running."
+msgstr "İlk keşiften yıllık bakıma kadar mühendislerimiz sistemlerinizi çalışır durumda tutar."
+
+msgid "Certified engineers on every job"
+msgstr "Her işte sertifikalı mühendisler"
+
+msgid "Spare parts kept in stock"
+msgstr "Yedek parçalar stokta"
+
+msgid "Same-day response for contract clients"
+msgstr "Sözleşmeli müşterilere aynı gün yanıt"
+
+msgid "Talk to an engineer"
+msgstr "Bir mühendisle görüşün"
+
+msgid "See our work"
+msgstr "İşlerimizi görün"
+
+#: patterns/hero-contact.php
+msgctxt "Pattern title"
+msgid "Hero with phone and email"
+msgstr "Telefon ve e-postalı manşet"
+
+#: patterns/hero-contact.php
+msgctxt "Pattern description"
+msgid "Page title with buttons that call or email the company, filled from the brand settings."
+msgstr "Marka ayarlarından doldurulan, firmayı arayan veya e-posta gönderen düğmelerle sayfa başlığı."
+
+msgid "We answer within one working day"
+msgstr "Bir iş günü içinde yanıt veriyoruz"
+
+msgid "Talk to the people who will do the work"
+msgstr "İşi yapacak kişilerle konuşun"
+
+msgid "Call or write to us. You will speak with an engineer, not a call center."
+msgstr "Bizi arayın ya da yazın. Bir çağrı merkeziyle değil, bir mühendisle görüşeceksiniz."
+
+#: patterns/hero-cover-left.php
+msgctxt "Pattern title"
+msgid "Hero on an image, left aligned"
+msgstr "Görsel üzerinde manşet, sola hizalı"
+
+#: patterns/hero-cover-left.php
+msgctxt "Pattern description"
+msgid "Page title and buttons on the left over a darkened full-width image."
+msgstr "Karartılmış tam genişlikte bir görselin üzerinde solda sayfa başlığı ve düğmeler."
+
+msgid "Installation, service, training"
+msgstr "Kurulum, servis, eğitim"
+
+#: patterns/hero-cover.php
+msgctxt "Pattern title"
+msgid "Hero on a full-width image"
+msgstr "Tam genişlikte görsel üzerinde manşet"
+
+#: patterns/hero-cover.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons over a darkened full-width image."
+msgstr "Karartılmış tam genişlikte bir görselin üzerinde ortalanmış sayfa başlığı ve düğmeler."
+
+#: patterns/hero-form.php
+msgctxt "Pattern title"
+msgid "Hero with quote form"
+msgstr "Teklif formlu manşet"
+
+#: patterns/hero-form.php
+msgctxt "Pattern description"
+msgid "Page title and benefits beside a quote request form."
+msgstr "Teklif talebi formunun yanında sayfa başlığı ve avantajlar."
+
+msgid "Free site visit"
+msgstr "Ücretsiz keşif"
+
+msgid "Get a clear quote within two working days"
+msgstr "İki iş günü içinde net bir teklif alın"
+
+msgid "Tell us what you need. An engineer reviews every request and replies with a fixed price."
+msgstr "İhtiyacınızı anlatın. Her talebi bir mühendis inceler ve sabit fiyatla yanıt verir."
+
+msgid "No obligation, no sales calls"
+msgstr "Zorunluluk yok, satış araması yok"
+
+msgid "Fixed price before work starts"
+msgstr "İş başlamadan önce sabit fiyat"
+
+msgid "Two-year warranty on our work"
+msgstr "İşçiliğimize iki yıl garanti"
+
+#: patterns/hero-image-below.php
+msgctxt "Pattern title"
+msgid "Hero with wide image below"
+msgstr "Altında geniş görsel olan manşet"
+
+#: patterns/hero-image-below.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons above a wide image."
+msgstr "Geniş bir görselin üzerinde ortalanmış sayfa başlığı ve düğmeler."
+
+msgid "See the whole picture before you decide"
+msgstr "Karar vermeden önce tüm tabloyu görün"
+
+#: patterns/hero-inverse.php
+msgctxt "Pattern title"
+msgid "Hero, dark"
+msgstr "Manşet, koyu"
+
+#: patterns/hero-inverse.php
+msgctxt "Pattern description"
+msgid "Page title, introduction and buttons beside an image on a dark background."
+msgstr "Koyu arka plan üzerinde bir görselin yanında sayfa başlığı, giriş ve düğmeler."
+
+msgid "Built to last"
+msgstr "Uzun ömür için tasarlandı"
+
+msgid "Reliable systems, delivered on time and looked after for years"
+msgstr "Zamanında teslim edilen ve yıllarca bakımı yapılan güvenilir sistemler"
+
+#: patterns/hero-logos.php
+msgctxt "Pattern title"
+msgid "Hero with client logos"
+msgstr "Müşteri logolu manşet"
+
+#: patterns/hero-logos.php
+msgctxt "Pattern description"
+msgid "Centered page title and buttons, then a row of client logos."
+msgstr "Ortalanmış sayfa başlığı ve düğmeler, ardından bir sıra müşteri logosu."
+
+msgid "Trusted by teams at"
+msgstr "Bize güvenen ekipler"
+
+#: patterns/hero-minimal.php
+msgctxt "Pattern title"
+msgid "Hero, text only"
+msgstr "Manşet, yalnızca metin"
+
+#: patterns/hero-minimal.php
+msgctxt "Pattern description"
+msgid "A large page title with a short line and a link, without images."
+msgstr "Görselsiz; büyük bir sayfa başlığı, kısa bir satır ve bir bağlantı."
+
+msgid "We make complex projects simple to run"
+msgstr "Karmaşık projeleri kolay yönetilir hâle getiriyoruz"
+
+msgid "Planning, delivery and support under one roof."
+msgstr "Planlama, uygulama ve destek tek çatı altında."
+
+msgid "Read how we work"
+msgstr "Nasıl çalıştığımızı okuyun"
+
+#: patterns/hero-split-reverse.php
+msgctxt "Pattern title"
+msgid "Hero with image on the left"
+msgstr "Solda görselli manşet"
+
+#: patterns/hero-split-reverse.php
+msgctxt "Pattern description"
+msgid "Large image on the left, page title and buttons on the right, on a light background."
+msgstr "Açık arka plan üzerinde solda büyük bir görsel, sağda sayfa başlığı ve düğmeler."
+
+msgid "Who we are"
+msgstr "Biz kimiz"
+
+msgid "A partner for the long run, not a supplier for one job"
+msgstr "Tek bir iş için tedarikçi değil, uzun vadeli bir iş ortağı"
+
+#: patterns/hero-split.php
+msgctxt "Pattern title"
+msgid "Hero with image"
+msgstr "Görselli manşet"
+
+#: patterns/hero-split.php
+msgctxt "Pattern description"
+msgid "Page title, introduction and buttons beside a large image."
+msgstr "Büyük bir görselin yanında sayfa başlığı, giriş ve düğmeler."
+
+msgid "Engineering and support"
+msgstr "Mühendislik ve destek"
+
+#: patterns/hero-stats.php
+msgctxt "Pattern title"
+msgid "Hero with key figures"
+msgstr "Öne çıkan rakamlarla manşet"
+
+#: patterns/hero-stats.php
+msgctxt "Pattern description"
+msgid "Page title and buttons with three counting figures underneath."
+msgstr "Sayfa başlığı ve düğmeler, altında artarak sayan üç rakam."
+
+msgid "Trusted since 2009"
+msgstr "2009'dan beri hizmette"
+
+msgid "Clients who come back"
+msgstr "Geri dönen müşteriler"
+
+msgid "Support line"
+msgstr "Destek hattı"
+
+#: patterns/hidden-404.php
+msgctxt "Pattern title"
+msgid "404 content"
+msgstr "404 içeriği"
+
+#: patterns/hidden-404.php
+msgctxt "Pattern description"
+msgid "Heading, explanation and search form for the 404 template."
+msgstr "404 şablonu için başlık, açıklama ve arama formu."
+
+msgctxt "404 page heading"
+msgid "Page not found"
+msgstr "Sayfa bulunamadı"
+
+msgid "The page you are looking for has moved or no longer exists. Try searching for it."
+msgstr "Aradığınız sayfa taşınmış veya artık mevcut değil. Arama yapmayı deneyin."
+
+#: patterns/hidden-blog-heading.php
+msgctxt "Pattern title"
+msgid "Blog heading"
+msgstr "Blog başlığı"
+
+#: patterns/hidden-blog-heading.php
+msgctxt "Pattern description"
+msgid "H1 for the post list: the posts page title, or a default when posts are on the front page."
+msgstr "Yazı listesi için H1: yazılar sayfasının başlığı ya da yazılar ana sayfada gösteriliyorsa varsayılan bir başlık."
+
+msgctxt "blog heading"
+msgid "Latest posts"
+msgstr "Son yazılar"
+
+#: patterns/hidden-comments.php
+msgctxt "Pattern title"
+msgid "Comments"
+msgstr "Yorumlar"
+
+#: patterns/hidden-comments.php
+msgctxt "Pattern description"
+msgid "Comment list, pagination and form. Renders nothing when comments are closed and there are none."
+msgstr "Yorum listesi, sayfalama ve form. Yorumlar kapalıysa ve hiç yorum yoksa hiçbir şey göstermez."
+
+#: patterns/hidden-mega-menu.php
+msgctxt "Pattern title"
+msgid "Mega menu panel"
+msgstr "Mega menü paneli"
+
+#: patterns/hidden-mega-menu.php
+msgctxt "Pattern description"
+msgid "Starting content of the mega menu panel: pages, topics and recent posts."
+msgstr "Mega menü panelinin başlangıç içeriği: sayfalar, konular ve son yazılar."
+
+msgctxt "mega menu column title"
+msgid "Pages"
+msgstr "Sayfalar"
+
+msgctxt "mega menu column title"
+msgid "Topics"
+msgstr "Konular"
+
+msgctxt "mega menu column title"
+msgid "Recent posts"
+msgstr "Son yazılar"
+
+#: patterns/hidden-no-results.php
+msgctxt "Pattern title"
+msgid "No posts"
+msgstr "Yazı yok"
+
+#: patterns/hidden-no-results.php
+msgctxt "Pattern description"
+msgid "Message shown when a post list is empty."
+msgstr "Yazı listesi boş olduğunda gösterilen mesaj."
+
+msgid "There are no posts here yet."
+msgstr "Burada henüz yazı yok."
+
+#: patterns/hidden-product-details.php
+msgctxt "Pattern title"
+msgid "Product details"
+msgstr "Ürün ayrıntıları"
+
+#: patterns/hidden-product-details.php
+msgctxt "Pattern description"
+msgid "The product's description, specifications and reviews in a block accordion, under the product summary."
+msgstr "Ürün özetinin altında, blok akordeonu içinde ürünün açıklaması, teknik özellikleri ve değerlendirmeleri."
+
+msgctxt "product details"
+msgid "Description"
+msgstr "Açıklama"
+
+msgctxt "product details"
+msgid "Specifications"
+msgstr "Teknik özellikler"
+
+msgctxt "product details"
+msgid "Reviews"
+msgstr "Değerlendirmeler"
+
+#: patterns/hidden-product-filters.php
+msgctxt "Pattern title"
+msgid "Product filters"
+msgstr "Ürün filtreleri"
+
+#: patterns/hidden-product-filters.php
+msgctxt "Pattern description"
+msgid "The shop's filters: the chosen filters, price, category, stock and the store's first attributes."
+msgstr "Mağaza filtreleri: seçili filtreler, fiyat, kategori, stok durumu ve mağazanın ilk nitelikleri."
+
+msgctxt "product filters heading"
+msgid "Filters"
+msgstr "Filtreler"
+
+msgctxt "product filters"
+msgid "Clear filters"
+msgstr "Filtreleri temizle"
+
+msgctxt "product filters"
+msgid "Price"
+msgstr "Fiyat"
+
+msgctxt "product filters"
+msgid "Category"
+msgstr "Kategori"
+
+msgctxt "product filters"
+msgid "Availability"
+msgstr "Stok durumu"
+
+#: patterns/hidden-product-related.php
+msgctxt "Pattern title"
+msgid "Related products"
+msgstr "İlgili ürünler"
+
+#: patterns/hidden-product-related.php
+msgctxt "Pattern description"
+msgid "Products from the same categories and tags, as cards like the shop's, under the product details."
+msgstr "Ürün ayrıntılarının altında, aynı kategori ve etiketlerdeki ürünler; mağazadakiyle aynı kartlarla."
+
+msgctxt "product page"
+msgid "Related products"
+msgstr "İlgili ürünler"
+
+#: patterns/hidden-product-terms.php
+msgctxt "Pattern title"
+msgid "Product categories and tags"
+msgstr "Ürün kategorileri ve etiketleri"
+
+#: patterns/hidden-product-terms.php
+msgctxt "Pattern description"
+msgid "The product's categories and tags, under the add to cart form."
+msgstr "Sepete ekle formunun altında ürünün kategorileri ve etiketleri."
+
+msgctxt "product terms prefix"
+msgid "Category: "
+msgstr "Kategori: "
+
+msgctxt "product terms prefix"
+msgid "Tags: "
+msgstr "Etiketler: "
+
+#: patterns/hidden-search-no-results.php
+msgctxt "Pattern title"
+msgid "No search results"
+msgstr "Arama sonucu yok"
+
+#: patterns/hidden-search-no-results.php
+msgctxt "Pattern description"
+msgid "Message shown when a search finds nothing."
+msgstr "Arama sonuç vermediğinde gösterilen mesaj."
+
+msgid "Nothing matched your search. Try different or fewer words."
+msgstr "Aramanızla eşleşen bir sonuç bulunamadı. Farklı veya daha az kelime deneyin."
+
+#: patterns/hidden-search.php
+msgctxt "Pattern title"
+msgid "Search form"
+msgstr "Arama formu"
+
+#: patterns/hidden-search.php
+msgctxt "Pattern description"
+msgid "Search form with translated label and button text."
+msgstr "Etiketi ve düğme metni çevrilmiş arama formu."
+
+#: patterns/logos-grid.php
+msgctxt "Pattern title"
+msgid "Client logos in a grid"
+msgstr "Izgarada müşteri logoları"
+
+#: patterns/logos-grid.php
+msgctxt "Pattern description"
+msgid "Heading and six client logos in bordered boxes."
+msgstr "Başlık ve kenarlıklı kutularda altı müşteri logosu."
+
+msgid "Our clients"
+msgstr "Müşterilerimiz"
+
+msgid "Some of the teams we work with"
+msgstr "Birlikte çalıştığımız ekiplerden bazıları"
+
+#: patterns/logos-inverse.php
+msgctxt "Pattern title"
+msgid "Client logos on a dark background"
+msgstr "Koyu arka planda müşteri logoları"
+
+#: patterns/logos-inverse.php
+msgctxt "Pattern description"
+msgid "A short line and six client logos on a dark background."
+msgstr "Koyu arka plan üzerinde kısa bir satır ve altı müşteri logosu."
+
+msgid "Trusted by teams across the region"
+msgstr "Bölgenin dört bir yanındaki ekipler bize güveniyor"
+
+#: patterns/logos-marquee.php
+msgctxt "Pattern title"
+msgid "Moving client logos"
+msgstr "Kayan müşteri logoları"
+
+#: patterns/logos-marquee.php
+msgctxt "Pattern description"
+msgid "Client logos that scroll slowly sideways; they stand still for visitors who prefer less motion."
+msgstr "Yavaşça yana doğru kayan müşteri logoları; daha az hareket tercih eden ziyaretçiler için sabit durur."
+
+#: patterns/logos-row.php
+msgctxt "Pattern title"
+msgid "Client logos in a row"
+msgstr "Tek sırada müşteri logoları"
+
+#: patterns/logos-row.php
+msgctxt "Pattern description"
+msgid "A short centered line and six client logos in a row."
+msgstr "Ortalanmış kısa bir satır ve tek sırada altı müşteri logosu."
+
+#: patterns/logos-with-heading-split.php
+msgctxt "Pattern title"
+msgid "Client logos beside a heading"
+msgstr "Başlığın yanında müşteri logoları"
+
+#: patterns/logos-with-heading-split.php
+msgctxt "Pattern description"
+msgid "A heading on the left and a three by two grid of logos on the right."
+msgstr "Solda bir başlık, sağda üçe iki logo ızgarası."
+
+msgid "Over 300 companies rely on us"
+msgstr "300'den fazla şirket bize güveniyor"
+
+msgid "From local shops to national chains."
+msgstr "Yerel dükkânlardan ulusal zincirlere kadar."
+
+#: patterns/page-about.php
+msgctxt "Pattern title"
+msgid "About page"
+msgstr "Hakkımızda sayfası"
+
+#: patterns/page-about.php
+msgctxt "Pattern description"
+msgid "Heading, company story with figures, a client quote, mission and values, team, clients and a call to action."
+msgstr "Başlık, rakamlarla firma hikâyesi, müşteri yorumu, misyon ve değerler, ekip, müşteriler ve eylem çağrısı."
+
+#: patterns/page-contact.php
+msgctxt "Pattern title"
+msgid "Contact page"
+msgstr "İletişim sayfası"
+
+#: patterns/page-contact.php
+msgctxt "Pattern description"
+msgid "Heading with phone and email buttons, a contact form, questions and a map of the brand address with directions."
+msgstr "Telefon ve e-posta düğmeli başlık, iletişim formu, sık sorulan sorular ve yol tarifli marka adresi haritası."
+
+#: patterns/page-home.php
+msgctxt "Pattern title"
+msgid "Home page"
+msgstr "Ana sayfa"
+
+#: patterns/page-home.php
+msgctxt "Pattern description"
+msgid "Hero, clients, services, figures, about, testimonials, process, latest posts and a call to action."
+msgstr "Manşet, müşteriler, hizmetler, rakamlar, hakkımızda, müşteri yorumları, süreç, son yazılar ve eylem çağrısı."
+
+#: patterns/page-landing-quote.php
+msgctxt "Pattern title"
+msgid "Quote landing page"
+msgstr "Teklif açılış sayfası"
+
+#: patterns/page-landing-quote.php
+msgctxt "Pattern description"
+msgid "A campaign page that leads to a quote form: hero, clients, services, figures, testimonials, questions and the form."
+msgstr "Teklif formuna yönlendiren bir kampanya sayfası: manşet, müşteriler, hizmetler, rakamlar, müşteri yorumları, sorular ve form."
+
+#: patterns/page-portfolio.php
+msgctxt "Pattern title"
+msgid "Portfolio page"
+msgstr "Portfolyo sayfası"
+
+#: patterns/page-portfolio.php
+msgctxt "Pattern description"
+msgid "Heading, project cards, a case study, a client quote and a call to action."
+msgstr "Başlık, proje kartları, bir vaka çalışması, müşteri yorumu ve eylem çağrısı."
+
+#: patterns/page-pricing.php
+msgctxt "Pattern title"
+msgid "Pricing page"
+msgstr "Fiyatlandırma sayfası"
+
+#: patterns/page-pricing.php
+msgctxt "Pattern description"
+msgid "Heading, three plans, testimonials, a plan comparison, questions and a call to action."
+msgstr "Başlık, üç paket, müşteri yorumları, paket karşılaştırması, sorular ve eylem çağrısı."
+
+#: patterns/page-services.php
+msgctxt "Pattern title"
+msgid "Services page"
+msgstr "Hizmetler sayfası"
+
+#: patterns/page-services.php
+msgctxt "Pattern description"
+msgid "Heading, three services, how we work, what is included, questions and a call to action."
+msgstr "Başlık, üç hizmet, nasıl çalıştığımız, nelerin dahil olduğu, sorular ve eylem çağrısı."
+
+#: patterns/page-team.php
+msgctxt "Pattern title"
+msgid "Team page"
+msgstr "Ekip sayfası"
+
+#: patterns/page-team.php
+msgctxt "Pattern description"
+msgid "Heading, team members, values, figures and a call to action."
+msgstr "Başlık, ekip üyeleri, değerler, rakamlar ve eylem çağrısı."
+
+#: patterns/portfolio-cards.php
+msgctxt "Pattern title"
+msgid "Project cards"
+msgstr "Proje kartları"
+
+#: patterns/portfolio-cards.php
+msgctxt "Pattern description"
+msgid "Three projects in cards with a short description and a link."
+msgstr "Kısa açıklama ve bağlantı içeren kartlarda üç proje."
+
+msgid "Our work"
+msgstr "Çalışmalarımız"
+
+msgid "Projects we are proud of"
+msgstr "Gurur duyduğumuz projeler"
+
+msgid "Renovation"
+msgstr "Yenileme"
+
+msgid "Harbour office renovation"
+msgstr "Liman ofisi yenilemesi"
+
+msgid "New heating, cooling and lighting for a four-floor office, finished in eight weeks."
+msgstr "Dört katlı bir ofis için yeni ısıtma, soğutma ve aydınlatma; sekiz haftada tamamlandı."
+
+msgid "View project"
+msgstr "Projeyi inceleyin"
+
+msgid "Healthcare"
+msgstr "Sağlık"
+
+msgid "City clinic upgrade"
+msgstr "Şehir kliniği modernizasyonu"
+
+msgid "Backup power and air handling for a clinic that never closes."
+msgstr "Hiç kapanmayan bir klinik için yedek güç ve havalandırma."
+
+msgid "Industrial"
+msgstr "Endüstriyel"
+
+msgid "Riverside warehouse"
+msgstr "Nehir kenarı deposu"
+
+msgid "Full electrical installation for a 12,000 square metre logistics hall."
+msgstr "12.000 metrekarelik bir lojistik salonunun komple elektrik tesisatı."
+
+#: patterns/portfolio-case-study.php
+msgctxt "Pattern title"
+msgid "Case study"
+msgstr "Vaka çalışması"
+
+#: patterns/portfolio-case-study.php
+msgctxt "Pattern description"
+msgid "One project in detail: image, challenge, result and three key figures."
+msgstr "Tek bir proje ayrıntılı olarak: görsel, sorun, sonuç ve üç temel rakam."
+
+msgid "Case study"
+msgstr "Vaka çalışması"
+
+msgid "From three heating systems to one"
+msgstr "Üç ısıtma sisteminden teke"
+
+msgid "The building had three heating systems from three decades and no one who knew all of them. We replaced them with one system the staff can run from a phone."
+msgstr "Binada üç farklı dönemden kalma üç ısıtma sistemi vardı ve hepsini bilen kimse yoktu. Bunları, personelin telefondan yönetebildiği tek bir sistemle değiştirdik."
+
+msgid "Weeks on site"
+msgstr "Sahada geçen hafta"
+
+msgid "Lower energy bills"
+msgstr "Daha düşük enerji faturası"
+
+msgid "Days closed"
+msgstr "Kapalı kalınan gün"
+
+msgid "Read the full story"
+msgstr "Hikâyenin tamamını okuyun"
+
+#: patterns/portfolio-grid.php
+msgctxt "Pattern title"
+msgid "Project grid"
+msgstr "Proje ızgarası"
+
+#: patterns/portfolio-grid.php
+msgctxt "Pattern description"
+msgid "Heading and six projects with an image, type and name."
+msgstr "Başlık ve görsel, tür ve adıyla altı proje."
+
+msgid "Recent projects"
+msgstr "Son projeler"
+
+msgid "Hospitality"
+msgstr "Konaklama"
+
+msgid "Old town hotel"
+msgstr "Eski şehir oteli"
+
+msgid "Education"
+msgstr "Eğitim"
+
+msgid "School campus"
+msgstr "Okul kampüsü"
+
+msgid "Retail"
+msgstr "Perakende"
+
+msgid "Retail park"
+msgstr "Alışveriş parkı"
+
+#: patterns/portfolio-split.php
+msgctxt "Pattern title"
+msgid "Two projects, image and text"
+msgstr "İki proje, görsel ve metin"
+
+#: patterns/portfolio-split.php
+msgctxt "Pattern description"
+msgid "Two projects with the image and text on alternating sides."
+msgstr "Görsel ve metni dönüşümlü taraflarda olan iki proje."
+
+msgid "Selected projects"
+msgstr "Seçili projeler"
+
+#: patterns/posts-cards.php
+msgctxt "Pattern title"
+msgid "Latest posts as cards"
+msgstr "Kartlarda son yazılar"
+
+#: patterns/posts-cards.php
+msgctxt "Pattern description"
+msgid "Three latest posts in cards on a light background."
+msgstr "Açık arka plan üzerinde kartlarda son üç yazı."
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Latest articles"
+msgstr "Son makaleler"
+
+msgid "No posts yet."
+msgstr "Henüz yazı yok."
+
+msgid "See all articles"
+msgstr "Tüm makaleleri görün"
+
+#: patterns/posts-featured-first.php
+msgctxt "Pattern title"
+msgid "Featured post and latest posts"
+msgstr "Öne çıkan yazı ve son yazılar"
+
+#: patterns/posts-featured-first.php
+msgctxt "Pattern description"
+msgid "The latest post large, the next three in a row below."
+msgstr "En son yazı büyük, sonraki üçü altında tek sırada."
+
+#: patterns/posts-grid-three.php
+msgctxt "Pattern title"
+msgid "Latest posts in three columns"
+msgstr "Üç sütunda son yazılar"
+
+#: patterns/posts-grid-three.php
+msgctxt "Pattern description"
+msgid "Heading and the three latest posts with image, date, title and excerpt."
+msgstr "Bölüm başlığı ve görsel, tarih, başlık ve özetiyle son üç yazı."
+
+#: patterns/posts-latest-inverse.php
+msgctxt "Pattern title"
+msgid "Latest posts on a dark background"
+msgstr "Koyu arka planda son yazılar"
+
+#: patterns/posts-latest-inverse.php
+msgctxt "Pattern description"
+msgid "Three latest posts as text only, on a dark background."
+msgstr "Koyu arka plan üzerinde yalnızca metin olarak son üç yazı."
+
+#: patterns/posts-list.php
+msgctxt "Pattern title"
+msgid "Latest posts as a list"
+msgstr "Liste olarak son yazılar"
+
+#: patterns/posts-list.php
+msgctxt "Pattern description"
+msgid "The four latest posts in rows, each with an image beside the text."
+msgstr "Satırlar hâlinde son dört yazı; her birinde metnin yanında bir görsel."
+
+#: patterns/posts-minimal-list.php
+msgctxt "Pattern title"
+msgid "Latest posts, titles only"
+msgstr "Son yazılar, yalnızca başlıklar"
+
+#: patterns/posts-minimal-list.php
+msgctxt "Pattern description"
+msgid "A compact list of the five latest post titles with their dates."
+msgstr "Son beş yazının başlıklarını tarihleriyle gösteren kompakt bir liste."
+
+#: patterns/posts-two-columns.php
+msgctxt "Pattern title"
+msgid "Latest posts in two columns"
+msgstr "İki sütunda son yazılar"
+
+#: patterns/posts-two-columns.php
+msgctxt "Pattern description"
+msgid "The two latest posts side by side with large images."
+msgstr "Büyük görsellerle yan yana son iki yazı."
+
+#: patterns/posts-with-heading-split.php
+msgctxt "Pattern title"
+msgid "Latest posts beside a heading"
+msgstr "Başlığın yanında son yazılar"
+
+#: patterns/posts-with-heading-split.php
+msgctxt "Pattern description"
+msgid "A heading and link on the left, three latest posts with small images on the right."
+msgstr "Solda bir başlık ve bağlantı, sağda küçük görselli son üç yazı."
+
+msgid "Notes from the field"
+msgstr "Sahadan notlar"
+
+msgid "Practical advice, project stories and news from our team."
+msgstr "Ekibimizden pratik öneriler, proje hikâyeleri ve haberler."
+
+#: patterns/pricing-comparison.php
+msgctxt "Pattern title"
+msgid "Plan comparison table"
+msgstr "Paket karşılaştırma tablosu"
+
+#: patterns/pricing-comparison.php
+msgctxt "Pattern description"
+msgid "A table comparing what each plan includes, row by row."
+msgstr "Her paketin neleri içerdiğini satır satır karşılaştıran bir tablo."
+
+msgid "Compare plans"
+msgstr "Paketleri karşılaştırın"
+
+msgid "What each plan includes"
+msgstr "Her paket neleri içerir"
+
+msgid "Basic"
+msgstr "Temel"
+
+msgid "Standard"
+msgstr "Standart"
+
+msgid "Premium"
+msgstr "Premium"
+
+msgid "Inspections per year"
+msgstr "Yıllık kontrol sayısı"
+
+msgid "Phone support"
+msgstr "Telefon desteği"
+
+msgid "Weekdays"
+msgstr "Hafta içi"
+
+msgid "Around the clock"
+msgstr "7/24"
+
+msgid "Email support"
+msgstr "E-posta desteği"
+
+msgid "No"
+msgstr "Hayır"
+
+msgid "Yes"
+msgstr "Evet"
+
+msgid "Response time"
+msgstr "Yanıt süresi"
+
+msgid "2 working days"
+msgstr "2 iş günü"
+
+msgid "1 working day"
+msgstr "1 iş günü"
+
+msgid "Same day"
+msgstr "Aynı gün"
+
+msgid "Spare parts at cost"
+msgstr "Maliyet fiyatına yedek parça"
+
+msgid "Named engineer"
+msgstr "Size özel mühendis"
+
+msgid "Monthly price"
+msgstr "Aylık fiyat"
+
+msgctxt "sample price"
+msgid "$49"
+msgstr "1.490 ₺"
+
+msgctxt "sample price"
+msgid "$99"
+msgstr "2.990 ₺"
+
+msgctxt "sample price"
+msgid "$199"
+msgstr "5.990 ₺"
+
+#: patterns/pricing-inverse.php
+msgctxt "Pattern title"
+msgid "Pricing on a dark background"
+msgstr "Koyu arka planda fiyatlandırma"
+
+#: patterns/pricing-inverse.php
+msgctxt "Pattern description"
+msgid "Three plans as light cards on a dark background."
+msgstr "Koyu arka plan üzerinde açık renkli kartlarda üç paket."
+
+msgid "Pricing"
+msgstr "Fiyatlandırma"
+
+msgid "Simple plans, no hidden costs"
+msgstr "Basit paketler, gizli maliyet yok"
+
+msgid "Every plan includes the work, the travel and the report. Cancel with one month notice."
+msgstr "Her pakete işçilik, ulaşım ve rapor dahildir. Bir ay önceden bildirerek iptal edebilirsiniz."
+
+msgid "per month"
+msgstr "/ ay"
+
+msgid "For small offices with one site."
+msgstr "Tek lokasyonlu küçük ofisler için."
+
+msgid "Yearly inspection"
+msgstr "Yıllık kontrol"
+
+msgid "Phone support on weekdays"
+msgstr "Hafta içi telefon desteği"
+
+msgid "Response within two working days"
+msgstr "İki iş günü içinde yanıt"
+
+msgid "Choose Basic"
+msgstr "Temel paketi seçin"
+
+msgid "Most popular"
+msgstr "En popüler"
+
+msgid "For growing teams that cannot afford downtime."
+msgstr "Kesintiye tahammülü olmayan, büyüyen ekipler için."
+
+msgid "Two inspections a year"
+msgstr "Yılda iki kontrol"
+
+msgid "Phone and email support"
+msgstr "Telefon ve e-posta desteği"
+
+msgid "Response within one working day"
+msgstr "Bir iş günü içinde yanıt"
+
+msgid "Choose Standard"
+msgstr "Standart paketi seçin"
+
+msgid "For sites that run around the clock."
+msgstr "Kesintisiz çalışan tesisler için."
+
+msgid "Quarterly inspections"
+msgstr "Üç ayda bir denetim"
+
+msgid "Support line around the clock"
+msgstr "7/24 destek hattı"
+
+msgid "Same-day response"
+msgstr "Aynı gün müdahale"
+
+msgid "Choose Premium"
+msgstr "Premium'u seçin"
+
+#: patterns/pricing-single.php
+msgctxt "Pattern title"
+msgid "Single plan"
+msgstr "Tek paket"
+
+#: patterns/pricing-single.php
+msgctxt "Pattern description"
+msgid "One plan beside a list of everything it includes."
+msgstr "Tek bir paket ve yanında kapsadığı her şeyin listesi."
+
+msgid "One plan"
+msgstr "Tek paket"
+
+msgid "Everything in one contract"
+msgstr "Her şey tek sözleşmede"
+
+msgid "One monthly price covers inspections, repairs and support. No call-out fees."
+msgstr "Denetim, onarım ve destek tek bir aylık ücrete dahil. Servis çıkış ücreti yok."
+
+msgid "Spare parts included"
+msgstr "Yedek parçalar dahil"
+
+msgctxt "sample price"
+msgid "$149"
+msgstr "4.990 ₺"
+
+msgid "per month, billed yearly"
+msgstr "aylık, yıllık faturalandırılır"
+
+msgid "Get started"
+msgstr "Hemen başlayın"
+
+#: patterns/pricing-three.php
+msgctxt "Pattern title"
+msgid "Three pricing plans"
+msgstr "Üç fiyat paketi"
+
+#: patterns/pricing-three.php
+msgctxt "Pattern description"
+msgid "Centered heading and three plans, the middle one highlighted."
+msgstr "Ortalanmış başlık ve üç paket; ortadaki öne çıkarılmış."
+
+#: patterns/pricing-two.php
+msgctxt "Pattern title"
+msgid "Two pricing plans"
+msgstr "İki fiyat paketi"
+
+#: patterns/pricing-two.php
+msgctxt "Pattern description"
+msgid "Centered heading and two plans side by side on a light background."
+msgstr "Ortalanmış başlık ve açık zeminde yan yana iki paket."
+
+#: patterns/pricing-with-intro.php
+msgctxt "Pattern title"
+msgid "Pricing with introduction"
+msgstr "Tanıtım metinli fiyatlandırma"
+
+#: patterns/pricing-with-intro.php
+msgctxt "Pattern description"
+msgid "Introduction and a contact link on the left, two plans on the right."
+msgstr "Solda tanıtım metni ve iletişim bağlantısı, sağda iki paket."
+
+msgid "Pick a plan, change it any time"
+msgstr "Paketinizi seçin, istediğiniz zaman değiştirin"
+
+msgid "Need something in between? We also make plans to measure."
+msgstr "Aradığınız ikisinin arasında mı? İhtiyacınıza özel paketler de hazırlıyoruz."
+
+msgid "Talk to us"
+msgstr "Bizimle görüşün"
+
+#: patterns/process-inverse.php
+msgctxt "Pattern title"
+msgid "Process on a dark background"
+msgstr "Koyu zeminde süreç"
+
+#: patterns/process-inverse.php
+msgctxt "Pattern description"
+msgid "Four numbered steps on a dark background."
+msgstr "Koyu zeminde numaralı dört adım."
+
+msgid "How we work"
+msgstr "Nasıl çalışıyoruz"
+
+msgid "From first call to long-term care"
+msgstr "İlk görüşmeden uzun vadeli bakıma"
+
+msgid "A simple process with no surprises. You always know the next step."
+msgstr "Sürprizsiz, basit bir süreç. Bir sonraki adımı her zaman bilirsiniz."
+
+msgid "Call and survey"
+msgstr "Görüşme ve keşif"
+
+msgid "We talk through your needs and visit the site to see the space."
+msgstr "İhtiyaçlarınızı konuşur, alanı görmek için yerinde keşif yaparız."
+
+msgid "Plan and price"
+msgstr "Plan ve fiyat"
+
+msgid "You get a written plan with a fixed price and a clear schedule."
+msgstr "Sabit fiyatlı ve net takvimli yazılı bir plan alırsınız."
+
+msgid "Delivery"
+msgstr "Uygulama"
+
+msgid "Our engineers do the work, keeping the site tidy and you informed."
+msgstr "İşi mühendislerimiz yapar; alanı düzenli tutar ve sizi sürekli bilgilendirir."
+
+msgid "Handover and care"
+msgstr "Teslim ve bakım"
+
+msgid "We hand over the documents, train your team and stay on call."
+msgstr "Belgeleri teslim eder, ekibinizi eğitir ve her an ulaşılabilir oluruz."
+
+#: patterns/process-numbered-list.php
+msgctxt "Pattern title"
+msgid "Process as a numbered list"
+msgstr "Numaralı liste olarak süreç"
+
+#: patterns/process-numbered-list.php
+msgctxt "Pattern description"
+msgid "Steps in rows, each with a number, a name and a short text."
+msgstr "Satırlar hâlinde adımlar; her birinde numara, ad ve kısa bir metin."
+
+#: patterns/process-steps-four.php
+msgctxt "Pattern title"
+msgid "Four-step process"
+msgstr "Dört adımlı süreç"
+
+#: patterns/process-steps-four.php
+msgctxt "Pattern description"
+msgid "Four numbered steps in cards on a light background."
+msgstr "Açık zeminde kartlar içinde numaralı dört adım."
+
+#: patterns/process-steps-three.php
+msgctxt "Pattern title"
+msgid "Three-step process"
+msgstr "Üç adımlı süreç"
+
+#: patterns/process-steps-three.php
+msgctxt "Pattern description"
+msgid "Centered heading and three numbered steps."
+msgstr "Ortalanmış başlık ve numaralı üç adım."
+
+#: patterns/process-timeline-split.php
+msgctxt "Pattern title"
+msgid "Timeline with introduction"
+msgstr "Tanıtım metinli zaman çizelgesi"
+
+#: patterns/process-timeline-split.php
+msgctxt "Pattern description"
+msgid "Introduction and a button on the left, a timeline on the right."
+msgstr "Solda tanıtım metni ve düğme, sağda zaman çizelgesi."
+
+msgid "A clear path from idea to handover"
+msgstr "Fikirden teslime net bir yol"
+
+msgid "Most projects take six to eight weeks from the first call."
+msgstr "Çoğu proje, ilk görüşmeden itibaren altı ila sekiz hafta sürer."
+
+msgid "Start with a call"
+msgstr "Bir görüşmeyle başlayın"
+
+msgid "Week 1"
+msgstr "1. hafta"
+
+msgid "Week 2"
+msgstr "2. hafta"
+
+msgid "Weeks 3 to 6"
+msgstr "3–6. haftalar"
+
+msgid "Week 7 and after"
+msgstr "7. hafta ve sonrası"
+
+#: patterns/process-timeline.php
+msgctxt "Pattern title"
+msgid "Process as a timeline"
+msgstr "Zaman çizelgesi olarak süreç"
+
+#: patterns/process-timeline.php
+msgctxt "Pattern description"
+msgid "Centered heading and the steps on a vertical timeline."
+msgstr "Ortalanmış başlık ve dikey bir zaman çizelgesinde adımlar."
+
+#: patterns/services-alternating.php
+msgctxt "Pattern title"
+msgid "Services with alternating images"
+msgstr "Dönüşümlü görselli hizmetler"
+
+#: patterns/services-alternating.php
+msgctxt "Pattern description"
+msgid "Two services shown as image and text rows, the image switching sides."
+msgstr "Görsel ve metin satırları hâlinde iki hizmet; görsel her satırda yer değiştirir."
+
+msgid "What we do"
+msgstr "Neler yapıyoruz"
+
+msgid "Services that keep your work moving"
+msgstr "İşinizi aksatmayan hizmetler"
+
+msgid "From the first plan to years of support, one team takes care of every step."
+msgstr "İlk plandan yıllar süren desteğe kadar her adımla tek bir ekip ilgilenir."
+
+msgid "Step one"
+msgstr "Birinci adım"
+
+msgid "Installation"
+msgstr "Kurulum"
+
+msgid "Planned, tidy installation by certified engineers, handed over with full documentation."
+msgstr "Sertifikalı mühendislerce planlı ve düzenli kurulum, eksiksiz belgelerle teslim."
+
+msgid "Site survey and plan"
+msgstr "Yerinde keşif ve plan"
+
+msgid "Clean, labelled installation"
+msgstr "Temiz, etiketli kurulum"
+
+msgid "Full handover documents"
+msgstr "Eksiksiz teslim belgeleri"
+
+msgid "Step two"
+msgstr "İkinci adım"
+
+msgid "Maintenance"
+msgstr "Bakım"
+
+msgid "Scheduled checks that catch problems early and keep your warranty valid."
+msgstr "Sorunları erkenden yakalayan ve garantinizi geçerli tutan planlı kontroller."
+
+msgid "Visits on a fixed schedule"
+msgstr "Sabit takvimli ziyaretler"
+
+msgid "Written report after every visit"
+msgstr "Her ziyaretin ardından yazılı rapor"
+
+msgid "Priority response for contract clients"
+msgstr "Sözleşmeli müşterilere öncelikli müdahale"
+
+#: patterns/services-cards.php
+msgctxt "Pattern title"
+msgid "Service cards"
+msgstr "Hizmet kartları"
+
+#: patterns/services-cards.php
+msgctxt "Pattern description"
+msgid "Three services in bordered cards on a light background."
+msgstr "Açık zeminde kenarlıklı kartlarda üç hizmet."
+
+msgid "Learn more"
+msgstr "Daha fazla bilgi"
+
+msgid "Consulting"
+msgstr "Danışmanlık"
+
+msgid "An honest look at your needs before you spend, with options at three price levels."
+msgstr "Harcama yapmadan önce ihtiyaçlarınıza dürüst bir bakış; üç farklı fiyat seviyesinde seçenekler."
+
+#: patterns/services-carousel.php
+msgctxt "Pattern title"
+msgid "Services carousel"
+msgstr "Hizmet kaydırıcısı"
+
+#: patterns/services-carousel.php
+msgctxt "Pattern description"
+msgid "Services with images in a carousel showing three at a time."
+msgstr "Aynı anda üçünü gösteren bir kaydırıcıda görselli hizmetler."
+
+msgid "Training"
+msgstr "Eğitim"
+
+msgid "Hands-on sessions so your own team can run the daily work with confidence."
+msgstr "Kendi ekibinizin günlük işleri güvenle yürütebilmesi için uygulamalı eğitimler."
+
+msgid "Repairs"
+msgstr "Onarım"
+
+msgid "Fast diagnosis and repair, with common spare parts kept in stock."
+msgstr "Hızlı arıza tespiti ve onarım; sık kullanılan yedek parçalar stokta."
+
+msgid "Project management"
+msgstr "Proje yönetimi"
+
+msgid "One contact who plans the work, keeps the schedule and reports every week."
+msgstr "İşi planlayan, takvimi takip eden ve her hafta rapor veren tek bir muhatap."
+
+#: patterns/services-checklist.php
+msgctxt "Pattern title"
+msgid "Services as a checklist"
+msgstr "Kontrol listesi olarak hizmetler"
+
+#: patterns/services-checklist.php
+msgctxt "Pattern description"
+msgid "Heading and text beside two lists of what is included."
+msgstr "Başlık ve metin; yanında nelerin dahil olduğunu gösteren iki liste."
+
+msgid "What is included"
+msgstr "Neler dahil"
+
+msgid "Every contract covers the essentials. Nothing is hidden in the small print."
+msgstr "Her sözleşme temel ihtiyaçları kapsar. Küçük puntolarda gizlenmiş hiçbir şey yok."
+
+msgid "Yearly safety inspection"
+msgstr "Yıllık güvenlik denetimi"
+
+msgid "Software and firmware updates"
+msgstr "Yazılım ve firmware güncellemeleri"
+
+msgid "Written report after each visit"
+msgstr "Her ziyaretin ardından yazılı rapor"
+
+msgid "Named engineer for your site"
+msgstr "Tesisinize özel sorumlu mühendis"
+
+msgid "Training for new staff"
+msgstr "Yeni personel için eğitim"
+
+#: patterns/services-details.php
+msgctxt "Pattern title"
+msgid "Services as an accordion"
+msgstr "Akordeon olarak hizmetler"
+
+#: patterns/services-details.php
+msgctxt "Pattern description"
+msgid "Introduction on the left, services that open for more detail on the right."
+msgstr "Solda tanıtım metni, sağda ayrıntılar için açılan hizmetler."
+
+msgid "Services in detail"
+msgstr "Hizmet ayrıntıları"
+
+msgid "Open a service to see what it covers."
+msgstr "Kapsamını görmek için bir hizmeti açın."
+
+#: patterns/services-four-columns.php
+msgctxt "Pattern title"
+msgid "Services in four columns"
+msgstr "Dört sütunda hizmetler"
+
+#: patterns/services-four-columns.php
+msgctxt "Pattern description"
+msgid "Heading on the left and four short services in a row."
+msgstr "Solda başlık ve yan yana dört kısa hizmet."
+
+#: patterns/services-image-cards.php
+msgctxt "Pattern title"
+msgid "Services with images"
+msgstr "Görselli hizmetler"
+
+#: patterns/services-image-cards.php
+msgctxt "Pattern description"
+msgid "Three services, each with an image, a short text and a link."
+msgstr "Her biri görsel, kısa metin ve bağlantı içeren üç hizmet."
+
+#: patterns/services-intro-grid.php
+msgctxt "Pattern title"
+msgid "Services grid with an introduction"
+msgstr "Tanıtım metinli hizmet ızgarası"
+
+#: patterns/services-intro-grid.php
+msgctxt "Pattern description"
+msgid "A short introduction beside a two by two grid of services."
+msgstr "Kısa bir tanıtım metninin yanında ikiye iki hizmet ızgarası."
+
+msgid "Four ways we help"
+msgstr "Dört alanda yanınızdayız"
+
+msgid "Most clients start with one service and add the others when they see the difference."
+msgstr "Çoğu müşterimiz tek bir hizmetle başlar, farkı görünce diğerlerini de ekler."
+
+msgid "See all services"
+msgstr "Tüm hizmetleri görün"
+
+#: patterns/services-inverse.php
+msgctxt "Pattern title"
+msgid "Services on a dark background"
+msgstr "Koyu zeminde hizmetler"
+
+#: patterns/services-inverse.php
+msgctxt "Pattern description"
+msgid "Three services in outlined cards on a dark background."
+msgstr "Koyu zeminde çerçeveli kartlarda üç hizmet."
+
+#: patterns/services-numbered.php
+msgctxt "Pattern title"
+msgid "Numbered services"
+msgstr "Numaralı hizmetler"
+
+#: patterns/services-numbered.php
+msgctxt "Pattern description"
+msgid "Three services with large numbers above their names."
+msgstr "Adlarının üzerinde büyük numaralar bulunan üç hizmet."
+
+#: patterns/services-six-grid.php
+msgctxt "Pattern title"
+msgid "Six services grid"
+msgstr "Altı hizmetli ızgara"
+
+#: patterns/services-six-grid.php
+msgctxt "Pattern description"
+msgid "Centered heading and six services in a three-column grid."
+msgstr "Ortalanmış başlık ve üç sütunlu ızgarada altı hizmet."
+
+#: patterns/services-split-image.php
+msgctxt "Pattern title"
+msgid "Services beside a tall image"
+msgstr "Uzun görselin yanında hizmetler"
+
+#: patterns/services-split-image.php
+msgctxt "Pattern description"
+msgid "A tall image on the left and three services stacked on the right."
+msgstr "Solda uzun bir görsel, sağda alt alta üç hizmet."
+
+msgid "Built around your site"
+msgstr "Tesisinize göre şekillenir"
+
+#: patterns/services-three-columns.php
+msgctxt "Pattern title"
+msgid "Services in three columns"
+msgstr "Üç sütunda hizmetler"
+
+#: patterns/services-three-columns.php
+msgctxt "Pattern description"
+msgid "Centered heading and three services with a short text and a link."
+msgstr "Ortalanmış başlık ve kısa metin ile bağlantı içeren üç hizmet."
+
+#: patterns/services-two-column-list.php
+msgctxt "Pattern title"
+msgid "Services list beside an introduction"
+msgstr "Tanıtım metninin yanında hizmet listesi"
+
+#: patterns/services-two-column-list.php
+msgctxt "Pattern description"
+msgid "Introduction and button on the left, a list of services with dividers on the right."
+msgstr "Solda tanıtım metni ve düğme, sağda ayırıcılarla hizmet listesi."
+
+msgid "Everything under one contract"
+msgstr "Her şey tek sözleşme kapsamında"
+
+msgid "Choose a single service or let us look after the whole system."
+msgstr "Tek bir hizmet seçin ya da tüm sistemin bakımını bize bırakın."
+
+#: patterns/stats-accent.php
+msgctxt "Pattern title"
+msgid "Key figures on the accent color"
+msgstr "Vurgu renginde rakamlar"
+
+#: patterns/stats-accent.php
+msgctxt "Pattern description"
+msgid "Four counting figures on the brand accent color."
+msgstr "Marka vurgu rengi üzerinde dört sayaç."
+
+msgid "Years of experience"
+msgstr "Yıllık deneyim"
+
+#: patterns/stats-cards.php
+msgctxt "Pattern title"
+msgid "Key figures in cards"
+msgstr "Kartlarda rakamlar"
+
+#: patterns/stats-cards.php
+msgctxt "Pattern description"
+msgid "Four counting figures, each in a card, on a light background."
+msgstr "Açık zeminde, her biri ayrı kartta dört sayaç."
+
+msgid "In numbers"
+msgstr "Rakamlarla"
+
+msgid "Fifteen years of steady work"
+msgstr "On beş yıllık istikrarlı çalışma"
+
+#: patterns/stats-inverse.php
+msgctxt "Pattern title"
+msgid "Key figures on a dark background"
+msgstr "Koyu zeminde rakamlar"
+
+#: patterns/stats-inverse.php
+msgctxt "Pattern description"
+msgid "Centered heading and four counting figures on a dark background."
+msgstr "Ortalanmış başlık ve koyu zeminde dört sayaç."
+
+msgid "Numbers we are proud of"
+msgstr "Gurur duyduğumuz rakamlar"
+
+#: patterns/stats-row.php
+msgctxt "Pattern title"
+msgid "Key figures in a row"
+msgstr "Yan yana rakamlar"
+
+#: patterns/stats-row.php
+msgctxt "Pattern description"
+msgid "Four counting figures in a row under a short heading."
+msgstr "Kısa bir başlığın altında yan yana dört sayaç."
+
+#: patterns/stats-split.php
+msgctxt "Pattern title"
+msgid "Key figures with introduction"
+msgstr "Tanıtım metinli rakamlar"
+
+#: patterns/stats-split.php
+msgctxt "Pattern description"
+msgid "Heading and text on the left, a two by two grid of figures on the right."
+msgstr "Solda başlık ve metin, sağda ikiye iki rakam ızgarası."
+
+msgid "Results you can check"
+msgstr "Doğrulanabilir sonuçlar"
+
+msgid "We keep a record of every job, so these figures come from our own books."
+msgstr "Her işin kaydını tutuyoruz; bu rakamlar kendi kayıtlarımızdan geliyor."
+
+#: patterns/stats-with-image.php
+msgctxt "Pattern title"
+msgid "Key figures with image"
+msgstr "Görselli rakamlar"
+
+#: patterns/stats-with-image.php
+msgctxt "Pattern description"
+msgid "An image on one side, heading and four figures on the other."
+msgstr "Bir yanda görsel, diğer yanda başlık ve dört rakam."
+
+msgid "Most of our new work comes from people our clients recommend."
+msgstr "Yeni işlerimizin çoğu, müşterilerimizin tavsiye ettiği kişilerden geliyor."
+
+#: patterns/team-cards.php
+msgctxt "Pattern title"
+msgid "Team cards"
+msgstr "Ekip kartları"
+
+#: patterns/team-cards.php
+msgctxt "Pattern description"
+msgid "Four cards with a round photo, name, role and a short line."
+msgstr "Yuvarlak fotoğraf, ad, görev ve kısa bir satır içeren dört kart."
+
+msgid "Our team"
+msgstr "Ekibimiz"
+
+msgid "The people you will work with"
+msgstr "Birlikte çalışacağınız kişiler"
+
+msgid "A small, experienced team. You will know who is coming and who to call."
+msgstr "Küçük ve deneyimli bir ekip. Kimin geleceğini ve kimi arayacağınızı her zaman bilirsiniz."
+
+msgctxt "sample person name"
+msgid "Alex Morgan"
+msgstr "Ahmet Yılmaz"
+
+msgid "Started the company and still visits every new site."
+msgstr "Şirketi kurdu, hâlâ her yeni sahayı bizzat ziyaret ediyor."
+
+msgctxt "sample person name"
+msgid "Sam Taylor"
+msgstr "Elif Kaya"
+
+msgctxt "job title"
+msgid "Head of engineering"
+msgstr "Mühendislik müdürü"
+
+msgid "Fifteen years in the trade and still enjoys a difficult site."
+msgstr "Sektörde on beş yıldır çalışıyor ve zorlu sahalardan hâlâ keyif alıyor."
+
+msgctxt "sample person name"
+msgid "Jordan Lee"
+msgstr "Can Demir"
+
+msgctxt "job title"
+msgid "Project manager"
+msgstr "Proje yöneticisi"
+
+msgid "Keeps the plan, the budget and you up to date."
+msgstr "Planı ve bütçeyi takip eder, sizi sürekli bilgilendirir."
+
+msgctxt "sample person name"
+msgid "Robin Clarke"
+msgstr "Zeynep Şahin"
+
+msgctxt "job title"
+msgid "Support lead"
+msgstr "Destek sorumlusu"
+
+msgid "Answers the phone when something stops working."
+msgstr "Bir şey çalışmayı durdurduğunda telefonu o açar."
+
+#: patterns/team-carousel.php
+msgctxt "Pattern title"
+msgid "Team carousel"
+msgstr "Ekip kaydırıcısı"
+
+#: patterns/team-carousel.php
+msgctxt "Pattern description"
+msgid "People with photo, name and role in a carousel showing three at a time."
+msgstr "Aynı anda üç kişiyi gösteren bir kaydırıcıda fotoğraf, ad ve görev."
+
+#: patterns/team-grid-four.php
+msgctxt "Pattern title"
+msgid "Team in four columns"
+msgstr "Dört sütunda ekip"
+
+#: patterns/team-grid-four.php
+msgctxt "Pattern description"
+msgid "Centered heading and four people with photo, name and role."
+msgstr "Ortalanmış başlık ve fotoğraf, ad ve görev bilgisiyle dört kişi."
+
+#: patterns/team-grid-three.php
+msgctxt "Pattern title"
+msgid "Team in three columns"
+msgstr "Üç sütunda ekip"
+
+#: patterns/team-grid-three.php
+msgctxt "Pattern description"
+msgid "Heading on the left and three people with tall photos."
+msgstr "Solda başlık ve uzun fotoğraflı üç kişi."
+
+#: patterns/team-list.php
+msgctxt "Pattern title"
+msgid "Team as a list"
+msgstr "Liste olarak ekip"
+
+#: patterns/team-list.php
+msgctxt "Pattern description"
+msgid "People listed in rows with a small photo, name and role."
+msgstr "Satırlar hâlinde küçük fotoğraf, ad ve görevle listelenen kişiler."
+
+#: patterns/team-split-intro.php
+msgctxt "Pattern title"
+msgid "Team with introduction"
+msgstr "Tanıtım metinli ekip"
+
+#: patterns/team-split-intro.php
+msgctxt "Pattern description"
+msgid "Introduction and a hiring link on the left, a two by two grid of people on the right."
+msgstr "Solda tanıtım metni ve iş ilanı bağlantısı, sağda ikiye iki kişi ızgarası."
+
+msgid "Small team, long experience"
+msgstr "Küçük ekip, uzun deneyim"
+
+msgid "Every client has a named engineer and a project manager who knows the site."
+msgstr "Her müşterinin, sahayı tanıyan bir sorumlu mühendisi ve proje yöneticisi vardır."
+
+msgid "We are hiring"
+msgstr "Ekip arkadaşı arıyoruz"
+
+#: patterns/testimonial-large-centered.php
+msgctxt "Pattern title"
+msgid "Large centered testimonial"
+msgstr "Büyük ortalanmış müşteri yorumu"
+
+#: patterns/testimonial-large-centered.php
+msgctxt "Pattern description"
+msgid "One large centered quote with the client photo and name below."
+msgstr "Altında müşteri fotoğrafı ve adı bulunan büyük, ortalanmış tek bir alıntı."
+
+msgid "Good advice from the first call. They talked us out of the expensive option because we did not need it."
+msgstr "İlk görüşmeden itibaren doğru tavsiye. İhtiyacımız olmadığı için bizi pahalı seçenekten vazgeçirdiler."
+
+msgctxt "job title"
+msgid "Owner"
+msgstr "İşletme sahibi"
+
+#: patterns/testimonial-single-quote.php
+msgctxt "Pattern title"
+msgid "Single testimonial"
+msgstr "Tek müşteri yorumu"
+
+#: patterns/testimonial-single-quote.php
+msgctxt "Pattern description"
+msgid "One quote with the client name and role."
+msgstr "Müşteri adı ve göreviyle tek bir alıntı."
+
+msgid "They found the cause of a problem two other firms had missed, fixed it in a day and explained it so we could understand."
+msgstr "İki firmanın gözden kaçırdığı sorunun kaynağını buldular, bir günde çözdüler ve anlayabileceğimiz şekilde açıkladılar."
+
+msgctxt "job title"
+msgid "Operations manager"
+msgstr "Operasyon müdürü"
+
+#: patterns/testimonial-with-image.php
+msgctxt "Pattern title"
+msgid "Testimonial with image"
+msgstr "Görselli müşteri yorumu"
+
+#: patterns/testimonial-with-image.php
+msgctxt "Pattern description"
+msgid "A large photo beside one quote and the client details."
+msgstr "Büyük bir fotoğrafın yanında tek bir alıntı ve müşteri bilgileri."
+
+msgid "Client story"
+msgstr "Müşteri hikâyesi"
+
+#: patterns/testimonials-cards.php
+msgctxt "Pattern title"
+msgid "Testimonial cards"
+msgstr "Müşteri yorumu kartları"
+
+#: patterns/testimonials-cards.php
+msgctxt "Pattern description"
+msgid "Four quotes in cards on a light background."
+msgstr "Açık zeminde kartlarda dört alıntı."
+
+msgid "Testimonials"
+msgstr "Müşteri yorumları"
+
+msgid "What our clients say"
+msgstr "Müşterilerimiz ne diyor"
+
+msgid "The quote was clear, the work finished on the agreed date and the site was cleaner than they found it."
+msgstr "Teklif netti, iş kararlaştırılan tarihte bitti ve alanı bulduklarından daha temiz bıraktılar."
+
+msgctxt "job title"
+msgid "Office manager"
+msgstr "Ofis müdürü"
+
+msgid "Three years into our contract and we have never waited more than a day for an engineer."
+msgstr "Sözleşmemizin üçüncü yılındayız ve bir mühendis için hiçbir zaman bir günden fazla beklemedik."
+
+msgctxt "job title"
+msgid "Facilities director"
+msgstr "Tesis yönetimi direktörü"
+
+#: patterns/testimonials-carousel.php
+msgctxt "Pattern title"
+msgid "Testimonials carousel"
+msgstr "Müşteri yorumu kaydırıcısı"
+
+#: patterns/testimonials-carousel.php
+msgctxt "Pattern description"
+msgid "Quotes in a carousel, one at a time, centered."
+msgstr "Kaydırıcıda ortalanmış, tek tek gösterilen alıntılar."
+
+#: patterns/testimonials-inverse.php
+msgctxt "Pattern title"
+msgid "Testimonials on a dark background"
+msgstr "Koyu zeminde müşteri yorumları"
+
+#: patterns/testimonials-inverse.php
+msgctxt "Pattern description"
+msgid "Three quotes in outlined cards on a dark background."
+msgstr "Koyu zeminde çerçeveli kartlarda üç alıntı."
+
+#: patterns/testimonials-three.php
+msgctxt "Pattern title"
+msgid "Three testimonials"
+msgstr "Üç müşteri yorumu"
+
+#: patterns/testimonials-three.php
+msgctxt "Pattern description"
+msgid "Centered heading and three quotes in a row."
+msgstr "Ortalanmış başlık ve yan yana üç alıntı."
+
+#: patterns/testimonials-two.php
+msgctxt "Pattern title"
+msgid "Two testimonials"
+msgstr "İki müşteri yorumu"
+
+#: patterns/testimonials-two.php
+msgctxt "Pattern description"
+msgid "Heading and two larger quotes side by side."
+msgstr "Başlık ve yan yana iki büyük alıntı."
+
+msgctxt "Color name"
+msgid "Base"
+msgstr "Zemin"
+
+msgctxt "Color name"
+msgid "Surface"
+msgstr "Yüzey"
+
+msgctxt "Color name"
+msgid "Contrast"
+msgstr "Kontrast"
+
+msgctxt "Color name"
+msgid "Muted"
+msgstr "Soluk"
+
+msgctxt "Color name"
+msgid "Line"
+msgstr "Çizgi"
+
+msgctxt "Color name"
+msgid "Accent"
+msgstr "Vurgu"
+
+msgctxt "Color name"
+msgid "On accent"
+msgstr "Vurgu üzeri"
+
+msgctxt "Space size name"
+msgid "2XS"
+msgstr "2XS"
+
+msgctxt "Space size name"
+msgid "XS"
+msgstr "XS"
+
+msgctxt "Space size name"
+msgid "S"
+msgstr "S"
+
+msgctxt "Space size name"
+msgid "M"
+msgstr "M"
+
+msgctxt "Space size name"
+msgid "L"
+msgstr "L"
+
+msgctxt "Space size name"
+msgid "XL"
+msgstr "XL"
+
+msgctxt "Space size name"
+msgid "2XL"
+msgstr "2XL"
+
+msgctxt "Font family name"
+msgid "System sans"
+msgstr "System sans"
+
+msgctxt "Font family name"
+msgid "Headings"
+msgstr "Başlıklar"
+
+msgctxt "Font family name"
+msgid "System mono"
+msgstr "System mono"
+
+msgctxt "Font size name"
+msgid "Small"
+msgstr "Küçük"
+
+msgctxt "Font size name"
+msgid "Medium"
+msgstr "Orta"
+
+msgctxt "Font size name"
+msgid "Large"
+msgstr "Büyük"
+
+msgctxt "Font size name"
+msgid "Extra large"
+msgstr "Çok büyük"
+
+msgctxt "Font size name"
+msgid "Huge"
+msgstr "Dev"
+
+msgctxt "Shadow name"
+msgid "Small"
+msgstr "Küçük"
+
+msgctxt "Shadow name"
+msgid "Medium"
+msgstr "Orta"
+
+msgctxt "Custom template name"
+msgid "Landing page (no title)"
+msgstr "Açılış sayfası (başlıksız)"
+
+msgctxt "Template part name"
+msgid "Header"
+msgstr "Üst bilgi"
+
+msgctxt "Template part name"
+msgid "Footer"
+msgstr "Alt bilgi"
+
+msgctxt "Template part name"
+msgid "Mega menu"
+msgstr "Mega menü"
+
+msgctxt "Style variation name"
+msgid "Clinical Air"
+msgstr "Clinical Air"
+
+msgctxt "Font family name"
+msgid "Manrope"
+msgstr "Manrope"
+
+msgctxt "Style variation name"
+msgid "Graphite Engineering"
+msgstr "Graphite Engineering"
+
+msgctxt "Font family name"
+msgid "Geist"
+msgstr "Geist"
+
+msgctxt "Font family name"
+msgid "Space Grotesk"
+msgstr "Space Grotesk"
+
+msgctxt "Style variation name"
+msgid "Lab Precision"
+msgstr "Lab Precision"
+
+msgctxt "Font family name"
+msgid "Figtree"
+msgstr "Figtree"
+
+msgctxt "Font family name"
+msgid "Lexend Exa"
+msgstr "Lexend Exa"

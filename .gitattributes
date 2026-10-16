@@ -6,6 +6,7 @@
 *.avif binary
 *.woff2 binary
 *.mp4  binary
+*.mo   binary
 *.webm binary
 
 # Derlenmiş editör JS'i repoya girer (K6) ama diff ve dil istatistiğinde sayılmaz.

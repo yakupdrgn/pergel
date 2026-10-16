@@ -9,6 +9,8 @@
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>engine/build/*</exclude-pattern>
+	<!-- Compiled translations, written by tools/i18n.php. -->
+	<exclude-pattern>*/languages/*.l10n.php</exclude-pattern>
 
 	<arg name="extensions" value="php"/>
 	<arg name="colors"/>

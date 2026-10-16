@@ -46,6 +46,7 @@
 		"pot": [
 			"wp i18n make-pot theme theme/languages/pergel.pot --slug=pergel --domain=pergel --exclude=tokens --no-location",
 			"wp i18n make-pot engine engine/languages/pergel-engine.pot --slug=pergel-engine --domain=pergel-engine --exclude=build --no-location"
-		]
+		],
+		"i18n": "php tools/i18n.php"
 	}
 }

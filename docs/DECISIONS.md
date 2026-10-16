@@ -626,13 +626,14 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     `stock_availability` değeri "stokta yok" der.
   - Merchant Center'a daha önce gönderilmiş ürünler orada kalır; oradan kaldırılmalıdır.
   - Hızlı ve toplu düzenlemede mod alanı yok.
-  - Yönetim etiketleri İngilizce (yalnızca `.pot`).
+  - Yönetim etiketleri İngilizce yazılır; Türkçesi paketteki `tr_TR` çevirisinden gelir.
   - Rank Math kurulum sihirbazı tamamlanmadan şema basmaz.
 - **Yerel mağaza "yakında" kipindeydi:** `pergel-shop`'ta WooCommerce'in `woocommerce_coming_soon`
   seçeneği açıktı; oturumsuz ziyaretçi mağaza sayfaları yerine "yakında" sayfasını görüyordu.
   Kapatıldı; mağaza ölçümleri ve axe taramaları oturumsuz gerçek sayfalarda yapılır.
 - **Bilinen ve kabul edilen:** WooCommerce'in bazı metinleri ("Related products" gibi) yerel
-  sitede Türkçe çeviri paketi kurulmadığı için İngilizce görünür; tema metinleri `.pot`'ta.
+  sitede Türkçe çeviri paketi kurulmadığı için İngilizce görünür. Tema ve eklenti metinleri
+  paketteki `tr_TR` çevirisiyle Türkçedir (aşağıda "Türkçe çeviri").
 - **Ürün sorusu bloğu (F4a 4. adım):**
   - Katalog modu yalnızca iletişim bağlantılarını gösterir; teklif formu yalnızca `quote`
     modunda. Katalog "fiyat yok, satış yok" demektir, talep toplamak değil.
@@ -714,6 +715,29 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   - Yedek menü (menü atanmamış Navigation bloğu) WooCommerce'in sepet, ödeme ve hesap
     sayfalarını listelemez; bunlara header ikonlarından ulaşılır. Header ve footer aynı yedeği
     kullanır.
+- **Türkçe çeviri (16 Ekim 2026):** F6'daki "çeviriler" maddesinin Türkçe kısmı öne alındı.
+  - Tema ve eklenti `tr_TR` çevirisini kendi içinde taşır: `theme/languages/` ve
+    `engine/languages/` altında `.po` (kaynak), `.mo`, `.l10n.php` ve editör script'leri için
+    `.json`. WordPress.org dil paketi beklenmez; ariumlab.com'un dili Türkçe.
+  - Temanın dosyaları alan adı olmadan adlanır (`tr_TR.po`, `tr_TR.mo`, `tr_TR.l10n.php`):
+    WordPress temanın kendi klasöründe `{locale}.mo` arar. Eklentininkiler
+    `pergel-engine-tr_TR.*`.
+  - `php tools/i18n.php` (`composer i18n`) `.pot`'u `.po`'ya birleştirir ve derler. `.po` kaynak
+    satırı tutmaz; kod taşınınca değişmez. Derlenmiş dosyalara tarih olarak `.po`'nun
+    `PO-Revision-Date` değeri yazılır ve JSON'lardan WP-CLI sürümünü taşıyan `generator`
+    çıkarılır; aynı girdi her makinede aynı dosyaları üretir.
+  - CI `php tools/i18n.php --check` çalıştırır: çevrilmemiş, `fuzzy` ya da yer tutucusu
+    (`%s`, `%1$s`) tutmayan metin veya güncel olmayan derlenmiş dosya varsa kırmızıdır. Yeni
+    metin ekleyen değişiklik Türkçesini de getirir.
+  - Terimler: "Hero" → "Manşet", "Sticky" → "Sabit", call to action → "eylem çağrısı",
+    renk adları Zemin/Yüzey/Soluk/Çizgi/Vurgu. Stil varyasyonu adları (marka adları gibi)
+    çevrilmez. Örnek içerikteki fiyatlar ₺, kişi ve adresler Türkçedir.
+  - Bütçedeki `pergel_files` sayımı `languages/` altındaki dosyaları saymaz. Ölçü, sınıfların
+    yalnızca gerektiğinde yüklendiğini denetler; derlenmiş çeviriler kod değil veridir ve
+    yalnızca Türkçe sitede yüklenir (yerelde blog 44 + 2 = 46 > 45, CI'nin İngilizce sitesinde
+    0). Limit 45 olarak kaldı.
+  - Bilinen: eklentide "Remove" hem Performans bölümü başlığı hem düğme olarak aynı metin;
+    ikisi de "Kaldır". Gerekirse bağlam (`_x`) eklenir.
 
 ## Aşamalar ve bitti tanımları
 

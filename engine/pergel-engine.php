@@ -43,5 +43,11 @@ spl_autoload_register(
 	}
 );
 
+/*
+ * Bundled translations (languages/). This only records the folder: WordPress
+ * reads a language file the first time a string of the domain is needed.
+ */
+load_plugin_textdomain( 'pergel-engine', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+
 register_activation_hook( __FILE__, array( Settings\Settings::class, 'install' ) );
 add_action( 'plugins_loaded', array( Core\Plugin::class, 'boot' ), 5 );
