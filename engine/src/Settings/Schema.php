@@ -45,7 +45,9 @@ final class Schema {
 	 *
 	 * Types: bool, text, textarea, email, url, tel, country (ISO 3166-1
 	 * alpha-2), enum (options), int (min, max), image (attachment id, 0 =
-	 * none), urls (list of URLs, max = item count).
+	 * none), urls (list of URLs, max = item count), time ("HH:MM", 24-hour),
+	 * dates (list of "YYYY-MM-DD" days or "YYYY-MM-DD/YYYY-MM-DD" ranges,
+	 * max = item count).
 	 *
 	 * @return array<string, array<string, Field>>
 	 */
@@ -203,6 +205,47 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// Delivery estimate; see Pergel\Woo\Delivery. Days are working days.
+				'delivery'          => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'delivery_cutoff'   => array(
+					'type'    => 'time',
+					'default' => '15:00',
+				),
+				'delivery_handling' => array(
+					'type'    => 'int',
+					'min'     => 0,
+					'max'     => 30,
+					'default' => 1,
+				),
+				'delivery_min'      => array(
+					'type'    => 'int',
+					'min'     => 0,
+					'max'     => 60,
+					'default' => 1,
+				),
+				'delivery_max'      => array(
+					'type'    => 'int',
+					'min'     => 0,
+					'max'     => 60,
+					'default' => 3,
+				),
+				'delivery_days'     => array(
+					'type'    => 'enum',
+					'options' => array( 'mon_fri', 'mon_sat', 'every_day' ),
+					'default' => 'mon_fri',
+				),
+				'delivery_holidays' => array(
+					'type' => 'dates',
+					'max'  => 40,
+				),
+				// Back-in-stock alerts; see Pergel\Woo\StockAlert.
+				'stock_alert'       => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 		);
 	}
@@ -220,7 +263,7 @@ final class Schema {
 		return match ( $field['type'] ) {
 			'bool'          => false,
 			'int', 'image'  => 0,
-			'urls'          => array(),
+			'urls', 'dates' => array(),
 			default         => '',
 		};
 	}
@@ -341,6 +384,22 @@ final class Schema {
 
 			case 'urls':
 				return self::urls( $raw, $field['max'] ?? self::MAX_ITEMS );
+
+			case 'dates':
+				return self::dates( $raw, $field['max'] ?? self::MAX_ITEMS );
+
+			case 'time':
+				$time = self::text( $raw, false );
+				if ( null === $time ) {
+					return 'invalid_type';
+				}
+				if ( '' === $time ) {
+					return array( '' );
+				}
+				if ( ! preg_match( '/^([01]?[0-9]|2[0-3])[:.]([0-5][0-9])$/', $time, $parts ) ) {
+					return 'invalid_time';
+				}
+				return array( sprintf( '%02d:%s', (int) $parts[1], $parts[2] ) );
 		}
 
 		$text = self::text( $raw, 'textarea' === $type );
@@ -442,6 +501,51 @@ final class Schema {
 	}
 
 	/**
+	 * A list of days ("YYYY-MM-DD") and ranges ("YYYY-MM-DD/YYYY-MM-DD")
+	 * from an array or a newline-separated string, sorted. A range may also
+	 * be written with " - " or "..". Empty lines and duplicates are dropped;
+	 * a range that ends before it starts is turned around.
+	 *
+	 * @param mixed $raw       Untrusted value.
+	 * @param int   $max_items Item limit.
+	 * @return array{0: list<string>}|string
+	 */
+	private static function dates( mixed $raw, int $max_items ): array|string {
+		if ( is_string( $raw ) ) {
+			$raw = explode( "\n", str_replace( "\r\n", "\n", $raw ) );
+		}
+		if ( ! is_array( $raw ) ) {
+			return 'invalid_type';
+		}
+		$dates = array();
+		foreach ( $raw as $item ) {
+			$line = self::text( $item, false );
+			if ( null === $line ) {
+				return 'invalid_type';
+			}
+			if ( '' === $line ) {
+				continue;
+			}
+			$ends = preg_split( '/\s*(?:\/|\.\.|\s[-–]\s)\s*/u', $line );
+			if ( ! is_array( $ends ) || count( $ends ) > 2 ) {
+				return 'invalid_date';
+			}
+			foreach ( $ends as $end ) {
+				if ( ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $end, $parts ) || ! checkdate( (int) $parts[2], (int) $parts[3], (int) $parts[1] ) ) {
+					return 'invalid_date';
+				}
+			}
+			sort( $ends );
+			$date = 2 === count( $ends ) && $ends[0] !== $ends[1] ? $ends[0] . '/' . $ends[1] : $ends[0];
+			if ( ! in_array( $date, $dates, true ) ) {
+				$dates[] = $date;
+			}
+		}
+		sort( $dates );
+		return count( $dates ) > $max_items ? 'too_many' : array( $dates );
+	}
+
+	/**
 	 * JSON Schema for register_setting( show_in_rest ). Empty strings are
 	 * valid everywhere, because an empty field means "not set".
 	 *
@@ -503,6 +607,18 @@ final class Schema {
 					'maxLength' => self::MAX['url'],
 				),
 				'maxItems' => $field['max'] ?? self::MAX_ITEMS,
+			),
+			'dates'   => array(
+				'type'     => 'array',
+				'items'    => array(
+					'type'    => 'string',
+					'pattern' => '^\d{4}-\d{2}-\d{2}(/\d{4}-\d{2}-\d{2})?$',
+				),
+				'maxItems' => $field['max'] ?? self::MAX_ITEMS,
+			),
+			'time'    => array(
+				'type'    => 'string',
+				'pattern' => '^(([01][0-9]|2[0-3]):[0-5][0-9])?$',
 			),
 			'email'   => self::empty_or(
 				array(

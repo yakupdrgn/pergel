@@ -188,6 +188,38 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'delivery-estimate' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/delivery-estimate',
+    'title' => 'Delivery estimate',
+    'category' => 'pergel',
+    'icon' => 'calendar-alt',
+    'description' => 'The estimated delivery dates of the product, and before the cut-off time that an order ships today. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves.',
+    'keywords' => 
+    array (
+      0 => 'delivery',
+      1 => 'shipping',
+      2 => 'date',
+      3 => 'cut-off',
+      4 => 'estimate',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => false,
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'form' => 
   array (
     'apiVersion' => 3,
@@ -699,6 +731,39 @@ return array (
       2 => 'add to cart',
       3 => 'bar',
       4 => 'buy',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'multiple' => false,
+    ),
+    'editorScript' => 'file:./index.js',
+    'viewScriptModule' => 'file:./view.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
+  'stock-alert' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/stock-alert',
+    'title' => 'Back-in-stock alert',
+    'category' => 'pergel',
+    'icon' => 'email-alt',
+    'description' => 'A form where visitors leave their email address for a sold-out product or option, and get one email when it is back in stock. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves.',
+    'keywords' => 
+    array (
+      0 => 'stock',
+      1 => 'out of stock',
+      2 => 'sold out',
+      3 => 'notify',
+      4 => 'email',
+      5 => 'alert',
     ),
     'textdomain' => 'pergel-engine',
     'usesContext' => 

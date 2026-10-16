@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/delivery-estimate",
+	"title": "Delivery estimate",
+	"category": "pergel",
+	"icon": "calendar-alt",
+	"description": "The estimated delivery dates of the product, and before the cut-off time that an order ships today. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves.",
+	"keywords": [ "delivery", "shipping", "date", "cut-off", "estimate" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId", "postType" ],
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"editorScript": "file:./index.js",
+	"viewScriptModule": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

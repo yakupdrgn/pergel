@@ -92,6 +92,14 @@ final class WooTest extends TestCase {
 				'compare_url'       => '',
 				'swatches'          => false,
 				'sticky_cart'       => false,
+				'delivery'          => false,
+				'delivery_cutoff'   => '15:00',
+				'delivery_handling' => 1,
+				'delivery_min'      => 1,
+				'delivery_max'      => 3,
+				'delivery_days'     => 'mon_fri',
+				'delivery_holidays' => array(),
+				'stock_alert'       => false,
 			),
 			Schema::defaults()['woo']
 		);

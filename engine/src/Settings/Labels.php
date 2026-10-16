@@ -136,7 +136,11 @@ final class Labels {
 				),
 				'product'   => array(
 					'title'  => __( 'Product page', 'pergel-engine' ),
-					'fields' => array( 'swatches', 'sticky_cart' ),
+					'fields' => array( 'swatches', 'sticky_cart', 'stock_alert' ),
+				),
+				'delivery'  => array(
+					'title'  => __( 'Delivery estimate', 'pergel-engine' ),
+					'fields' => array( 'delivery', 'delivery_cutoff', 'delivery_handling', 'delivery_min', 'delivery_max', 'delivery_days', 'delivery_holidays' ),
 				),
 				'header'    => array(
 					'title'  => __( 'Header', 'pergel-engine' ),
@@ -316,6 +320,43 @@ final class Labels {
 					'label' => __( 'Sticky add-to-cart bar', 'pergel-engine' ),
 					'help'  => __( 'When the add-to-cart button scrolls out of view on a product page, a bar with the product\'s image, name, price and button appears at the bottom of the screen. For a product with options it first takes the visitor to the options.', 'pergel-engine' ),
 				),
+				'stock_alert'       => array(
+					'label' => __( 'Back-in-stock alerts', 'pergel-engine' ),
+					'help'  => __( 'Sold-out products and options show a form where visitors leave their email address; when the product is back in stock, each address gets one email. Visitors who are not logged in first confirm their address with a link we email them. The addresses are listed under WooCommerce → Stock alerts, and both emails can be edited under WooCommerce → Settings → Emails.', 'pergel-engine' ),
+				),
+				'delivery'          => array(
+					'label' => __( 'Show the estimated delivery date', 'pergel-engine' ),
+					'help'  => __( 'Product pages show a date range under the add-to-cart button, and before the cut-off time on a working day also that an order ships today. It is worked out in the visitor\'s browser from the settings below, so it stays right on cached pages. Not shown for virtual, sold-out or hidden products.', 'pergel-engine' ),
+				),
+				'delivery_cutoff'   => array(
+					'label' => __( 'Order cut-off time', 'pergel-engine' ),
+					'help'  => __( 'Orders placed on a working day before this time count as placed that day; later ones count from the next working day. In the site\'s time zone (Settings → General). Leave empty for no cut-off.', 'pergel-engine' ),
+				),
+				'delivery_handling' => array(
+					'label' => __( 'Days to prepare an order', 'pergel-engine' ),
+					'help'  => __( 'Working days from the order until it is handed to the carrier. 0: it ships the same day.', 'pergel-engine' ),
+				),
+				'delivery_min'      => array(
+					'label' => __( 'Shortest delivery time', 'pergel-engine' ),
+					'help'  => __( 'Working days the carrier needs at best. A shipping class can set its own delivery time under WooCommerce → Settings → Shipping → Classes.', 'pergel-engine' ),
+				),
+				'delivery_max'      => array(
+					'label' => __( 'Longest delivery time', 'pergel-engine' ),
+					'help'  => __( 'Working days the carrier needs at most.', 'pergel-engine' ),
+				),
+				'delivery_days'     => array(
+					'label'   => __( 'Working days', 'pergel-engine' ),
+					'help'    => __( 'The days orders are prepared, shipped and delivered.', 'pergel-engine' ),
+					'choices' => array(
+						'mon_fri'   => __( 'Monday to Friday', 'pergel-engine' ),
+						'mon_sat'   => __( 'Monday to Saturday', 'pergel-engine' ),
+						'every_day' => __( 'Every day', 'pergel-engine' ),
+					),
+				),
+				'delivery_holidays' => array(
+					'label' => __( 'Days off', 'pergel-engine' ),
+					'help'  => __( 'Public holidays and other days without shipping. One per line, as 2026-10-29, or a range as 2026-03-19/2026-03-22. Up to 40 lines.', 'pergel-engine' ),
+				),
 			),
 		);
 	}
@@ -335,6 +376,8 @@ final class Labels {
 			'invalid_choice'  => __( 'Choose one of the listed options.', 'pergel-engine' ),
 			'out_of_range'    => __( 'The number is out of range.', 'pergel-engine' ),
 			'too_many'        => __( 'There are too many items.', 'pergel-engine' ),
+			'invalid_time'    => __( 'Enter a time such as 15:00.', 'pergel-engine' ),
+			'invalid_date'    => __( 'Write each date as 2026-10-29, or a range as 2026-03-19/2026-03-22.', 'pergel-engine' ),
 			'svg'             => __( 'Social networks do not show SVG images. Choose a JPG, PNG or WebP image.', 'pergel-engine' ),
 			default           => __( 'The value has the wrong type.', 'pergel-engine' ),
 		};
