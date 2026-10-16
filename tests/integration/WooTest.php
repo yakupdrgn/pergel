@@ -90,6 +90,8 @@ final class WooTest extends TestCase {
 				'wishlist_url'      => '',
 				'compare'           => false,
 				'compare_url'       => '',
+				'swatches'          => false,
+				'sticky_cart'       => false,
 			),
 			Schema::defaults()['woo']
 		);

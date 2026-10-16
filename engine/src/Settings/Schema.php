@@ -194,6 +194,15 @@ final class Schema {
 					'default' => false,
 				),
 				'compare_url'       => array( 'type' => 'url' ),
+				// Product page; see Pergel\Woo\Swatches and Pergel\Woo\StickyCart.
+				'swatches'          => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'sticky_cart'       => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 		);
 	}
