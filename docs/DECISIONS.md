@@ -1019,7 +1019,11 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     ~40 sorgu); yerel sitede bu yeniden sayım görünmedi. Mağaza limitleri 168, kategori limitleri
     160'a çekildi (CI değeri + ~%10). WooCommerce hatası düzelince 120 ve 132'ye dönülür. Sorgu
     süreleri CI'da da düşük: `query_ms` en çok 77, en yavaş sorgu 11 ms (mağaza listesinin
-    `NOT IN` alt sorgusu).
+    `NOT IN` alt sorgusu). İkinci koşudaki runner genelde ~%35 yavaştı (mağaza sayfa süresi 238 →
+    348 ms): sorgu sayıları aynı kaldı ama mağaza sayfalarının `query_ms` değeri 87–102 oldu.
+    Süre CI makinesine göre oynadığı için mağaza sayfalarına `query_ms ≤ 150`, kategorilere
+    `≤ 110` verildi; diğer sayfalar `≤ 80`de kaldı. Katalogla büyüyen sorguyu asıl
+    `slowest_ms ≤ 40` yakalar (en kötü görülen 14,7 ms).
   - Aynı koşuda iki rastgele hata, ikisi de bu PR'ın koduyla ilgisiz ve test altyapısında
     sağlamlaştırıldı:
     - SEO matrisi: `php -S` `/blog/` isteğinde segfault (139) verdi; bu işte opcache CLI hiç açık
