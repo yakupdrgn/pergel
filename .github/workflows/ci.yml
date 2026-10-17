@@ -122,14 +122,7 @@ jobs:
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: Smoke
-        run: |
-          for path in / /blog/ /pergel-sample-post/ /pergel-sample-page/ /category/pergel-test/ '/?s=pergel' /feed/ /wp-login.php /wp-json/ /wp-sitemap.xml; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL$path")
-            echo "$code $path"
-            [ "$code" = 200 ] || exit 1
-          done
-          code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL/pergel-budget-missing/")
-          echo "$code /pergel-budget-missing/"; [ "$code" = 404 ]
+        run: bash tools/ci/smoke.sh / /blog/ /pergel-sample-post/ /pergel-sample-page/ /category/pergel-test/ '/?s=pergel' /feed/ /wp-login.php /wp-json/ /wp-sitemap.xml --missing /pergel-budget-missing/
       - name: Translation templates up to date
         run: |
           wp i18n make-pot theme /tmp/pergel.pot --slug=pergel --domain=pergel --exclude=tokens --no-location
@@ -162,6 +155,124 @@ jobs:
           name: budget-report
           path: |
             reports/
+            /tmp/php-server.log
+            /tmp/pergel-requests.log
+          if-no-files-found: ignore
+
+  shop:
+    name: Shop (WooCommerce ${{ matrix.woocommerce }}) smoke, budget, checkout
+    runs-on: ubuntu-24.04
+    needs: [lint, syntax]
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # The newest release and the oldest one Pergel supports.
+        woocommerce: [latest, '11.2.1']
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wordpress
+          MARIADB_PASSWORD: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_DIR: /tmp/pergel-wp
+      SITE_URL: http://127.0.0.1:8080
+      WOOCOMMERCE: ${{ matrix.woocommerce }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: mysqli, gd, intl, zip, zlib
+          # No JIT anywhere in this job: on PHP 8.4 it crashes php -S and
+          # WP-CLI on WooCommerce requests (docs/DECISIONS.md).
+          ini-values: opcache.enable_cli=1, opcache.jit=disable
+          tools: composer:v2, wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+      - name: Composer install (retried; codeload.github.com answers 429 at times)
+        run: for i in 1 2 3; do composer install --no-interaction --no-progress && exit 0; sleep 20; done; exit 1
+      - name: Install WordPress + WooCommerce + Pergel
+        id: setup
+        run: bash tools/ci/setup-wp.sh
+      - name: Integration tests (WordPress + WooCommerce)
+        run: PERGEL_WP_DIR="$WP_DIR" php vendor/bin/phpunit -c phpunit-integration.xml.dist
+      # The steps below run on when one before them fails (after setup and
+      # the server), so one CI run reports every failing check.
+      - name: Shop starter
+        id: starter
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: wp --path="$WP_DIR" pergel starter install shop
+      - name: Start PHP server
+        id: server
+        if: ${{ !cancelled() && steps.starter.outcome == 'success' }}
+        run: |
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
+          cat /tmp/php-server.log; exit 1
+      - name: Smoke
+        if: ${{ !cancelled() && steps.server.outcome == 'success' }}
+        run: >-
+          bash tools/ci/smoke.sh / /shop/ /product-category/apparel/ /product/canvas-tote-bag/
+          /product/basic-t-shirt/ /product/coffee-break-set/ '/?s=mug&post_type=product' /cart/
+          /my-account/ /journal/ /wp-json/wc/store/v1/products /wp-sitemap.xml
+          --missing /product/pergel-budget-missing/
+      - name: Performance budget (shop)
+        if: ${{ !cancelled() && steps.server.outcome == 'success' }}
+        # Measured without WP_DEBUG: WooCommerce skips its own caches under it
+        # and writes on every view (docs/DECISIONS.md).
+        run: |
+          wp --path="$WP_DIR" config set WP_DEBUG false --raw
+          status=0
+          npm run budget -- --budget tests/budget/shop.json --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label "ci-shop-$WOOCOMMERCE" || status=$?
+          wp --path="$WP_DIR" config set WP_DEBUG true --raw
+          exit $status
+      - name: Checkout and sales modes end to end
+        if: ${{ !cancelled() && steps.server.outcome == 'success' }}
+        env:
+          PERGEL_BASE: ${{ env.SITE_URL }}
+        run: npm run test:shop
+      - name: Shop patterns (axe and overflow)
+        if: ${{ !cancelled() && steps.server.outcome == 'success' }}
+        env:
+          PERGEL_BASE: ${{ env.SITE_URL }}
+          PERGEL_SHOP: '1'
+        run: npx playwright test --grep-invert @visual --grep 'pergel-shop sections|shop-[a-z-]+ page$'
+      - name: Shop patterns in the block editor
+        if: ${{ !cancelled() && steps.server.outcome == 'success' }}
+        run: |
+          export PERGEL_QA_PASSWORD="$(head -c 18 /dev/urandom | base64)"
+          wp --path="$WP_DIR" user create pergel-qa qa@example.invalid --role=administrator --user_pass="$PERGEL_QA_PASSWORD" --porcelain > /dev/null
+          node tools/patterns/editor-check.mjs --base "$SITE_URL"
+      - name: PHP notices
+        if: always()
+        run: |
+          if [ -s "$WP_DIR/wp-content/debug.log" ]; then cat "$WP_DIR/wp-content/debug.log"; exit 1; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shop-report-${{ matrix.woocommerce }}
+          path: |
+            reports/
+            playwright-report/
+            test-results/
             /tmp/php-server.log
             /tmp/pergel-requests.log
           if-no-files-found: ignore

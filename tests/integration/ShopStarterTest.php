@@ -98,6 +98,9 @@ final class ShopStarterTest extends TestCase {
 		$category = get_term_by( 'slug', 'pergel-test-bags', 'product_cat' );
 		$this->assertNotFalse( $category );
 		$this->assertGreaterThan( 0, (int) get_term_meta( $category->term_id, 'thumbnail_id', true ) );
+		// Image slugs follow the file name, so none takes a page's address.
+		$image = get_post( (int) get_term_meta( $category->term_id, 'thumbnail_id', true ) );
+		$this->assertStringStartsWith( 'pergel-' . self::NAME . '-', $image->post_name );
 
 		$tote = $products['tote'];
 		$this->assertSame( '120.00', $tote->get_regular_price() );

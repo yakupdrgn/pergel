@@ -18,6 +18,9 @@ DB_NAME="${DB_NAME:-wordpress}"
 DB_USER="${DB_USER:-wordpress}"
 DB_PASS="${DB_PASS:-wordpress}"
 DB_HOST="${DB_HOST:-127.0.0.1:3306}" # The database must exist and be empty.
+# WooCommerce for the shop job: "latest" or a version from wordpress.org, set
+# up by tools/ci/shop.php. Empty (the default) keeps the site without it.
+WOOCOMMERCE="${WOOCOMMERCE:-}"
 # Copy instead of symlinking where symlinks are unreliable (Git Bash on Windows).
 LINK_MODE="${LINK_MODE:-symlink}"
 # PHP needs a native path on Windows (Git Bash); same path on Linux.
@@ -100,3 +103,19 @@ MSYS_NO_PATHCONV=1 wp rewrite structure '/%postname%/' # keep Git Bash from rewr
 wp eval-file "$REPO_PHP/tools/fixtures/seed.php"
 wp pergel info
 echo "::endgroup::"
+
+if [ -n "$WOOCOMMERCE" ]; then
+	echo "::group::WooCommerce $WOOCOMMERCE"
+	if [ "$WOOCOMMERCE" = latest ]; then
+		retry wp plugin install woocommerce --activate
+	else
+		retry wp plugin install woocommerce --version="$WOOCOMMERCE" --activate
+	fi
+	wp eval-file "$REPO_PHP/tools/ci/shop.php"
+	# WooCommerce's first load after activation logs one notice of its own:
+	# its bundled Jetpack connection schedules a cron event on plugins_loaded,
+	# which runs WC_Install::cron_schedules() and its __() before init. Only
+	# that line is dropped; the "PHP notices" step still sees everything else.
+	sed -i '/<code>woocommerce<\/code> domain was triggered too early/d' "$WP_DIR/wp-content/debug.log" 2> /dev/null || true
+	echo "::endgroup::"
+fi

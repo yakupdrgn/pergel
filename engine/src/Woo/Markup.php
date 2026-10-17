@@ -29,7 +29,9 @@ final class Markup {
 	}
 
 	/**
-	 * Marks a variation attribute as an item of the selector's list.
+	 * Marks each variation attribute as an item of the selector's list. The
+	 * attribute block prints one row per product attribute, so every row is
+	 * marked, not only the first.
 	 *
 	 * @param mixed $html Block markup.
 	 * @return mixed
@@ -39,8 +41,10 @@ final class Markup {
 			return $html;
 		}
 		$tags = new \WP_HTML_Tag_Processor( $html );
-		if ( $tags->next_tag() && null === $tags->get_attribute( 'role' ) ) {
-			$tags->set_attribute( 'role', 'listitem' );
+		while ( $tags->next_tag( array( 'class_name' => 'wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute' ) ) ) {
+			if ( null === $tags->get_attribute( 'role' ) ) {
+				$tags->set_attribute( 'role', 'listitem' );
+			}
 		}
 		return $tags->get_updated_html();
 	}

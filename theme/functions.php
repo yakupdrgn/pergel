@@ -224,3 +224,16 @@ function product_placeholder( mixed $src ): mixed {
 	return get_theme_file_uri( 'assets/images/placeholders/product.svg' );
 }
 add_filter( 'woocommerce_placeholder_img_src', __NAMESPACE__ . '\product_placeholder' );
+
+/**
+ * Fixes for WooCommerce's classic form styles, added only where they load
+ * (account pages and the classic shortcodes). The button that shows the
+ * password is 22px square; WCAG 2.2 asks for touch targets of 24px.
+ */
+function classic_shop_styles(): void {
+	wp_add_inline_style(
+		'woocommerce-layout',
+		'.woocommerce form .show-password-input,.woocommerce-page form .show-password-input{display:flex;align-items:center;justify-content:center;min-width:24px;min-height:24px}'
+	);
+}
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\classic_shop_styles', 20 );
