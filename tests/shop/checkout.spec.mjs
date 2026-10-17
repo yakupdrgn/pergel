@@ -6,7 +6,7 @@
  */
 import { randomBytes } from 'node:crypto';
 import { test, expect } from 'playwright/test';
-import { wp, postId, expectAccessible, addToCart, receivedOrder } from './helpers.mjs';
+import { wp, postId, expectAccessible, addToCart, placeOrder, receivedOrder } from './helpers.mjs';
 
 /**
  * Opens the block checkout. The block draws its form only after about
@@ -39,7 +39,7 @@ test( 'a guest pays cash on delivery at the block checkout', async ( { page } ) 
 	await page.getByLabel( 'Email address' ).fill( 'guest@example.com' );
 	await fillBlockAddress( page );
 	await page.getByLabel( 'Cash on delivery' ).check();
-	await page.getByRole( 'button', { name: 'Place Order' } ).click();
+	await placeOrder( page );
 
 	const order = await receivedOrder( page );
 	expect( order ).toMatchObject( { method: 'cod', customer: 0, via: 'store-api' } );
@@ -107,7 +107,7 @@ test.describe( 'a customer', () => {
 		await expect( page.getByLabel( 'Email address' ) ).toHaveValue( `${ login }@example.com` );
 		await fillBlockAddress( page );
 		await page.getByLabel( 'Cash on delivery' ).check();
-		await page.getByRole( 'button', { name: 'Place Order' } ).click();
+		await placeOrder( page );
 
 		const order = await receivedOrder( page );
 		expect( order ).toMatchObject( { method: 'cod', customer: user, via: 'store-api' } );

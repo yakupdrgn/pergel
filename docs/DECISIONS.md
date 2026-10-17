@@ -1013,6 +1013,25 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     + `LIMIT 4784, 16`) ve yazı araması (8,9 ms, `wp_pergel_search` önek araması). Kategori
     sayfaları yukarıdaki WooCommerce boş filtre hatasına düşer (skala ürünlerinin puanı ve
     niteliği yok); yazmalar `writesIgnore`'da.
+  - İlk CI koşusu (PR #18): yazı sayfaları, ürün ve arama yerel ölçüme eşit; mağaza sayfaları
+    145–153, kategori sayfaları 146 sorgu çıktı (yerelde 108 ve 119). Fark, F4c-2'de shop.json'da
+    görülen WooCommerce boş filtre verisinin her görüntülemede yeniden sayılması (taze CI sitesinde
+    ~40 sorgu); yerel sitede bu yeniden sayım görünmedi. Mağaza limitleri 168, kategori limitleri
+    160'a çekildi (CI değeri + ~%10). WooCommerce hatası düzelince 120 ve 132'ye dönülür. Sorgu
+    süreleri CI'da da düşük: `query_ms` en çok 77, en yavaş sorgu 11 ms (mağaza listesinin
+    `NOT IN` alt sorgusu).
+  - Aynı koşuda iki rastgele hata, ikisi de bu PR'ın koduyla ilgisiz ve test altyapısında
+    sağlamlaştırıldı:
+    - SEO matrisi: `php -S` `/blog/` isteğinde segfault (139) verdi; bu işte opcache CLI hiç açık
+      değil, yani çöküş JIT'ten bağımsız (F4c-1'deki `/blog/` çöküşüyle aynı yer). `serve.sh`
+      sunucuyu yeniden başlattı ama `tools/seo/check.mjs` tek düşen isteği hata saydı. Artık
+      bağlantı koparsa 2 saniye sonra bir kez daha soruyor (smoke'taki 000 kuralıyla aynı). Kök
+      sebep açık (PHP 8.4.26 yerleşik sunucusu; canlı sunucu `php -S` kullanmaz).
+    - Mağaza (latest) misafir blok checkout: nakit ödeme seçimi toplamları yeniden hesaplatıyor
+      (`checkout?__experimental_calc_totals=true`); "Place Order" tıklaması bu sırada geldiği için
+      yutuldu ve sipariş isteği hiç gitmedi. `tests/shop/helpers.mjs` → `placeOrder()` sipariş
+      isteği gidene kadar tıklamayı tekrarlar (her denemede 10 sn bekler). Gerçek kullanıcıda
+      karşılığı ikinci tıklama; WooCommerce davranışı, Pergel'in değil.
 
 ## Aşamalar ve bitti tanımları
 

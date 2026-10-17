@@ -64,6 +64,25 @@ export async function addToCart( page, slug, options = [] ) {
 }
 
 /**
+ * Places the order at the block checkout. The block checkout drops a click
+ * that lands while it recalculates the totals (choosing cash on delivery
+ * starts one), so it clicks again until the order request goes out.
+ *
+ * @param {import('playwright/test').Page} page
+ */
+export async function placeOrder( page ) {
+	const button = page.getByRole( 'button', { name: 'Place Order' } );
+	await expect( async () => {
+		const sent = page.waitForRequest(
+			( r ) => 'POST' === r.method() && r.url().includes( '/wc/store/v1/checkout' ) && ! r.url().includes( 'calc_totals' ),
+			{ timeout: 10_000 }
+		);
+		await button.click();
+		await sent;
+	} ).toPass( { timeout: 30_000 } );
+}
+
+/**
  * The order the page was sent to after the checkout.
  *
  * @return {Promise<{id: string, method: string, customer: number, via: string, variation: number}>}
