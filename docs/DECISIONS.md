@@ -971,6 +971,14 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     `aria-hidden-focus`, mini sepet çekmecesinde (`aria-hidden="true"` ve odaklanabilir kapat
     düğmesi). Pergel'in CSS'i gizli çekmeceye `visibility: hidden` verir; etkileşim API'sinin
     açılışı sırasında sınıfın bir an değiştiği sanılıyor. CI'da izlenecek.
+  - Mağaza işinde `php -S` baştan JIT kapalı çalışır (`serve.sh -d opcache.jit=disable`). İlk
+    CI koşusunda (PHP 8.4.26) JIT açıkken sunucu `/product/basic-t-shirt/` (varyasyonlu ürün)
+    ilk isteğinde ve bütçe ölçümünde segfault verdi (çıkış 139), sepete ekleme isteği
+    (`POST /wp-json/wc/store/v1/batch`) her seferinde `rest-api.php` içinde 30 saniyelik
+    sınırı aştı. Yerelde (Windows, JIT yok) hiçbiri görülmedi. Bu yüzden mağaza bütçesi JIT
+    kapalı ölçülür; çekirdek bütçe işi JIT açık kalır. **Canlı sunucu için açık soru:**
+    Hostinger'da PHP 8.4 JIT açıksa WooCommerce'te aynı çökme olabilir; F7'de canlıya geçmeden
+    `opcache.jit` ayarı kontrol edilmeli (kullanıcı kararı, sunucuya dokunulmadı).
 
 ## Aşamalar ve bitti tanımları
 
