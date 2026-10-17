@@ -723,6 +723,10 @@ final class Shop {
 			array(
 				'post_mime_type' => (string) wp_check_filetype( $path )['type'],
 				'post_title'     => $title,
+				// Named after the file, not the title: an attachment's slug
+				// is taken from pages too, so a category image titled "Home"
+				// would push the starter's home page to home-2.
+				'post_name'      => sanitize_title( pathinfo( $file, PATHINFO_FILENAME ) ),
 				'post_content'   => '',
 				'post_status'    => 'inherit',
 				'meta_input'     => array(

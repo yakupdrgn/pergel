@@ -247,8 +247,14 @@ final class WooTest extends TestCase {
 	}
 
 	public function test_variation_attributes_are_list_items(): void {
-		$this->assertSame( '<div role="listitem" class="a"><span>Size</span></div>', Markup::list_item( '<div class="a"><span>Size</span></div>' ) );
-		$this->assertSame( '<div role="group"></div>', Markup::list_item( '<div role="group"></div>' ) );
+		$row  = 'wp-block-woocommerce-add-to-cart-with-options-variation-selector-attribute';
+		$name = '<span class="' . $row . '-name">';
+		// One row per product attribute: every row is marked, the name inside is not.
+		$this->assertSame(
+			'<div role="listitem" class="' . $row . '">' . $name . 'Colour</span></div><div role="listitem" class="' . $row . '">' . $name . 'Size</span></div>',
+			Markup::list_item( '<div class="' . $row . '">' . $name . 'Colour</span></div><div class="' . $row . '">' . $name . 'Size</span></div>' )
+		);
+		$this->assertSame( '<div role="group" class="' . $row . '"></div>', Markup::list_item( '<div role="group" class="' . $row . '"></div>' ) );
 	}
 
 	public function test_greyed_out_buttons_are_marked_disabled(): void {

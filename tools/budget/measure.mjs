@@ -75,10 +75,15 @@ async function server( page ) {
 	if ( rows.length !== budget.runs ) {
 		throw new Error( `${ page.name }: probe logged ${ rows.length }/${ budget.runs } requests. Is perf-probe.php loaded and ${ opt.log } writable?` );
 	}
+	// Writes the budget names in writesIgnore (a plugin's own cache, explained
+	// in its $comment) are listed in the report but not counted.
+	const writes = [ ...new Set( rows.flatMap( ( r ) => r.writes ) ) ];
+	const ignored = ( w ) => ( budget.writesIgnore ?? [] ).some( ( part ) => w.includes( part ) );
 	return {
 		ms: median( rows.map( ( r ) => r.ms ) ),
 		queries: median( rows.map( ( r ) => r.queries ) ),
-		writes: [ ...new Set( rows.flatMap( ( r ) => r.writes ) ) ],
+		writes: writes.filter( ( w ) => ! ignored( w ) ),
+		writesIgnored: writes.filter( ignored ),
 		pergel_files: Math.max( ...rows.map( ( r ) => r.pergel_files ) ),
 		files: median( rows.map( ( r ) => r.files ) ),
 		peak_mb: Math.max( ...rows.map( ( r ) => r.peak_mb ) ),
@@ -241,6 +246,9 @@ const md = [
 	...ordered
 		.filter( ( [ , m ] ) => m.writes.length )
 		.flatMap( ( [ n, m ] ) => [ `## DB writes on ${ n }`, '', ...m.writes.map( ( w ) => `- \`${ w }\`` ), '' ] ),
+	...ordered
+		.filter( ( [ , m ] ) => m.writesIgnored.length )
+		.flatMap( ( [ n, m ] ) => [ `## Ignored DB writes on ${ n }`, '', ...m.writesIgnored.map( ( w ) => `- \`${ w }\`` ), '' ] ),
 ].join( '\n' );
 
 mkdirSync( opt.out, { recursive: true } );

@@ -54,6 +54,9 @@ npm run validate:json              # theme.json ve block.json'u wp/7.1 şemasın
 wp --path=C:/xampp/htdocs/pergel-tema eval-file tools/fixtures/seed.php   # sabit test içeriği; pattern önbelleğini de temizler
 npm run budget -- --base http://localhost/pergel-tema --log C:/xampp/htdocs/pergel-tema/wp-content/pergel-perf.jsonl --channel chrome
 wp --path=C:/xampp/htdocs/pergel-tema pergel info
+# Mağaza (WooCommerce'li site; Windows'ta wp yerine wp-cli.phar):
+WP_DIR=<site> PERGEL_WP_PHAR=C:/devtools/bin/wp-cli.phar PERGEL_CHANNEL=chrome npm run test:shop
+npm run budget -- --budget tests/budget/shop.json --base <url> --log <wp-content>/pergel-perf.jsonl --channel chrome   # WP_DEBUG kapalı
 ```
 
 Bütçe (`tests/budget/budget.json`, K11) aşılırsa `measure.mjs` 1 ile çıkar. Bütçeyi aşan değişiklik

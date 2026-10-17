@@ -915,6 +915,62 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     görsel çizmez.
   - Yerel not: WP-CLI ile web sunucusu tema kökünü farklı yazdığından (`C:/…` ve `C:\…`)
     pattern önbelleğinin anahtarı farklıdır; CLI'dan temizlemek web'deki önbelleği silmez.
+- **F4c-2 uygulama notları (17 Ekim 2026; kullanıcı uzaktayken alınan kararlar):**
+  - CI'da yeni `shop` işi, WooCommerce `latest` ve `11.2.1` matrisiyle (`fail-fast: false`):
+    `setup-wp.sh` `WOOCOMMERCE` doluysa eklentiyi kurar ve `tools/ci/shop.php` ile mağazayı
+    ayarlar (TRY, Türkiye/İstanbul, "coming soon" kapalı, ücretsiz kargo, kapıda ödeme ve
+    havale, çekirdek sayfalar, klasik ödeme kısa kodlu `pergel-classic-checkout` sayfası).
+    Sonra entegrasyon testleri, `wp pergel starter install shop`, smoke, mağaza bütçesi, ödeme
+    e2e, mağaza pattern'lerinin axe/taşma denetimi ve editör denetimi. Sunucu ayağa kalktıysa
+    her adım bir öncekinin hatasından sonra da çalışır (`!cancelled()` + adım sonucu), böylece
+    tek bir kırmızı adım diğerlerini gizlemez.
+  - WooCommerce'in etkinleştirmeden sonraki ilk yüklemesi kendi bildirimini yazar (paketindeki
+    Jetpack bağlantısı `plugins_loaded`'da cron kurar, `__()` `init`'ten önce çalışır). Yalnızca
+    o satır `debug.log`'dan silinir; "PHP notices" adımı gerisini görmeye devam eder.
+  - Mağaza bütçesi (`tests/budget/shop.json`) WP_DEBUG kapalıyken ölçülür: WooCommerce
+    WP_DEBUG açıkken ürün süzgeci önbelleğini atlar ve her görüntülemede yeniden yazar. Adım
+    ölçümden sonra WP_DEBUG'ı geri açar. Sınırlar ölçülen değer + ~%10.
+  - Bütçeye `writesIgnore` eklendi: ürün sayfasında WooCommerce ilgili ürünleri
+    (`wc_related_*` transient'i) kategori listeden az ürün tuttuğu sürece her görüntülemede
+    yeniden yazar. Bu yazımlar raporda ayrı başlıkta listelenir, sayılmaz.
+  - Ölçülen gerçekler: sepet bloğu tek başına ~660 KB WooCommerce script'i getirir (boş sepet
+    `jsKB` 730); ürün sayfalarında JSON-LD 2'dir (Pergel + WooCommerce'in ürün verisi).
+  - Bulunan ve düzeltilen hatalar:
+    - Varyasyon seçicide yalnızca ilk özellik satırı `role="listitem"` alıyordu (axe
+      `listitem`); artık her satır alır (`Woo\Markup`).
+    - WooCommerce'in klasik formlarındaki parola göster düğmesi 22px'ti; WCAG 2.2 hedef boyutu
+      için 24px yapıldı (`classic_shop_styles()`, yalnızca o stiller yüklenince).
+    - Starter'ın "Home" başlıklı kategori görseli `home` slug'ını alıyor, anasayfayı `home-2`'ye
+      itiyordu; ek dosyalarının slug'ı artık dosya adından gelir.
+  - `smoke.sh` ortak betik oldu (bütçe ve mağaza işleri): `php -S` arada çöktüğünde (000)
+    sunucu geri gelince yolu bir kez daha ister; tekrarlayan çöküş yine kırmızıdır.
+  - Ödeme e2e (`tests/shop`, `npm run test:shop`): WP-CLI yardımcısıyla ayarları değiştirip
+    geri koyar, bu yüzden tek işçiyle çalışır; Windows'ta `PERGEL_WP_PHAR` ile wp-cli.phar
+    kullanılır. Yalnızca çevrimdışı ödeme yöntemleri; klasik ödeme testi
+    `woocommerce_checkout_page_id`'yi geçici olarak klasik sayfaya çevirir. Sipariş yöntem,
+    müşteri, oluşturma yolu (`store-api` / `checkout`) ve varyasyon kimliğiyle doğrulanır.
+  - Editör denetimi için CI'da rastgele parolalı geçici `pergel-qa` yöneticisi açılır.
+  - Testler katı kaldı, Playwright `retries` eklenmedi: yerelde görülen iki kararsızlık
+    aşağıda; CI'da görülürse ayrı ele alınır.
+  - Yerel kararsızlık 1 (açık, kök neden bulunamadı): üye testinde `/my-account/` (girişten
+    hemen sonra) ya da `/my-account/orders/` sayfasında, ~1/10–1/30 çalıştırmada, tarayıcıya
+    gelen HTML'de tam olarak iki öğe yok: `woocommerce-blocktheme-css` ve
+    `global-styles-inline-css` (~17 KB, yan yana). Sayfa tema yazı tipi ve boşlukları olmadan
+    kalır, axe gezinme bağlantılarında hedef boyutu hatası verir. Bilinenler:
+    - WordPress ikisini de `wp_head` → `wp_print_styles` içinde basılmış sayar (`done`).
+    - Şablon çıktı tamponunun son süzgecine kayıt eklenen 35 çalıştırmada (197 sayfa) eksik
+      sayfa hiç görülmedi; o denemedeki iki hata, sunucu yeniden başladıktan sonraki ilk
+      dört çalıştırmadaydı.
+    - Düz ve eşzamanlı `curl`/`fetch` döngüleriyle (460 istek) yeniden üretilemedi;
+      `output_buffering=4096` ile de görüldü.
+    - Eksik aralık öğe sınırlarına denk geldiği için bayt kaybı (aktarım) zayıf bir açıklama.
+      Soğuk önbellekte içeriğin farklı üretilmesi daha olası.
+  - Ödeme bloğu formunu ~660 KB script yüklendikten sonra çizer; yerel `php -S`'te bu 5 sn'yi
+    aşabildiği için testler ödeme düğmesini 20 sn bekler (`openCheckout`).
+  - Yerel kararsızlık 2 (açık): ~1/20 çalıştırmada `/my-account/orders/`'ta axe
+    `aria-hidden-focus`, mini sepet çekmecesinde (`aria-hidden="true"` ve odaklanabilir kapat
+    düğmesi). Pergel'in CSS'i gizli çekmeceye `visibility: hidden` verir; etkileşim API'sinin
+    açılışı sırasında sınıfın bir an değiştiği sanılıyor. CI'da izlenecek.
 
 ## Aşamalar ve bitti tanımları
 

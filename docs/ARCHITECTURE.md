@@ -428,6 +428,12 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   CI'da (Linux) üretilir. Eksik referans `visual-report` artifact'ına yazılır; hepsini yenilemek
   için iş `update-baselines` girdisiyle elle çalıştırılır. Yerelde `npm run test:a11y` (ekran
   görüntüsüz) çalışır.
+- **Mağaza** (CI'da `shop` işi, WooCommerce `latest` ve `11.2.1`): `setup-wp.sh` `WOOCOMMERCE`
+  ile eklentiyi kurar, `tools/ci/shop.php` mağazayı çevrimdışı ödeme yöntemleriyle ayarlar,
+  `wp pergel starter install shop` kataloğu kurar. Sonra smoke (`tools/ci/smoke.sh`), mağaza
+  bütçesi (`tests/budget/shop.json`, WP_DEBUG kapalı), ödeme ve satış modu e2e
+  (`tests/shop`, `npm run test:shop`), mağaza pattern'lerinin axe/taşma ve editör denetimi.
+  E2E ayarları WP-CLI ile değiştirip geri koyduğu için tek işçiyle çalışır.
 
 ## Starter'lar (F3c)
 
