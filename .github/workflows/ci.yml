@@ -222,8 +222,10 @@ jobs:
       - name: Start PHP server
         id: server
         if: ${{ !cancelled() && steps.starter.outcome == 'success' }}
+        # Without the JIT: on PHP 8.4 it crashes php -S on a variable product
+        # page and hangs the Store API batch request (docs/DECISIONS.md).
         run: |
-          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
+          bash tools/ci/serve.sh -d opcache.jit=disable > /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: Smoke
@@ -255,13 +257,8 @@ jobs:
           PERGEL_SHOP: '1'
         run: npx playwright test --grep-invert @visual --grep 'pergel-shop sections|shop-[a-z-]+ page$'
       - name: Shop patterns in the block editor
-        # Without the JIT, as in the budget job: it crashes php -S on wp-admin.
         if: ${{ !cancelled() && steps.server.outcome == 'success' }}
         run: |
-          pkill -f tools/ci/serve.sh || true
-          pkill -f 'php.* -S 127.0.0.1:8080' || true
-          bash tools/ci/serve.sh -d opcache.jit=disable >> /tmp/php-server.log 2>&1 &
-          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && break; sleep 1; done
           export PERGEL_QA_PASSWORD="$(head -c 18 /dev/urandom | base64)"
           wp --path="$WP_DIR" user create pergel-qa qa@example.invalid --role=administrator --user_pass="$PERGEL_QA_PASSWORD" --porcelain > /dev/null
           node tools/patterns/editor-check.mjs --base "$SITE_URL"
