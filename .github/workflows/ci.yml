@@ -192,7 +192,9 @@ jobs:
           php-version: '8.4'
           coverage: none
           extensions: mysqli, gd, intl, zip, zlib
-          ini-values: opcache.enable_cli=1
+          # No JIT anywhere in this job: on PHP 8.4 it crashes php -S and
+          # WP-CLI on WooCommerce requests (docs/DECISIONS.md).
+          ini-values: opcache.enable_cli=1, opcache.jit=disable
           tools: composer:v2, wp-cli
       - uses: actions/setup-node@v4
         with:
@@ -211,8 +213,7 @@ jobs:
         id: setup
         run: bash tools/ci/setup-wp.sh
       - name: Integration tests (WordPress + WooCommerce)
-        # Without the JIT, as in the budget job.
-        run: PERGEL_WP_DIR="$WP_DIR" php -d opcache.jit=disable vendor/bin/phpunit -c phpunit-integration.xml.dist
+        run: PERGEL_WP_DIR="$WP_DIR" php vendor/bin/phpunit -c phpunit-integration.xml.dist
       # The steps below run on when one before them fails (after setup and
       # the server), so one CI run reports every failing check.
       - name: Shop starter
@@ -222,10 +223,8 @@ jobs:
       - name: Start PHP server
         id: server
         if: ${{ !cancelled() && steps.starter.outcome == 'success' }}
-        # Without the JIT: on PHP 8.4 it crashes php -S on a variable product
-        # page and hangs the Store API batch request (docs/DECISIONS.md).
         run: |
-          bash tools/ci/serve.sh -d opcache.jit=disable > /tmp/php-server.log 2>&1 &
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
           cat /tmp/php-server.log; exit 1
       - name: Smoke

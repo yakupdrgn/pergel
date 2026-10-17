@@ -971,14 +971,26 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     `aria-hidden-focus`, mini sepet çekmecesinde (`aria-hidden="true"` ve odaklanabilir kapat
     düğmesi). Pergel'in CSS'i gizli çekmeceye `visibility: hidden` verir; etkileşim API'sinin
     açılışı sırasında sınıfın bir an değiştiği sanılıyor. CI'da izlenecek.
-  - Mağaza işinde `php -S` baştan JIT kapalı çalışır (`serve.sh -d opcache.jit=disable`). İlk
-    CI koşusunda (PHP 8.4.26) JIT açıkken sunucu `/product/basic-t-shirt/` (varyasyonlu ürün)
-    ilk isteğinde ve bütçe ölçümünde segfault verdi (çıkış 139), sepete ekleme isteği
+  - Mağaza ve ölçek işlerinde JIT tümden kapalıdır (setup-php `ini-values`'ta
+    `opcache.jit=disable`; `php -S`, WP-CLI ve PHPUnit). İlk CI koşusunda (PHP 8.4.26) JIT
+    açıkken sunucu `/product/basic-t-shirt/` (varyasyonlu ürün) ilk isteğinde ve bütçe
+    ölçümünde segfault verdi (çıkış 139), sepete ekleme isteği
     (`POST /wp-json/wc/store/v1/batch`) her seferinde `rest-api.php` içinde 30 saniyelik
-    sınırı aştı. Yerelde (Windows, JIT yok) hiçbiri görülmedi. Bu yüzden mağaza bütçesi JIT
-    kapalı ölçülür; çekirdek bütçe işi JIT açık kalır. **Canlı sunucu için açık soru:**
-    Hostinger'da PHP 8.4 JIT açıksa WooCommerce'te aynı çökme olabilir; F7'de canlıya geçmeden
-    `opcache.jit` ayarı kontrol edilmeli (kullanıcı kararı, sunucuya dokunulmadı).
+    sınırı aştı. Yalnızca sunucuda kapatınca bu kez e2e temizliğindeki `wp user delete`
+    çıktısız düştü (MariaDB aynı anda "Aborted connection" yazdı), yani WP-CLI de çöküyordu.
+    Yerelde (Windows, JIT yok) hiçbiri görülmedi. Çekirdek bütçe işi JIT açık kalır.
+    **Canlı sunucu için açık soru:** Hostinger'da PHP 8.4 JIT açıksa WooCommerce'te aynı çökme
+    olabilir; F7'de canlıya geçmeden `opcache.jit` ayarı kontrol edilmeli (kullanıcı kararı,
+    sunucuya dokunulmadı).
+  - WooCommerce hatası (11.2.1 ve trunk, `Internal\ProductFilters\FilterData`): boş filtre
+    verisi (henüz puan yok, listedeki hiçbir ürünün taşımadığı bir nitelik, alt kategorisi
+    olmayan kategori) transient'a yazılıyor ama `get_cache()` boş değeri "yok" sayıyor. Ürün
+    filtreleri olan mağaza ve kategori sayfaları bu yüzden her görüntülemede o filtreleri
+    yeniden sayıyor (CI'da +~40 sorgu: 171/172) ve transient'larla sayaç transient'ını yeniden
+    yazıyor; sayaç günlük 1000 sınırına varınca yazma durur. Pergel WooCommerce'in iç sınıfına
+    yama yapmaz. `shop.json` ve `scale.json` bu yazmaları `writesIgnore`'a alır, mağaza ve
+    kategori sorgu limiti 190'dır (gerekçe `$comment`'te). **Açık:** WooCommerce'e hata
+    bildirimi (dış servise gönderim, kullanıcı onayı gerekir); düzelince limitler 145'e döner.
 
 ## Aşamalar ve bitti tanımları
 
