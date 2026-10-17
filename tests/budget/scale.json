@@ -1,0 +1,42 @@
+{
+	"$comment": "Scale budget (plan F4c-3). The CI scale job measures these pages on a shop starter site filled by tools/fixtures/scale.php with 5,000 products in 20 categories and 2,000 posts, search index rebuilt, WP_DEBUG off. It checks that a page costs the same with a big catalog: query counts and sizes are the measured values with about 10% headroom, and query_ms (all queries of the median run) and slowest_ms (its slowest single query) catch a query that grows with the catalog; their limits leave room for slower CI machines (one CI runner measured the shop pages at 73–77 ms, the next at 87–102 ms, so those pages have their own query_ms limit). A category whose products have no ratings or subcategories gets empty WooCommerce filter data, which WooCommerce stores but never reads back (FilterData::get_cache treats an empty value as a miss), so it writes those transients and its entry counter on every view until the counter reaches its cap; those writes are named in writesIgnore, and the query limits of the shop and category pages include the recount, about 40 queries on a fresh CI site (docs/DECISIONS.md, F4c-3).",
+	"runs": 3,
+	"writesIgnore": [ "_transient_timeout_wc_related_", "_transient_wc_related_", "_transient_timeout_wc_filter_data_", "_transient_wc_filter_data_" ],
+	"pages": [
+		{ "name": "shop", "path": "/shop/", "limits": { "queries": 168, "query_ms": 150, "htmlKB": 325, "requests": 48, "jsKB": 75 } },
+		{ "name": "shop-page-300", "path": "/shop/page/300/", "limits": { "queries": 168, "query_ms": 150, "htmlKB": 325, "requests": 48, "jsKB": 75 } },
+		{ "name": "shop-by-price", "path": "/shop/?orderby=price", "limits": { "queries": 168, "query_ms": 150, "htmlKB": 325, "requests": 48, "jsKB": 75 } },
+		{ "name": "shop-price-filter", "path": "/shop/?min_price=100&max_price=500", "limits": { "queries": 168, "query_ms": 150, "htmlKB": 325, "requests": 48, "jsKB": 75 } },
+		{ "name": "category", "path": "/product-category/pergel-scale-cat-7/", "limits": { "queries": 160, "query_ms": 110, "htmlKB": 260, "requests": 45, "jsKB": 75 } },
+		{ "name": "category-page-15", "path": "/product-category/pergel-scale-cat-7/page/15/", "limits": { "queries": 160, "query_ms": 110, "htmlKB": 260, "requests": 45, "jsKB": 75 } },
+		{ "name": "product", "path": "/product/pergel-scale-2500/", "limits": { "queries": 102, "htmlKB": 160, "requests": 34, "jsKB": 48, "jsonld": 2 } },
+		{ "name": "product-search", "path": "/?s=copper+lamp&post_type=product", "limits": { "queries": 95, "htmlKB": 192, "requests": 25, "jsKB": 39 } },
+		{ "name": "journal", "path": "/journal/" },
+		{ "name": "journal-page-150", "path": "/journal/page/150/" },
+		{ "name": "post", "path": "/pergel-scale-post-1500/" },
+		{ "name": "post-search", "path": "/?s=scale+post+1500" },
+		{ "name": "post-category-page-50", "path": "/category/pergel-scale/page/50/" }
+	],
+	"limits": {
+		"*": {
+			"pergel_files": 65,
+			"queries": 90,
+			"query_ms": 80,
+			"slowest_ms": 40,
+			"writes": 0,
+			"htmlKB": 110,
+			"requests": 16,
+			"jsKB": 38,
+			"cssKB": 95,
+			"fontKB": 0,
+			"bodyCssLinks": 0,
+			"h1": [ 1, 1 ],
+			"jsonld": 1,
+			"emoji": 0,
+			"fontPreloads": 2,
+			"unusedPreloads": 0,
+			"axe": 0,
+			"overflowX": 0
+		}
+	}
+}

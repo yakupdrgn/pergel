@@ -75,6 +75,9 @@ async function server( page ) {
 	if ( rows.length !== budget.runs ) {
 		throw new Error( `${ page.name }: probe logged ${ rows.length }/${ budget.runs } requests. Is perf-probe.php loaded and ${ opt.log } writable?` );
 	}
+	// The slowest single query of the median run, to catch a query that grows
+	// with the catalog (tests/budget/scale.json).
+	const slowest = [ ...rows ].sort( ( a, b ) => ( a.slowest_ms ?? 0 ) - ( b.slowest_ms ?? 0 ) )[ Math.floor( ( rows.length - 1 ) / 2 ) ];
 	// Writes the budget names in writesIgnore (a plugin's own cache, explained
 	// in its $comment) are listed in the report but not counted.
 	const writes = [ ...new Set( rows.flatMap( ( r ) => r.writes ) ) ];
@@ -82,6 +85,9 @@ async function server( page ) {
 	return {
 		ms: median( rows.map( ( r ) => r.ms ) ),
 		queries: median( rows.map( ( r ) => r.queries ) ),
+		query_ms: median( rows.map( ( r ) => r.query_ms ) ),
+		slowest_ms: slowest.slowest_ms ?? null,
+		slowest: slowest.slowest ?? '',
 		writes: writes.filter( ( w ) => ! ignored( w ) ),
 		writesIgnored: writes.filter( ignored ),
 		pergel_files: Math.max( ...rows.map( ( r ) => r.pergel_files ) ),
@@ -217,7 +223,7 @@ for ( const page of budget.pages ) {
 await browser.close();
 
 const ordered = budget.pages.map( ( p ) => [ p.name, results[ p.name ] ] );
-const cols = [ 'pergel_files', 'queries', 'writes', 'ms', 'htmlKB', 'requests', 'jsKB', 'cssKB', 'fontKB', 'totalKB', 'bodyCssLinks', 'dom', 'h1', 'jsonld', 'emoji', 'fontPreloads', 'unusedPreloads', 'axe', 'overflowX', 'lcp', 'cls' ];
+const cols = [ 'pergel_files', 'queries', 'query_ms', 'slowest_ms', 'writes', 'ms', 'htmlKB', 'requests', 'jsKB', 'cssKB', 'fontKB', 'totalKB', 'bodyCssLinks', 'dom', 'h1', 'jsonld', 'emoji', 'fontPreloads', 'unusedPreloads', 'axe', 'overflowX', 'lcp', 'cls' ];
 const cell = ( m, c ) => ( c === 'writes' ? m.writes.length : m[ c ] );
 const limitRow = budget.limits[ '*' ];
 const md = [
@@ -246,6 +252,9 @@ const md = [
 	...ordered
 		.filter( ( [ , m ] ) => m.writes.length )
 		.flatMap( ( [ n, m ] ) => [ `## DB writes on ${ n }`, '', ...m.writes.map( ( w ) => `- \`${ w }\`` ), '' ] ),
+	...( 'slowest_ms' in limitRow
+		? [ '## Slowest query per page', '', ...ordered.map( ( [ n, m ] ) => `- ${ n } (${ m.slowest_ms } ms): \`${ m.slowest }\`` ), '' ]
+		: [] ),
 	...ordered
 		.filter( ( [ , m ] ) => m.writesIgnored.length )
 		.flatMap( ( [ n, m ] ) => [ `## Ignored DB writes on ${ n }`, '', ...m.writesIgnored.map( ( w ) => `- \`${ w }\`` ), '' ] ),

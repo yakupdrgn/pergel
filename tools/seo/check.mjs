@@ -27,6 +27,21 @@ if ( ! args.base ) {
 	process.exit( 2 );
 }
 const BASE = args.base.replace( /\/$/, '' );
+
+/**
+ * fetch() that asks once more when the connection drops. PHP's built-in
+ * server on CI segfaults now and then (tools/ci/serve.sh starts it again),
+ * which is a test-server fault, not an SEO one (docs/DECISIONS.md).
+ */
+async function get( url, init = {} ) {
+	try {
+		return await fetch( url, init );
+	} catch ( error ) {
+		console.log( `${ url }: ${ error.cause?.message ?? error.message }; asking again once the server is back` );
+		await new Promise( ( resolve ) => setTimeout( resolve, 2000 ) );
+		return fetch( url, init );
+	}
+}
 const FALLBACK = 'none' === args.scenario;
 
 // Pages from tools/fixtures/seed.php. "indexable" pages need exactly one canonical,
@@ -157,7 +172,7 @@ function breadcrumb( where, html, all, trail ) {
 }
 
 async function page( { path, indexable, described = false, trail = false, status = 200 } ) {
-	const res = await fetch( BASE + path, { redirect: 'follow' } );
+	const res = await get( BASE + path, { redirect: 'follow' } );
 	const html = await res.text();
 	const where = `${ args.scenario } ${ path }`;
 	if ( res.status !== status ) {
@@ -229,7 +244,7 @@ async function sitemaps() {
 	// stamps each response with the time) is still one sitemap.
 	const found = new Map();
 	for ( const path of SITEMAPS ) {
-		const res = await fetch( BASE + path, { redirect: 'follow' } );
+		const res = await get( BASE + path, { redirect: 'follow' } );
 		const body = await res.text();
 		if ( 200 === res.status && /<(sitemapindex|urlset)\b/.test( body ) ) {
 			const key = body.replace( /<!--[\s\S]*?-->/g, '' ).replace( /\s+/g, '' );
@@ -243,7 +258,7 @@ async function sitemaps() {
 	}
 	// robots.txt exists only when the site sits at the domain root. Only XML
 	// sitemaps count: AIOSEO also lists its RSS sitemap of recent posts.
-	const robots = await fetch( BASE + '/robots.txt' );
+	const robots = await get( BASE + '/robots.txt' );
 	let listed = [];
 	if ( 200 === robots.status ) {
 		listed = [ ...new Set( [ ...( await robots.text() ).matchAll( /^sitemap:\s*(\S+)/gim ) ].map( ( m ) => m[ 1 ] ) ) ]
@@ -253,7 +268,7 @@ async function sitemaps() {
 		}
 		const served = lists.flat();
 		for ( const url of listed ) {
-			const res = await fetch( url, { redirect: 'follow' } );
+			const res = await get( url, { redirect: 'follow' } );
 			if ( ! served.includes( res.url ) ) {
 				fail( where, `robots.txt lists ${ url }, which is not the sitemap the site serves` );
 			}

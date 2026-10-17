@@ -277,6 +277,86 @@ jobs:
             /tmp/pergel-requests.log
           if-no-files-found: ignore
 
+  scale:
+    name: Scale (5,000 products, 2,000 posts) smoke and budget
+    runs-on: ubuntu-24.04
+    needs: [lint, syntax]
+    timeout-minutes: 40
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wordpress
+          MARIADB_PASSWORD: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_DIR: /tmp/pergel-wp
+      SITE_URL: http://127.0.0.1:8080
+      WOOCOMMERCE: latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: mysqli, gd, intl, zip, zlib
+          # No JIT, as in the shop job (docs/DECISIONS.md).
+          ini-values: opcache.enable_cli=1, opcache.jit=disable
+          tools: wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Install WordPress + WooCommerce + Pergel
+        run: bash tools/ci/setup-wp.sh
+      - name: Shop starter
+        run: wp --path="$WP_DIR" pergel starter install shop
+      - name: Scale content
+        # Same numbers every run (tools/fixtures/scale.php); the search index
+        # is rebuilt so it holds everything, as after an import.
+        run: |
+          wp --path="$WP_DIR" eval-file tools/fixtures/scale.php products=5000 posts=2000
+          wp --path="$WP_DIR" pergel search reindex
+      - name: Start PHP server
+        run: |
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
+          cat /tmp/php-server.log; exit 1
+      - name: Smoke
+        run: >-
+          bash tools/ci/smoke.sh /shop/ /shop/page/300/ /product-category/pergel-scale-cat-7/
+          /product/pergel-scale-2500/ '/?s=copper+lamp&post_type=product' /journal/page/150/
+          /pergel-scale-post-1500/ '/?s=scale+post+1500' '/wp-json/pergel/v1/search?q=copper&type=product'
+          '/wp-json/wc/store/v1/products?search=copper' /wp-sitemap.xml /wp-sitemap-posts-product-2.xml
+      - name: Performance budget (scale)
+        # Without WP_DEBUG, as in the shop job (docs/DECISIONS.md).
+        run: |
+          wp --path="$WP_DIR" config set WP_DEBUG false --raw
+          status=0
+          npm run budget -- --budget tests/budget/scale.json --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label ci-scale || status=$?
+          wp --path="$WP_DIR" config set WP_DEBUG true --raw
+          exit $status
+      - name: PHP notices
+        if: always()
+        run: |
+          if [ -s "$WP_DIR/wp-content/debug.log" ]; then cat "$WP_DIR/wp-content/debug.log"; exit 1; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scale-report
+          path: |
+            reports/
+            /tmp/php-server.log
+            /tmp/pergel-requests.log
+          if-no-files-found: ignore
+
   visual:
     name: Pattern accessibility + visual regression
     runs-on: ubuntu-24.04

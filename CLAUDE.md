@@ -57,6 +57,9 @@ wp --path=C:/xampp/htdocs/pergel-tema pergel info
 # Mağaza (WooCommerce'li site; Windows'ta wp yerine wp-cli.phar):
 WP_DIR=<site> PERGEL_WP_PHAR=C:/devtools/bin/wp-cli.phar PERGEL_CHANNEL=chrome npm run test:shop
 npm run budget -- --budget tests/budget/shop.json --base <url> --log <wp-content>/pergel-perf.jsonl --channel chrome   # WP_DEBUG kapalı
+# Ölçek (yalnızca geliştirme/CI sitesinde; "remove" hepsini siler):
+wp --path=<site> eval-file tools/fixtures/scale.php products=5000 posts=2000 && wp --path=<site> pergel search reindex
+npm run budget -- --budget tests/budget/scale.json --base <url> --log <wp-content>/pergel-perf.jsonl --channel chrome  # WP_DEBUG kapalı
 ```
 
 Bütçe (`tests/budget/budget.json`, K11) aşılırsa `measure.mjs` 1 ile çıkar. Bütçeyi aşan değişiklik
