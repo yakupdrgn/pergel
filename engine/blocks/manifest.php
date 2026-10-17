@@ -900,6 +900,63 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'term-image' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/term-image',
+    'title' => 'Term image',
+    'category' => 'pergel',
+    'icon' => 'format-image',
+    'description' => 'The image of a category inside a Terms Query, linked to the category. Product categories show the image set on the category; without one, a plain tile keeps the grid even.',
+    'keywords' => 
+    array (
+      0 => 'category',
+      1 => 'term',
+      2 => 'image',
+      3 => 'thumbnail',
+    ),
+    'textdomain' => 'pergel-engine',
+    'ancestor' => 
+    array (
+      0 => 'core/term-template',
+    ),
+    'usesContext' => 
+    array (
+      0 => 'termId',
+      1 => 'taxonomy',
+    ),
+    'attributes' => 
+    array (
+      'aspectRatio' => 
+      array (
+        'type' => 'string',
+        'enum' => 
+        array (
+          0 => '1',
+          1 => '4/3',
+          2 => '3/4',
+          3 => '16/9',
+        ),
+        'default' => '4/3',
+      ),
+      'isLink' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'spacing' => 
+      array (
+        'margin' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'timeline' => 
   array (
     'apiVersion' => 3,

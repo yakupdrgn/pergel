@@ -1,0 +1,35 @@
+.wp-block-pergel-term-image {
+	margin: 0;
+}
+
+.wp-block-pergel-term-image a {
+	display: block;
+}
+
+.wp-block-pergel-term-image img,
+.wp-block-pergel-term-image__placeholder {
+	border-radius: var(--wp--custom--radius--card, 8px);
+	display: block;
+	height: auto;
+	object-fit: cover;
+	width: 100%;
+}
+
+.wp-block-pergel-term-image__placeholder {
+	background: var(--wp--preset--color--surface, #f4f5f7);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.wp-block-pergel-term-image a img {
+		transition: transform 0.3s ease;
+	}
+
+	.wp-block-pergel-term-image a:hover img {
+		transform: scale(1.03);
+	}
+
+	.wp-block-pergel-term-image a {
+		border-radius: var(--wp--custom--radius--card, 8px);
+		overflow: hidden;
+	}
+}

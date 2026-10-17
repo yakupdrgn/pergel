@@ -4,7 +4,8 @@
  * button is an outline, so a grid of products does not turn into a wall of
  * filled buttons; the product page keeps the filled one. Images sit on
  * the surface color, so a photo that does not fill the square and the
- * placeholder both read as a tile.
+ * placeholder both read as a tile. Title and button take the text colour
+ * of the section around them, so a dark section keeps them readable.
  */
 .wc-block-product-template .wp-block-post-title {
 	font-weight: 600;
@@ -13,7 +14,7 @@
 }
 
 .wc-block-product-template .wp-block-post-title a {
-	color: var(--wp--preset--color--contrast);
+	color: inherit;
 	text-decoration: none;
 }
 
@@ -29,9 +30,9 @@
 /* WooCommerce turns the border off with a stronger selector; an inset
  * shadow draws the outline without changing the button's size. */
 .wc-block-product-template .wc-block-components-product-button__button {
-	color: var(--wp--preset--color--contrast);
+	color: inherit;
 	background-color: transparent;
-	box-shadow: inset 0 0 0 1px var(--wp--preset--color--muted);
+	box-shadow: inset 0 0 0 1px color-mix(in srgb, currentcolor 55%, transparent);
 }
 
 .wc-block-product-template .wc-block-components-product-button__button:hover,

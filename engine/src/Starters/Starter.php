@@ -1,7 +1,7 @@
 <?php
 /**
  * Starter packages: a set of pages, a menu and reading settings built from
- * Pergel's full-page patterns.
+ * Pergel's full-page patterns, and for a shop, products to fill them.
  *
  * @package Pergel
  */
@@ -21,7 +21,9 @@ use const Pergel\FILE;
  *
  * Every page and menu a starter makes carries two meta fields, the starter's
  * name and the item's key, so running the install again finds them instead
- * of making copies, and `remove` deletes only what the starter made.
+ * of making copies, and `remove` deletes only what the starter made. An
+ * optional `shop` part (Shop) adds product categories, attributes, products
+ * and their images; it needs WooCommerce.
  */
 final class Starter {
 
@@ -32,7 +34,7 @@ final class Starter {
 	/**
 	 * Package data from starter.json, validated.
 	 *
-	 * @var array{title: string, description: string, pages: list<array<string, mixed>>, menu: array{title: string|array<string, string>, pages: list<string>}}
+	 * @var array{title: string, description: string, pages: list<array<string, mixed>>, menu: array{title: string|array<string, string>, pages: list<string>}, shop: array<string, mixed>|null}
 	 */
 	private array $data;
 
@@ -106,7 +108,7 @@ final class Starter {
 	}
 
 	/**
-	 * Makes the starter's pages, menu and reading settings.
+	 * Makes the starter's shop data, pages, menu and reading settings.
 	 *
 	 * Items the starter made before are kept as they are, unless $reset is
 	 * set: then their title, content and template go back to the starter's.
@@ -116,8 +118,16 @@ final class Starter {
 	 * @return list<array{action: string, type: string, key: string, id: string, title: string}>
 	 */
 	public function install( bool $dry_run = false, bool $reset = false ): array {
-		$rows = array();
-		$ids  = array();
+		$rows       = array();
+		$ids        = array();
+		$categories = array();
+
+		// Products first: the shop pages show them.
+		if ( null !== $this->data['shop'] ) {
+			$shop       = ( new Shop( $this->name, $this->data['shop'] ) )->install( $dry_run, $reset );
+			$rows       = $shop['rows'];
+			$categories = $shop['categories'];
+		}
 
 		foreach ( $this->data['pages'] as $page ) {
 			$key      = (string) $page['key'];
@@ -159,7 +169,7 @@ final class Starter {
 			$rows[]      = self::row( $action, 'page', $key, $id, $title );
 		}
 
-		$rows[] = $this->install_menu( $ids, $dry_run, $reset );
+		$rows[] = $this->install_menu( $ids, $categories, $dry_run, $reset );
 
 		foreach ( $this->reading( $ids ) as $option => $value ) {
 			// In a dry run a page still to be made has no ID yet.
@@ -173,7 +183,8 @@ final class Starter {
 	}
 
 	/**
-	 * Deletes every page and menu the named starter made, edited or not.
+	 * Deletes every page and menu the named starter made, edited or not, and
+	 * its shop data.
 	 *
 	 * Reading settings that point at a deleted page go back to showing the
 	 * latest posts.
@@ -183,7 +194,7 @@ final class Starter {
 	 * @return list<array{action: string, type: string, key: string, id: string, title: string}>
 	 */
 	public static function remove( string $name, bool $dry_run = false ): array {
-		$rows  = array();
+		$rows  = Shop::remove( $name, $dry_run );
 		$posts = get_posts(
 			array(
 				'post_type'      => array( 'page', 'wp_navigation' ),
@@ -265,12 +276,13 @@ final class Starter {
 	 * Navigation blocks without a menu of their own show the newest menu,
 	 * so the header picks it up.
 	 *
-	 * @param array<string, int> $ids     Page IDs by key (0 in a dry run).
-	 * @param bool               $dry_run Only report.
-	 * @param bool               $reset   Rewrite the menu if it exists.
+	 * @param array<string, int> $ids        Page IDs by key (0 in a dry run).
+	 * @param array<string, int> $categories Product category IDs by key.
+	 * @param bool               $dry_run    Only report.
+	 * @param bool               $reset      Rewrite the menu if it exists.
 	 * @return array{action: string, type: string, key: string, id: string, title: string}
 	 */
-	private function install_menu( array $ids, bool $dry_run, bool $reset ): array {
+	private function install_menu( array $ids, array $categories, bool $dry_run, bool $reset ): array {
 		$menu     = $this->data['menu'];
 		$title    = self::pick( $menu['title'] );
 		$existing = $this->find( 'wp_navigation', 'menu' );
@@ -282,6 +294,10 @@ final class Starter {
 
 		$links = array();
 		foreach ( $menu['pages'] as $key ) {
+			if ( ! isset( $ids[ $key ] ) ) {
+				$links[] = Shop::menu_link( $key, $categories );
+				continue;
+			}
 			$page = get_post( $ids[ $key ] );
 			if ( $page instanceof WP_Post ) {
 				$links[] = get_comment_delimited_block_content(
@@ -303,7 +319,7 @@ final class Starter {
 				'post_type'    => 'wp_navigation',
 				'post_status'  => 'publish',
 				'post_title'   => $title,
-				'post_content' => implode( "\n", $links ),
+				'post_content' => implode( "\n", array_filter( $links ) ),
 				'meta_input'   => array(
 					self::META     => $this->name,
 					self::META_KEY => 'menu',
@@ -416,7 +432,7 @@ final class Starter {
 	 * Checks starter.json against format 1.
 	 *
 	 * @param array<string, mixed> $data Decoded starter.json.
-	 * @return array{title: string, description: string, pages: list<array<string, mixed>>, menu: array{title: string|array<string, string>, pages: list<string>}}
+	 * @return array{title: string, description: string, pages: list<array<string, mixed>>, menu: array{title: string|array<string, string>, pages: list<string>}, shop: array<string, mixed>|null}
 	 * @throws InvalidArgumentException On the first problem.
 	 */
 	private static function validate( array $data ): array {
@@ -425,6 +441,14 @@ final class Starter {
 		};
 		if ( self::FORMAT !== ( $data['format'] ?? null ) ) {
 			$fail( 'format must be ' . self::FORMAT . '.' );
+		}
+		$shop = null;
+		if ( isset( $data['shop'] ) ) {
+			// Before the pages: their shop patterns are missing without WooCommerce too.
+			if ( ! Shop::active() ) {
+				$fail( 'this starter has a shop and needs WooCommerce. Install and activate WooCommerce first.' );
+			}
+			$shop = Shop::validate( $data['shop'] );
 		}
 		$pages = $data['pages'] ?? null;
 		if ( ! is_array( $pages ) || ! array_is_list( $pages ) || array() === $pages ) {
@@ -457,9 +481,16 @@ final class Starter {
 		if ( ! is_array( $menu ) || '' === self::pick( $menu['title'] ?? '' ) || ! is_array( $menu['pages'] ?? null ) ) {
 			$fail( 'menu needs a title and a list of page keys.' );
 		}
+		$shop_links = array();
+		if ( null !== $shop ) {
+			$shop_links['wc:shop'] = true;
+			foreach ( $shop['categories'] as $category ) {
+				$shop_links[ 'category:' . $category['key'] ] = true;
+			}
+		}
 		foreach ( $menu['pages'] as $key ) {
-			if ( ! is_string( $key ) || ! isset( $keys[ $key ] ) ) {
-				$fail( 'menu.pages lists an unknown page key.' );
+			if ( ! is_string( $key ) || ! ( isset( $keys[ $key ] ) || isset( $shop_links[ $key ] ) ) ) {
+				$fail( 'menu.pages lists an unknown page key (shop starters may also use wc:shop and category:<key>).' );
 			}
 		}
 		return array(
@@ -470,6 +501,7 @@ final class Starter {
 				'title' => $menu['title'],
 				'pages' => array_values( $menu['pages'] ),
 			),
+			'shop'        => $shop,
 		);
 	}
 
@@ -479,7 +511,7 @@ final class Starter {
 	 *
 	 * @param mixed $value String or language map.
 	 */
-	private static function pick( mixed $value ): string {
+	public static function pick( mixed $value ): string {
 		if ( ! is_array( $value ) ) {
 			return is_string( $value ) ? $value : '';
 		}
@@ -497,13 +529,13 @@ final class Starter {
 	 * One line of the report.
 	 *
 	 * @param string $action create, reset, keep, set or delete.
-	 * @param string $type   page, menu or option.
+	 * @param string $type   page, menu, option, category, attribute, product or image.
 	 * @param string $key    Item key or option name.
 	 * @param int    $id     Post ID, 0 when there is none (yet).
 	 * @param string $title  Title or new option value.
 	 * @return array{action: string, type: string, key: string, id: string, title: string}
 	 */
-	private static function row( string $action, string $type, string $key, int $id, string $title ): array {
+	public static function row( string $action, string $type, string $key, int $id, string $title ): array {
 		return array(
 			'action' => $action,
 			'type'   => $type,

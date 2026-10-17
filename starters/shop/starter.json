@@ -1,0 +1,971 @@
+{
+	"format": 1,
+	"title": "Shop",
+	"description": "A small shop: a home page built from the shop patterns, 24 example products in five categories with drawn images, about, contact and blog pages and a main menu. Needs WooCommerce.",
+	"pages": [
+		{
+			"key": "home",
+			"title": {
+				"en": "Home",
+				"tr": "Ana sayfa"
+			},
+			"slug": {
+				"en": "home",
+				"tr": "ana-sayfa"
+			},
+			"pattern": "pergel/shop-page-home",
+			"front_page": true
+		},
+		{
+			"key": "about",
+			"title": {
+				"en": "About us",
+				"tr": "Hakkımızda"
+			},
+			"slug": {
+				"en": "about",
+				"tr": "hakkimizda"
+			},
+			"pattern": "pergel/page-about"
+		},
+		{
+			"key": "contact",
+			"title": {
+				"en": "Contact",
+				"tr": "İletişim"
+			},
+			"slug": {
+				"en": "contact",
+				"tr": "iletisim"
+			},
+			"pattern": "pergel/page-contact"
+		},
+		{
+			"key": "blog",
+			"title": {
+				"en": "Journal",
+				"tr": "Günlük"
+			},
+			"slug": {
+				"en": "journal",
+				"tr": "gunluk"
+			},
+			"posts_page": true
+		}
+	],
+	"menu": {
+		"title": {
+			"en": "Main menu",
+			"tr": "Ana menü"
+		},
+		"pages": [
+			"wc:shop",
+			"category:apparel",
+			"category:home",
+			"category:stationery",
+			"about",
+			"blog",
+			"contact"
+		]
+	},
+	"shop": {
+		"categories": [
+			{
+				"key": "apparel",
+				"name": {
+					"en": "Apparel",
+					"tr": "Giyim"
+				},
+				"slug": {
+					"en": "apparel",
+					"tr": "giyim"
+				},
+				"description": {
+					"en": "Everyday basics in soft cotton and linen.",
+					"tr": "Yumuşak pamuk ve ketenden günlük temel parçalar."
+				}
+			},
+			{
+				"key": "accessories",
+				"name": {
+					"en": "Accessories",
+					"tr": "Aksesuar"
+				},
+				"slug": {
+					"en": "accessories",
+					"tr": "aksesuar"
+				},
+				"description": {
+					"en": "Bags, caps and small things to carry.",
+					"tr": "Çantalar, şapkalar ve yanınızda taşıyacağınız küçük şeyler."
+				}
+			},
+			{
+				"key": "home",
+				"name": {
+					"en": "Home",
+					"tr": "Ev"
+				},
+				"slug": {
+					"en": "home-living",
+					"tr": "ev-yasam"
+				},
+				"description": {
+					"en": "Mugs, textiles and objects for the home.",
+					"tr": "Ev için kupalar, tekstiller ve objeler."
+				}
+			},
+			{
+				"key": "stationery",
+				"name": {
+					"en": "Stationery",
+					"tr": "Kırtasiye"
+				},
+				"slug": {
+					"en": "stationery",
+					"tr": "kirtasiye"
+				},
+				"description": {
+					"en": "Notebooks, pens and planners for the desk.",
+					"tr": "Masanız için defterler, kalemler ve ajandalar."
+				}
+			},
+			{
+				"key": "gift-sets",
+				"name": {
+					"en": "Gift sets",
+					"tr": "Hediye setleri"
+				},
+				"slug": {
+					"en": "gift-sets",
+					"tr": "hediye-setleri"
+				},
+				"description": {
+					"en": "Ready-made sets of our favourite products.",
+					"tr": "En sevdiğimiz ürünlerden hazır setler."
+				}
+			}
+		],
+		"attributes": [
+			{
+				"slug": "color",
+				"name": {
+					"en": "Colour",
+					"tr": "Renk"
+				},
+				"terms": [
+					{
+						"key": "black",
+						"name": {
+							"en": "Black",
+							"tr": "Siyah"
+						},
+						"slug": {
+							"en": "black",
+							"tr": "siyah"
+						},
+						"color": "#1f2328"
+					},
+					{
+						"key": "white",
+						"name": {
+							"en": "White",
+							"tr": "Beyaz"
+						},
+						"slug": {
+							"en": "white",
+							"tr": "beyaz"
+						},
+						"color": "#f2f1ec"
+					},
+					{
+						"key": "navy",
+						"name": {
+							"en": "Navy",
+							"tr": "Lacivert"
+						},
+						"slug": {
+							"en": "navy",
+							"tr": "lacivert"
+						},
+						"color": "#1e3a5f"
+					},
+					{
+						"key": "sand",
+						"name": {
+							"en": "Sand",
+							"tr": "Kum"
+						},
+						"slug": {
+							"en": "sand",
+							"tr": "kum"
+						},
+						"color": "#cdb48f"
+					},
+					{
+						"key": "olive",
+						"name": {
+							"en": "Olive",
+							"tr": "Haki"
+						},
+						"slug": {
+							"en": "olive",
+							"tr": "haki"
+						},
+						"color": "#646b3f"
+					}
+				]
+			},
+			{
+				"slug": "size",
+				"name": {
+					"en": "Size",
+					"tr": "Beden"
+				},
+				"terms": [
+					{
+						"key": "s",
+						"name": "S",
+						"slug": "s"
+					},
+					{
+						"key": "m",
+						"name": "M",
+						"slug": "m"
+					},
+					{
+						"key": "l",
+						"name": "L",
+						"slug": "l"
+					},
+					{
+						"key": "xl",
+						"name": "XL",
+						"slug": "xl"
+					}
+				]
+			}
+		],
+		"products": [
+			{
+				"type": "variable",
+				"price": "249.90",
+				"featured": true,
+				"sales": 140,
+				"attributes": {
+					"color": [
+						"black",
+						"white",
+						"navy",
+						"sand"
+					],
+					"size": [
+						"s",
+						"m",
+						"l",
+						"xl"
+					]
+				},
+				"upsells": [
+					"linen-shirt"
+				],
+				"cross_sells": [
+					"canvas-cap",
+					"canvas-tote"
+				],
+				"key": "basic-tee",
+				"name": {
+					"en": "Basic T-shirt",
+					"tr": "Basic tişört"
+				},
+				"slug": {
+					"en": "basic-t-shirt",
+					"tr": "basic-tisort"
+				},
+				"sku": "PRG-BASIC-TEE",
+				"categories": [
+					"apparel"
+				],
+				"short": {
+					"en": "Heavy cotton tee with a relaxed fit.",
+					"tr": "Rahat kesim, kalın pamuklu tişört."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"type": "variable",
+				"price": "799.00",
+				"sale": "649.00",
+				"sales": 85,
+				"attributes": {
+					"color": [
+						"black",
+						"navy",
+						"olive"
+					],
+					"size": [
+						"s",
+						"m",
+						"l",
+						"xl"
+					]
+				},
+				"cross_sells": [
+					"wool-beanie"
+				],
+				"key": "hoodie",
+				"name": {
+					"en": "Hooded sweatshirt",
+					"tr": "Kapüşonlu sweatshirt"
+				},
+				"slug": {
+					"en": "hooded-sweatshirt",
+					"tr": "kapusonlu-sweatshirt"
+				},
+				"sku": "PRG-HOODIE",
+				"categories": [
+					"apparel"
+				],
+				"short": {
+					"en": "Brushed fleece inside, roomy hood.",
+					"tr": "İçi şardonlu, geniş kapüşonlu."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"type": "variable",
+				"price": "549.00",
+				"sales": 32,
+				"attributes": {
+					"color": [
+						"white",
+						"sand"
+					],
+					"size": [
+						"m",
+						"l",
+						"xl"
+					]
+				},
+				"key": "linen-shirt",
+				"name": {
+					"en": "Linen shirt",
+					"tr": "Keten gömlek"
+				},
+				"slug": {
+					"en": "linen-shirt",
+					"tr": "keten-gomlek"
+				},
+				"sku": "PRG-LINEN-SHIRT",
+				"categories": [
+					"apparel"
+				],
+				"short": {
+					"en": "Washed linen, cool on warm days.",
+					"tr": "Yıkanmış keten, sıcak günlerde serin tutar."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"type": "variable",
+				"price": "599.00",
+				"sales": 41,
+				"attributes": {
+					"color": [
+						"black",
+						"olive"
+					],
+					"size": [
+						"s",
+						"m",
+						"l"
+					]
+				},
+				"key": "sweatpants",
+				"name": {
+					"en": "Sweatpants",
+					"tr": "Eşofman altı"
+				},
+				"slug": {
+					"en": "sweatpants",
+					"tr": "esofman-alti"
+				},
+				"sku": "PRG-SWEATPANTS",
+				"categories": [
+					"apparel"
+				],
+				"short": {
+					"en": "Tapered leg, deep pockets.",
+					"tr": "Daralan paça, derin cepler."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "189.90",
+				"sales": 96,
+				"cross_sells": [
+					"notebook-a5"
+				],
+				"key": "canvas-tote",
+				"type": "simple",
+				"name": {
+					"en": "Canvas tote bag",
+					"tr": "Kanvas çanta"
+				},
+				"slug": {
+					"en": "canvas-tote-bag",
+					"tr": "kanvas-canta"
+				},
+				"sku": "PRG-CANVAS-TOTE",
+				"categories": [
+					"accessories"
+				],
+				"short": {
+					"en": "Sturdy canvas with an inside pocket.",
+					"tr": "İç cepli, sağlam kanvas."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "449.00",
+				"sale": "379.00",
+				"featured": true,
+				"sales": 58,
+				"stock": 12,
+				"key": "leather-wallet",
+				"type": "simple",
+				"name": {
+					"en": "Leather wallet",
+					"tr": "Deri cüzdan"
+				},
+				"slug": {
+					"en": "leather-wallet",
+					"tr": "deri-cuzdan"
+				},
+				"sku": "PRG-LEATHER-WALLET",
+				"categories": [
+					"accessories"
+				],
+				"short": {
+					"en": "Slim wallet with four card slots.",
+					"tr": "Dört kart bölmeli ince cüzdan."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "229.00",
+				"sales": 37,
+				"key": "wool-beanie",
+				"type": "simple",
+				"name": {
+					"en": "Wool beanie",
+					"tr": "Yün bere"
+				},
+				"slug": {
+					"en": "wool-beanie",
+					"tr": "yun-bere"
+				},
+				"sku": "PRG-WOOL-BEANIE",
+				"categories": [
+					"accessories"
+				],
+				"short": {
+					"en": "Ribbed knit in soft merino.",
+					"tr": "Yumuşak merinodan fitilli örgü."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "199.00",
+				"sales": 64,
+				"stock": 0,
+				"key": "canvas-cap",
+				"type": "simple",
+				"name": {
+					"en": "Canvas cap",
+					"tr": "Kanvas şapka"
+				},
+				"slug": {
+					"en": "canvas-cap",
+					"tr": "kanvas-sapka"
+				},
+				"sku": "PRG-CANVAS-CAP",
+				"categories": [
+					"accessories"
+				],
+				"short": {
+					"en": "Six panels and an adjustable strap.",
+					"tr": "Altı panel, ayarlanabilir kayış."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "79.90",
+				"sales": 22,
+				"stock": 25,
+				"key": "keychain",
+				"type": "simple",
+				"name": {
+					"en": "Brass keychain",
+					"tr": "Pirinç anahtarlık"
+				},
+				"slug": {
+					"en": "brass-keychain",
+					"tr": "pirinc-anahtarlik"
+				},
+				"sku": "PRG-KEYCHAIN",
+				"categories": [
+					"accessories"
+				],
+				"short": {
+					"en": "Solid brass that ages well.",
+					"tr": "Zamanla güzelleşen som pirinç."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "149.90",
+				"featured": true,
+				"sales": 160,
+				"cross_sells": [
+					"tea-towel"
+				],
+				"key": "ceramic-mug",
+				"type": "simple",
+				"name": {
+					"en": "Ceramic mug",
+					"tr": "Seramik kupa"
+				},
+				"slug": {
+					"en": "ceramic-mug",
+					"tr": "seramik-kupa"
+				},
+				"sku": "PRG-CERAMIC-MUG",
+				"categories": [
+					"home"
+				],
+				"short": {
+					"en": "Stoneware mug, 350 ml.",
+					"tr": "350 ml taş kupa."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "119.00",
+				"sales": 48,
+				"key": "tea-towel",
+				"type": "simple",
+				"name": {
+					"en": "Linen tea towel",
+					"tr": "Keten kurulama bezi"
+				},
+				"slug": {
+					"en": "linen-tea-towel",
+					"tr": "keten-kurulama-bezi"
+				},
+				"sku": "PRG-TEA-TOWEL",
+				"categories": [
+					"home"
+				],
+				"short": {
+					"en": "Absorbent linen, gets softer with every wash.",
+					"tr": "Emici keten, her yıkamada yumuşar."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "259.00",
+				"sale": "199.00",
+				"sales": 73,
+				"key": "scented-candle",
+				"type": "simple",
+				"name": {
+					"en": "Scented candle",
+					"tr": "Kokulu mum"
+				},
+				"slug": {
+					"en": "scented-candle",
+					"tr": "kokulu-mum"
+				},
+				"sku": "PRG-SCENTED-CANDLE",
+				"categories": [
+					"home"
+				],
+				"short": {
+					"en": "Soy wax, about 40 hours of burning.",
+					"tr": "Soya mumu, yaklaşık 40 saat yanar."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "299.00",
+				"sales": 19,
+				"key": "cushion-cover",
+				"type": "simple",
+				"name": {
+					"en": "Cushion cover",
+					"tr": "Kırlent kılıfı"
+				},
+				"slug": {
+					"en": "cushion-cover",
+					"tr": "kirlent-kilifi"
+				},
+				"sku": "PRG-CUSHION-COVER",
+				"categories": [
+					"home"
+				],
+				"short": {
+					"en": "Cotton cover with a hidden zip, 45 × 45 cm.",
+					"tr": "Gizli fermuarlı pamuklu kılıf, 45 × 45 cm."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "649.00",
+				"sales": 9,
+				"stock": 3,
+				"key": "wall-clock",
+				"type": "simple",
+				"name": {
+					"en": "Wall clock",
+					"tr": "Duvar saati"
+				},
+				"slug": {
+					"en": "wall-clock",
+					"tr": "duvar-saati"
+				},
+				"sku": "PRG-WALL-CLOCK",
+				"categories": [
+					"home"
+				],
+				"short": {
+					"en": "Silent movement, birch face.",
+					"tr": "Sessiz mekanizma, huş kadran."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "129.90",
+				"featured": true,
+				"sales": 210,
+				"cross_sells": [
+					"pen-set"
+				],
+				"key": "notebook-a5",
+				"type": "simple",
+				"name": {
+					"en": "A5 notebook",
+					"tr": "A5 defter"
+				},
+				"slug": {
+					"en": "a5-notebook",
+					"tr": "a5-defter"
+				},
+				"sku": "PRG-NOTEBOOK-A5",
+				"categories": [
+					"stationery"
+				],
+				"short": {
+					"en": "Lay-flat binding, 160 plain pages.",
+					"tr": "Düz açılan cilt, 160 düz sayfa."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "179.00",
+				"sales": 67,
+				"key": "dot-journal",
+				"type": "simple",
+				"name": {
+					"en": "Dot grid journal",
+					"tr": "Noktalı ajanda"
+				},
+				"slug": {
+					"en": "dot-grid-journal",
+					"tr": "noktali-ajanda"
+				},
+				"sku": "PRG-DOT-JOURNAL",
+				"categories": [
+					"stationery"
+				],
+				"short": {
+					"en": "Thick paper that takes ink without bleeding.",
+					"tr": "Mürekkebi geçirmeyen kalın kâğıt."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "219.00",
+				"sale": "179.00",
+				"sales": 88,
+				"key": "pen-set",
+				"type": "simple",
+				"name": {
+					"en": "Gel pen set",
+					"tr": "Jel kalem seti"
+				},
+				"slug": {
+					"en": "gel-pen-set",
+					"tr": "jel-kalem-seti"
+				},
+				"sku": "PRG-PEN-SET",
+				"categories": [
+					"stationery"
+				],
+				"short": {
+					"en": "Five colours, quick-drying ink.",
+					"tr": "Beş renk, çabuk kuruyan mürekkep."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "159.00",
+				"sales": 26,
+				"key": "desk-planner",
+				"type": "simple",
+				"name": {
+					"en": "Desk planner",
+					"tr": "Masa planlayıcı"
+				},
+				"slug": {
+					"en": "desk-planner",
+					"tr": "masa-planlayici"
+				},
+				"sku": "PRG-DESK-PLANNER",
+				"categories": [
+					"stationery"
+				],
+				"short": {
+					"en": "Undated weekly pages to tear off.",
+					"tr": "Koparılabilir, tarihsiz haftalık sayfalar."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "49.90",
+				"sales": 54,
+				"stock": 0,
+				"key": "sticker-pack",
+				"type": "simple",
+				"name": {
+					"en": "Sticker pack",
+					"tr": "Çıkartma paketi"
+				},
+				"slug": {
+					"en": "sticker-pack",
+					"tr": "cikartma-paketi"
+				},
+				"sku": "PRG-STICKER-PACK",
+				"categories": [
+					"stationery"
+				],
+				"short": {
+					"en": "Twelve matte vinyl stickers.",
+					"tr": "On iki mat vinil çıkartma."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"type": "external",
+				"price": "420.00",
+				"sales": 12,
+				"url": "https://example.com/",
+				"button": {
+					"en": "Buy from the publisher",
+					"tr": "Yayıncıdan satın al"
+				},
+				"key": "design-book",
+				"name": {
+					"en": "Design handbook",
+					"tr": "Tasarım el kitabı"
+				},
+				"slug": {
+					"en": "design-handbook",
+					"tr": "tasarim-el-kitabi"
+				},
+				"sku": "PRG-DESIGN-BOOK",
+				"categories": [
+					"stationery"
+				],
+				"short": {
+					"en": "Sold by the publisher: the button opens their site.",
+					"tr": "Yayıncı satıyor: düğme yayıncının sitesini açar."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"type": "grouped",
+				"featured": true,
+				"children": [
+					"ceramic-mug",
+					"tea-towel"
+				],
+				"key": "coffee-set",
+				"name": {
+					"en": "Coffee break set",
+					"tr": "Kahve molası seti"
+				},
+				"slug": {
+					"en": "coffee-break-set",
+					"tr": "kahve-molasi-seti"
+				},
+				"sku": "PRG-COFFEE-SET",
+				"categories": [
+					"gift-sets"
+				],
+				"short": {
+					"en": "A mug and a tea towel, chosen together.",
+					"tr": "Birlikte seçilmiş bir kupa ve bir kurulama bezi."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"type": "grouped",
+				"children": [
+					"notebook-a5",
+					"pen-set",
+					"desk-planner"
+				],
+				"key": "writer-set",
+				"name": {
+					"en": "Writer's set",
+					"tr": "Yazar seti"
+				},
+				"slug": {
+					"en": "writers-set",
+					"tr": "yazar-seti"
+				},
+				"sku": "PRG-WRITER-SET",
+				"categories": [
+					"gift-sets"
+				],
+				"short": {
+					"en": "Notebook, pens and a planner for the desk.",
+					"tr": "Masa için defter, kalemler ve planlayıcı."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"type": "grouped",
+				"children": [
+					"canvas-tote",
+					"wool-beanie",
+					"keychain"
+				],
+				"key": "weekend-set",
+				"name": {
+					"en": "Weekend set",
+					"tr": "Hafta sonu seti"
+				},
+				"slug": {
+					"en": "weekend-set",
+					"tr": "hafta-sonu-seti"
+				},
+				"sku": "PRG-WEEKEND-SET",
+				"categories": [
+					"gift-sets"
+				],
+				"short": {
+					"en": "Tote, beanie and keychain for a day out.",
+					"tr": "Dışarıda bir gün için çanta, bere ve anahtarlık."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			},
+			{
+				"price": "39.90",
+				"sales": 44,
+				"key": "gift-card-box",
+				"type": "simple",
+				"name": {
+					"en": "Gift box",
+					"tr": "Hediye kutusu"
+				},
+				"slug": {
+					"en": "gift-box",
+					"tr": "hediye-kutusu"
+				},
+				"sku": "PRG-GIFT-CARD-BOX",
+				"categories": [
+					"gift-sets"
+				],
+				"short": {
+					"en": "Recycled card box with tissue paper.",
+					"tr": "İpek kâğıtlı, geri dönüştürülmüş karton kutu."
+				},
+				"description": {
+					"en": "A placeholder product from the Pergel shop starter. Replace this text with what makes your product worth buying: materials, size, care and delivery.",
+					"tr": "Pergel mağaza başlangıç paketinden örnek bir ürün. Bu metni ürününüzü değerli kılan bilgilerle değiştirin: malzeme, ölçü, bakım ve teslimat."
+				}
+			}
+		]
+	}
+}

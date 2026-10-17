@@ -31,6 +31,19 @@ final class PatternsTest extends TestCase {
 	}
 
 	/**
+	 * Pattern files the site registers: without WooCommerce the shop
+	 * sections (shop-*) are dropped.
+	 *
+	 * @return list<string>
+	 */
+	private static function registered_files(): array {
+		if ( class_exists( 'WooCommerce', false ) ) {
+			return self::files();
+		}
+		return array_values( array_filter( self::files(), static fn( string $file ): bool => ! str_starts_with( basename( $file ), 'shop-' ) ) );
+	}
+
+	/**
 	 * Blocks of a parsed tree that are not registered, or loose HTML between
 	 * blocks (a broken block comment).
 	 *
@@ -63,8 +76,8 @@ final class PatternsTest extends TestCase {
 		$registry   = \WP_Block_Patterns_Registry::get_instance();
 		$categories = \WP_Block_Pattern_Categories_Registry::get_instance();
 
-		$this->assertNotEmpty( self::files() );
-		foreach ( self::files() as $file ) {
+		$this->assertNotEmpty( self::registered_files() );
+		foreach ( self::registered_files() as $file ) {
 			$slug    = 'pergel/' . basename( $file, '.php' );
 			$pattern = $registry->get_registered( $slug );
 			$this->assertIsArray( $pattern, "{$slug} is not registered." );
@@ -83,7 +96,7 @@ final class PatternsTest extends TestCase {
 			}
 		);
 		try {
-			foreach ( self::files() as $file ) {
+			foreach ( self::registered_files() as $file ) {
 				$slug    = 'pergel/' . basename( $file, '.php' );
 				$pattern = $registry->get_registered( $slug );
 				$content = is_array( $pattern ) ? (string) $pattern['content'] : '';
@@ -96,6 +109,18 @@ final class PatternsTest extends TestCase {
 			}
 		} finally {
 			restore_error_handler();
+		}
+	}
+
+	public function test_shop_sections_need_woocommerce(): void {
+		$shop = array_diff( self::files(), self::registered_files() );
+		if ( class_exists( 'WooCommerce', false ) ) {
+			$this->assertSame( array(), $shop );
+			return;
+		}
+		$this->assertNotEmpty( $shop );
+		foreach ( $shop as $file ) {
+			$this->assertFalse( \WP_Block_Patterns_Registry::get_instance()->is_registered( 'pergel/' . basename( $file, '.php' ) ), basename( $file ) );
 		}
 	}
 

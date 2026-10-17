@@ -31,7 +31,7 @@ pergel/
 │  ├─ blocks/<blok>/      block.json + render.php (sunucuda çizilen bloklar)
 │  ├─ build/              derlenmiş editör JS'i (repoya girer, K6)
 │  └─ languages/
-├─ starters/<ad>/         starter paketleri: starter.json (dağıtılmaz; F3: corporate, F4: e-ticaret)
+├─ starters/<ad>/         starter paketleri: starter.json (dağıtılmaz; F3: corporate, F4c: shop)
 ├─ tools/
 │  ├─ budget/             perf-probe.php (mu-plugin) + measure.mjs (Playwright)
 │  ├─ ci/                 CI'da WordPress kurulumu ve php -S router'ı
@@ -394,7 +394,7 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   `team`, `testimonials`, `call-to-action`, `contact`, `posts`, `portfolio`, `gallery`, `header`,
   `footer`); eksikler Pergel'den gelir: `pergel-stats` (Numbers), `pergel-process` (Process),
   `pergel-logos` (Clients), `pergel-pricing` (Pricing), `pergel-faq` (FAQ), `pergel-pages`
-  (Full pages).
+  (Full pages) ve yalnızca WooCommerce etkinken `pergel-shop` (Shop, bkz. Mağaza bölümleri).
 - **Kaynaklar:** Çekirdeğin hazır pattern'leri (`core-block-patterns` desteği kaldırılır) ve
   wordpress.org Pattern Directory (`should_load_remote_block_patterns`) yüklenmez. Eklentilerin ve
   sitenin kendi pattern'leri kalır.
@@ -465,6 +465,43 @@ okuma ayarları (ön sayfa, yazılar sayfası). `starters/<ad>/starter.json` pak
   depoya bakar (CI'da symlink). Kopyalanmış eklentide (`LINK_MODE=copy`, zip kurulumu) paket klasör yoluyla verilir:
   `wp pergel starter install /yol/starters/corporate`.
 
+### Mağaza starter'ı (F4c)
+
+`starter.json`'daki `shop` bölümü ürün kategorilerini, global öznitelikleri ve ürünleri tanımlar
+(`Starters\Shop`). Böyle bir paket WooCommerce ister: mağazasız sitede `starter list` onu
+göstermez, `install` hiçbir şey yapmadan "needs WooCommerce" hatası verir.
+
+```json
+"shop": {
+  "categories": [ { "key": "apparel", "name": { "en": "Apparel", "tr": "Giyim" }, "slug": "apparel" } ],
+  "attributes": [ { "slug": "color", "name": "Colour", "terms": [ { "key": "black", "name": "Black", "color": "#1f2328" } ] } ],
+  "products": [
+    { "key": "tee", "type": "variable", "name": "Tee", "slug": "tee", "price": "349.00",
+      "categories": [ "apparel" ], "attributes": { "color": [ "black" ] } }
+  ]
+}
+```
+
+- **Ürün türleri:** `simple`, `variable` (her öznitelik birleşimi için bir varyasyon, en fazla
+  50), `grouped` (`children`: basit ve harici ürünler) ve `external` (`url`, `button`). Fiyatlar
+  metindir (`"49.90"`); `sale`, `stock` (sayı; yoksa stok sayılmaz, stokta), `featured`, `sales`
+  (çok satanlar sırası için), `sku`, `short`, `description`, `cross_sells`, `upsells`.
+- **Sıra:** Önce ürünler (kategoriler, öznitelikler, ürünler), sonra sayfalar, en son menü;
+  menü `wc:shop` (mağaza sayfası) ve `category:<key>` (ürün kategorisi, `kind: taxonomy`)
+  girdileri alabilir.
+- **Öznitelikler:** Aynı slug'lı global öznitelik varsa o kullanılır, terimleri slug'la eşleşir;
+  yoksa yaratılır ve kimliği `pergel_starter_attributes` seçeneğine yazılır. Renkli terimler
+  `color` term meta'sını, hepsi `order`'ı alır; WooCommerce'te `wc-visual` türü varsa yeni
+  renk özniteliği bu türle gelir (Pergel swatch'ları).
+- **Görseller (`Starters\Images`):** Depoda görsel yoktur; GD her ürün (değişkende her renk)
+  ve kategori için etkin stilin renklerinden düz bir şekil çizer, WebP (yoksa PNG) olarak ortam
+  kitaplığına ekler. Şekil anahtardan gelir, aynı öğe her kurulumda aynı resmi alır; varyasyon
+  rengine ait görseli taşır.
+- **İşaretleme, tekrar ve kaldırma:** Ürün, varyasyon, görsel ve terimler de `_pergel_starter`
+  ve `_pergel_starter_key` meta'sını taşır; tekrar kurulum dokunmaz, `--reset` alanları ve
+  varyasyonları yeniden yazar (görseller yeniden çizilmez). `remove` önce bunları, sonra
+  yarattığı öznitelikleri siler; var olan özniteliklere ve başka ürünlere dokunmaz.
+
 ## Mağaza (F4)
 
 `Woo\Module` yalnızca WooCommerce etkinken yüklenir (`class_exists( 'WooCommerce', false )`);
@@ -487,8 +524,9 @@ görünmez (`Settings\Screen::shown`).
   (`pergel-shop-layout`, dar ekranda WooCommerce çekmecesi) yanında listelenir. Sabit metinler
   ve WooCommerce blokları gizli pattern'lerde: `pergel/hidden-product-terms`, `-details`
   (açıklama, özellikler, yorumlar akordeonu), `-related`, `-filters` (seçili filtreler, fiyat,
-  kategori, stok ve ilk üç öznitelik). Pattern kuralları (`Patterns\Rules::SHOP_PREFIX`) WooCommerce bloklarına yalnızca
-  bu öneki taşıyan gizli pattern'lerde izin verir.
+  kategori, stok ve ilk üç öznitelik). Pattern kuralları WooCommerce bloklarına yalnızca bu
+  öneki taşıyan gizli pattern'lerde (`Patterns\Rules::SHOP_PREFIX`) ve mağaza bölümlerinde
+  (`SHOP_SECTION_PREFIX`, aşağıda) izin verir.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir
@@ -660,6 +698,26 @@ görünmez (`Settings\Screen::shown`).
 - **Fiyat HTML'i (`Woo\Price`):** `Price::html()` WooCommerce fiyat HTML'ini `post` izin
   listesi + `<bdi>` + `span[translate]` ile süzer; `BoughtTogether`, `StickyCart` ve
   `ListView` kullanır.
+- **Mağaza bölümleri (F4c):** `theme/patterns/shop-*.php`, kategori `pergel-shop` ("Shop").
+  Kategori ve pattern'ler yalnızca WooCommerce etkinken vardır: tema kategoriyi yalnızca o zaman
+  kaydeder, `drop_shop_patterns()` (`init`, öncelik 20) mağazasız sitede `pergel/shop-*`
+  kayıtlarını siler. Kurallar (`Rules::SHOP_SECTION_PREFIX`, `SHOP_CATEGORY`): bu bölümler
+  WooCommerce blokları taşıyabilir; `shop-*` adı ile `pergel-shop` kategorisi birlikte gelir.
+  - Bölümler: `shop-hero` (H1), `shop-categories` (Terms Query + `pergel/term-image`), ürün
+    ızgaraları `shop-new-arrivals`, `shop-best-sellers` (surface zemin), `shop-on-sale` (koyu
+    zemin) ve `shop-featured` (WooCommerce Product Collection, `queryId` 11–14, sayfada çakışmaz),
+    `shop-promo-pair` ve `shop-benefits`. Tam sayfa `shop-page-home` (`pergel-pages` ve `pergel-shop`) hero,
+    kategoriler, yeni gelenler, promo, çok satanlar, indirimdekiler ve avantajları dizer.
+  - Kart başlığı ve düğmesi `color: inherit` alır, düğme çerçevesi `currentcolor`'dan karışır
+    (`woocommerce-product-template.css`); koyu zeminli bölümde de okunur.
+  - `tests/visual/patterns.spec.mjs` `shop-*` dosyalarını yalnızca `PERGEL_SHOP=1` iken dener
+    (WooCommerce'li site gerekir) ve hiçbirini görsel referansa katmaz.
+- **Kategori görseli (`pergel/term-image`, `Blocks\TermImage`, F4c):** Terms Query'deki
+  (`core/term-template` içinde) terimin görseli; term meta `thumbnail_id` (WooCommerce ürün
+  kategorisinin görseli), diğer taksonomiler için `pergel/term_image_id` süzgeci. Oran 1, 4/3
+  (varsayılan), 3/4 veya 16/9; görsel yoksa aynı oranda düz bir kutu ızgarayı korur. Görsel
+  yanındaki terim adını tekrarladığı için `alt=""` taşır, bağlantısı `tabindex="-1"
+  aria-hidden="true"` ile sekme sırasından çıkar. WooCommerce gerektirmez.
 
 ## Arama (F4b)
 
@@ -707,8 +765,8 @@ içerik değiştiğinde güncellenir.
 | `wp pergel modules enable\|disable <id>...` | Anahtarı olan modülleri açar/kapatır |
 | `wp pergel search status\|reindex\|query <metin>` | İndeksin durumu, hemen yeniden kurulum, deneme araması |
 | `wp pergel starter list` | Pergel'le gelen starter'lar |
-| `wp pergel starter install <ad\|klasör> [--dry-run] [--reset]` | Starter'ın sayfalarını, menüsünü ve okuma ayarlarını kurar; tekrar çalışınca bir şey değiştirmez |
-| `wp pergel starter remove <ad> [--dry-run] [--yes]` | Starter'ın yaptığı sayfa ve menüleri kalıcı siler, okuma ayarlarını düzeltir |
+| `wp pergel starter install <ad\|klasör> [--dry-run] [--reset]` | Starter'ın sayfalarını, menüsünü, okuma ayarlarını ve (mağaza starter'ında) kategori, öznitelik, ürün ve görsellerini kurar; tekrar çalışınca bir şey değiştirmez |
+| `wp pergel starter remove <ad> [--dry-run] [--yes]` | Starter'ın yaptığı her şeyi kalıcı siler, okuma ayarlarını düzeltir |
 
 Ayar komutları ekranla aynı şemadan geçer: geçersiz veya bilinmeyen bir alan varsa hiçbir şey
 kaydedilmez ve komut 1 ile çıkar (ekran ise geçerli kısmı kaydeder). Görsel alanları ek olarak

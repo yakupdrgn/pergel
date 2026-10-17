@@ -6,6 +6,10 @@
  * X-Pergel-Pattern header (tools/budget/perf-probe.php), so nothing is saved.
  * Section patterns are checked one category per page; header and footer
  * patterns are covered by the performance budget.
+ *
+ * Shop patterns (shop-*) need WooCommerce and products, so they run only
+ * with PERGEL_SHOP=1 against a shop site, and never as screenshots: their
+ * products change with the site.
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -17,6 +21,7 @@ const root = resolve( dirname( fileURLToPath( import.meta.url ) ), '../..' );
 const base = ( process.env.PERGEL_BASE || 'http://127.0.0.1:8080' ).replace( /\/$/, '' );
 const AXE_TAGS = [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa' ];
 const WIDTHS = { desktop: 1280, tablet: 800, phone: 360 };
+const SHOP = '1' === process.env.PERGEL_SHOP;
 
 const variations = readdirSync( join( root, 'theme/styles' ) )
 	.filter( ( f ) => f.endsWith( '.json' ) )
@@ -32,6 +37,9 @@ for ( const file of readdirSync( join( root, 'theme/patterns' ) ).sort() ) {
 	const name = basename( file, '.php' );
 	const category = field( 'Categories' )?.split( ',' )[ 0 ].trim();
 	if ( ! category || 'no' === field( 'Inserter' ) || [ 'header', 'footer' ].includes( category ) ) {
+		continue;
+	}
+	if ( name.startsWith( 'shop-' ) && ! SHOP ) {
 		continue;
 	}
 	if ( 'pergel-pages' === category ) {
@@ -82,7 +90,7 @@ for ( const variation of [ 'default', ...variations ] ) {
 					await audit( page, `${ width }px` );
 				}
 			} );
-			if ( 'default' === variation ) {
+			if ( 'default' === variation || name.startsWith( 'shop-' ) ) {
 				continue;
 			}
 			test( `${ name } page looks the same @visual`, async ( { page } ) => {
