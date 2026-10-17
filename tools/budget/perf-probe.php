@@ -133,10 +133,14 @@ function perf_log(): void {
 	}
 
 	$query_ms = 0.0;
+	$slowest  = array( 0.0, '' );
 	$writes   = array();
 	foreach ( (array) $wpdb->queries as $query ) {
 		$query_ms += (float) $query[1];
 		$sql       = ltrim( (string) $query[0] );
+		if ( (float) $query[1] > $slowest[0] ) {
+			$slowest = array( (float) $query[1], $sql );
+		}
 		if ( preg_match( '/^(INSERT|UPDATE|DELETE|REPLACE)\b/i', $sql ) ) {
 			$writes[] = substr( (string) preg_replace( '/\s+/', ' ', $sql ), 0, 160 );
 		}
@@ -150,6 +154,8 @@ function perf_log(): void {
 		'ms'           => round( ( microtime( true ) - (float) $_SERVER['REQUEST_TIME_FLOAT'] ) * 1000, 1 ),
 		'queries'      => (int) $wpdb->num_queries,
 		'query_ms'     => round( $query_ms * 1000, 1 ),
+		'slowest_ms'   => round( $slowest[0] * 1000, 1 ),
+		'slowest'      => substr( (string) preg_replace( '/\s+/', ' ', $slowest[1] ), 0, 300 ),
 		'writes'       => $writes,
 		'files'        => count( $files ),
 		'pergel_files' => $pergel,

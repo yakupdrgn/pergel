@@ -434,6 +434,11 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   bütçesi (`tests/budget/shop.json`, WP_DEBUG kapalı), ödeme ve satış modu e2e
   (`tests/shop`, `npm run test:shop`), mağaza pattern'lerinin axe/taşma ve editör denetimi.
   E2E ayarları WP-CLI ile değiştirip geri koyduğu için tek işçiyle çalışır.
+- **Ölçek** (CI'da `scale` işi): mağaza starter'ının üstüne `tools/fixtures/scale.php` 5.000 ürün
+  (20 kategori) ve 2.000 yazı üretir, arama indeksi yeniden kurulur. Smoke ve ölçek bütçesi
+  (`tests/budget/scale.json`) son sayfalar, sıralama, fiyat filtresi, arama ve yazı arşivlerinde
+  sorgu sayısını, toplam sorgu süresini (`query_ms`) ve en yavaş tek sorguyu (`slowest_ms`)
+  denetler; perf probe en yavaş sorguyu rapora yazar. Mağaza ve ölçek işlerinde PHP JIT kapalıdır.
 
 ## Starter'lar (F3c)
 

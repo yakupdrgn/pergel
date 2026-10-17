@@ -991,6 +991,28 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
     yama yapmaz. `shop.json` ve `scale.json` bu yazmaları `writesIgnore`'a alır, mağaza ve
     kategori sorgu limiti 190'dır (gerekçe `$comment`'te). **Açık:** WooCommerce'e hata
     bildirimi (dış servise gönderim, kullanıcı onayı gerekir); düzelince limitler 145'e döner.
+- **F4c-3 uygulama notları (18 Ekim 2026; kullanıcı uzaktayken alınan kararlar):**
+  - Üretici `tools/fixtures/scale.php` (`wp eval-file … products=N posts=M`, `remove`): 20
+    kategoride basit ürünler; fiyat, SKU, indirim ve stok dışı ürün numaradan türetilir, böylece
+    her koşu aynı kataloğu verir. Sayılar toplamı anlatır, büyük sayıyla yeniden çalıştırmak
+    yalnızca eksikleri ekler. Ürettiği her şey `_pergel_scale` meta'sını taşır; `remove` onunla
+    siler. Yerelde ürün başına ~86 ms, yazı başına ~18 ms (5.000 ürün 6,5 dk).
+  - Perf probe artık en yavaş tek sorguyu (`slowest_ms`, ilk 300 karakteri `slowest`) yazar;
+    `measure.mjs` toplam sorgu süresini (`query_ms`) ve en yavaş sorguyu tabloya, en yavaş
+    sorgunun metnini rapora ekler. Böylece katalogla büyüyen bir sorgu (tam tablo tarama,
+    `LIKE '%x%'`) sayı değişmeden de yakalanır.
+  - CI'da yeni `scale` işi (WooCommerce `latest`, JIT kapalı): mağaza starter'ı + 5.000 ürün +
+    2.000 yazı + arama indeksi, smoke ve `tests/budget/scale.json`. Sayfalar: mağaza, son sayfa
+    (`/shop/page/300/`, sayfa başına 16 ürün), fiyata göre sıralama, fiyat filtresi, kategori ve
+    son sayfası, ürün, ürün araması, günlük ve 150. sayfası, yazı, yazı araması, yazı kategorisi
+    50. sayfa. Limitler yerel ölçümün ~%10 üstü; `query_ms ≤ 80` ve `slowest_ms ≤ 40` CI
+    makinesinin yavaşlığına pay bırakır.
+  - Yerel ölçüm (5.000 ürün, 2.000 yazı, WP_DEBUG kapalı): sorgu sayısı katalogla artmıyor
+    (mağaza 108, kategori 119, ürün 92, yazı sayfaları ~80). En yavaş sorgular fiyat filtresi
+    (17,2 ms, `wc_product_meta_lookup` JOIN), mağaza son sayfası (10,5 ms, `SQL_CALC_FOUND_ROWS`
+    + `LIMIT 4784, 16`) ve yazı araması (8,9 ms, `wp_pergel_search` önek araması). Kategori
+    sayfaları yukarıdaki WooCommerce boş filtre hatasına düşer (skala ürünlerinin puanı ve
+    niteliği yok); yazmalar `writesIgnore`'da.
 
 ## Aşamalar ve bitti tanımları
 
