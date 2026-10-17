@@ -1036,6 +1036,31 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
       yutuldu ve sipariş isteği hiç gitmedi. `tests/shop/helpers.mjs` → `placeOrder()` sipariş
       isteği gidene kadar tıklamayı tekrarlar (her denemede 10 sn bekler). Gerçek kullanıcıda
       karşılığı ikinci tıklama; WooCommerce davranışı, Pergel'in değil.
+  - **Yerel 50.000 ürün + 10.000 yazı** (aynı CI sitesi, WP_DEBUG kapalı, Windows MariaDB 11.8;
+    üretim 72 dk ürün + 3 dk yazı, arama indeksi 971.631 satır, yeniden kurulumu 193 sn).
+    `scale.json` sayfalarına son sayfalar eklenerek ölçüldü (`/shop/page/3100/`, kategori
+    150. sayfa, `/journal/page/1000/`, yazı kategorisi 900. sayfa, ürün 49000, yazı 9000):
+    - **Sorgu sayısı katalogla artmıyor:** mağaza 100–108, kategori 119, ürün 92, arama 86, yazı
+      sayfaları 79–81 (5.000'dekiyle aynı). HTML, istek ve JS boyutları da aynı; axe 0.
+    - Ürün ve yazı sayfaları, günlük ve yazı kategorisinin son sayfaları düz kalıyor (en yavaş
+      sorgu ≤ 8 ms). Ürün araması (`copper lamp`) 14 ms.
+    - **Katalogla büyüyen sorgular (5.000'de CI limiti `slowest_ms ≤ 40` içinde, 50.000'de üstünde):**
+      - WooCommerce'in mağaza ana sorgusu (`SQL_CALC_FOUND_ROWS` + katalogda gizli ürünler için
+        `NOT IN` alt sorgusu + `GROUP BY`): 1. sayfa 32 ms, 300. sayfa 70 ms, 3100. sayfa 117 ms.
+        Fiyata göre sıralama ve fiyat filtresi (`wc_product_meta_lookup` JOIN) 58–71 ms. Bu
+        sorgular WooCommerce çekirdeğinin; Pergel değiştirmez. Canlıda sayfa önbelleği
+        (LiteSpeed Cache) misafirlerde bu maliyeti saklar.
+      - Pergel arama indeksi, yazı araması `scale post 1500`: 64 ms (5.000'de 9 ms). Sebep sahte
+        veri: `scale` kelimesi üretilen 60.000 içeriğin hepsinde var, önek araması indeksi
+        kullanıyor (PRIMARY `kind, token`) ama 60.000 satırı toplamak zorunda. Gerçek katalogda
+        her belgede geçen kelime nadirdir; yine de çok yaygın kelimeler için bir üst sınır
+        (eşleşme sayısı kesme veya durak kelimeler) F6 sertleştirmesinde değerlendirilecek.
+      - Kategori 150. sayfa: toplam sorgu süresi 336 ms, ama en yavaş "sorgu" WooCommerce boş
+        filtre hatasının `wp_options` UPDATE'leri (122 ms, Windows'ta disk yazması); okuma
+        sorguları ≤ 12 ms.
+    - Sonuç: Pergel'in eklediği hiçbir sorgu katalogla sayıca çoğalmıyor; büyüyen süreler
+      WooCommerce'in sayfalama/sıralama sorgularında ve aşırı yaygın arama kelimesinde. CI
+      bütçesi 5.000 üründe kalıyor; 50.000 için limit yazılmadı (yerel, tek seferlik ölçüm).
 
 ## Aşamalar ve bitti tanımları
 
@@ -1056,3 +1081,7 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 - ~~Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor~~ → F2'de performans modülüyle çözüldü (bütçe `emoji = 0`).
 - ~~K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi)~~ → F3a'da `pergel/breadcrumb` ile çözüldü (SEO matrisi görünen yolu BreadcrumbList ile karşılaştırır).
 - ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.
+- Arama indeksinde çok yaygın kelime (her belgede geçen) 60.000 içerikte 64 ms; eşleşme sayısına üst sınır veya durak kelimeler → F6 (F4c-3 50k ölçümü).
+- WooCommerce boş filtre verisi hatası (`FilterData::get_cache`): her görüntülemede yeniden sayım ve yazma; shop.json ve scale.json limitleri bunu içeriyor. WooCommerce'e hata bildirimi kullanıcı onayı bekliyor; düzelince limitler geri çekilir (F4c-2, F4c-3).
+- Canlı sunucuda (Hostinger) `opcache.jit` ayarı F7 öncesi kontrol edilecek; CI'da PHP 8.4 JIT `php -S` ve WP-CLI'yi WooCommerce isteklerinde çökertiyor (F4c-2).
+- CI'da `php -S` `/blog/` isteğinde opcache kapalıyken de ara sıra segfault veriyor; kök sebep bilinmiyor, testler bir kez yeniden soruyor (F4c-3).
