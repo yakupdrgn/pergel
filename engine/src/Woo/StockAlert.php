@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
+use Pergel\Core\Visitor;
 use Pergel\Forms\Form;
 use Pergel\Forms\Submit;
 use Pergel\Settings\Labels;
@@ -22,8 +23,15 @@ use Pergel\Settings\Settings;
  * A visitor who is not logged in confirms the address first, with a link
  * in an email (double opt-in); a logged-in customer who gives the address
  * of the account is signed up at once. The form is guarded like the
- * contact form: a trap field, a signed token, a few seconds' wait and the
- * same sending limit per connection (Forms\Submit). When a product or
+ * contact form: a trap field, a signed token, a few seconds' wait, no
+ * posts from other sites, and the same limits per connection and for the
+ * whole site (Forms\Submit). An address gets at most MAILS_PER_DAY
+ * confirmation emails a day, whatever the products, and the answer never
+ * tells whether an address is signed up already. The links in the emails
+ * open a page with a button: mail scanners that open links do not
+ * confirm or remove anything. Only products in the "sale" or "login"
+ * sales mode take alerts.
+ * When a product or
  * variation comes back in stock, Action Scheduler sends the emails in
  * batches of BATCH. Both emails are WooCommerce emails, so their texts
  * and looks are edited under WooCommerce → Settings → Emails. The
@@ -53,6 +61,11 @@ final class StockAlert {
 	 * Addresses emailed per run.
 	 */
 	public const BATCH = 50;
+
+	/**
+	 * Confirmation emails an address gets in a day.
+	 */
+	public const MAILS_PER_DAY = 3;
 
 	/**
 	 * Keys of the two emails in WooCommerce's list.
@@ -98,7 +111,6 @@ final class StockAlert {
 		add_action( 'rest_api_init', array( self::class, 'route' ) );
 		add_action( 'admin_post_nopriv_' . self::ACTION, array( self::class, 'fallback' ) );
 		add_action( 'admin_post_' . self::ACTION, array( self::class, 'fallback' ) );
-		add_action( 'template_redirect', array( self::class, 'link_clicked' ), 5 );
 		add_action( 'woocommerce_product_set_stock_status', array( self::class, 'stock_status' ), 10, 2 );
 		add_action( 'woocommerce_variation_set_stock_status', array( self::class, 'stock_status' ), 10, 2 );
 		add_filter( 'woocommerce_email_classes', array( self::class, 'emails' ) );
@@ -285,7 +297,7 @@ final class StockAlert {
 			return null;
 		}
 		$product = wc_get_product( $id );
-		if ( ! $product instanceof \WC_Product || $product->is_in_stock() || 'publish' !== get_post_status( $product->is_type( 'variation' ) ? $product->get_parent_id() : $id ) ) {
+		if ( ! $product instanceof \WC_Product || $product->is_in_stock() || ! self::for_sale( $product ) || 'publish' !== get_post_status( $product->is_type( 'variation' ) ? $product->get_parent_id() : $id ) ) {
 			return null;
 		}
 		if ( $id === $page ) {
@@ -293,6 +305,17 @@ final class StockAlert {
 			return null !== $own && self::sold_out( $own ) ? $product : null;
 		}
 		return $product instanceof \WC_Product_Variation && $product->get_parent_id() === $page && $product->is_purchasable() ? $product : null;
+	}
+
+	/**
+	 * Whether the product's sales mode sells it to someone here: "sale" or
+	 * "login". The modes are not applied everywhere (admin-post, cron), so
+	 * the alerts ask for the mode themselves.
+	 *
+	 * @param \WC_Product $product Product or variation.
+	 */
+	private static function for_sale( \WC_Product $product ): bool {
+		return in_array( Modes::of( $product ), array( Modes::SALE, Modes::LOGIN ), true );
 	}
 
 	/**
@@ -335,11 +358,14 @@ final class StockAlert {
 	/**
 	 * The form sent without JavaScript: handles it and goes back to the
 	 * product with the result in the address. Hooked on admin_post(_nopriv).
+	 * A logged-in customer counts as a guest here: the browser sends their
+	 * cookies with a form another site posts, so the address is confirmed
+	 * by email. (The REST route knows the user only with a nonce.)
 	 */
 	public static function fallback(): void {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Public form; pages may be cached, so the signed token stands in for a nonce. handle() checks every field.
 		$input  = wp_unslash( $_POST );
-		$result = self::handle( $input, Submit::ip(), get_current_user_id() );
+		$result = self::handle( $input, Submit::ip(), 0 );
 		$page   = self::verify( $input['token'] ?? null );
 		$back   = null === $page ? false : get_permalink( $page['product'] );
 		$back   = is_string( $back ) ? $back : home_url( '/' );
@@ -375,13 +401,12 @@ final class StockAlert {
 			$result['code'] = 'wait';
 			return $result;
 		}
+		if ( Visitor::foreign_origin() ) {
+			return $result;
+		}
 		$product = self::target( $spec['product'], $input['product'] ?? null );
 		if ( null === $product ) {
 			$result['code'] = 'unavailable';
-			return $result;
-		}
-		if ( ! Submit::within_limit( $ip ) ) {
-			$result['code'] = 'limit';
 			return $result;
 		}
 		$email = is_string( $input['email'] ?? null ) ? strtolower( trim( $input['email'] ) ) : '';
@@ -395,23 +420,33 @@ final class StockAlert {
 			$result['code'] = 'invalid';
 			return $result;
 		}
+		if ( ! Submit::within_limit( $ip ) || ! Submit::within_site_cap() ) {
+			$result['code'] = 'limit';
+			return $result;
+		}
 
 		StockAlertStore::maintain();
 		StockAlertStore::purge();
 		$account  = $user > 0 ? get_userdata( $user ) : false;
 		$existing = StockAlertStore::find( $product->get_id(), $email );
-		if ( null !== $existing && StockAlertStore::ACTIVE === $existing['status'] ) {
-			$result['code'] = 'subscribed';
-			return $result;
-		}
 		if ( $account instanceof \WP_User && strtolower( $account->user_email ) === $email ) {
-			StockAlertStore::save( $product->get_id(), $email, $user, StockAlertStore::ACTIVE );
+			if ( null === $existing || StockAlertStore::ACTIVE !== $existing['status'] ) {
+				StockAlertStore::save( $product->get_id(), $email, $user, StockAlertStore::ACTIVE );
+			}
 			$result['code'] = 'subscribed';
 			return $result;
 		}
+		// From here the answer is always the same, so no one learns whether an address is signed up.
 		$result['code'] = 'confirm';
+		if ( null !== $existing && StockAlertStore::ACTIVE === $existing['status'] ) {
+			return $result;
+		}
 		// One confirmation email an hour per address and product, however often the form is sent.
 		if ( null !== $existing && StockAlertStore::PENDING === $existing['status'] && strtotime( $existing['created'] . ' UTC' ) > time() - HOUR_IN_SECONDS ) {
+			return $result;
+		}
+		// And a few a day per address, whatever the products.
+		if ( ! Visitor::hit( 'stock-mail:' . $email, self::MAILS_PER_DAY, DAY_IN_SECONDS ) ) {
 			return $result;
 		}
 		$row = StockAlertStore::save( $product->get_id(), $email, $user, StockAlertStore::PENDING );
@@ -443,8 +478,10 @@ final class StockAlert {
 	}
 
 	/**
-	 * Handles a link from the emails, then goes to the product with the
-	 * result. Hooked on template_redirect.
+	 * Handles a link from the emails. Opening it shows a page with a
+	 * button; the button confirms or removes the alert and goes to the
+	 * product with the result. Mail scanners and link previews open links
+	 * but do not press buttons. Hooked on template_redirect.
 	 */
 	public static function link_clicked(): void {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- A link from an email; the key, made from a site secret, is its proof.
@@ -455,7 +492,8 @@ final class StockAlert {
 		$id  = isset( $_GET[ self::LINK . '_id' ] ) && is_numeric( $_GET[ self::LINK . '_id' ] ) ? (int) $_GET[ self::LINK . '_id' ] : 0;
 		$key = isset( $_GET[ self::LINK . '_key' ] ) && is_string( $_GET[ self::LINK . '_key' ] ) ? sanitize_key( wp_unslash( $_GET[ self::LINK . '_key' ] ) ) : '';
 		// phpcs:enable
-		$code = self::use_link( $action, $id, $key );
+		$posted = isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'];
+		$code   = $posted ? self::use_link( $action, $id, $key ) : self::check_link( $action, $id, $key );
 		if ( null === $code['product'] ) {
 			wp_die(
 				esc_html( self::message( 'link' ) ),
@@ -467,11 +505,69 @@ final class StockAlert {
 				)
 			);
 		}
+		nocache_headers();
+		if ( ! $posted ) {
+			self::link_page( $action, $id, $key, $code['product'] );
+		}
 		$page = $code['product']->is_type( 'variation' ) ? $code['product']->get_parent_id() : $code['product']->get_id();
 		$back = get_permalink( $page );
-		nocache_headers();
 		wp_safe_redirect( add_query_arg( self::RESULT, $code['code'], is_string( $back ) ? $back : home_url( '/' ) ) . '#' . self::ANCHOR, 303 );
 		exit;
+	}
+
+	/**
+	 * The page an email link opens: what the button will do, and the
+	 * button.
+	 *
+	 * @param string      $action  confirm or remove.
+	 * @param int         $id      Alert id.
+	 * @param string      $key     Key from the link.
+	 * @param \WC_Product $product The alert's product.
+	 */
+	private static function link_page( string $action, int $id, string $key, \WC_Product $product ): void {
+		$name   = wp_strip_all_tags( $product->get_name() );
+		$target = add_query_arg(
+			array(
+				self::LINK          => $action,
+				self::LINK . '_id'  => $id,
+				self::LINK . '_key' => $key,
+			),
+			home_url( '/' )
+		);
+		if ( 'remove' === $action ) {
+			$title = __( 'Remove your email address', 'pergel-engine' );
+			/* translators: %s: product name. */
+			$text   = sprintf( __( 'You will no longer get an email when %s is back in stock.', 'pergel-engine' ), $name );
+			$button = __( 'Remove my address', 'pergel-engine' );
+		} else {
+			$title = __( 'Confirm your back-in-stock alert', 'pergel-engine' );
+			/* translators: %s: product name. */
+			$text   = sprintf( __( 'We will email you once when %s is back in stock.', 'pergel-engine' ), $name );
+			$button = __( 'Confirm the alert', 'pergel-engine' );
+		}
+		wp_die(
+			'<h1>' . esc_html( $title ) . '</h1><p>' . esc_html( $text ) . '</p><form method="post" action="' . esc_url( $target ) . '"><p><button type="submit" class="button">' . esc_html( $button ) . '</button></p></form>',
+			esc_html( $title ),
+			array( 'response' => 200 )
+		);
+	}
+
+	/**
+	 * Looks a link up without using it.
+	 *
+	 * @param string $action confirm or remove.
+	 * @param int    $id     Alert id.
+	 * @param string $key    Key from the link.
+	 * @return array{code: string, product: \WC_Product|null} The product is null for a link that is wrong or used up.
+	 */
+	public static function check_link( string $action, int $id, string $key ): array {
+		$row     = StockAlertStore::installed() && $id > 0 ? StockAlertStore::get( $id ) : null;
+		$product = null === $row ? null : wc_get_product( $row['product_id'] );
+		$good    = null !== $row && hash_equals( self::key( $action, $row ), $key ) && $product instanceof \WC_Product;
+		return array(
+			'code'    => $good ? 'ok' : 'link',
+			'product' => $good ? $product : null,
+		);
 	}
 
 	/**
@@ -574,7 +670,7 @@ final class StockAlert {
 	 */
 	public static function send( mixed $id ): int {
 		$product = is_numeric( $id ) ? wc_get_product( (int) $id ) : null;
-		if ( true !== Settings::get( 'woo.stock_alert' ) || ! $product instanceof \WC_Product || ! $product->is_in_stock() || ! $product->is_purchasable() ) {
+		if ( true !== Settings::get( 'woo.stock_alert' ) || ! $product instanceof \WC_Product || ! $product->is_in_stock() || ! $product->is_purchasable() || ! self::for_sale( $product ) ) {
 			return 0;
 		}
 		$rows = StockAlertStore::due( $product->get_id(), self::BATCH );

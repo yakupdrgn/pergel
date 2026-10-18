@@ -10,6 +10,7 @@ declare( strict_types=1 );
 namespace Pergel\Search;
 
 use Pergel\Core\Plugin;
+use Pergel\Core\Visitor;
 use Pergel\Settings\Settings;
 use Pergel\Woo\Modes;
 
@@ -37,6 +38,12 @@ final class Suggest {
 	 * Longest query accepted, in characters.
 	 */
 	public const MAX_QUERY = 100;
+
+	/**
+	 * Shortest query answered, in characters; the view script asks from
+	 * two on as well.
+	 */
+	public const MIN_QUERY = 2;
 
 	/**
 	 * Most categories suggested.
@@ -134,7 +141,7 @@ final class Suggest {
 				home_url( '/' )
 			),
 		);
-		if ( array() === $terms || array() === $types || ! Index::ready() ) {
+		if ( mb_strlen( $query, 'UTF-8' ) < self::MIN_QUERY || array() === $terms || array() === $types || ! Index::ready() ) {
 			return $answer;
 		}
 
@@ -237,15 +244,6 @@ final class Suggest {
 	 * database on every keystroke, so there is no limit.
 	 */
 	private static function within_limit(): bool {
-		if ( ! wp_using_ext_object_cache() ) {
-			return true;
-		}
-		$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-		$key = 'rate:' . md5( wp_salt( 'nonce' ) . $ip ) . ':' . (int) floor( time() / 60 );
-		if ( false === wp_cache_add( $key, 1, Index::CACHE_GROUP, MINUTE_IN_SECONDS ) ) {
-			$count = wp_cache_incr( $key, 1, Index::CACHE_GROUP );
-			return false === $count || $count <= self::LIMIT;
-		}
-		return true;
+		return ! wp_using_ext_object_cache() || Visitor::hit( 'search:' . Visitor::bucket( Visitor::ip() ), self::LIMIT, MINUTE_IN_SECONDS );
 	}
 }

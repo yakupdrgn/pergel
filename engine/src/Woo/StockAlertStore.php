@@ -46,11 +46,13 @@ final class StockAlertStore {
 	private const BATCH = 50;
 
 	/**
-	 * Adds the hooks that work on the stored rows: the privacy tools and
-	 * the admin list. Woo\Module calls it once the table exists, so the
-	 * rows stay listed and erasable after the alerts are turned off.
+	 * Adds the hooks that work on the stored rows: the privacy tools, the
+	 * admin list and the links in the emails. Woo\Module calls it once the
+	 * table exists, so the rows stay listed and erasable, and an address
+	 * can still be removed with its link, after the alerts are turned off.
 	 */
 	public static function register(): void {
+		add_action( 'template_redirect', array( StockAlert::class, 'link_clicked' ), 5 );
 		add_filter( 'wp_privacy_personal_data_exporters', array( self::class, 'exporters' ) );
 		add_filter( 'wp_privacy_personal_data_erasers', array( self::class, 'erasers' ) );
 		add_action( StockAlert::SEND_HOOK, array( StockAlert::class, 'run' ) );

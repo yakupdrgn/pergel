@@ -15,6 +15,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Pergel\Core\Visitor;
 use Pergel\Forms\Submit;
 use Pergel\Settings\Settings;
 use Pergel\Woo\Modes;
@@ -80,6 +81,10 @@ final class StockAlertTest extends TestCase {
 		$this->ip    = '198.51.100.' . wp_rand( 1, 254 );
 		wp_set_current_user( 0 );
 		add_filter( 'pre_wp_mail', array( $this, 'catch_mail' ), 10, 2 );
+		delete_transient( Visitor::key( 'form:site', HOUR_IN_SECONDS ) );
+		foreach ( array( 'ada', 'other', 'grace' ) as $name ) {
+			delete_transient( Visitor::key( 'stock-mail:' . $name . '@example.invalid', DAY_IN_SECONDS ) );
+		}
 		if ( Woo::active() ) {
 			$this->installed = StockAlertStore::installed();
 			StockAlertStore::maintain();
@@ -99,7 +104,9 @@ final class StockAlertTest extends TestCase {
 		remove_filter( 'pre_wp_mail', array( $this, 'catch_mail' ) );
 		remove_action( 'woocommerce_product_set_stock_status', array( StockAlert::class, 'stock_status' ) );
 		remove_action( 'woocommerce_variation_set_stock_status', array( StockAlert::class, 'stock_status' ) );
-		delete_transient( 'pergel_form_' . substr( wp_hash( $this->ip, 'nonce' ), 0, 20 ) );
+		delete_transient( Visitor::key( 'form:' . $this->ip, Submit::WINDOW ) );
+		unset( $_GET['pergel_stock'], $_GET['pergel_stock_id'], $_GET['pergel_stock_key'], $_SERVER['REQUEST_METHOD'] );
+		remove_all_filters( 'wp_die_handler' );
 		unset( $_GET['pergel_stock_alert'] );
 		if ( Woo::active() ) {
 			foreach ( $this->emails as $key ) {
@@ -428,7 +435,7 @@ final class StockAlertTest extends TestCase {
 		$this->assertSame( array( 'email', 'consent' ), array_keys( $result['errors'] ) );
 		$this->assertSame( 'invalid', StockAlert::handle( $this->form( $id, $id, array( 'email' => str_repeat( 'a', 90 ) . '@example.invalid' ) ), $this->ip, 0 )['code'] );
 
-		set_transient( 'pergel_form_' . substr( wp_hash( $this->ip, 'nonce' ), 0, 20 ), Submit::LIMIT, 60 );
+		set_transient( Visitor::key( 'form:' . $this->ip, Submit::WINDOW ), Submit::LIMIT, 60 );
 		$this->assertSame( 'limit', StockAlert::handle( $this->form( $id, $id ), $this->ip, 0 )['code'] );
 
 		$this->assertSame( array(), $this->mails );
@@ -464,7 +471,7 @@ final class StockAlertTest extends TestCase {
 		$this->assertSame( StockAlertStore::ACTIVE, StockAlertStore::get( $row['id'] )['status'] ?? null );
 		$this->assertSame( 'confirmed', StockAlert::use_link( 'confirm', $row['id'], $key )['code'], 'A second click is harmless.' );
 
-		$this->assertSame( 'subscribed', StockAlert::handle( $this->form( $id, $id ), $this->ip, 0 )['code'] );
+		$this->assertSame( 'confirm', StockAlert::handle( $this->form( $id, $id ), $this->ip, 0 )['code'], 'A stranger cannot tell the address is signed up.' );
 		$this->assertCount( 1, $this->mails );
 
 		$remove = self::key( StockAlert::link( 'remove', $row ) );
@@ -490,6 +497,69 @@ final class StockAlertTest extends TestCase {
 		$this->assertSame( 'confirm', StockAlert::handle( $this->form( $product->get_id(), $product->get_id() ), $this->ip, 0 )['code'] );
 		$this->assertCount( 1, $this->mails, 'After an hour the email goes again.' );
 		$this->assertSame( 'link', StockAlert::use_link( 'confirm', $row['id'], $old )['code'] );
+	}
+
+	public function test_an_address_gets_a_few_confirmation_emails_a_day(): void {
+		$this->needs_woocommerce();
+		$this->turn();
+		for ( $i = 0; $i <= StockAlert::MAILS_PER_DAY; $i++ ) {
+			$id = $this->simple()->get_id();
+			$this->assertSame( 'confirm', StockAlert::handle( $this->form( $id, $id ), $this->ip, 0 )['code'] );
+		}
+
+		$this->assertCount( StockAlert::MAILS_PER_DAY, $this->mails, 'The answer is the same, the email stops.' );
+		$this->assertNull( StockAlertStore::find( $id, 'ada@example.invalid' ) );
+	}
+
+	public function test_products_not_for_sale_take_no_alerts(): void {
+		$this->needs_woocommerce();
+		$this->turn();
+		$product = $this->simple();
+		$id      = $product->get_id();
+		$row     = StockAlertStore::save( $id, 'grace@example.invalid', 0, StockAlertStore::ACTIVE );
+		$this->assertNotNull( $row );
+		update_post_meta( $id, Modes::POST_META, Modes::CATALOG );
+		Modes::flush();
+
+		$this->assertSame( 'unavailable', StockAlert::handle( $this->form( $id, $id ), $this->ip, 0 )['code'], 'The sales modes are not applied in admin-post.php; the alert asks for the mode.' );
+		$product->set_stock_status( 'instock' );
+		$product->save();
+		$this->assertSame( 0, StockAlert::send( $id ) );
+		$this->assertSame( array(), $this->mails );
+	}
+
+	public function test_an_email_link_opens_a_page_with_a_button(): void {
+		$this->needs_woocommerce();
+		$product = $this->simple();
+		$row     = StockAlertStore::save( $product->get_id(), 'ada@example.invalid', 0, StockAlertStore::PENDING );
+		$this->assertNotNull( $row );
+		$link = StockAlert::link( 'confirm', $row );
+		parse_str( (string) wp_parse_url( $link, PHP_URL_QUERY ), $query );
+		$_GET                      = array_merge( $_GET, $query );
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		add_filter(
+			'wp_die_handler',
+			static fn (): \Closure => static function ( mixed $message, mixed $title, mixed $args ): void {
+				throw new \RuntimeException( (string) $args['response'] . ' ' . $message );
+			}
+		);
+		try {
+			StockAlert::link_clicked();
+			$this->fail( 'The page should be shown.' );
+		} catch ( \RuntimeException $page ) {
+			$this->assertStringStartsWith( '200 ', $page->getMessage() );
+			$this->assertStringContainsString( '<form method="post" action="' . esc_url( $link ) . '">', $page->getMessage() );
+			$this->assertStringContainsString( esc_html( $product->get_name() ), $page->getMessage() );
+		}
+		$this->assertSame( StockAlertStore::PENDING, StockAlertStore::get( $row['id'] )['status'] ?? null, 'Opening the link confirms nothing.' );
+
+		$_GET['pergel_stock_key'] = str_repeat( 'a', 32 );
+		try {
+			StockAlert::link_clicked();
+			$this->fail( 'A wrong key should be turned back.' );
+		} catch ( \RuntimeException $page ) {
+			$this->assertStringStartsWith( '410 ', $page->getMessage() );
+		}
 	}
 
 	public function test_customer_with_the_account_address_is_signed_up_at_once(): void {

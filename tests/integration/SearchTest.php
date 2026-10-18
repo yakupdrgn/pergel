@@ -292,6 +292,7 @@ final class SearchTest extends TestCase {
 		}
 		Settings::update( array( 'search' => array( 'live_limit' => 3 ) ) );
 		Settings::flush();
+		$this->assertSame( array(), Suggest::answer( 'p' )['items'], 'One letter is not a query.' );
 		$answer = Suggest::answer( 'pergelflamingo' );
 		$this->assertSame( 5, $answer['total'] );
 		$this->assertCount( 3, $answer['items'] );
