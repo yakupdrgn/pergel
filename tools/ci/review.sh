@@ -37,7 +37,11 @@ status=0
 echo "::group::Plugin Check $PLUGIN_CHECK"
 # plugin_updater_detected: the Update URI header is deliberate; it keeps
 # WordPress.org from offering another plugin's update for this slug.
-found="$(wp plugin check pergel-engine --format=csv --fields=file,line,type,code,message --ignore-codes=plugin_updater_detected)"
+# InvalidPrefixPassed: Plugin Check guesses the prefixes from the code and
+# hands PHPCS one that is not a PHP name ("pergel/forms/subject", from hook
+# names); PHPCS drops it and still checks with "pergel". Unprefixed names are
+# reported under their own codes (NonPrefixed*).
+found="$(wp plugin check pergel-engine --format=csv --fields=file,line,type,code,message --ignore-codes=plugin_updater_detected,WordPress.NamingConventions.PrefixAllGlobals.InvalidPrefixPassed)"
 printf '%s\n' "$found"
 echo "::endgroup::"
 if printf '%s\n' "$found" | grep -q -v -e '^$' -e '^FILE: ' -e '^file,line,'; then

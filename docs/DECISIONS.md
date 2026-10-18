@@ -681,7 +681,7 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   - Modül kapalıyken kaydedilen içerik indekse girmez; modül yeniden açılınca indeks yeniden
     kurulur (`Core\Plugin::switched` → `enabled()`).
   - Eklenti kaldırıldığında tablo silinmez, çünkü motorda henüz `uninstall.php` yok. Bu iş
-    F6'ya, diğer seçeneklerle birlikte yapılmak üzere bırakıldı.
+    F6'ya, diğer seçeneklerle birlikte yapılmak üzere bırakıldı (F6c'de yapıldı, `Core\Uninstall`).
 - **F4b ürün filtreleri (16 Ekim 2026, kullanıcı kararları):** Mağaza şablonunda filtreler
   solda bir kenar çubuğudur (16rem); 782 px altında WooCommerce'in kendi çekmecesine ("Ürünleri
   filtrele" düğmesi) geçer. Filtreler gizli `pergel/hidden-product-filters` pattern'inde:
@@ -845,7 +845,8 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
       görünür. İletişim formu da aynı yoldadır.
     - Bir seçenek stoğa girince ana ürünü bekleyenler de kuyruğa alınır; WooCommerce ana ürünü
       isteğin sonunda eşitlediği için bu kuyruk ana ürün eşitlendikten sonra işler.
-    - Eklenti silinince tablo kalır; arama indeksiyle aynı şekilde `uninstall.php` işi F6'dadır.
+    - Eklenti silinince tablo kalır; arama indeksiyle aynı şekilde `uninstall.php` işi F6'dadır
+      (F6c'de yapıldı).
     - E2E testlerinde Playwright'ın `page.clock`'u Interactivity API'yi durduruyor; tarih
       testleri yalnızca `Date`'i `addInitScript` ile sabitler.
 - **P2-4 beden rehberi ve birlikte sık alınanlar (16 Ekim 2026, kullanıcı kararları):**
@@ -1215,12 +1216,36 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
   Plugin Check 2.1.0 ve Theme Check 20260901 ile denetlenir; her Plugin Check bulgusu ve Theme
   Check'in REQUIRED/WARNING satırları işi kırar. Bilerek kabul edilenler gerekçesiyle kodda
   (`phpcs:ignore … --`) veya `tools/ci/review.*` içinde durur: `Update URI` başlığı
-  (WordPress.org başka bir eklentinin güncellemesini bu slug'a önermesin), Turnstile betiği ve
+  (WordPress.org başka bir eklentinin güncellemesini bu slug'a önermesin), Plugin Check'in
+  koddan tahmin edip PHPCS'e verdiği geçersiz önek (`InvalidPrefixPassed`, kanca adından
+  `pergel/forms/subject`; önek eksikleri kendi kodlarıyla yine yakalanır), Turnstile betiği ve
   doğrulaması (yalnızca Cloudflare sunar), kendi tablolarımızın önekten gelen adları,
   `load_plugin_textdomain` (WordPress.org'da değiliz, çeviriler `languages/`'da), WP-CLI ve REST
   JSON'a giden istisna mesajları, `.l10n.php` dosyalarındaki bağlam ayırıcı (`\x04`). Ekran
   görüntüsü eksikliği F6e'ye kadar kabul edilir. Blokların `render.php` dosyaları doğrudan
   çağrılınca çıkar (`ABSPATH`).
+
+### F6c: kaldırma ve yaygın arama terimi (18 Ekim 2026)
+
+- **Eklenti silinince verisi gider (`uninstall.php` → `Core\Uninstall`):** devre dışı bırakmak
+  hiçbir şey silmez; Eklentiler ekranında "Sil" WordPress'in "eklenti ve verileri silinsin mi?"
+  onayından sonra şunları kaldırır: ayarlar, arama indeksi ve stok uyarısı tabloları, zamanlanmış
+  olaylar, sınır sayaçları (`_transient_pergel_*`), form mesajları ve eklentinin yazı, terim ve
+  kullanıcı meta'ları (SEO başlığı/açıklaması/noindex, satış modları, teslim süresi, beden
+  rehberi, istek listesi, starter ve paket işaretleri), stok uyarısı e-postalarının WooCommerce
+  ayarları. Çoklu sitede her site için ayrı çalışır.
+- **Kalanlar:** starter'ın veya paketin yaptığı sayfalar, ürünler, menüler, terimler, medya ve
+  paketin yazdığı child tema. Bunlar sitenin içeriğidir; eklentiyle birlikte gitmeleri beklenmez.
+- **`PERGEL_KEEP_DATA`:** `wp-config.php`'de `true` ise silme hiçbir veriye dokunmaz (eklentiyi
+  zip'ten yeniden kurmak gibi durumlar için).
+- **Yaygın arama terimi:** 5.000'den fazla indeks satırında geçen terim (`Query::COMMON_ROWS`,
+  `pergel/search/common_rows` süzgeci) kendi başına toplanmaz; diğer terimlerin bulduğu içerikte
+  tek tek aranır, puanı ve "her terim eşleşmeli" kuralı aynı kalır. Bir terimin yaygın olup
+  olmadığını anlamak en çok 5.000 indeks girdisi okur. Durak kelime listesi kurulmadı: dile ve
+  kataloğa bağlı olurdu, "the" ya da "ve" de gerçek bir ürün adında geçebilir. Yalnızca yaygın
+  terimlerden oluşan sorgu (ör. tek başına "lamba") hepsini toplamaya devam eder; sonuç sayısı
+  zaten 1.000 ile sınırlı ve sonuç bir saat önbellekte kalır. 60.000 içerikli ölçüm: iki yaygın
+  ve bir nadir terim 111 → 2,4 ms, bir yaygın ve bir nadir 53 → 1,4 ms.
 
 ## Aşamalar ve bitti tanımları
 
@@ -1241,7 +1266,7 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
 - ~~Çekirdeğin emoji script'i (`wp-emoji-release`) yükleniyor~~ → F2'de performans modülüyle çözüldü (bütçe `emoji = 0`).
 - ~~K8'deki breadcrumb hizalaması (SEO eklentisi aktifken görünen breadcrumb'ın eklentiden gelmesi)~~ → F3a'da `pergel/breadcrumb` ile çözüldü (SEO matrisi görünen yolu BreadcrumbList ile karşılaştırır).
 - ~~HTML şablonlardaki sabit metinler çevrilemiyor~~ → F1'de `patterns/hidden-*.php`'ye taşındı.
-- Arama indeksinde çok yaygın kelime (her belgede geçen) 60.000 içerikte 64 ms; eşleşme sayısına üst sınır veya durak kelimeler → F6 (F4c-3 50k ölçümü).
+- ~~Arama indeksinde çok yaygın kelime (her belgede geçen) 60.000 içerikte 64 ms~~ → F6c'de çözüldü: yaygın terim yalnızca diğer terimlerin bulduğu içerikte aranır (`scale post 1500` biçimi 111 ms → 2 ms). Yalnızca yaygın terimlerden oluşan sorgu hâlâ hepsini toplar (60.000'de 55–105 ms; sonuç nesne önbelleğinde bir saat kalır).
 - WooCommerce boş filtre verisi hatası (`FilterData::get_cache`): her görüntülemede yeniden sayım ve yazma; shop.json ve scale.json limitleri bunu içeriyor. WooCommerce'e hata bildirimi kullanıcı onayı bekliyor; düzelince limitler geri çekilir (F4c-2, F4c-3).
 - Canlı sunucuda (Hostinger) `opcache.jit` ayarı F7 öncesi kontrol edilecek; CI'da PHP 8.4 JIT `php -S` ve WP-CLI'yi WooCommerce isteklerinde çökertiyor (F4c-2).
 - CI'da `php -S` `/blog/` isteğinde opcache kapalıyken de ara sıra segfault veriyor; kök sebep bilinmiyor, testler bir kez yeniden soruyor (F4c-3).

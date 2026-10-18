@@ -106,7 +106,7 @@ final class BoughtTogetherTest extends TestCase {
 		$this->assertSame( 4, substr_count( $html, '<li ' ) );
 
 		$this->assertStringContainsString( $this->total( 3 ), $html );
-		$this->assertStringContainsString( wc_price( 150 ), $html );
+		$this->assertSame( self::text( wc_price( 150 ) ), $this->amount( $html ) );
 		$this->assertStringContainsString( 'role="status"', $html );
 		$this->assertTrue( wp_style_is( 'pergel-bought-together', 'enqueued' ) );
 
@@ -173,7 +173,7 @@ final class BoughtTogetherTest extends TestCase {
 		$this->assertDoesNotMatchRegularExpression( '/id="' . $id . '"[^>]* checked/', $html );
 		$this->assertStringContainsString( '<span id="' . $id . '-hint"', $html );
 		// Until then the total holds the cross-sell alone.
-		$this->assertStringContainsString( wc_price( 20 ), $html );
+		$this->assertSame( self::text( wc_price( 20 ) ), $this->amount( $html ) );
 		$this->assertStringContainsString( $this->total( 1 ), $html );
 
 		$variations = $this->config( $html )['variations'];
@@ -313,6 +313,26 @@ final class BoughtTogetherTest extends TestCase {
 	private function total( int $count ): string {
 		/* translators: %d: number of products. */
 		return esc_html( sprintf( _n( 'Total for %d product:', 'Total for %d products:', $count, 'pergel-engine' ), $count ) );
+	}
+
+	/**
+	 * What a visitor reads in the total's amount.
+	 *
+	 * @param string $html Block markup.
+	 */
+	private function amount( string $html ): string {
+		$this->assertSame( 1, preg_match( '#<strong class="wp-block-pergel-bought-together__amount">(.*?)</strong>#s', $html, $match ) );
+		return self::text( $match[1] );
+	}
+
+	/**
+	 * Text of a piece of HTML. WordPress 7.2 writes the same markup with
+	 * other attribute order and entities, so prices are compared as read.
+	 *
+	 * @param string $html Markup.
+	 */
+	private static function text( string $html ): string {
+		return html_entity_decode( wp_strip_all_tags( $html ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 	}
 
 	/**
