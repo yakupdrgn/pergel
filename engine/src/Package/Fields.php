@@ -82,6 +82,39 @@ final class Fields {
 	}
 
 	/**
+	 * Field names in one line, items as name[count]{fields}.
+	 *
+	 * @param array<string, array<string, mixed>> $schema Field schema.
+	 */
+	public static function summary( array $schema ): string {
+		$names = array();
+		foreach ( $schema as $name => $field ) {
+			$names[] = 'items' === $field['type']
+				? sprintf( '%s[%d]{%s}', $name, count( $field['items'] ), self::summary( $field['items'][0] ?? array() ) )
+				: $name;
+		}
+		return implode( ' ', $names );
+	}
+
+	/**
+	 * Values a package could write: the sample texts, images under media/.
+	 *
+	 * @param array<string, array<string, mixed>> $schema Field schema.
+	 * @return array<string, mixed>
+	 */
+	public static function example( array $schema ): array {
+		$values = array();
+		foreach ( $schema as $name => $field ) {
+			$values[ $name ] = match ( $field['type'] ) {
+				'items' => array_map( array( self::class, 'example' ), $field['items'] ),
+				'image' => 'media/' . ( '' !== $field['default'] ? pathinfo( $field['default'], PATHINFO_FILENAME ) : 'image' ) . '.jpg',
+				default => $field['default'],
+			};
+		}
+		return $values;
+	}
+
+	/**
 	 * Writes values into a pattern's blocks.
 	 *
 	 * @param list<array<string, mixed>> $blocks parse_blocks() output.

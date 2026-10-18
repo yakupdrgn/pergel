@@ -760,6 +760,29 @@ içerik değiştiğinde güncellenir.
 - **WP-CLI:** `wp pergel search status`, `wp pergel search reindex`,
   `wp pergel search query <metin> [--type=product]`.
 
+## Yapay zekâ erişimi (F5d)
+
+`Abilities` modülü siteyi WordPress Abilities API'siyle yapay zekâ ajanlarına anlatır.
+Varsayılan olarak kapalıdır (`modules.abilities`, panelde "Yapay zekâ erişimi"). Açıkken
+`pergel` kategorisinde beş yetenek kaydeder; hiçbiri bir şey değiştirmez:
+
+| Yetenek | Döndürdüğü | Yetki |
+| --- | --- | --- |
+| `pergel/list-patterns` | Pergel desenleri, kategorileri ve alan özeti (`category` süzgeci) | `edit_posts` |
+| `pergel/get-pattern-fields` | Bir desenin alan şeması ve paket içerik dosyasına yazılacak örnek bölüm | `edit_posts` |
+| `pergel/list-pages` | Sayfalar menü sırasıyla: adres, durum, şablon, yapan paket ve bölümlerin desenleri (`page`, en fazla 100 `per_page`) | `edit_pages` |
+| `pergel/get-design-tokens` | Etkin temanın token'ları (ana tema + alt temanın değiştirdikleri) | `edit_theme_options` |
+| `pergel/get-settings` | `pergel_settings` gruplarıyla | `manage_options` |
+
+- **Kimler:** Yalnızca oturum açmış ve yetkisi olan kullanıcılar. REST'te uygulama şifresi gibi
+  WordPress'in kendi kimlik doğrulaması kullanılır; Pergel ayrı anahtar tutmaz.
+- **Nereden:** REST'te `GET /wp-abilities/v1/abilities/<ad>/run?input[...]=` (salt okunur
+  yetenekler POST'u 405 ile reddeder). Yetenekler `meta.public` ve `meta.mcp.public` taşır;
+  WordPress MCP Adapter gibi bir MCP sunucusu onları araç olarak sunar. MCP sunucusu Pergel'in
+  parçası değildir.
+- **Sınır:** Kullanıcı başına dakikada 60 çağrı (`pergel/abilities/limit` süzgeci), transient
+  sayaçla. Aşılırsa `pergel_ability_limit` (429).
+
 ## WP-CLI (F2)
 
 `Cli` modülü yalnızca WP-CLI altında yüklenir; web isteklerine kod eklemez.
@@ -778,6 +801,10 @@ içerik değiştiğinde güncellenir.
 | `wp pergel starter list` | Pergel'le gelen starter'lar |
 | `wp pergel starter install <ad\|klasör> [--dry-run] [--reset]` | Starter'ın sayfalarını, menüsünü, okuma ayarlarını ve (mağaza starter'ında) kategori, öznitelik, ürün ve görsellerini kurar; tekrar çalışınca bir şey değiştirmez |
 | `wp pergel starter remove <ad> [--dry-run] [--yes]` | Starter'ın yaptığı her şeyi kalıcı siler, okuma ayarlarını düzeltir |
+| `wp pergel pattern list\|fields <ad>` | Desenler ve bir desenin paket alanları (F5a) |
+| `wp pergel package validate <klasör>` | Proje paketini denetler (F5a) |
+| `wp pergel import <klasör> [--dry-run]` | Proje paketinden siteyi kurar; tekrar çalışınca bir şey değiştirmez (F5b) |
+| `wp pergel export <klasör> [--dry-run] [--all]` | Siteyi proje paketine yazar (F5c). Ayrıntı: `docs/PROJECT-PACKAGE.md` |
 
 Ayar komutları ekranla aynı şemadan geçer: geçersiz veya bilinmeyen bir alan varsa hiçbir şey
 kaydedilmez ve komut 1 ile çıkar (ekran ise geçerli kısmı kaydeder). Görsel alanları ek olarak
