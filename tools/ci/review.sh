@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Plugin Check and Theme Check on what the zips hold.
+# Plugin Check and Theme Check on the release zips.
 #
 #   tools/ci/review.sh              (after tools/ci/setup-wp.sh)
 #
-# The engine and theme come from `git archive HEAD`, so the files that
-# .gitattributes leaves out (tests, .gitkeep) are not checked and uncommitted
-# changes are not either. Neither tool's exit code says enough; this script fails
+# The zips come from tools/release.php package (`git archive HEAD`), so the
+# files that .gitattributes leaves out (tests, .gitkeep) are not checked and
+# uncommitted changes are not either. WordPress installs them as a site owner
+# would, and they stay in $DIST. Neither tool's exit code says enough; this script fails
 # on any Plugin Check finding and on Theme Check's REQUIRED and WARNING lines,
 # apart from the ones accepted in tools/ci/review.php.
 set -euo pipefail
@@ -21,13 +22,14 @@ if command -v cygpath > /dev/null; then WP_PHP="$(cygpath -m "$WP_DIR")"; fi
 wp() { command wp --path="$WP_PHP" "$@"; }
 retry() { for i in 1 2 3; do "$@" && return 0; echo "Retrying in 15 s: $*"; sleep 15; done; return 1; }
 
-echo "::group::Engine and theme as zipped"
+echo "::group::Engine and theme from the release zips"
 rm -rf "$DIST"
-mkdir -p "$DIST"
-git -C "$REPO" archive HEAD engine theme | tar -x -C "$DIST"
+php "$REPO/tools/release.php" package "$DIST"
+DIST_PHP="$DIST"
+if command -v cygpath > /dev/null; then DIST_PHP="$(cygpath -m "$DIST")"; fi
 rm -rf "$WP_DIR/wp-content/plugins/pergel-engine" "$WP_DIR/wp-content/themes/pergel"
-cp -r "$DIST/engine" "$WP_DIR/wp-content/plugins/pergel-engine"
-cp -r "$DIST/theme" "$WP_DIR/wp-content/themes/pergel"
+wp plugin install "$DIST_PHP"/pergel-engine-*.zip --activate
+wp theme install "$DIST_PHP"/pergel-[0-9]*.zip --activate
 retry wp plugin install plugin-check --version="$PLUGIN_CHECK" --activate
 retry wp plugin install theme-check --version="$THEME_CHECK" --activate
 echo "::endgroup::"
