@@ -14,7 +14,8 @@ namespace Pergel\Seo;
  * FAQPage node: in Pergel's own graph, or in the graph of the active SEO
  * plugin. SEOPress takes no extra nodes, so there it is a script of its own.
  * A graph that already has a FAQPage (a plugin's FAQ block) is left as it
- * is.
+ * is. Module adds the hooks, so this class loads only on a page with an
+ * FAQ section.
  */
 final class Faq {
 
@@ -24,33 +25,6 @@ final class Faq {
 	 * @var array<string, mixed>|null
 	 */
 	private static ?array $node = null;
-
-	/**
-	 * Adds the hooks for the SEO plugin, or for Pergel's own graph.
-	 *
-	 * @param string $plugin Plugin id from Detect, '' for none.
-	 */
-	public static function register( string $plugin ): void {
-		switch ( $plugin ) {
-			case '':
-				add_filter( 'pergel/seo/graph', array( self::class, 'graph' ) );
-				break;
-			case 'rank-math':
-				add_filter( 'rank_math/json_ld', array( self::class, 'graph' ), 100 );
-				break;
-			case 'yoast':
-				add_filter( 'wpseo_schema_graph', array( self::class, 'graph' ) );
-				break;
-			case 'aioseo':
-				add_filter( 'aioseo_schema_output', array( self::class, 'graph' ) );
-				break;
-			case 'tsf':
-				add_filter( 'the_seo_framework_schema_graph_data', array( self::class, 'graph' ) );
-				break;
-			default:
-				add_action( 'wp_head', array( self::class, 'print_script' ), 99 );
-		}
-	}
 
 	/**
 	 * Adds the node to a list or map of graph nodes.
