@@ -1146,6 +1146,23 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   `switch_to_locale` ile paketin diline geçer ve temanın pattern'lerini yeniden kaydeder
   (çekirdeğin `_register_theme_block_patterns()`'ı).
 
+### F6: sertleştirme ve 1.0 (18 Ekim 2026, kullanıcı kararları)
+
+- **Plan:** beş PR, sırayla F6a test matrisi → F6b güvenlik incelemesi (Plugin/Theme Check
+  CI'da, bulunan açıklar aynı PR'da) → F6c `uninstall.php`, yaygın kelime sınırı ve bilinen
+  açık işler → F6d WordPress 7.2 (beta/RC çıkınca; çıkmazsa 1.0.0 7.1.x ile yayımlanır) →
+  F6e 1.0.0. Çeviriler Türkçe ve İngilizce; başka dil yok.
+- **Sürüm dağıtımı:** GitHub sürümü ve iki zip (tema, motor), CI'da üretilip doğrulanır. Etiket
+  ve sürüm kullanıcı onayıyla açılır; WordPress.org'a gönderilmez.
+- **Geniş test matrisi (F6a):** PHP 8.1–8.5, MariaDB 10.6 ve 11.8, MySQL 8.0 ve 8.4, WordPress
+  7.1 (en eski desteklenen), son sürüm ve nightly. Bütün birleşimler yerine her değer en az bir
+  kez çalışır (CI `compat` işi, altı satır): en eskiler bir arada (PHP 8.1, WP 7.1, MariaDB
+  10.6, WooCommerce 11.2.1), ardından her yeni sürüm. Her satırda entegrasyon testleri, WP-CLI
+  komutları, duman testi ve PHP uyarısı denetimi. Bütçe, mağaza ve prova işleri canlının
+  kurulumunda (PHP 8.4, MariaDB 11.8) kalır; ölçümlerin karşılaştırılabilir olması için.
+  Nightly bir sonraki WordPress sürümüdür ve CI'ı kırmadan başarısız olabilir; F6d bu satırı
+  zorunlu yapar. Sözdizimi denetimi en eski ve en yeni PHP'de (8.1, 8.5).
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
