@@ -1297,6 +1297,34 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
 - **Elenenler:** Repoyu herkese açmak (sınırsız dakika, ama kod görünür olur); kendi
   bilgisayarında runner (WSL2 + Docker kurulumu, makine açık kalmalı); ücretli dakika.
 
+## v1.1: bölümlü ürün sayfası (18 Ekim 2026, kullanıcı kararları)
+
+İhtiyaç F7'den geldi: ariumlab'ın 93 ürün sayfası, başlangıç paketindeki yapılandırılmış veriden
+(özellikler, teknik özellikler, uyumluluk, karşılaştırma, uygulamalar, bakım, SSS, sipariş)
+tek bir şablonla kurulacak. Pergel'de ürün içeriği için ne bölüm ne şema ne de paket desteği
+vardı. Özellik ariumlab'a değil Pergel'e yazılır (K3, K12); ariumlab tarafında yalnızca kendi
+verisini paket dosyalarına çeviren bir eşleyici olur.
+
+- **Bölümler ürün açıklamasında blok olarak durur** (K4). Ayrı bir veri alanı
+  (`pergel_product_sections` JSON + kendi bloğu) elendi: panelde düzenlemek için derlenmiş özel
+  bir editör gerekirdi (K6), paketin alan modeli, `stale` tanıması ve dışa aktarması ürünlerde
+  yeniden yazılmak zorunda kalırdı. Bloklarla ekip bir SSS'yi blok editöründe düzeltir; tekrar
+  içe aktarma bunu `stale` olarak bildirir.
+- **Ürün bölümleri pattern'dir** ("Ürün" kategorisi): genel bakış, öne çıkanlar, görsel ve
+  açıklama, teknik özellikler, uyumluluk, karşılaştırma, uygulamalar, bakım ve güvenlik, SSS,
+  sipariş ve garanti, dosyalar. Alan modeline iki tür eklenir: `table` (tablo başlığı ve
+  satırları) ve `file` (PDF bağlantısı).
+- **Şema bloklardan üretilir** ve SEO eklentisinin grafiğine eklenir (K8): SSS bölümündeki
+  açılır bloklardan `FAQPage`, teknik özellik tablosundan Product `additionalProperty`.
+- **Bölümlü ürün ayrı bir şablondur** (`single-product-sections`, "Bölümlü ürün"): açıklama
+  akordeon yerine tam genişlikte, üstte bölüm menüsü. Paket ürünü bu şablona atar; şablonu
+  seçmeyen dükkânların ürün sayfası değişmez.
+- **Paket formatı 2: `products/<sku>.md`.** Var olan ürün SKU ile benimsenir (`adopt`), yeni
+  ürün açılmaz; ürün ID'si, siparişler ve yorumlar korunur. Pakette fiyat yazılmazsa fiyata
+  dokunulmaz. `validate`, `import` ve `export` ürünleri de kapsar.
+- **Sıra (dört PR, sonra v1.1.0):** 1) alan türleri, ürün pattern'leri, bölümlü şablon
+  2) şema 3) paket formatı 2 4) sürüm.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

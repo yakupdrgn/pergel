@@ -270,13 +270,19 @@ script modülleridir (`viewScriptModule`), jQuery ve Interactivity kullanmaz.
 - **Karşılaştırma tablosu:** yeni blok değil, `core/table` için `pergel-comparison` blok stili
   (`Blocks\Styles`). İlk sütun yapışkan, tablo en az 32rem; dar ekranda tablo kendi içinde yatay
   kayar ve çerçevesi klavyeyle kaydırılabilsin diye `tabindex="0"` alır.
+- **Özellik tablosu:** `core/table` için `pergel-specs` blok stili ("Specifications",
+  `assets/specs-table.css`): etiket + değer satırları, çizgili, etiket sütunu soluk ve %40.
+  Karşılaştırma stili gibi CSS'i yalnızca kullanılan sayfada yüklenir, çerçeve `tabindex="0"` alır.
 - **İçindekiler** (`pergel/table-of-contents`): yazının H2–H3 (ayarla H4'e kadar) başlıklarını
   iç içe `<ol>` olarak listeler; iki başlıktan azsa hiçbir şey basmaz. Başlık listesi
   `parse_blocks` ile içerikten çıkarılır. `Blocks\Toc` tekil sayfalarda içeriğin her başlığına
   aynı id'yi verir: HTML çapası olan kendi id'sini korur, diğerleri metinden üretilir ve tekrar
   edenler `-2`, `-3` alır. Eşleşme düzey+metin ve sıraya göredir; sıra her `the_content`
   geçişinde baştan başlar (meta açıklaması için üretilen özet başlıkları önce bir kez çizer).
-  Editör önizlemesi kayıtlı içerikten gelir.
+  Editör önizlemesi kayıtlı içerikten gelir. "Bar" stili (`is-style-bar`, geniş/tam hizalanabilir)
+  yalnızca H2'leri yatay, yapışkan bir bölüm çubuğu olarak gösterir: başlık gizli, alt listeler
+  yok, sığmazsa yatay kayar; yapışkan başlık varsa onun altına oturur ve çapa kaydırması
+  (`scroll-padding`) çubuk yüksekliğini hesaba katar.
 - **Harita** (`pergel/map`): adres/yer ve yakınlık. Önce statik görsel (ya da adresli bir yer
   tutucu) ve Google Maps'e giden bir bağlantı basılır; iframe yalnızca "Show the map"e basınca
   oluşur. Sayfa yüklenirken üçüncü taraf isteği yoktur; API anahtarı gerekmez. Adres boş
@@ -394,7 +400,8 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   `team`, `testimonials`, `call-to-action`, `contact`, `posts`, `portfolio`, `gallery`, `header`,
   `footer`); eksikler Pergel'den gelir: `pergel-stats` (Numbers), `pergel-process` (Process),
   `pergel-logos` (Clients), `pergel-pricing` (Pricing), `pergel-faq` (FAQ), `pergel-pages`
-  (Full pages) ve yalnızca WooCommerce etkinken `pergel-shop` (Shop, bkz. Mağaza bölümleri).
+  (Full pages), `pergel-product` (Product, bkz. Bölümlü ürün sayfası) ve yalnızca WooCommerce
+  etkinken `pergel-shop` (Shop, bkz. Mağaza bölümleri).
 - **Kaynaklar:** Çekirdeğin hazır pattern'leri (`core-block-patterns` desteği kaldırılır) ve
   wordpress.org Pattern Directory (`should_load_remote_block_patterns`) yüklenmez. Eklentilerin ve
   sitenin kendi pattern'leri kalır.
@@ -737,6 +744,24 @@ görünmez (`Settings\Screen::shown`).
     (`woocommerce-product-template.css`); koyu zeminli bölümde de okunur.
   - `tests/visual/patterns.spec.mjs` `shop-*` dosyalarını yalnızca `PERGEL_SHOP=1` iken dener
     (WooCommerce'li site gerekir) ve hiçbirini görsel referansa katmaz.
+- **Bölümlü ürün sayfası (v1.1):** Ürün açıklaması bölümlerden oluşur; bölümler ürünün
+  `post_content`'inde blok olarak durur. Şablon `single-product-sections` ("Product with
+  sections", `theme.json` `customTemplates`, yalnızca ürün) ürün özetinin altına İçindekiler'i
+  "Bar" stiliyle (yalnızca H2) `main`'in doğrudan çocuğu olarak koyar (yapışkan kalsın diye),
+  ardından içeriği (960px, sola yaslı) ve `hidden-product-reviews`'i (yorumlar kapalıysa boş),
+  en sonda benzer ürünleri. Varsayılan `single-product` aynen kalır; şablonu ürün başına paket
+  ya da editör seçer.
+  - Ürünü bu şablonda olan ya da açıklaması blok taşıyan ürün blok editöründe açılır
+    (`Woo\Sections`, `use_block_editor_for_post`); WooCommerce ürünleri klasik editörde açar,
+    o da bloklu açıklamayı işaretleme olarak gösterir. Ürün verisi altta meta kutusu olarak kalır;
+    diğer ürünler klasik editörde kalır.
+  - Bölümler `theme/patterns/product-*.php`, kategori `pergel-product` ("Product"); sayfalarda
+    da kullanılabilir. Yalnızca çekirdek bloklar, kök
+    `section` grubu, H2 başlık: `product-list` (özellikler), `product-figure` (görsel + metin),
+    `product-specs` (`pergel-specs` tablosu + görsel), `product-compatibility`,
+    `product-compare` (`pergel-comparison`), `product-care` (iki liste), `product-faq`
+    (`pergel-faq` sınıflı kök, details öğeleri), `product-ordering` (sipariş kodları tablosu) ve
+    `product-downloads` (her biri kart içinde bir dosya bloğu, öğe olarak çoğalır).
 - **Kategori görseli (`pergel/term-image`, `Blocks\TermImage`, F4c):** Terms Query'deki
   (`core/term-template` içinde) terimin görseli; term meta `thumbnail_id` (WooCommerce ürün
   kategorisinin görseli), diğer taksonomiler için `pergel/term_image_id` süzgeci. Oran 1, 4/3

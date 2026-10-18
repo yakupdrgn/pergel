@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-18T10:51:33+03:00\n"
+"POT-Creation-Date: 2026-10-18T20:40:44+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel\n"
@@ -74,6 +74,13 @@ msgid "Full pages"
 msgstr ""
 
 msgid "Whole pages made of Pergel sections."
+msgstr ""
+
+msgctxt "pattern category"
+msgid "Product"
+msgstr ""
+
+msgid "Sections of a product description: specifications, downloads, questions."
 msgstr ""
 
 msgctxt "pattern category"
@@ -1368,6 +1375,16 @@ msgctxt "product page"
 msgid "Related products"
 msgstr ""
 
+#: patterns/hidden-product-reviews.php
+msgctxt "Pattern title"
+msgid "Product reviews"
+msgstr ""
+
+#: patterns/hidden-product-reviews.php
+msgctxt "Pattern description"
+msgid "The product's reviews with a title and the review form, after the content of a product with sections; nothing shows when reviews are off."
+msgstr ""
+
 #: patterns/hidden-product-terms.php
 msgctxt "Pattern title"
 msgid "Product categories and tags"
@@ -2105,6 +2122,315 @@ msgstr ""
 #: patterns/process-timeline.php
 msgctxt "Pattern description"
 msgid "Centered heading and the steps on a vertical timeline."
+msgstr ""
+
+#: patterns/product-care.php
+msgctxt "Pattern title"
+msgid "Product care"
+msgstr ""
+
+#: patterns/product-care.php
+msgctxt "Pattern description"
+msgid "Two lists under a heading: how to use and clean the product, and how to store it."
+msgstr ""
+
+msgid "Care and maintenance"
+msgstr ""
+
+msgid "Rinse with clean water after each use"
+msgstr ""
+
+msgid "Clean with a mild detergent and a soft cloth"
+msgstr ""
+
+msgid "Do not use abrasive cleaners"
+msgstr ""
+
+msgid "Storage"
+msgstr ""
+
+msgid "Store in a dry place away from direct sunlight"
+msgstr ""
+
+msgid "Keep in the original packaging when not in use"
+msgstr ""
+
+#: patterns/product-compare.php
+msgctxt "Pattern title"
+msgid "Product comparison"
+msgstr ""
+
+#: patterns/product-compare.php
+msgctxt "Pattern description"
+msgid "A heading and a comparison table of the product's versions or similar products."
+msgstr ""
+
+msgid "Compare versions"
+msgstr ""
+
+msgid "Small"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Large"
+msgstr ""
+
+msgid "Capacity"
+msgstr ""
+
+msgid "1 L"
+msgstr ""
+
+msgid "2 L"
+msgstr ""
+
+msgid "5 L"
+msgstr ""
+
+msgid "Accessories"
+msgstr ""
+
+msgid "Full"
+msgstr ""
+
+msgid "Warranty"
+msgstr ""
+
+msgid "1 year"
+msgstr ""
+
+msgid "2 years"
+msgstr ""
+
+#: patterns/product-compatibility.php
+msgctxt "Pattern title"
+msgid "Product compatibility"
+msgstr ""
+
+#: patterns/product-compatibility.php
+msgctxt "Pattern description"
+msgid "A heading, a table of the models or systems the product works with, and a note."
+msgstr ""
+
+msgid "Compatibility"
+msgstr ""
+
+msgid "Model"
+msgstr ""
+
+msgid "Series"
+msgstr ""
+
+msgid "Compatible"
+msgstr ""
+
+msgid "Model A"
+msgstr ""
+
+msgid "Series 100"
+msgstr ""
+
+msgid "Model B"
+msgstr ""
+
+msgid "Series 200"
+msgstr ""
+
+msgid "Model C"
+msgstr ""
+
+msgid "Series 300"
+msgstr ""
+
+msgid "With adapter"
+msgstr ""
+
+msgid "Not sure your model is listed? Send us its name and we will check it for you."
+msgstr ""
+
+#: patterns/product-downloads.php
+msgctxt "Pattern title"
+msgid "Product downloads"
+msgstr ""
+
+#: patterns/product-downloads.php
+msgctxt "Pattern description"
+msgid "A heading and the product's documents, such as a data sheet or a manual, to download."
+msgstr ""
+
+msgid "Downloads"
+msgstr ""
+
+msgid "Data sheet"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "User manual"
+msgstr ""
+
+#: patterns/product-faq.php
+msgctxt "Pattern title"
+msgid "Product FAQ"
+msgstr ""
+
+#: patterns/product-faq.php
+msgctxt "Pattern description"
+msgid "A heading and questions about the product that open to show the answer; search engines read them as an FAQ."
+msgstr ""
+
+msgid "Questions about this product"
+msgstr ""
+
+msgid "Is it delivered ready to use?"
+msgstr ""
+
+msgid "Yes. It is tested before it leaves us and comes with everything needed to start."
+msgstr ""
+
+msgid "Can I order spare parts?"
+msgstr ""
+
+msgid "Yes. Spare parts are listed in the ordering section; ask us for anything not listed."
+msgstr ""
+
+msgid "How long is the warranty?"
+msgstr ""
+
+msgid "Two years from delivery, covering manufacturing faults."
+msgstr ""
+
+#: patterns/product-figure.php
+msgctxt "Pattern title"
+msgid "Product figure"
+msgstr ""
+
+#: patterns/product-figure.php
+msgctxt "Pattern description"
+msgid "A heading, a wide image and a paragraph, for a product photo, a diagram or a drawing."
+msgstr ""
+
+msgid "How it works"
+msgstr ""
+
+msgid "Explain what the image shows: the parts, how they fit together and what the customer should notice."
+msgstr ""
+
+#: patterns/product-list.php
+msgctxt "Pattern title"
+msgid "Product features list"
+msgstr ""
+
+#: patterns/product-list.php
+msgctxt "Pattern description"
+msgid "A heading and a list, for a product's key features or what is in the box."
+msgstr ""
+
+msgid "Key features"
+msgstr ""
+
+msgid "Ready to use out of the box"
+msgstr ""
+
+msgid "Made from durable, easy-to-clean materials"
+msgstr ""
+
+msgid "Fits standard laboratory equipment"
+msgstr ""
+
+msgid "Supplied with a test certificate"
+msgstr ""
+
+#: patterns/product-ordering.php
+msgctxt "Pattern title"
+msgid "Product ordering"
+msgstr ""
+
+#: patterns/product-ordering.php
+msgctxt "Pattern description"
+msgid "A heading, a table of order codes and pack sizes, and notes on ordering."
+msgstr ""
+
+msgid "Ordering information"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Pack size"
+msgstr ""
+
+msgid "P-100"
+msgstr ""
+
+msgid "Standard version"
+msgstr ""
+
+msgid "P-100-10"
+msgstr ""
+
+msgid "Standard version, pack of 10"
+msgstr ""
+
+msgid "P-100-S"
+msgstr ""
+
+msgid "Spare part set"
+msgstr ""
+
+msgid "Ask for a quote with the order codes you need; we answer within one working day."
+msgstr ""
+
+msgid "Delivery times and prices depend on the quantity and the destination."
+msgstr ""
+
+#: patterns/product-specs.php
+msgctxt "Pattern title"
+msgid "Product specifications"
+msgstr ""
+
+#: patterns/product-specs.php
+msgctxt "Pattern description"
+msgid "A heading, a two-column table of technical data and an image beside it."
+msgstr ""
+
+msgid "Specifications"
+msgstr ""
+
+msgid "Material"
+msgstr ""
+
+msgid "Stainless steel"
+msgstr ""
+
+msgid "Dimensions"
+msgstr ""
+
+msgid "120 x 80 x 40 mm"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "450 g"
+msgstr ""
+
+msgid "Temperature range"
+msgstr ""
+
+msgid "-20 to 120 C"
+msgstr ""
+
+msgid "Certification"
+msgstr ""
+
+msgid "CE"
 msgstr ""
 
 #: patterns/services-alternating.php
@@ -2983,6 +3309,10 @@ msgstr ""
 
 msgctxt "Custom template name"
 msgid "Landing page (no title)"
+msgstr ""
+
+msgctxt "Custom template name"
+msgid "Product with sections"
 msgstr ""
 
 msgctxt "Template part name"

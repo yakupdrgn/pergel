@@ -342,4 +342,147 @@ final class PackageFieldsTest extends TestCase {
 			$this->assertStringStartsWith( 'items[1]."title" is not a field here; fields: text, text_2', $e->getMessage() );
 		}
 	}
+
+	public function test_product_sections_have_tables_files_and_questions(): void {
+		$this->assertSame( array( 'heading', 'table', 'image' ), array_keys( Fields::schema( self::blocks( 'pergel/product-specs' ) ) ) );
+		$this->assertSame( 'table', Fields::schema( self::blocks( 'pergel/product-specs' ) )['table']['type'] );
+		$this->assertArrayNotHasKey( 'head', Fields::schema( self::blocks( 'pergel/product-specs' ) )['table']['default'] );
+		$this->assertCount( 3, Fields::schema( self::blocks( 'pergel/product-ordering' ) )['table']['default']['head'] );
+
+		$faq = Fields::schema( self::blocks( 'pergel/product-faq' ) );
+		$this->assertSame( array( 'heading', 'items' ), array_keys( $faq ) );
+		$this->assertSame( array( 'summary', 'text' ), array_keys( $faq['items']['items'][0] ) );
+
+		$downloads = Fields::schema( self::blocks( 'pergel/product-downloads' ) );
+		$this->assertSame( array( 'heading', 'items' ), array_keys( $downloads ) );
+		$this->assertSame( 'file', $downloads['items']['items'][0]['file']['type'] );
+		$this->assertSame( 'media/file.pdf', Fields::example( $downloads )['items'][0]['file'] );
+	}
+
+	public function test_tables_take_a_header_and_rows(): void {
+		$specs = self::fill(
+			'pergel/product-specs',
+			array(
+				'table' => array(
+					array( 'Malzeme', 'Borosilikat **cam**' ),
+					array( 'Hacim', '250 ml' ),
+				),
+			)
+		);
+		$this->assertStringContainsString( '<figure class="wp-block-table is-style-pergel-specs"><table><tbody><tr><td>Malzeme</td><td>Borosilikat <strong>cam</strong></td></tr><tr><td>Hacim</td><td>250 ml</td></tr></tbody></table></figure>', $specs );
+		$this->assertSame( serialize_blocks( parse_blocks( $specs ) ), $specs );
+
+		// A header row in a table without one, and a row longer than the pattern's.
+		$header = self::fill(
+			'pergel/product-specs',
+			array(
+				'table' => array(
+					'head' => array( 'Özellik', 'Değer' ),
+					'rows' => array( array( 'A', 'B', 'C' ) ),
+				),
+			)
+		);
+		$this->assertStringContainsString( '<table><thead><tr><th>Özellik</th><th>Değer</th></tr></thead><tbody><tr><td>A</td><td>B</td><td>C</td></tr></tbody></table>', $header );
+
+		// The footer row stays; the header row goes when the value has none.
+		$compare = self::fill(
+			'pergel/pricing-comparison',
+			array(
+				'table' => array(
+					'head' => array( '', 'Küçük', 'Büyük' ),
+					'rows' => array( array( 'Hacim', '1 L', '5 L' ) ),
+				),
+			)
+		);
+		$this->assertStringContainsString( '<thead><tr><th></th><th>Küçük</th><th>Büyük</th></tr></thead><tbody><tr><td>Hacim</td><td>1 L</td><td>5 L</td></tr></tbody><tfoot>', $compare );
+		$this->assertStringContainsString( 'is-style-pergel-comparison', $compare );
+		$this->assertStringNotContainsString( '<thead>', self::fill( 'pergel/product-compatibility', array( 'table' => array( array( 'Model A' ) ) ) ) );
+
+		// Read back as written.
+		$notes = array();
+		$back  = Fields::values(
+			self::blocks( 'pergel/product-ordering' ),
+			parse_blocks(
+				self::fill(
+					'pergel/product-ordering',
+					array(
+						'table' => array(
+							'head' => array( 'Kod', 'Ürün', 'Adet' ),
+							'rows' => array( array( 'P-1', 'Pipet & uç', '10' ) ),
+						),
+					)
+				)
+			),
+			static fn(): ?string => null,
+			$notes
+		);
+		$this->assertSame(
+			array(
+				'head' => array( 'Kod', 'Ürün', 'Adet' ),
+				'rows' => array( array( 'P-1', 'Pipet & uç', '10' ) ),
+			),
+			$back['table']
+		);
+
+		$cases = array(
+			'table: a table is { head, rows } or a list of rows' => 'x',
+			'table: head is a list of texts and rows a list of rows' => array( 'rows' => array() ),
+			'table.rows[2]: a row is a list of texts'            => array( array( 'a' ), array() ),
+			'table.head[1]: text is expected'                    => array(
+				'head' => array( array( 'x' ) ),
+				'rows' => array(),
+			),
+		);
+		foreach ( $cases as $message => $table ) {
+			try {
+				self::fill( 'pergel/product-specs', array( 'table' => $table ) );
+				$this->fail( "Expected: $message" );
+			} catch ( InvalidArgumentException $e ) {
+				$this->assertStringStartsWith( $message, $e->getMessage() );
+			}
+		}
+	}
+
+	public function test_files_link_the_uploaded_document(): void {
+		$values = array(
+			'items' => array(
+				array( 'file' => 'media/kilavuz.pdf' ),
+				array(
+					'file' => array(
+						'src'   => 'media/sds.pdf',
+						'label' => 'Güvenlik bilgi formu',
+					),
+				),
+				array( 'file' => 'media/sertifika.pdf' ),
+			),
+		);
+		$html = self::fill( 'pergel/product-downloads', $values );
+
+		$this->assertSame( 3, substr_count( $html, '<!-- wp:file' ) );
+		$this->assertStringContainsString( '<!-- wp:file {"href":"http://site.test/wp-content/uploads/kilavuz.pdf","id":7} -->', $html );
+		$this->assertMatchesRegularExpression( '/<a id="(wp-block-file--media-[0-9a-f-]{36})" href="http:\/\/site.test\/wp-content\/uploads\/sds.pdf">Güvenlik bilgi formu<\/a><a href="http:\/\/site.test\/wp-content\/uploads\/sds.pdf" class="wp-block-file__button wp-element-button" download aria-describedby="\1">/', $html );
+		preg_match_all( '/ id="(wp-block-file--media-[^"]+)"/', $html, $ids );
+		$this->assertCount( 3, array_unique( $ids[1] ) );
+		// The same package writes the same markup.
+		$this->assertSame( $html, self::fill( 'pergel/product-downloads', $values ) );
+		$this->assertSame( serialize_blocks( parse_blocks( $html ) ), $html );
+
+		$notes = array();
+		$back  = Fields::values(
+			self::blocks( 'pergel/product-downloads' ),
+			parse_blocks( $html ),
+			static fn( string $url, int $id, string $alt, string $kind = 'image' ): ?string => 7 === $id && 'file' === $kind ? 'media/' . basename( $url ) : null,
+			$notes
+		);
+		$this->assertSame( array(), $notes );
+		$this->assertSame( 'media/sds.pdf', $back['items'][1]['file']['src'] );
+		$this->assertSame( 'Güvenlik bilgi formu', $back['items'][1]['file']['label'] );
+
+		try {
+			self::fill( 'pergel/product-downloads', array( 'items' => array( array( 'file' => array( 'label' => 'x' ) ) ) ) );
+			$this->fail( 'Expected an error.' );
+		} catch ( InvalidArgumentException $e ) {
+			$this->assertStringStartsWith( 'items[1].file: a file is a path or { src, label }', $e->getMessage() );
+		}
+	}
 }

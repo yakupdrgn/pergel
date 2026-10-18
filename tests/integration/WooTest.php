@@ -20,6 +20,7 @@ use Pergel\Settings\Settings;
 use Pergel\Woo\Assets;
 use Pergel\Woo\Markup;
 use Pergel\Woo\MiniCart;
+use Pergel\Woo\Sections;
 use Pergel\Woo\Trail;
 use Pergel\Woo\Module as Woo;
 use PHPUnit\Framework\TestCase;
@@ -340,6 +341,34 @@ final class WooTest extends TestCase {
 		$plugin   = plugin_basename( \Pergel\FILE );
 		foreach ( array( 'custom_order_tables', 'cart_checkout_blocks' ) as $feature ) {
 			$this->assertContains( $plugin, $features->get_compatible_plugins_for_feature( $feature, true )['compatible'], $feature );
+		}
+	}
+
+	public function test_products_with_sections_open_in_the_block_editor(): void {
+		$this->needs_woocommerce();
+		$make     = static fn( string $content ): int => (int) wp_insert_post(
+			array(
+				'post_type'    => 'product',
+				'post_status'  => 'draft',
+				'post_title'   => 'Pergel test product',
+				'post_content' => $content,
+			)
+		);
+		$plain    = $make( 'A description.' );
+		$blocks   = $make( '<!-- wp:paragraph --><p>A description.</p><!-- /wp:paragraph -->' );
+		$template = $make( 'A description.' );
+		update_post_meta( $template, '_wp_page_template', Sections::TEMPLATE );
+
+		try {
+			// WooCommerce keeps products in the classic editor.
+			$this->assertFalse( use_block_editor_for_post( $plain ) );
+			$this->assertTrue( use_block_editor_for_post( $blocks ) );
+			$this->assertTrue( use_block_editor_for_post( $template ) );
+			$this->assertSame( 'maybe', Sections::block_editor( 'maybe', get_post( (int) get_option( 'page_on_front' ) ) ) );
+		} finally {
+			foreach ( array( $plain, $blocks, $template ) as $id ) {
+				wp_delete_post( $id, true );
+			}
 		}
 	}
 }

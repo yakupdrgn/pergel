@@ -1,0 +1,37 @@
+/* Specifications table: the core Table block with the "Specifications" style. */
+.wp-block-table.is-style-pergel-specs {
+	overflow-x: auto;
+}
+
+.wp-block-table.is-style-pergel-specs table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.wp-block-table.is-style-pergel-specs :is(th, td) {
+	border: 0;
+	border-bottom: 1px solid var(--wp--preset--color--line, currentcolor);
+	padding: 0.625em 1.5em 0.625em 0;
+	text-align: start;
+	vertical-align: top;
+}
+
+.wp-block-table.is-style-pergel-specs :is(th, td):last-child {
+	padding-inline-end: 0;
+}
+
+.wp-block-table.is-style-pergel-specs tbody :is(th, td):first-child {
+	color: var(--wp--preset--color--muted, inherit);
+	width: 40%;
+}
+
+.wp-block-table.is-style-pergel-specs thead :is(th, td) {
+	border-bottom-width: 2px;
+	font-weight: 700;
+	vertical-align: bottom;
+}
+
+.wp-block-table.is-style-pergel-specs:focus-visible {
+	outline: 2px solid currentcolor;
+	outline-offset: 2px;
+}

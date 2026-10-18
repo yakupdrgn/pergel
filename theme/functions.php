@@ -38,6 +38,7 @@ function register_pattern_categories(): void {
 		'pergel-pricing' => array( _x( 'Pricing', 'pattern category', 'pergel' ), __( 'Plans, prices and comparisons.', 'pergel' ) ),
 		'pergel-faq'     => array( _x( 'FAQ', 'pattern category', 'pergel' ), __( 'Frequently asked questions.', 'pergel' ) ),
 		'pergel-pages'   => array( _x( 'Full pages', 'pattern category', 'pergel' ), __( 'Whole pages made of Pergel sections.', 'pergel' ) ),
+		'pergel-product' => array( _x( 'Product', 'pattern category', 'pergel' ), __( 'Sections of a product description: specifications, downloads, questions.', 'pergel' ) ),
 	);
 	if ( class_exists( 'WooCommerce', false ) ) {
 		$categories['pergel-shop'] = array( _x( 'Shop', 'pattern category', 'pergel' ), __( 'Product lists, categories and shop sections.', 'pergel' ) );
