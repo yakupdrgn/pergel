@@ -1,0 +1,11 @@
+# Test package: every file of format 1 that the reader checks.
+format: 1
+name: ornek-firma
+title: Örnek Firma
+tagline: Topraktan sofraya
+locale: tr_TR
+settings:
+  brand:
+    name: Örnek Firma A.Ş.
+    email: info@ornek.test
+    logo_inverse: media/logo-beyaz.png

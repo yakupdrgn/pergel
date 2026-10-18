@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Runs every `wp pergel settings`, `wp pergel modules`, `wp pergel search` and
-# `wp pergel starter` command against a site set up like tools/ci/setup-wp.sh and checks output
+# Runs every `wp pergel settings`, `wp pergel modules`, `wp pergel search`,
+# `wp pergel starter`, `wp pergel package` and `wp pergel pattern` command against a site set up like tools/ci/setup-wp.sh and checks output
 # and exit codes.
 #
 #   tools/ci/cli-smoke.sh
@@ -142,6 +142,23 @@ expect 0 'posts' wp option get show_on_front
 expect 0 'nothing to do' wp pergel starter remove corporate --yes
 expect 1 'starter.json not found' wp pergel starter install "$work_php/missing"
 expect 1 'starter.json not found' wp pergel starter install nope
+echo "::endgroup::"
+
+echo "::group::wp pergel package / pattern"
+package="$REPO_PHP/tests/fixtures/package"
+expect 0 'Package ornek-firma: 5 pages, 2 content files, 2 images; 0 problems, 0 notes.' wp pergel package validate "$package" --strict
+expect 0 '"problems": []' wp pergel package validate "$package" --format=json
+cp -r "$REPO/tests/fixtures/package" "$work/package"
+printf 'Eski.
+' > "$work/package/content/eski.md"
+expect 0 'note: content/eski.md: no page in sitemap.yaml uses this file' wp pergel package validate "$work_php/package"
+expect 1 'problem: content/eski.md: no page in sitemap.yaml uses this file' wp pergel package validate "$work_php/package" --strict
+expect 1 'not a directory' wp pergel package validate "$work_php/missing"
+expect 0 'hero-split' wp pergel pattern list
+expect 0 'faq-accordion' wp pergel pattern list --category=pergel-faq --format=csv
+expect 0 '- pattern: hero-split' wp pergel pattern fields hero-split
+expect 0 '"type": "items"' wp pergel pattern fields pergel/faq-accordion --format=json
+expect 1 '"pergel/nope" is not a Pergel pattern' wp pergel pattern fields nope
 echo "::endgroup::"
 
 exit "$failed"

@@ -1,0 +1,17 @@
+pages:
+  - slug: ""
+    title: Ana sayfa
+    content: content/home.md
+  - slug: hakkimizda
+    title: Hakkımızda
+    content: content/about.md
+    children:
+      - slug: ekip
+        title: Ekibimiz
+        template: page-landing
+  - slug: blog
+    title: Blog
+    type: posts
+  - slug: sepet
+    title: Sepet
+    type: cart
