@@ -20,6 +20,11 @@ When an SEO plugin (Rank Math, Yoast SEO, All in One SEO, SEOPress, The SEO
 Framework) is active, Pergel defers to it and adds its own data to that
 plugin's schema graph instead of printing a second one.
 
+Deactivating the plugin keeps its data. Deleting it under Plugins removes its
+settings, tables, scheduled events, form messages and the meta it stored;
+pages, products, menus, terms and media stay. Add
+`define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
+
 == Changelog ==
 
 = 0.1.0 =

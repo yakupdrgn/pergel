@@ -18,6 +18,11 @@ namespace Pergel\Search;
  * (the search page, the product search, query blocks with a search) get
  * their ids from here instead of WordPress's `LIKE '%x%'` search: the ids
  * become post__in, in score order unless the visitor chose a sorting.
+ *
+ * A term found in very many index rows (a word nearly every post has) is
+ * not gathered on its own: it is looked up only on the objects the other
+ * terms found, so it costs as much as they do. A query of common terms
+ * alone still gathers them.
  */
 final class Query {
 
@@ -30,6 +35,11 @@ final class Query {
 	 * Score added when a token is the whole term, not only its start.
 	 */
 	private const WHOLE_WORD = 2;
+
+	/**
+	 * Index rows above which a term counts as common.
+	 */
+	public const COMMON_ROWS = 5000;
 
 	/**
 	 * Hooks the front-end search in.
@@ -62,25 +72,40 @@ final class Query {
 		}
 
 		$table  = Index::table();
+		$common = self::common( $kind, $terms );
+		$rare   = array_values( array_diff( $terms, $common ) );
 		$parts  = array();
 		$values = array();
-		foreach ( $terms as $term ) {
+		foreach ( $rare as $term ) {
 			$parts[] = "SELECT object_id, MAX(weight + IF(token = %s, %d, 0)) AS w FROM $table WHERE kind = %d AND token LIKE %s GROUP BY object_id";
 			array_push( $values, $term, self::WHOLE_WORD, $kind, $wpdb->esc_like( $term ) . '%' );
 		}
-		$join  = '';
-		$order = 'score DESC, m.object_id DESC';
+		$join = '';
+		$date = 'm.object_id';
 		if ( Index::KIND_POST === $kind ) {
-			$join  = "INNER JOIN {$wpdb->posts} p ON p.ID = m.object_id";
-			$order = 'score DESC, MAX(p.post_date) DESC';
+			$join = "INNER JOIN {$wpdb->posts} p ON p.ID = m.object_id";
+			$date = 'MAX(p.post_date)';
 			if ( array() !== $types ) {
 				$join  .= ' AND p.post_type IN (' . implode( ',', array_fill( 0, count( $types ), '%s' ) ) . ')';
 				$values = array_merge( $values, $types );
 			}
 		}
-		$values[] = count( $terms );
+		$values[] = count( $rare );
+		$sql      = "SELECT m.object_id, SUM(m.w) AS score, $date AS d FROM (" . implode( ' UNION ALL ', $parts ) . ") m $join GROUP BY m.object_id HAVING COUNT(*) = %d";
+		if ( array() !== $common ) {
+			// Each common term on the objects found so far; a missing one leaves the score NULL.
+			$add  = '';
+			$head = array();
+			foreach ( $common as $term ) {
+				$add .= " + (SELECT MAX(c.weight + IF(c.token = %s, %d, 0)) FROM $table c WHERE c.kind = %d AND c.object_id = r.object_id AND c.token LIKE %s)";
+				array_push( $head, $term, self::WHOLE_WORD, $kind, $wpdb->esc_like( $term ) . '%' );
+			}
+			// These placeholders come before the inner query's.
+			$values = array_merge( $head, $values );
+			$sql    = "SELECT r.object_id, r.score$add AS score, r.d FROM ($sql) r";
+		}
 		$values[] = $limit;
-		$sql      = 'SELECT m.object_id, SUM(m.w) AS score FROM (' . implode( ' UNION ALL ', $parts ) . ") m $join GROUP BY m.object_id HAVING COUNT(*) = %d ORDER BY $order LIMIT %d";
+		$sql      = "SELECT x.object_id, x.score FROM ($sql) x WHERE x.score IS NOT NULL ORDER BY x.score DESC, x.d DESC, x.object_id DESC LIMIT %d";
 
 		$rows    = $wpdb->get_results( $wpdb->prepare( $sql, $values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Built from placeholders only; cached above by last-changed.
 		$results = array();
@@ -89,6 +114,38 @@ final class Query {
 		}
 		wp_cache_set( $key, $results, Index::CACHE_GROUP, HOUR_IN_SECONDS );
 		return $results;
+	}
+
+	/**
+	 * Terms of a query found in more than COMMON_ROWS index rows, unless
+	 * every term is: then none, and the query gathers them all.
+	 *
+	 * @param int      $kind  Index::KIND_POST or Index::KIND_TERM.
+	 * @param string[] $terms Folded terms.
+	 * @return list<string>
+	 */
+	private static function common( int $kind, array $terms ): array {
+		global $wpdb;
+		if ( count( $terms ) < 2 ) {
+			return array();
+		}
+		/**
+		 * Filters how many index rows make a search term common (see
+		 * Search\Query). Larger keeps more terms gathered on their own.
+		 *
+		 * @param int $rows Rows; default 5000.
+		 */
+		$rows   = max( 1, (int) apply_filters( 'pergel/search/common_rows', self::COMMON_ROWS ) );
+		$table  = Index::table();
+		$common = array();
+		foreach ( $terms as $term ) {
+			// Reads at most $rows entries of the primary key, however common the term is.
+			$found = $wpdb->get_var( $wpdb->prepare( "SELECT 1 FROM $table WHERE kind = %d AND token LIKE %s LIMIT 1 OFFSET %d", $kind, $wpdb->esc_like( $term ) . '%', $rows ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table; the result of match() is cached.
+			if ( null !== $found ) {
+				$common[] = $term;
+			}
+		}
+		return count( $common ) === count( $terms ) ? array() : $common;
 	}
 
 	/**

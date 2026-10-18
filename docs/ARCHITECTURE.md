@@ -756,7 +756,9 @@ içerik değiştiğinde güncellenir.
   Puan, her terimin en iyi ağırlığının toplamıdır; tam kelime eşleşmesi +2 alır. Eşitlikte daha
   yeni içerik öne geçer. Ön yüz aramaları `pre_get_posts` (öncelik 20) üzerinden `post__in`
   olur; ziyaretçi bir sıralama seçmediyse sonuçlar puan sırasıyla gelir. Yönetim paneli, REST
-  ve feed'ler WordPress'in kendi aramasını kullanır (`pergel/search/applies`).
+  ve feed'ler WordPress'in kendi aramasını kullanır (`pergel/search/applies`). 5.000'den fazla
+  indeks satırında geçen terim (`pergel/search/common_rows`) yalnızca diğer terimlerin bulduğu
+  içerikte aranır; bütün terimler yaygınsa hepsi toplanır.
 - **Öneriler (`Search\Suggest`):** `GET pergel/v1/search?q=&type=product`. Yanıtta en fazla
   `search.live_limit` sonuç ve 4 kategori, toplam sayı ve arama sayfasının adresi bulunur.
   Fiyat yalnızca `sale` modundaki ürünlerde verilir.
@@ -806,6 +808,18 @@ Varsayılan olarak kapalıdır (`modules.abilities`, panelde "Yapay zekâ erişi
   `Css::font_family` ve anahtar listesiyle süzülür.
 - **Gizlilik:** form mesajları, stok uyarıları ve kayıtlı istek listesi WordPress'in kişisel veri
   dışa aktarma ve silme araçlarına bağlıdır; silinemeyen kayıt `items_retained` ile bildirilir.
+
+## Kaldırma (F6c)
+
+- `engine/uninstall.php` yalnızca eklenti silinirken çalışır (`WP_UNINSTALL_PLUGIN`); eklenti
+  dosyası o sırada yüklenmediği için kendi autoloader'ını kurar ve `Core\Uninstall::run()`'ı
+  çağırır. Çoklu sitede her site için `switch_to_blog` ile `site()` çalışır.
+- Silinecekler `Core\Uninstall`'daki listelerdedir (seçenekler, cron kancaları, yazı, terim ve
+  kullanıcı meta anahtarları); tablolar kendi sınıflarının `uninstall()` yöntemiyle düşer. Yeni
+  bir seçenek, meta veya tablo ekleyen kod bu listeye de eklenir; `UninstallTest` en yaygın
+  olanları sınar.
+- `PERGEL_KEEP_DATA` `true` ise hiçbir şey silinmez. İçerik (sayfa, ürün, menü, terim, medya,
+  child tema) hiçbir durumda silinmez.
 
 ## WP-CLI (F2)
 

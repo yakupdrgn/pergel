@@ -154,6 +154,34 @@ final class SearchTest extends TestCase {
 		$this->assertEqualsCanonicalizing( array( $both, $one ), $this->find( 'pergelkuzey' ) );
 	}
 
+	public function test_common_terms_give_the_same_results(): void {
+		$both    = $this->post( 'Pergelnadir Pergelortak' );
+		$content = $this->post( 'Pergelnadir', 'Pergelortak geçiyor.' );
+		$this->post( 'Pergelortak bir' );
+		$this->post( 'Pergelortak iki' );
+		$full = array(
+			$this->find( 'pergelortak pergelnadir' ),
+			$this->find( 'pergelnadir pergelortak' ),
+			$this->find( 'pergelortak pergelyok' ),
+		);
+		$this->assertSame( array( $both, $content ), $full[0] );
+
+		// Two rows or fewer: pergelnadir stays rare, pergelortak (four rows) is common.
+		$rows = static fn (): int => 2;
+		add_filter( 'pergel/search/common_rows', $rows );
+		wp_cache_set_last_changed( Index::CACHE_GROUP );
+		$capped = array(
+			$this->find( 'pergelortak pergelnadir' ),
+			$this->find( 'pergelnadir pergelortak' ),
+			$this->find( 'pergelortak pergelyok' ),
+		);
+		$this->assertStringContainsString( 'c.object_id = r.object_id', $GLOBALS['wpdb']->last_query, 'The common term was looked up on the found posts.' );
+		$this->assertCount( 4, $this->find( 'pergelortak' ), 'A common term alone still finds every post.' );
+		remove_filter( 'pergel/search/common_rows', $rows );
+		$this->assertSame( $full, $capped );
+		$this->assertSame( array(), $capped[2] );
+	}
+
 	public function test_title_ranks_above_content(): void {
 		$content = $this->post( 'Başka bir yazı', 'Bu yazıda pergelkartal geçiyor.' );
 		$title   = $this->post( 'Pergelkartal üzerine' );
