@@ -448,6 +448,10 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   girdilerini, gereksinim başlıklarını ve ekran görüntüsünü denetler (lint işi); `bump X.Y.Z`
   sürümü yazar. `main`'deki bir `v*` etiketi `.github/workflows/release.yml` ile zip'li taslak
   GitHub sürümü açar.
+- **Ne zaman ne çalışır:** PR'da `lint`, `syntax`, `budget` ve `review`. `compat`, `shop`,
+  `scale`, `visual`, `seo-matrix` ve `rehearsal` PR'da `full-ci` etiketiyle, elle başlatılan
+  çalıştırmada ve haftada bir. `main`'e birleştirme yeniden çalıştırılmaz, yalnızca belge
+  değişikliği CI başlatmaz (Actions dakikaları, DECISIONS "CI dakikaları").
 
 ## Starter'lar (F3c)
 
