@@ -43,6 +43,8 @@ jobs:
         run: php tools/blocks.php --check
       - name: Pattern rules
         run: php tools/patterns.php --check
+      - name: One version everywhere, changelog entries, screenshot
+        run: php tools/release.php check
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -284,6 +286,11 @@ jobs:
         run: bash tools/ci/setup-wp.sh
       - name: Plugin Check and Theme Check
         run: bash tools/ci/review.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-zips
+          path: /tmp/pergel-dist/*.zip
+          if-no-files-found: error
       - name: PHP notices
         if: always()
         run: bash tools/ci/notices.sh

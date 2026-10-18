@@ -15,8 +15,6 @@ const PERGEL_ACCEPTED = array(
 	// WordPress's compiled translations (.l10n.php) separate a context from
 	// its string with \x04; the file is written by wp i18n make-php.
 	'/^Non-printable characters were found in the languages\/[a-z]{2}_[A-Z]{2}\.l10n\.php file\./',
-	// Until F6e adds the theme's screenshot.
-	'/^No screenshot detected!/',
 );
 
 $pergel_lines = json_decode( (string) file_get_contents( $argv[1] ?? '' ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file.

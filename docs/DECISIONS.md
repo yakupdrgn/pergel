@@ -1222,7 +1222,7 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
   doğrulaması (yalnızca Cloudflare sunar), kendi tablolarımızın önekten gelen adları,
   `load_plugin_textdomain` (WordPress.org'da değiliz, çeviriler `languages/`'da), WP-CLI ve REST
   JSON'a giden istisna mesajları, `.l10n.php` dosyalarındaki bağlam ayırıcı (`\x04`). Ekran
-  görüntüsü eksikliği F6e'ye kadar kabul edilir. Blokların `render.php` dosyaları doğrudan
+  görüntüsü eksikliği F6e'ye kadar kabul edildi (F6e'de eklendi, istisna kalktı). Blokların `render.php` dosyaları doğrudan
   çağrılınca çıkar (`ABSPATH`).
 
 ### F6c: kaldırma ve yaygın arama terimi (18 Ekim 2026)
@@ -1247,6 +1247,35 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
   zaten 1.000 ile sınırlı ve sonuç bir saat önbellekte kalır. 60.000 içerikli ölçüm: iki yaygın
   ve bir nadir terim 111 → 2,4 ms, bir yaygın ve bir nadir 53 → 1,4 ms.
 
+### F6d–F6e: 1.0.0 (18 Ekim 2026)
+
+- **WordPress 7.2 beklenmedi (F6d):** 18 Ekim'de 7.2'nin beta'sı ya da RC'si yok (son sürüm
+  7.1.3, nightly 7.2-alpha). Plan gereği 1.0.0 "Tested up to: 7.1" ile çıkar. Nightly satırı
+  CI'da zorunlu değil; 7.2-alpha'daki iki fark (fiyat HTML'i, bağlı metnin kaçışı) testlerde
+  çözümlenmiş metinle karşılaştırılarak giderildi (F6c). 7.2 beta'sı çıkınca nightly zorunlu
+  yapılır ve "Tested up to" yükseltilir.
+- **Sürüm aracı (`tools/release.php`):** `check` sürümün yedi yerde aynı olduğunu (tema
+  `style.css` ve readme, motor başlığı, `VERSION` sabiti ve readme, iki `.pot`), iki readme'de
+  o sürümün changelog girdisini, "Requires at least / Tested up to / Requires PHP" değerlerinin
+  dosyalar arasında aynı olduğunu ve temanın 1200x900 `screenshot.png`'sini denetler; CI'ın
+  lint işinde çalışır. `bump X.Y.Z` başlıkları yazar; changelog elle yazılır, ardından
+  `composer pot` ve `composer i18n`. `package <dizin>` iki zip'i `git archive HEAD`'den üretir
+  (`pergel-X.Y.Z.zip`, `pergel-engine-X.Y.Z.zip`; her biri slug adlı tek klasör). `notes`
+  sürüm notunu changelog'dan yazar.
+- **Zip'ler CI'da kurulur:** `review` işi zip'leri WP-CLI ile site sahibi gibi kurar, Plugin
+  Check ve Theme Check'i kurulmuş hâlde çalıştırır ve zip'leri `release-zips` artifact'ı olarak
+  saklar.
+- **Taslak sürüm (`.github/workflows/release.yml`):** `main` üzerindeki bir `v*` etiketi önce
+  etiketin sürümü adlandırdığını ve commit'in `main`'de olduğunu denetler, sonra zip'lerle
+  taslak bir GitHub sürümü açar. Taslağı yayımlamak elle yapılır. Etiket kullanıcı onayıyla
+  atılır.
+- **`.gitattributes` yolları köke bağlandı:** `starters/` kalıbı her derinlikte eşleşiyordu;
+  Windows'ta (`core.ignorecase`) `engine/src/Starters/` klasörünü de dışarıda bırakıyordu ve
+  orada üretilen zip'te starter sınıfları eksik kalıyordu. Linux CI'da sorun görünmüyordu. Kök
+  dizindeki PHPUnit ve Playwright ayarları ile `examples/` da arşiv dışına alındı.
+- **Ekran görüntüsü:** `theme/screenshot.png` kurumsal starter'ın ön sayfası, 1200x900, ayrı ve
+  geçici bir yerel sitede (boş veritabanı) alındı.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
@@ -1257,7 +1286,7 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
 | F3 | Pergel blokları ve uzantıları, 120+ pattern, kurumsal starter (dönen video hero ilk projeye kaldı) | Tüm pattern'ler geçerli, görsel testler oturdu, kurumsal demo kuruluyor |
 | F4 | WooCommerce şablonları, hızlı arama, satış modları, P2 özellikleri, ölçek testi | Mağaza bütçesi tutuyor, ödeme akışı test modunda geçiyor |
 | F5 | Proje paketi ve `wp pergel import`, Abilities/MCP, skill'ler, prova sitesi (hedef açık) | Prova sitesi paketten tek seferde ve tekrar üretilebiliyor |
-| F6 | Tam test matrisi, güvenlik incelemesi, çeviriler, WP 7.2 uyumu | Tüm kontroller yeşil, v1.0.0 |
+| F6 | Tam test matrisi, güvenlik incelemesi, çeviriler, WP 7.2 uyumu (7.2 beta'sı çıkmadığı için 7.1.x ile) | Tüm kontroller yeşil, v1.0.0 |
 | F7 | ariumlab.com: içerik, staging, geçiş, 30 gün izleme | Yeni site yayında |
 
 ## Bilinen açık işler
