@@ -45,6 +45,8 @@ final class Head {
 
 	/**
 	 * The title typed in the SEO panel replaces the whole document title.
+	 * WordPress prints a title from this filter as it is, so it is escaped
+	 * here as core escapes the title it builds.
 	 *
 	 * @param mixed $title Title from earlier filters ('' lets core build it).
 	 */
@@ -52,7 +54,7 @@ final class Head {
 		if ( is_singular() ) {
 			$custom = Meta::get( (int) get_queried_object_id(), Meta::TITLE );
 			if ( '' !== $custom ) {
-				return $custom;
+				return esc_html( $custom );
 			}
 		}
 		return $title;

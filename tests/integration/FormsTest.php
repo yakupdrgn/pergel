@@ -413,6 +413,16 @@ final class FormsTest extends TestCase {
 		$this->assertTrue( $export['done'] );
 		$this->assertContains( 'Ada Lovelace', array_column( $export['data'][0]['data'], 'value' ) );
 		$this->assertArrayHasKey( 'pergel-forms', apply_filters( 'wp_privacy_personal_data_exporters', array() ) );
+		wp_trash_post( (int) explode( '-', $export['data'][0]['item_id'] )[3] );
+		$this->assertCount( 1, Inbox::export( 'ada@example.invalid' )['data'], 'A trashed message is still personal data.' );
+
+		add_filter( 'pre_delete_post', '__return_false' );
+		$kept = Inbox::erase( 'ada@example.invalid' );
+		remove_filter( 'pre_delete_post', '__return_false' );
+		$this->assertFalse( $kept['items_removed'] );
+		$this->assertTrue( $kept['items_retained'] );
+		$this->assertTrue( $kept['done'], 'A message that stays does not keep the eraser going.' );
+
 		$this->assertTrue( Inbox::erase( 'ada@example.invalid' )['items_removed'] );
 		$this->assertSame( array(), Inbox::export( 'ada@example.invalid' )['data'] );
 	}

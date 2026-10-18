@@ -380,7 +380,7 @@ final class Package {
 		if ( ! in_array( strtolower( pathinfo( $src, PATHINFO_EXTENSION ) ), self::IMAGE_TYPES, true ) ) {
 			throw new InvalidArgumentException( "\"$src\": an image is a " . implode( ', ', self::IMAGE_TYPES ) . ' file' );
 		}
-		if ( ! is_file( $this->dir . '/' . $src ) ) {
+		if ( ! $this->holds( $src ) ) {
 			throw new InvalidArgumentException( "\"$src\": file not found in the package" );
 		}
 		return $src;
@@ -636,7 +636,7 @@ final class Package {
 			$this->problems[] = $where . 'content: a Markdown file under content/ is expected, like content/home.md';
 			return null;
 		}
-		if ( ! is_file( $this->dir . '/' . $content ) ) {
+		if ( ! $this->holds( $content ) ) {
 			$this->problems[] = $where . "content: $content: file not found";
 			return null;
 		}
@@ -848,7 +848,7 @@ final class Package {
 	 */
 	private function read_tokens(): void {
 		$file = $this->dir . '/brand/tokens.json';
-		if ( ! is_file( $file ) ) {
+		if ( ! $this->holds( 'brand/tokens.json' ) ) {
 			return;
 		}
 		try {
@@ -869,7 +869,7 @@ final class Package {
 	 */
 	private function yaml( string $file, bool $required ): ?array {
 		$path = $this->dir . '/' . $file;
-		if ( ! is_file( $path ) ) {
+		if ( ! $this->holds( $file ) ) {
 			if ( $required ) {
 				$this->problems[] = "$file: file not found";
 			}
@@ -924,6 +924,19 @@ final class Package {
 		}
 		sort( $files );
 		return $files;
+	}
+
+	/**
+	 * Whether a package path is a file that really lies in the package. A
+	 * symbolic link to a file elsewhere on the server (wp-config.php) would
+	 * otherwise be read into a page or copied into the media library.
+	 *
+	 * @param string $path Package path.
+	 */
+	private function holds( string $path ): bool {
+		$root = realpath( $this->dir );
+		$file = realpath( $this->dir . '/' . $path );
+		return false !== $root && false !== $file && is_file( $file ) && str_starts_with( str_replace( '\\', '/', $file ), rtrim( str_replace( '\\', '/', $root ), '/' ) . '/' );
 	}
 
 	/**

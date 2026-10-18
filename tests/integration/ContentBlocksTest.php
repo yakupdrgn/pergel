@@ -142,6 +142,28 @@ final class ContentBlocksTest extends TestCase {
 		$this->assertSame( '', do_blocks( '<!-- wp:pergel/table-of-contents /-->' ) );
 	}
 
+	public function test_toc_keeps_the_headings_of_a_locked_page_to_itself(): void {
+		$id = $this->page( self::heading( 2, 'Secret one' ) . self::heading( 2, 'Secret two' ) );
+		wp_update_post(
+			array(
+				'ID'            => $id,
+				'post_password' => 'pergel',
+			)
+		);
+		self::go( $id );
+
+		$this->assertSame( '', do_blocks( '<!-- wp:pergel/table-of-contents /-->' ) );
+		wp_update_post(
+			array(
+				'ID'            => $id,
+				'post_password' => '',
+				'post_status'   => 'draft',
+			)
+		);
+		clean_post_cache( $id );
+		$this->assertSame( '', do_blocks( '<!-- wp:pergel/table-of-contents /-->' ), 'A visitor reads no draft.' );
+	}
+
 	public function test_headings_outside_the_page_get_no_id(): void {
 		$id = $this->page( self::heading( 2, 'Intro' ) . self::heading( 2, 'Next' ) );
 		self::go( array( 's' => 'pergel' ) );

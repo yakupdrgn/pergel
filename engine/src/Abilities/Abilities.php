@@ -313,7 +313,8 @@ final class Abilities {
 	}
 
 	/**
-	 * Pages with the outline of their content.
+	 * Pages with the outline of their content: the pages the user may edit,
+	 * so a role with edit_pages alone does not read other people's drafts.
 	 *
 	 * @param mixed $input { page?: int, per_page?: int }.
 	 * @return array{pages: list<array<string, mixed>>, total: int, more: bool}
@@ -322,18 +323,23 @@ final class Abilities {
 		$input    = is_array( $input ) ? $input : array();
 		$page     = max( 1, (int) ( $input['page'] ?? 1 ) );
 		$per_page = min( self::MAX_PAGES, max( 1, (int) ( $input['per_page'] ?? 50 ) ) );
-		$query    = new WP_Query(
-			array(
-				'post_type'      => 'page',
-				'post_status'    => array( 'publish', 'future', 'draft', 'pending', 'private' ),
-				'orderby'        => array(
-					'menu_order' => 'ASC',
-					'title'      => 'ASC',
-				),
-				'posts_per_page' => $per_page,
-				'paged'          => $page,
-			)
+		$args     = array(
+			'post_type'      => 'page',
+			'post_status'    => array( 'publish', 'future', 'draft', 'pending', 'private' ),
+			'orderby'        => array(
+				'menu_order' => 'ASC',
+				'title'      => 'ASC',
+			),
+			'posts_per_page' => $per_page,
+			'paged'          => $page,
 		);
+		if ( ! current_user_can( 'edit_others_pages' ) ) {
+			$args['author'] = get_current_user_id();
+		}
+		if ( ! current_user_can( 'read_private_pages' ) ) {
+			$args['post_status'] = array_values( array_diff( $args['post_status'], array( 'private' ) ) );
+		}
+		$query = new WP_Query( $args );
 		$front    = (int) get_option( 'page_on_front' );
 		$pages    = array();
 		foreach ( $query->posts ?? array() as $post ) {

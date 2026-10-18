@@ -263,7 +263,7 @@ final class Inbox {
 		if ( function_exists( 'wp_add_privacy_policy_content' ) ) {
 			wp_add_privacy_policy_content(
 				'Pergel',
-				'<p>' . esc_html__( 'When you send a message with a form on this site, we keep your name, email address, the message and any phone number or company name you enter, so we can answer you. The message is also emailed to us. Your IP address is used only for a few minutes to stop spam and is not stored with the message.', 'pergel-engine' ) . '</p>'
+				'<p>' . esc_html__( 'When you send a message with a form on this site, we keep your name, email address, the message and any phone number or company name you enter, so we can answer you. The message is also emailed to us. Your IP address is used only for a few minutes to stop spam and is not stored with the message. If the form shows a Cloudflare Turnstile check, Cloudflare receives your IP address and browser details to tell people from bots.', 'pergel-engine' ) . '</p>'
 			);
 		}
 	}
@@ -342,7 +342,9 @@ final class Inbox {
 	}
 
 	/**
-	 * Eraser callback: deletes the sender's messages.
+	 * Eraser callback: deletes the sender's messages. A message that cannot
+	 * be deleted is reported as kept and ends the run, so the eraser does
+	 * not ask for the same batch again and again.
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Batch number (always the first, since entries go away).
@@ -350,23 +352,26 @@ final class Inbox {
 	 */
 	public static function erase( string $email, int $page = 1 ): array {
 		unset( $page );
-		$entries = self::by_email( $email, 1 );
-		$removed = false;
+		$entries  = self::by_email( $email, 1 );
+		$removed  = false;
+		$retained = false;
 		foreach ( $entries as $id ) {
 			if ( wp_delete_post( $id, true ) ) {
 				$removed = true;
+			} else {
+				$retained = true;
 			}
 		}
 		return array(
 			'items_removed'  => $removed,
-			'items_retained' => false,
-			'messages'       => array(),
-			'done'           => count( $entries ) < self::BATCH,
+			'items_retained' => $retained,
+			'messages'       => $retained ? array( __( 'Some form messages could not be deleted; delete them under Messages.', 'pergel-engine' ) ) : array(),
+			'done'           => $retained || count( $entries ) < self::BATCH,
 		);
 	}
 
 	/**
-	 * Entry ids from an email address.
+	 * Entry ids from an email address, the trashed ones included.
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Batch number.
@@ -380,15 +385,14 @@ final class Inbox {
 		$ids = get_posts(
 			array(
 				'post_type'        => self::TYPE,
-				'post_status'      => 'any',
-				'fields'           => 'ids',
-				'posts_per_page'   => self::BATCH,
-				'paged'            => max( 1, $page ),
-				'orderby'          => 'ID',
-				'order'            => 'ASC',
-				'meta_key'         => self::META_EMAIL, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Admin privacy tools only.
-				'meta_value'       => $email, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Admin privacy tools only.
-				'suppress_filters' => true,
+				'post_status'    => array( 'private', 'trash' ),
+				'fields'         => 'ids',
+				'posts_per_page' => self::BATCH,
+				'paged'          => max( 1, $page ),
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+				'meta_key'       => self::META_EMAIL, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Admin privacy tools only.
+				'meta_value'     => $email, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Admin privacy tools only.
 			)
 		);
 		return array_values( array_map( 'intval', $ids ) );
