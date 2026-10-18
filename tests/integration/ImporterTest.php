@@ -24,7 +24,7 @@ use WP_Post;
 final class ImporterTest extends TestCase {
 
 	private const NAME    = 'pergel-test-paket';
-	private const OPTIONS = array( 'blogname', 'blogdescription', 'WPLANG', 'show_on_front', 'page_on_front', 'page_for_posts', Settings::OPTION );
+	private const OPTIONS = array( 'blogname', 'blogdescription', 'WPLANG', 'show_on_front', 'page_on_front', 'page_for_posts', 'theme_switched', Settings::OPTION );
 
 	private const SITEMAP = <<<'YAML'
 	pages:
@@ -93,18 +93,18 @@ final class ImporterTest extends TestCase {
 		foreach ( $posts as $post ) {
 			'attachment' === $post->post_type ? wp_delete_attachment( $post->ID, true ) : wp_delete_post( $post->ID, true );
 		}
-		foreach ( $this->saved as $option => $value ) {
-			update_option( $option, $value );
-		}
-		Settings::flush();
 		if ( get_stylesheet() !== $this->theme ) {
 			switch_theme( $this->theme );
-			// switch_theme() leaves after_switch_theme to the next request,
-			// where WooCommerce resets its catalog settings; the site was
-			// not really switched, so nothing should run there.
-			delete_option( 'theme_switched' );
-			delete_option( 'theme_mods_' . self::NAME );
 		}
+		delete_option( 'theme_mods_' . self::NAME );
+		// Restored after the switch: switch_theme(), here or in the importer,
+		// leaves after_switch_theme to the next request through
+		// theme_switched, and WooCommerce resets its catalog settings there.
+		// The site was not really switched, so nothing should run.
+		foreach ( $this->saved as $option => $value ) {
+			false === $value ? delete_option( $option ) : update_option( $option, $value );
+		}
+		Settings::flush();
 		$child = get_theme_root() . '/' . self::NAME;
 		if ( is_dir( $child ) ) {
 			self::remove( $child );
