@@ -7,6 +7,9 @@
 
 declare( strict_types=1 );
 
+// Messages name files, lines and keys; WP-CLI prints them and REST returns them as JSON, never as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
+
 namespace Pergel\Package;
 
 use InvalidArgumentException;
@@ -37,6 +40,11 @@ final class Yaml {
 	 * @var array<int, string>
 	 */
 	private array $lines;
+
+	/**
+	 * Deepest nesting read, so a crafted file cannot exhaust the stack.
+	 */
+	private const MAX_DEPTH = 32;
 
 	/**
 	 * Number of lines.
@@ -102,6 +110,9 @@ final class Yaml {
 	 * @param int $indent Column the node starts at.
 	 */
 	private function node( int $indent ): mixed {
+		if ( $indent > 2 * self::MAX_DEPTH ) {
+			$this->fail( 'lists and maps nest at most ' . self::MAX_DEPTH . ' deep' );
+		}
 		$line = $this->lines[ $this->at ];
 		$rest = substr( $line, $indent );
 		if ( '-' === $rest || str_starts_with( $rest, '- ' ) ) {
@@ -404,9 +415,13 @@ final class Yaml {
 	 *
 	 * @param string $text     Line text.
 	 * @param int    $position Read position, moved past the value.
+	 * @param int    $depth    Collections around this one.
 	 * @throws InvalidArgumentException On a syntax error.
 	 */
-	private static function flow( string $text, int &$position ): mixed {
+	private static function flow( string $text, int &$position, int $depth = 0 ): mixed {
+		if ( $depth > self::MAX_DEPTH ) {
+			throw new InvalidArgumentException( 'lists and maps nest at most ' . self::MAX_DEPTH . ' deep' );
+		}
 		self::space( $text, $position );
 		$char = $text[ $position ] ?? '';
 		if ( '{' === $char || '[' === $char ) {
@@ -433,9 +448,9 @@ final class Yaml {
 					if ( array_key_exists( $key, $items ) ) {
 						throw new InvalidArgumentException( "the key \"$key\" is repeated" );
 					}
-					$items[ $key ] = self::flow( $text, $position );
+					$items[ $key ] = self::flow( $text, $position, $depth + 1 );
 				} else {
-					$items[] = self::flow( $text, $position );
+					$items[] = self::flow( $text, $position, $depth + 1 );
 				}
 				self::space( $text, $position );
 				$next = $text[ $position ] ?? '';

@@ -204,6 +204,96 @@ final class Lists {
 	}
 
 	/**
+	 * Adds the saved wishlist to the personal data export.
+	 *
+	 * @param mixed $exporters Registered exporters.
+	 * @return mixed
+	 */
+	public static function exporters( mixed $exporters ): mixed {
+		if ( is_array( $exporters ) ) {
+			$exporters['pergel-wishlist'] = array(
+				'exporter_friendly_name' => __( 'Wishlist', 'pergel-engine' ),
+				'callback'               => array( self::class, 'export' ),
+			);
+		}
+		return $exporters;
+	}
+
+	/**
+	 * Adds the saved wishlist to the personal data erasure.
+	 *
+	 * @param mixed $erasers Registered erasers.
+	 * @return mixed
+	 */
+	public static function erasers( mixed $erasers ): mixed {
+		if ( is_array( $erasers ) ) {
+			$erasers['pergel-wishlist'] = array(
+				'eraser_friendly_name' => __( 'Wishlist', 'pergel-engine' ),
+				'callback'             => array( self::class, 'erase' ),
+			);
+		}
+		return $erasers;
+	}
+
+	/**
+	 * Exporter callback: the products in the account's saved wishlist.
+	 *
+	 * @param string $email Email address.
+	 * @param int    $page  Batch number; the list fits in one.
+	 * @return array{data: list<array<string, mixed>>, done: bool}
+	 */
+	public static function export( string $email, int $page = 1 ): array {
+		unset( $page );
+		$user = get_user_by( 'email', $email );
+		$ids  = $user instanceof \WP_User ? self::saved( $user->ID ) : array();
+		if ( array() === $ids ) {
+			return array(
+				'data' => array(),
+				'done' => true,
+			);
+		}
+		$names = array();
+		foreach ( $ids as $id ) {
+			$product = function_exists( 'wc_get_product' ) ? wc_get_product( $id ) : null;
+			$names[] = $product instanceof \WC_Product ? $product->get_name() : '#' . $id;
+		}
+		return array(
+			'data' => array(
+				array(
+					'group_id'    => 'pergel-wishlist',
+					'group_label' => __( 'Wishlist', 'pergel-engine' ),
+					'item_id'     => 'pergel-wishlist-' . $user->ID,
+					'data'        => array(
+						array(
+							'name'  => __( 'Products', 'pergel-engine' ),
+							'value' => implode( ', ', $names ),
+						),
+					),
+				),
+			),
+			'done' => true,
+		);
+	}
+
+	/**
+	 * Eraser callback: deletes the account's saved wishlist.
+	 *
+	 * @param string $email Email address.
+	 * @param int    $page  Batch number; the list goes in one.
+	 * @return array{items_removed: bool, items_retained: bool, messages: list<string>, done: bool}
+	 */
+	public static function erase( string $email, int $page = 1 ): array {
+		unset( $page );
+		$user = get_user_by( 'email', $email );
+		return array(
+			'items_removed'  => $user instanceof \WP_User && '' !== get_user_meta( $user->ID, self::META, true ) && delete_user_meta( $user->ID, self::META ),
+			'items_retained' => false,
+			'messages'       => array(),
+			'done'           => true,
+		);
+	}
+
+	/**
 	 * A customer's saved wishlist.
 	 *
 	 * @param int $user User ID.

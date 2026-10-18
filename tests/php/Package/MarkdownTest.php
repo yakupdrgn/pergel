@@ -62,6 +62,15 @@ final class MarkdownTest extends TestCase {
 		} catch ( InvalidArgumentException $e ) {
 			$this->assertStringContainsString( 'javascript:', $e->getMessage() );
 		}
+		foreach ( array( "\x01javascript:alert(1)", "java\tscript:alert(1)", 'a b' ) as $url ) {
+			try {
+				Markdown::url( $url );
+				$this->fail( 'Expected an error.' );
+			} catch ( InvalidArgumentException $e ) {
+				$this->assertStringContainsString( 'spaces or control characters', $e->getMessage() );
+			}
+		}
+		$this->assertSame( '/a%20b/', Markdown::url( '/a%20b/' ) );
 		try {
 			self::convert( "Metin\n\n# Başlık" );
 			$this->fail( 'Expected an error.' );
@@ -102,6 +111,22 @@ final class MarkdownTest extends TestCase {
 			"<!-- wp:table -->\n<figure class=\"wp-block-table\"><table class=\"has-fixed-layout\"><thead><tr><th>Ürün</th><th>Fiyat</th></tr></thead><tbody><tr><td>Bal</td><td><strong>120</strong> ₺</td></tr><tr><td>a | b</td><td></td></tr></tbody></table></figure>\n<!-- /wp:table -->",
 			self::convert( "| Ürün | Fiyat |\n|---|---:|\n| Bal | **120** ₺ |\n| a \\| b |\n" )
 		);
+	}
+
+	public function test_quotes_and_lists_nest_a_limited_depth(): void {
+		$this->assertStringContainsString( '<blockquote class="wp-block-quote"><!-- wp:quote -->', self::convert( '> > a' ) );
+		$list = '';
+		for ( $level = 0; $level < 20; $level++ ) {
+			$list .= str_repeat( '  ', $level ) . "- item\n";
+		}
+		foreach ( array( str_repeat( '>', 5000 ) . ' a', $list ) as $markdown ) {
+			try {
+				self::convert( $markdown );
+				$this->fail( 'Expected an error.' );
+			} catch ( InvalidArgumentException $e ) {
+				$this->assertStringContainsString( 'nest at most 16 deep', $e->getMessage() );
+			}
+		}
 	}
 
 	public function test_json_matches_serialize_block_attributes(): void {

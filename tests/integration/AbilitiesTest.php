@@ -171,6 +171,45 @@ final class AbilitiesTest extends TestCase {
 		$this->assertSame( $result['total'] > 1, $result['more'] );
 	}
 
+	public function test_a_page_writer_sees_only_their_own_pages(): void {
+		$this->page = wp_insert_post(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'draft',
+				'post_title'  => 'Başkasının taslağı',
+				'post_author' => get_current_user_id(),
+			)
+		);
+		$writer      = wp_insert_user(
+			array(
+				'user_login' => 'pergel-page-writer',
+				'user_pass'  => wp_generate_password(),
+				'role'       => 'contributor',
+			)
+		);
+		$this->assertIsInt( $writer );
+		( new \WP_User( $writer ) )->add_cap( 'edit_pages' );
+		wp_set_current_user( $writer );
+		delete_transient( 'pergel_abilities_' . $writer );
+		$own = wp_insert_post(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'draft',
+				'post_title'  => 'Kendi taslağım',
+				'post_author' => $writer,
+			)
+		);
+
+		$result = self::call( 'pergel/list-pages', array( 'per_page' => 100 ) );
+		wp_delete_post( (int) $own, true );
+		require_once ABSPATH . 'wp-admin/includes/user.php';
+		wp_delete_user( $writer );
+
+		$this->assertIsArray( $result );
+		$this->assertSame( array( $own ), array_column( $result['pages'], 'id' ) );
+		$this->assertSame( 1, $result['total'] );
+	}
+
 	public function test_the_tokens_and_the_settings(): void {
 		$tokens = self::call( 'pergel/get-design-tokens' );
 		$this->assertIsArray( $tokens );

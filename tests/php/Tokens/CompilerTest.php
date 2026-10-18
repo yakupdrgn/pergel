@@ -303,6 +303,23 @@ final class CompilerTest extends TestCase {
 		rmdir( $dir );
 	}
 
+	public function test_font_names_and_faces_stay_inside_their_rule(): void {
+		$family = static fn ( mixed $value, array $face = array() ): array => array(
+			'font-family' => array(
+				'body' => array( '$value' => $value ) + ( $face ? array( '$extensions' => array( Compiler::EXT => array( 'fontFace' => array( $face + array( 'src' => 'file:./assets/fonts/a.woff2' ) ) ) ) ) : array() ),
+			),
+		);
+		$this->assertSame( '"Noto Sans 2", "Inter_Display", -apple-system', Css::font_family( array( 'Noto Sans 2', 'Inter_Display', '-apple-system' ) ) );
+		$this->assertSame( '"Işık Grotesk"', Css::font_family( 'Işık Grotesk' ) );
+
+		foreach ( array( 'A"; } body { color: red', 'A</style>', 'A\\', 'A;B' ) as $name ) {
+			$this->assertStringContainsString( 'font names may hold', implode( "\n", self::problems( Compiler::merge( self::minimal(), $family( $name ) ) ) ), $name );
+		}
+		$this->assertStringContainsString( 'unknown fontFace property "style"', implode( "\n", self::problems( Compiler::merge( self::minimal(), $family( 'A', array( 'style' => 'x' ) ) ) ) ) );
+		$this->assertStringContainsString( 'fontFace fontWeight must be a plain value', implode( "\n", self::problems( Compiler::merge( self::minimal(), $family( 'A', array( 'fontWeight' => '400; } x { y: z' ) ) ) ) ) );
+		$this->assertStringContainsString( 'font names may hold', implode( "\n", self::problems( Compiler::merge( self::minimal(), $family( 'A', array( 'fontFamily' => 'B"C' ) ) ) ) ) );
+	}
+
 	public function test_child_theme_inherits_parent_tokens(): void {
 		$root = sys_get_temp_dir() . '/pergel-child-' . bin2hex( random_bytes( 4 ) );
 		mkdir( "$root/parent/tokens", 0777, true );

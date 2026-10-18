@@ -439,6 +439,11 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   (`tests/budget/scale.json`) son sayfalar, sıralama, fiyat filtresi, arama ve yazı arşivlerinde
   sorgu sayısını, toplam sorgu süresini (`query_ms`) ve en yavaş tek sorguyu (`slowest_ms`)
   denetler; perf probe en yavaş sorguyu rapora yazar. Mağaza ve ölçek işlerinde PHP JIT kapalıdır.
+- **İnceleme** (CI'da `review` işi): `tools/ci/review.sh` motoru ve temayı `git archive HEAD` ile
+  zip'e girecekleri hâliyle siteye kopyalar, Plugin Check ve Theme Check'i sabit sürümleriyle
+  çalıştırır. Araçların çıkış kodu yetmediği için çıktı okunur: her Plugin Check bulgusu ve Theme
+  Check'in REQUIRED/WARNING satırları (`tools/ci/review.php`'deki gerekçeli istisnalar dışında)
+  işi kırar. Kabul edilen bulgular DECISIONS F6b'de.
 
 ## Starter'lar (F3c)
 
@@ -561,8 +566,9 @@ görünmez (`Settings\Screen::shown`).
   fiyat aralığı boş (önbellek anahtarı ayrı: `pergel-no-price`), `price_html` boş, satın
   alınamaz; fiyatsız varyasyonlar seçilebilir kalır. WooCommerce yapılandırılmış verisinde ve
   Rank Math / Yoast / AIOSEO graph süzgeçlerinde `offers` silinir; Google for WooCommerce
-  feed'ine yalnızca herkese satılan ürünler girer. Fiyat gizleyen listelerde (mağaza ya da
-  kategori modu) `min_price`/`max_price` ve fiyat sıralaması istekten düşer, sıralama menüsünden
+  feed'ine yalnızca herkese satılan ürünler girer. Kullanımdaki modlardan biri (mağaza,
+  kategori ya da ürün) ziyaretçiden fiyat gizliyorsa bütün listelerde `min_price`/`max_price` ve
+  fiyat sıralaması istekten düşer, sıralama menüsünden
   ve varsayılan sıralamadan çıkar, fiyat filtresi blokları basılmaz; Store API ürün
   listelerinde aynı parametreler ve fiyat aralığı kaldırılır. Gizli üründe sepete ekleme formu
   blokları (`add-to-cart-with-options`, `add-to-cart-form`) hiç basılmaz; yoksa boş bir form ve
@@ -782,6 +788,24 @@ Varsayılan olarak kapalıdır (`modules.abilities`, panelde "Yapay zekâ erişi
   parçası değildir.
 - **Sınır:** Kullanıcı başına dakikada 60 çağrı (`pergel/abilities/limit` süzgeci), transient
   sayaçla. Aşılırsa `pergel_ability_limit` (429).
+
+## Güvenlik (F6b)
+
+- **Ziyaretçi** (`Core\Visitor`): herkese açık uç noktalar (form, stok uyarısı, arama önerisi)
+  adresi, sınırları ve kaynağı buradan okur. Adres `REMOTE_ADDR` ya da `PERGEL_CLIENT_IP_HEADER`
+  sabitinin adlandırdığı vekil başlığı (`X-Forwarded-For`'da son adres); IPv6 /64 başına sayılır,
+  sınırlarda yalnızca özeti tutulur. `hit( anahtar, sınır, pencere )` sabit pencereli sayaçtır;
+  kalıcı nesne önbelleğinde `wp_cache_incr` ile atomik, yoksa transient. `foreign_origin()`
+  başka siteden gelen tarayıcı POST'unu tanır (sitenin kendi kaynağı portuyla karşılaştırılır).
+- **Kapılar:** form gönderimi sırayla tuzak alanı, imzalı jeton, süre, kaynak, alan
+  denetimi, bağlantı sınırı, Turnstile (anahtar varsa) ve site sınırından geçer; yalnızca alanları
+  geçerli istek sınıra sayılır. Satış modları her REST rotasında mağaza yöneticisi dışında herkese
+  uygulanır.
+- **Girdi derinliği:** paket okuyucuları (YAML, Markdown) iç içe geçmeyi sınırlar, paket
+  dosyaları gerçek yoluyla paketin içinde aranır, font adları ve `fontFace` değerleri
+  `Css::font_family` ve anahtar listesiyle süzülür.
+- **Gizlilik:** form mesajları, stok uyarıları ve kayıtlı istek listesi WordPress'in kişisel veri
+  dışa aktarma ve silme araçlarına bağlıdır; silinemeyen kayıt `items_retained` ile bildirilir.
 
 ## WP-CLI (F2)
 

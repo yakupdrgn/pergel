@@ -82,7 +82,7 @@ final class Integrations {
 		if ( ! is_array( $node ) || ! Graph::is_organization( $node ) ) {
 			return $json;
 		}
-		$encoded = wp_json_encode( Graph::enrich( $node, self::organization() ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		$encoded = wp_json_encode( Graph::enrich( $node, self::organization() ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP );
 		return is_string( $encoded ) ? $encoded : $json;
 	}
 

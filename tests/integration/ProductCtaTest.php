@@ -12,6 +12,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Pergel\Core\Visitor;
 use Pergel\Forms\Form;
 use Pergel\Forms\Inbox;
 use Pergel\Forms\Submit;
@@ -65,6 +66,7 @@ final class ProductCtaTest extends TestCase {
 		add_filter( 'pre_wp_mail', '__return_true' );
 		add_filter( 'pergel/woo/quote_providers', array( $this, 'providers' ) );
 		Form::flush();
+		delete_transient( Visitor::key( 'form:site', HOUR_IN_SECONDS ) );
 		// Contacts set up on the site would show up in every test.
 		$this->settings(
 			array(
@@ -103,7 +105,7 @@ final class ProductCtaTest extends TestCase {
 			add_option( Settings::OPTION, $this->saved, '', true );
 			add_filter( 'sanitize_option_' . Settings::OPTION, array( \Pergel\Settings\Module::class, 'sanitize' ) );
 		}
-		delete_transient( 'pergel_form_' . substr( wp_hash( $this->ip, 'nonce' ), 0, 20 ) );
+		delete_transient( Visitor::key( 'form:' . $this->ip, Submit::WINDOW ) );
 		remove_filter( 'pre_wp_mail', '__return_true' );
 		remove_filter( 'pergel/woo/quote_providers', array( $this, 'providers' ) );
 		wp_set_current_user( 0 );
@@ -347,6 +349,7 @@ final class ProductCtaTest extends TestCase {
 		wp_set_current_user( $user );
 		$this->assertSame( '', $this->render( $product->get_id() ) );
 		wp_set_current_user( 0 );
+		require_once ABSPATH . 'wp-admin/includes/user.php';
 		wp_delete_user( $user );
 	}
 

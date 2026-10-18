@@ -43,7 +43,8 @@ final class Manifest {
 			$blocks[ $slug ] = $metadata;
 		}
 		if ( array() !== $problems ) {
-			throw new \RuntimeException( implode( "\n", $problems ) );
+			// Build-time only (tools/blocks.php, no WordPress loaded); the message goes to a terminal.
+			throw new \RuntimeException( implode( "\n", $problems ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 		return $blocks;
 	}

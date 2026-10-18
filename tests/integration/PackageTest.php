@@ -322,6 +322,25 @@ final class PackageTest extends TestCase {
 		);
 	}
 
+	public function test_links_out_of_the_package_are_not_followed(): void {
+		$outside = sys_get_temp_dir() . '/pergel-secret-' . bin2hex( random_bytes( 4 ) );
+		file_put_contents( "$outside.md", "# secret\n" );
+		copy( self::FIXTURE . '/media/tarla.png', "$outside.png" );
+		$this->package( array( 'content/about.md' => null ) );
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- Windows may not allow links.
+		$linked = @symlink( "$outside.md", $this->copy . '/content/about.md' ) && @symlink( "$outside.png", $this->copy . '/media/outside.png' );
+		$package = Package::read( $this->copy );
+		unlink( "$outside.md" );
+		unlink( "$outside.png" );
+		if ( ! $linked ) {
+			$this->markTestSkipped( 'This system does not make symbolic links.' );
+		}
+
+		$this->assertStringContainsString( 'content: content/about.md: file not found', implode( "\n", $package->problems ) );
+		$this->expectExceptionMessage( 'file not found in the package' );
+		$package->image( 'media/outside.png' );
+	}
+
 	public function test_a_missing_package(): void {
 		$package = Package::read( self::FIXTURE . '/yok' );
 		$this->assertCount( 1, $package->problems );

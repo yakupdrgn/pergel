@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Pergel\Core\Visitor;
 use Pergel\Forms\Form;
 use Pergel\Forms\Inbox;
 use Pergel\Forms\Submit;
@@ -50,15 +51,17 @@ final class FormsTest extends TestCase {
 		$this->ip = '192.0.2.' . wp_rand( 1, 254 );
 		add_filter( 'pre_wp_mail', array( $this, 'catch_mail' ), 10, 2 );
 		Form::flush();
+		delete_transient( Visitor::key( 'form:site', HOUR_IN_SECONDS ) );
 	}
 
 	protected function tearDown(): void {
 		remove_filter( 'pre_wp_mail', array( $this, 'catch_mail' ) );
 		remove_all_filters( 'pergel/forms/turnstile' );
+		remove_all_filters( 'pergel/forms/hourly_cap' );
 		if ( null !== $this->http ) {
 			remove_filter( 'pre_http_request', $this->http );
 		}
-		delete_transient( 'pergel_form_' . substr( wp_hash( $this->ip, 'nonce' ), 0, 20 ) );
+		delete_transient( Visitor::key( 'form:' . $this->ip, Submit::WINDOW ) );
 		foreach ( get_posts(
 			array(
 				'post_type'      => Inbox::TYPE,
@@ -73,7 +76,7 @@ final class FormsTest extends TestCase {
 		}
 		Settings::update( array( 'forms' => array( 'recipient' => '' ) ) );
 		wp_set_current_user( 0 );
-		unset( $_GET['pergel_form'], $_GET['pergel_form_id'], $_SERVER['REMOTE_ADDR'] );
+		unset( $_GET['pergel_form'], $_GET['pergel_form_id'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_ORIGIN'], $_SERVER['HTTP_X_FORWARDED_FOR'] );
 	}
 
 	/**
@@ -187,7 +190,7 @@ final class FormsTest extends TestCase {
 		$this->assertCount( 1, $this->mails );
 		$this->assertSame( 'owner@example.invalid', $this->mails[0]['to'] );
 		$this->assertStringContainsString( 'Ada Lovelace', (string) $this->mails[0]['subject'] );
-		$this->assertSame( array( 'Reply-To: "Ada Lovelace" <ada@example.invalid>' ), $this->mails[0]['headers'] );
+		$this->assertSame( array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: "Ada Lovelace" <ada@example.invalid>' ), $this->mails[0]['headers'] );
 		$this->assertStringContainsString( "Line one\nLine two", (string) $this->mails[0]['message'] );
 		$this->assertStringContainsString( (string) get_permalink( $page ), (string) $this->mails[0]['message'] );
 	}
@@ -202,12 +205,50 @@ final class FormsTest extends TestCase {
 	}
 
 	public function test_a_connection_may_send_a_few_messages(): void {
-		$token = Form::sign( array( 'optional' => array() ) + self::spec( false ) );
+		$token = Form::sign( self::spec( false ) );
 		for ( $i = 0; $i < Submit::LIMIT; $i++ ) {
-			$this->assertSame( 'invalid', Submit::handle( array( 'token' => $token ), $this->ip )['code'] );
+			$this->assertSame( 'invalid', Submit::handle( array( 'token' => $token ), $this->ip )['code'], 'A message with errors does not count.' );
+			$this->assertSame( 'sent', Submit::handle( array( 'token' => $token ) + self::fields(), $this->ip )['code'] );
 		}
 
 		$this->assertSame( 'limit', Submit::handle( array( 'token' => $token ) + self::fields(), $this->ip )['code'] );
+		$this->assertCount( Submit::LIMIT, $this->mails );
+	}
+
+	public function test_an_ipv6_connection_counts_as_its_block(): void {
+		$this->assertSame( Visitor::bucket( '2001:db8:1:2:aaaa::1' ), Visitor::bucket( '2001:db8:1:2:ffff:1:2:3' ) );
+		$this->assertNotSame( Visitor::bucket( '2001:db8:1:2::1' ), Visitor::bucket( '2001:db8:1:3::1' ) );
+		$this->assertSame( '192.0.2.7', Visitor::bucket( '192.0.2.7' ) );
+
+		$_SERVER['REMOTE_ADDR']          = $this->ip;
+		$_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.5';
+		$this->assertSame( $this->ip, Submit::ip(), 'A proxy header counts only when wp-config.php names it.' );
+		$_SERVER['REMOTE_ADDR'] = 'not an address';
+		$this->assertSame( '', Visitor::ip() );
+	}
+
+	public function test_the_site_takes_a_few_messages_an_hour(): void {
+		add_filter( 'pergel/forms/hourly_cap', static fn (): int => 1 );
+		$input = array( 'token' => Form::sign( self::spec( false ) ) ) + self::fields();
+
+		$this->assertSame( 'sent', Submit::handle( $input, $this->ip )['code'] );
+		$this->assertSame( 'limit', Submit::handle( $input, '203.0.113.9' )['code'], 'Another connection waits as well.' );
+		$this->assertCount( 1, $this->mails );
+		delete_transient( Visitor::key( 'form:203.0.113.9', Submit::WINDOW ) );
+	}
+
+	public function test_a_form_posted_from_another_site_is_turned_back(): void {
+		$input = array( 'token' => Form::sign( self::spec( false ) ) ) + self::fields();
+		$home  = (array) wp_parse_url( home_url() );
+
+		$_SERVER['HTTP_ORIGIN'] = 'https://elsewhere.example';
+		$this->assertSame( 'expired', Submit::handle( $input, $this->ip )['code'] );
+		$this->assertSame( array(), $this->mails );
+
+		$_SERVER['HTTP_ORIGIN'] = $home['scheme'] . '://' . $home['host'] . ( isset( $home['port'] ) ? ':' . $home['port'] : '' );
+		$this->assertSame( 'sent', Submit::handle( $input, $this->ip )['code'] );
+		$_SERVER['HTTP_ORIGIN'] = 'null';
+		$this->assertSame( 'sent', Submit::handle( $input, $this->ip )['code'] );
 	}
 
 	public function test_turnstile_is_asked_when_it_has_keys(): void {
@@ -372,6 +413,16 @@ final class FormsTest extends TestCase {
 		$this->assertTrue( $export['done'] );
 		$this->assertContains( 'Ada Lovelace', array_column( $export['data'][0]['data'], 'value' ) );
 		$this->assertArrayHasKey( 'pergel-forms', apply_filters( 'wp_privacy_personal_data_exporters', array() ) );
+		wp_trash_post( (int) explode( '-', $export['data'][0]['item_id'] )[3] );
+		$this->assertCount( 1, Inbox::export( 'ada@example.invalid' )['data'], 'A trashed message is still personal data.' );
+
+		add_filter( 'pre_delete_post', '__return_false' );
+		$kept = Inbox::erase( 'ada@example.invalid' );
+		remove_filter( 'pre_delete_post', '__return_false' );
+		$this->assertFalse( $kept['items_removed'] );
+		$this->assertTrue( $kept['items_retained'] );
+		$this->assertTrue( $kept['done'], 'A message that stays does not keep the eraser going.' );
+
 		$this->assertTrue( Inbox::erase( 'ada@example.invalid' )['items_removed'] );
 		$this->assertSame( array(), Inbox::export( 'ada@example.invalid' )['data'] );
 	}

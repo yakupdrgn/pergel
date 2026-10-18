@@ -45,7 +45,9 @@ final class Toc {
 	}
 
 	/**
-	 * Block markup; empty when the post has fewer than two headings.
+	 * Block markup; empty when the post has fewer than two headings. A post
+	 * the visitor may not read (a draft, a password not yet given) lists
+	 * nothing, wherever the block is placed.
 	 *
 	 * @param array<string, mixed> $attributes Block attributes.
 	 * @param \WP_Block|null       $block      Block instance.
@@ -53,8 +55,11 @@ final class Toc {
 	public static function render( array $attributes, ?\WP_Block $block = null ): string {
 		$post_id = $block instanceof \WP_Block && is_int( $block->context['postId'] ?? null ) ? $block->context['postId'] : (int) get_the_ID();
 		$post    = get_post( $post_id );
-		$max     = is_int( $attributes['maxLevel'] ?? null ) ? max( 2, min( 6, $attributes['maxLevel'] ) ) : self::MAX_LEVEL;
-		$items   = array();
+		if ( $post instanceof \WP_Post && ( post_password_required( $post ) || ( ! is_post_publicly_viewable( $post ) && ! current_user_can( 'read_post', $post->ID ) ) ) ) {
+			$post = null;
+		}
+		$max   = is_int( $attributes['maxLevel'] ?? null ) ? max( 2, min( 6, $attributes['maxLevel'] ) ) : self::MAX_LEVEL;
+		$items = array();
 		foreach ( $post instanceof \WP_Post ? self::headings( $post ) : array() as $heading ) {
 			if ( $heading['level'] >= 2 && $heading['level'] <= $max ) {
 				$items[] = $heading;

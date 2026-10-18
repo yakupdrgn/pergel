@@ -51,7 +51,7 @@ final class SearchCommand {
 		$rows   = 0;
 		if ( Index::SCHEMA === $state['db'] ) {
 			$table = Index::table();
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table, name from the prefix; a one-off report.
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table, name from the prefix; a one-off report.
 			foreach ( (array) $wpdb->get_results( "SELECT kind, COUNT(DISTINCT object_id) AS objects, COUNT(*) AS tokens FROM $table GROUP BY kind", ARRAY_A ) as $row ) {
 				$counts[ (int) $row['kind'] ] = (int) $row['objects'];
 				$rows                        += (int) $row['tokens'];

@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Forms;
 
+use Pergel\Core\Visitor;
 use Pergel\Settings\Labels;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
@@ -16,14 +17,22 @@ use Pergel\Settings\Settings;
 /**
  * Checks a message, keeps it and emails it. In order: a filled trap field
  * gets a quiet "sent" and nothing else; the token must be one the site
- * signed; a form sent within seconds of loading is turned back; each
+ * signed; a form sent within seconds of loading is turned back, and so is
+ * one a browser posts from another site; the fields are checked; each
  * connection may send a few messages in ten minutes; Turnstile is asked
- * when it has keys; then the fields are checked. A message that passes is
- * stored first and mailed second, so a lost email loses nothing. The
- * visitor's IP address is used for the limit only, as a hash, and is not
- * stored with the message. Code that knows the post a form is about checks
- * its own fields (pergel/forms/subject_values) and hears about each stored
- * message (pergel/forms/received), e.g. to pass a quote on.
+ * when it has keys; the site takes at most HOURLY_CAP messages an hour.
+ * Only a message with good fields counts against the limits, so a visitor
+ * fixing a typo does not use them up. A message that passes is stored
+ * first and mailed second, so a lost email loses nothing. The visitor's IP
+ * address is used for the limit only, as a hash, and is not stored with
+ * the message (Core\Visitor).
+ *
+ * The token has no age limit: pages are cached for days, and a form on a
+ * cached page must still send. A copied token still has to pass the
+ * limits, which count per connection and for the whole site. Code that
+ * knows the post a form is about checks its own fields
+ * (pergel/forms/subject_values) and hears about each stored message
+ * (pergel/forms/received), e.g. to pass a quote on.
  *
  * @phpstan-import-type Spec from Form
  * @phpstan-type Result array{code: string, errors: array<string, string>, spec: Spec|null, entry: int}
@@ -54,6 +63,12 @@ final class Submit {
 	 */
 	public const LIMIT  = 5;
 	public const WINDOW = 600;
+
+	/**
+	 * Messages and back-in-stock sign-ups the whole site takes in an hour,
+	 * together; filtered with pergel/forms/hourly_cap.
+	 */
+	public const HOURLY_CAP = 50;
 
 	/**
 	 * HTTP status per result code.
@@ -160,12 +175,7 @@ final class Submit {
 			$result['code'] = 'wait';
 			return $result;
 		}
-		if ( ! self::within_limit( $ip ) ) {
-			$result['code'] = 'limit';
-			return $result;
-		}
-		if ( ! self::challenge_passed( $input['cf-turnstile-response'] ?? null, $ip ) ) {
-			$result['code'] = 'challenge';
+		if ( Visitor::foreign_origin() ) {
 			return $result;
 		}
 
@@ -203,6 +213,18 @@ final class Submit {
 		}
 		if ( array() !== $result['errors'] ) {
 			$result['code'] = 'invalid';
+			return $result;
+		}
+		if ( ! self::within_limit( $ip ) ) {
+			$result['code'] = 'limit';
+			return $result;
+		}
+		if ( ! self::challenge_passed( $input['cf-turnstile-response'] ?? null, $ip ) ) {
+			$result['code'] = 'challenge';
+			return $result;
+		}
+		if ( ! self::within_site_cap() ) {
+			$result['code'] = 'limit';
 			return $result;
 		}
 		if ( $spec['consent'] ) {
@@ -265,16 +287,16 @@ final class Submit {
 	}
 
 	/**
-	 * The visitor's address as the web server sees it. Proxies that rewrite
-	 * it can be handled with the pergel/forms/ip filter.
+	 * The visitor's address (Core\Visitor::ip(): REMOTE_ADDR, or the header
+	 * PERGEL_CLIENT_IP_HEADER names behind a proxy).
 	 */
 	public static function ip(): string {
-		$ip = isset( $_SERVER['REMOTE_ADDR'] ) && is_string( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$ip = Visitor::ip();
 
 		/**
-		 * Filters the visitor address used for the sending limit.
+		 * Filters the visitor address used for the sending limits.
 		 *
-		 * @param string $ip REMOTE_ADDR.
+		 * @param string $ip The address Pergel found.
 		 */
 		$filtered = apply_filters( 'pergel/forms/ip', $ip );
 		return is_string( $filtered ) ? $filtered : $ip;
@@ -295,14 +317,22 @@ final class Submit {
 	 * @param string $ip Visitor's address.
 	 */
 	public static function within_limit( string $ip ): bool {
-		$key   = 'pergel_form_' . substr( wp_hash( $ip, 'nonce' ), 0, 20 );
-		$count = get_transient( $key );
-		$count = is_numeric( $count ) ? (int) $count : 0;
-		if ( $count >= self::LIMIT ) {
-			return false;
-		}
-		set_transient( $key, $count + 1, self::WINDOW );
-		return true;
+		return Visitor::hit( 'form:' . Visitor::bucket( $ip ), self::LIMIT, self::WINDOW );
+	}
+
+	/**
+	 * Counts this message against what the whole site takes in an hour, so
+	 * a flood from many addresses stops too. Back-in-stock alerts share it.
+	 */
+	public static function within_site_cap(): bool {
+		/**
+		 * Filters how many messages and back-in-stock sign-ups the site
+		 * takes in an hour. 0 turns both off.
+		 *
+		 * @param int $cap Default 50.
+		 */
+		$cap = apply_filters( 'pergel/forms/hourly_cap', self::HOURLY_CAP );
+		return Visitor::hit( 'form:site', is_numeric( $cap ) ? (int) $cap : self::HOURLY_CAP, HOUR_IN_SECONDS );
 	}
 
 	/**
@@ -320,7 +350,7 @@ final class Submit {
 			return false;
 		}
 		$answer = wp_remote_post(
-			'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+			'https://challenges.cloudflare.com/turnstile/v0/siteverify', // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- The Turnstile answer can only be checked by Cloudflare.
 			array(
 				'timeout' => 10,
 				'body'    => array(
@@ -368,7 +398,7 @@ final class Submit {
 		/* translators: %s: admin address of the stored message. */
 		$lines[] = sprintf( __( 'Kept in the admin area: %s', 'pergel-engine' ), admin_url( 'post.php?post=' . $entry . '&action=edit' ) );
 
-		$headers = array();
+		$headers = array( 'Content-Type: text/plain; charset=UTF-8' );
 		$email   = $values['email'] ?? '';
 		if ( is_email( $email ) ) {
 			$display   = trim( (string) preg_replace( '/["<>,;:\\\\\r\n]+/', ' ', $name ) );

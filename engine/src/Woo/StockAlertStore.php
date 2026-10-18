@@ -46,11 +46,13 @@ final class StockAlertStore {
 	private const BATCH = 50;
 
 	/**
-	 * Adds the hooks that work on the stored rows: the privacy tools and
-	 * the admin list. Woo\Module calls it once the table exists, so the
-	 * rows stay listed and erasable after the alerts are turned off.
+	 * Adds the hooks that work on the stored rows: the privacy tools, the
+	 * admin list and the links in the emails. Woo\Module calls it once the
+	 * table exists, so the rows stay listed and erasable, and an address
+	 * can still be removed with its link, after the alerts are turned off.
 	 */
 	public static function register(): void {
+		add_action( 'template_redirect', array( StockAlert::class, 'link_clicked' ), 5 );
 		add_filter( 'wp_privacy_personal_data_exporters', array( self::class, 'exporters' ) );
 		add_filter( 'wp_privacy_personal_data_erasers', array( self::class, 'erasers' ) );
 		add_action( StockAlert::SEND_HOOK, array( StockAlert::class, 'run' ) );
@@ -116,7 +118,7 @@ final class StockAlertStore {
 	 */
 	public static function uninstall(): void {
 		global $wpdb;
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . self::table() ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery, WordPress.DB.SchemaChange -- Own table, name from the prefix.
+		$wpdb->query( 'DROP TABLE IF EXISTS ' . self::table() ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery, WordPress.DB.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table, name from the prefix.
 		delete_option( self::STATE );
 	}
 
@@ -130,7 +132,7 @@ final class StockAlertStore {
 	public static function get( int $id ): ?array {
 		global $wpdb;
 		$table = self::table();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE id = %d", $id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table; not cached, rows change on every request that reads them.
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE id = %d", $id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table; not cached, rows change on every request that reads them.
 		return is_array( $row ) ? self::row( $row ) : null;
 	}
 
@@ -145,7 +147,7 @@ final class StockAlertStore {
 	public static function find( int $product, string $email ): ?array {
 		global $wpdb;
 		$table = self::table();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE product_id = %d AND email = %s", $product, $email ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE product_id = %d AND email = %s", $product, $email ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
 		return is_array( $row ) ? self::row( $row ) : null;
 	}
 
@@ -223,7 +225,7 @@ final class StockAlertStore {
 	public static function waiting( int $product ): bool {
 		global $wpdb;
 		$table = self::table();
-		return null !== $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE product_id = %d AND status = %s LIMIT 1", $product, self::ACTIVE ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+		return null !== $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE product_id = %d AND status = %s LIMIT 1", $product, self::ACTIVE ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
 	}
 
 	/**
@@ -237,7 +239,7 @@ final class StockAlertStore {
 	public static function due( int $product, int $limit ): array {
 		global $wpdb;
 		$table = self::table();
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE product_id = %d AND status = %s ORDER BY id ASC LIMIT %d", $product, self::ACTIVE, $limit ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE product_id = %d AND status = %s ORDER BY id ASC LIMIT %d", $product, self::ACTIVE, $limit ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
 		return array_map( array( self::class, 'row' ), is_array( $rows ) ? array_values( $rows ) : array() );
 	}
 
@@ -269,7 +271,7 @@ final class StockAlertStore {
 		$table   = self::table();
 		$pending = gmdate( 'Y-m-d H:i:s', time() - self::PENDING_DAYS * DAY_IN_SECONDS );
 		$sent    = gmdate( 'Y-m-d H:i:s', time() - self::SENT_DAYS * DAY_IN_SECONDS );
-		$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM $table WHERE (status = %s AND created < %s) OR (status = %s AND sent < %s)", self::PENDING, $pending, self::SENT, $sent ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+		$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM $table WHERE (status = %s AND created < %s) OR (status = %s AND sent < %s)", self::PENDING, $pending, self::SENT, $sent ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
 		return (int) $deleted;
 	}
 
@@ -282,7 +284,7 @@ final class StockAlertStore {
 		global $wpdb;
 		$table  = self::table();
 		$counts = array_fill_keys( array( self::ACTIVE, self::PENDING, self::SENT ), 0 );
-		$rows   = $wpdb->get_results( "SELECT status, COUNT(*) AS n FROM $table GROUP BY status", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table, no input.
+		$rows   = $wpdb->get_results( "SELECT status, COUNT(*) AS n FROM $table GROUP BY status", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table, no input.
 		foreach ( is_array( $rows ) ? $rows : array() as $row ) {
 			if ( isset( $counts[ $row['status'] ] ) ) {
 				$counts[ $row['status'] ] = (int) $row['n'];
@@ -300,7 +302,7 @@ final class StockAlertStore {
 	public static function wanted( int $limit ): array {
 		global $wpdb;
 		$table  = self::table();
-		$rows   = $wpdb->get_results( $wpdb->prepare( "SELECT product_id, COUNT(*) AS n FROM $table WHERE status = %s GROUP BY product_id ORDER BY n DESC, product_id ASC LIMIT %d", self::ACTIVE, $limit ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+		$rows   = $wpdb->get_results( $wpdb->prepare( "SELECT product_id, COUNT(*) AS n FROM $table WHERE status = %s GROUP BY product_id ORDER BY n DESC, product_id ASC LIMIT %d", self::ACTIVE, $limit ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
 		$wanted = array();
 		foreach ( is_array( $rows ) ? $rows : array() as $row ) {
 			$wanted[ (int) $row['product_id'] ] = (int) $row['n'];
@@ -322,8 +324,8 @@ final class StockAlertStore {
 		$table  = self::table();
 		$offset = ( max( 1, $page ) - 1 ) * $per_page;
 		$rows   = '' === $status
-			? $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table ORDER BY id DESC LIMIT %d OFFSET %d", $per_page, $offset ), ARRAY_A ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
-			: $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d", $status, $per_page, $offset ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+			? $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table ORDER BY id DESC LIMIT %d OFFSET %d", $per_page, $offset ), ARRAY_A ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
+			: $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d", $status, $per_page, $offset ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
 		return array_map( array( self::class, 'row' ), is_array( $rows ) ? array_values( $rows ) : array() );
 	}
 
@@ -414,7 +416,8 @@ final class StockAlertStore {
 	}
 
 	/**
-	 * Eraser callback: deletes the address's rows.
+	 * Eraser callback: deletes the address's rows. A row that cannot be
+	 * deleted is reported as kept and ends the run.
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Batch number (always the first, since rows go away).
@@ -422,16 +425,21 @@ final class StockAlertStore {
 	 */
 	public static function erase( string $email, int $page = 1 ): array {
 		unset( $page );
-		$rows    = self::by_email( $email, 1 );
-		$removed = false;
+		$rows     = self::by_email( $email, 1 );
+		$removed  = false;
+		$retained = false;
 		foreach ( $rows as $row ) {
-			$removed = self::delete( $row['id'] ) || $removed;
+			if ( self::delete( $row['id'] ) ) {
+				$removed = true;
+			} else {
+				$retained = true;
+			}
 		}
 		return array(
 			'items_removed'  => $removed,
-			'items_retained' => false,
+			'items_retained' => $retained,
 			'messages'       => array(),
-			'done'           => count( $rows ) < self::BATCH,
+			'done'           => $retained || count( $rows ) < self::BATCH,
 		);
 	}
 
@@ -449,7 +457,8 @@ final class StockAlertStore {
 	}
 
 	/**
-	 * Rows of an address.
+	 * Rows of an address, and of the account with that address (a customer
+	 * who signed up and later changed the account's email).
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Batch number.
@@ -462,8 +471,9 @@ final class StockAlertStore {
 		if ( '' === $email || ! self::installed() ) {
 			return array();
 		}
+		$user  = get_user_by( 'email', $email );
 		$table = self::table();
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE email = %s ORDER BY id ASC LIMIT %d OFFSET %d", $email, self::BATCH, ( max( 1, $page ) - 1 ) * self::BATCH ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE email = %s OR ( user_id > 0 AND user_id = %d ) ORDER BY id ASC LIMIT %d OFFSET %d", $email, $user instanceof \WP_User ? $user->ID : 0, self::BATCH, ( max( 1, $page ) - 1 ) * self::BATCH ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table.
 		return array_map( array( self::class, 'row' ), is_array( $rows ) ? array_values( $rows ) : array() );
 	}
 

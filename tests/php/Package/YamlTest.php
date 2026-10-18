@@ -311,4 +311,20 @@ final class YamlTest extends TestCase {
 			}
 		}
 	}
+
+	public function test_nesting_has_a_limit(): void {
+		$this->assertSame( array( 'a' => array( array( array( 1 ) ) ) ), Yaml::parse( 'a: [[[1]]]' ) );
+		$block = '';
+		for ( $level = 0; $level < 40; $level++ ) {
+			$block .= str_repeat( '  ', $level ) . "k$level:\n";
+		}
+		foreach ( array( 'a: ' . str_repeat( '[', 5000 ) . str_repeat( ']', 5000 ), $block . str_repeat( '  ', 40 ) . 'end: 1' ) as $yaml ) {
+			try {
+				Yaml::parse( $yaml );
+				$this->fail( 'Expected an error.' );
+			} catch ( InvalidArgumentException $e ) {
+				$this->assertStringContainsString( 'nest at most 32 deep', $e->getMessage() );
+			}
+		}
+	}
 }

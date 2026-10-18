@@ -199,6 +199,8 @@ final class Css {
 
 	/**
 	 * Font family stack as CSS. Names with spaces or digits are quoted.
+	 * A name is letters, digits, spaces, dots, hyphens and underscores, so
+	 * it cannot close the quotes or the rule it is written into.
 	 *
 	 * @param mixed $value String or list of family names.
 	 * @throws \InvalidArgumentException When the value is not a string or list of strings.
@@ -213,7 +215,10 @@ final class Css {
 			if ( ! is_string( $name ) || '' === trim( $name ) ) {
 				throw new \InvalidArgumentException( 'font names must be non-empty strings' );
 			}
-			$name  = trim( $name, " \t\"'" );
+			$name = trim( $name, " \t\"'" );
+			if ( 1 !== preg_match( '/^[\p{L}\p{N} ._-]+$/u', $name ) ) {
+				throw new \InvalidArgumentException( 'font names may hold letters, digits, spaces, dots, hyphens and underscores' );
+			}
 			$out[] = in_array( strtolower( $name ), self::GENERIC_FAMILIES, true ) || preg_match( '/^[a-z-]+$/i', $name ) ? $name : '"' . $name . '"';
 		}
 		return implode( ', ', $out );

@@ -7,6 +7,9 @@
 
 declare( strict_types=1 );
 
+// Messages name files, lines and keys; WP-CLI prints them and REST returns them as JSON, never as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
+
 namespace Pergel\Package;
 
 use Closure;
@@ -31,6 +34,19 @@ final class Markdown {
 	 * Link schemes allowed besides relative addresses and #anchors.
 	 */
 	private const SCHEMES = array( 'http', 'https', 'mailto', 'tel' );
+
+	/**
+	 * Deepest nesting of quotes and lists, so a crafted file cannot exhaust
+	 * the stack.
+	 */
+	private const MAX_DEPTH = 16;
+
+	/**
+	 * Quotes and lists open around the block being read.
+	 *
+	 * @var int
+	 */
+	private int $depth = 0;
 
 	/**
 	 * Use convert().
@@ -220,8 +236,24 @@ final class Markdown {
 			$inner[] = (string) preg_replace( '/^\s*> ?/', '', $lines[ $i ] );
 			++$i;
 		}
-		$blocks = $this->blocks( $inner, $offset + $start );
+		$this->enter();
+		try {
+			$blocks = $this->blocks( $inner, $offset + $start );
+		} finally {
+			--$this->depth;
+		}
 		return "<!-- wp:quote -->\n<blockquote class=\"wp-block-quote\">" . implode( "\n\n", $blocks ) . "</blockquote>\n<!-- /wp:quote -->";
+	}
+
+	/**
+	 * Opens one more level of quote or list.
+	 *
+	 * @throws InvalidArgumentException When it is one level too many.
+	 */
+	private function enter(): void {
+		if ( ++$this->depth > self::MAX_DEPTH ) {
+			throw new InvalidArgumentException( 'quotes and lists nest at most ' . self::MAX_DEPTH . ' deep' );
+		}
 	}
 
 	/**
@@ -256,7 +288,12 @@ final class Markdown {
 				if ( array() === $texts ) {
 					break;
 				}
-				$nested[ count( $texts ) - 1 ][] = $this->list_block( $lines, $i, $own );
+				$this->enter();
+				try {
+					$nested[ count( $texts ) - 1 ][] = $this->list_block( $lines, $i, $own );
+				} finally {
+					--$this->depth;
+				}
 				continue;
 			}
 			if ( (bool) preg_match( '/^\s*\d+[.)]\s/', $line ) !== $ordered ) {
@@ -369,12 +406,17 @@ final class Markdown {
 	}
 
 	/**
-	 * Checks a link address.
+	 * Checks a link address. Browsers skip spaces and control characters in
+	 * front of a scheme and inside it ("\x01javascript:"), so an address
+	 * with any of them is refused before the scheme is read.
 	 *
 	 * @param string $url Address as written.
 	 * @throws InvalidArgumentException For a scheme that is not allowed.
 	 */
 	public static function url( string $url ): string {
+		if ( preg_match( '/[\x00-\x20\x7F]/', $url ) ) {
+			throw new InvalidArgumentException( 'the link "' . addcslashes( $url, "\0..\37\177" ) . '" has spaces or control characters; write a space as %20' );
+		}
 		if ( preg_match( '/^([a-zA-Z][a-zA-Z0-9+.-]*):/', $url, $m ) && ! in_array( strtolower( $m[1] ), self::SCHEMES, true ) ) {
 			throw new InvalidArgumentException( "the link \"$url\" uses $m[1]:, which is not allowed" );
 		}

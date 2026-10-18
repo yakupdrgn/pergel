@@ -192,7 +192,7 @@ final class Index {
 	 */
 	public static function uninstall(): void {
 		global $wpdb;
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . self::table() ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery, WordPress.DB.SchemaChange -- Own table, name from the prefix.
+		$wpdb->query( 'DROP TABLE IF EXISTS ' . self::table() ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery, WordPress.DB.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table, name from the prefix.
 		delete_option( self::STATE );
 		wp_clear_scheduled_hook( self::BUILD_HOOK );
 	}
@@ -568,20 +568,20 @@ final class Index {
 			return;
 		}
 		$table = self::table();
-		$wpdb->delete(
+		$wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Own table; queries are cached by last-changed.
 			$table,
 			array(
 				'kind'      => $kind,
 				'object_id' => $id,
 			),
 			array( '%d', '%d' )
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Own table; queries are cached by last-changed.
+		);
 		foreach ( array_chunk( $tokens, 300, true ) as $chunk ) {
 			$values = array();
 			foreach ( $chunk as $token => $weight ) {
 				array_push( $values, $kind, (string) $token, $id, $weight );
 			}
-			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Own table; queries are cached by last-changed.
+			$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table; queries are cached by last-changed.
 				$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber -- Four values per row, in one array.
 					"INSERT IGNORE INTO $table (kind, token, object_id, weight) VALUES " . implode( ',', array_fill( 0, count( $chunk ), '(%d,%s,%d,%d)' ) ), // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Own table name; one group of placeholders per row.
 					$values
@@ -597,7 +597,7 @@ final class Index {
 	public static function clear(): void {
 		global $wpdb;
 		if ( self::SCHEMA === self::state()['db'] ) {
-			$wpdb->query( 'DELETE FROM ' . self::table() ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table, name from the prefix.
+			$wpdb->query( 'DELETE FROM ' . self::table() ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Own table, name from the prefix.
 			wp_cache_set_last_changed( self::CACHE_GROUP );
 		}
 	}
