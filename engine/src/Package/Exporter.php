@@ -479,10 +479,11 @@ final class Exporter {
 	 * Package image path for an image on the site, copying it into the
 	 * package on first use; null when it is not in the media library.
 	 *
-	 * @param string $url URL as the block has it.
-	 * @param int    $id  Attachment ID the block names, 0 when none.
+	 * @param string $url  URL as the block has it.
+	 * @param int    $id   Attachment ID the block names, 0 when none.
+	 * @param bool   $file Whether a file field's file (a pdf too) is read.
 	 */
-	private function image( string $url, int $id ): ?string {
+	private function image( string $url, int $id, bool $file = false ): ?string {
 		if ( $id <= 0 || 'attachment' !== get_post_type( $id ) ) {
 			$id = attachment_url_to_postid( $url );
 			if ( 0 === $id ) {
@@ -510,7 +511,7 @@ final class Exporter {
 				$path = 'media/' . pathinfo( $base, PATHINFO_FILENAME ) . "-$n." . pathinfo( $base, PATHINFO_EXTENSION );
 			}
 		}
-		if ( ! in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), Package::IMAGE_TYPES, true ) ) {
+		if ( ! in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), $file ? array_merge( Package::IMAGE_TYPES, Package::FILE_TYPES ) : Package::IMAGE_TYPES, true ) ) {
 			return null;
 		}
 
@@ -543,11 +544,11 @@ final class Exporter {
 	 * Image reader for Fields::values(): the path, or { src, alt } when the
 	 * section's alt text is not the image's own.
 	 *
-	 * @return Closure(string, int, string): (string|array<string, string>|null)
+	 * @return Closure(string, int, string, string=): (string|array<string, string>|null)
 	 */
 	private function field_reader(): Closure {
-		return function ( string $url, int $id, string $alt ): string|array|null {
-			$path = $this->image( $url, $id );
+		return function ( string $url, int $id, string $alt, string $kind = 'image' ): string|array|null {
+			$path = $this->image( $url, $id, 'file' === $kind );
 			if ( null === $path ) {
 				return null;
 			}
@@ -906,7 +907,7 @@ final class Exporter {
 			$iterator = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( "$this->dir/$dir", \FilesystemIterator::SKIP_DOTS ) );
 			foreach ( $iterator as $file ) {
 				$path = substr( str_replace( '\\', '/', (string) $file ), strlen( $this->dir ) + 1 );
-				if ( 'content' === $dir ? str_ends_with( $path, '.md' ) : in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), Package::IMAGE_TYPES, true ) ) {
+				if ( 'content' === $dir ? str_ends_with( $path, '.md' ) : in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), array_merge( Package::IMAGE_TYPES, Package::FILE_TYPES ), true ) ) {
 					$found[] = $path;
 				}
 			}

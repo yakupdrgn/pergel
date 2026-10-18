@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/pergel\n"
-"POT-Creation-Date: 2026-10-18 07:51+0000\n"
-"PO-Revision-Date: 2026-10-18 07:51+0000\n"
+"POT-Creation-Date: 2026-10-18 17:40+0000\n"
+"PO-Revision-Date: 2026-10-18 17:40+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -74,6 +74,13 @@ msgstr "Tam sayfalar"
 
 msgid "Whole pages made of Pergel sections."
 msgstr "Pergel bölümlerinden oluşan tam sayfalar."
+
+msgctxt "pattern category"
+msgid "Product"
+msgstr "Ürün"
+
+msgid "Sections of a product description: specifications, downloads, questions."
+msgstr "Ürün açıklamasının bölümleri: teknik özellikler, indirmeler, sorular."
 
 msgctxt "pattern category"
 msgid "Shop"
@@ -1366,6 +1373,16 @@ msgctxt "product page"
 msgid "Related products"
 msgstr "İlgili ürünler"
 
+#: patterns/hidden-product-reviews.php
+msgctxt "Pattern title"
+msgid "Product reviews"
+msgstr "Ürün değerlendirmeleri"
+
+#: patterns/hidden-product-reviews.php
+msgctxt "Pattern description"
+msgid "The product's reviews with a title and the review form, after the content of a product with sections; nothing shows when reviews are off."
+msgstr "Bölümlü bir ürünün içeriğinden sonra, başlığıyla ürünün değerlendirmeleri ve değerlendirme formu; değerlendirmeler kapalıyken hiçbir şey görünmez."
+
 #: patterns/hidden-product-terms.php
 msgctxt "Pattern title"
 msgid "Product categories and tags"
@@ -2104,6 +2121,315 @@ msgstr "Zaman çizelgesi olarak süreç"
 msgctxt "Pattern description"
 msgid "Centered heading and the steps on a vertical timeline."
 msgstr "Ortalanmış başlık ve dikey bir zaman çizelgesinde adımlar."
+
+#: patterns/product-care.php
+msgctxt "Pattern title"
+msgid "Product care"
+msgstr "Ürün bakımı"
+
+#: patterns/product-care.php
+msgctxt "Pattern description"
+msgid "Two lists under a heading: how to use and clean the product, and how to store it."
+msgstr "Bir başlık altında iki liste: ürünün nasıl kullanılıp temizleneceği ve nasıl saklanacağı."
+
+msgid "Care and maintenance"
+msgstr "Bakım ve temizlik"
+
+msgid "Rinse with clean water after each use"
+msgstr "Her kullanımdan sonra temiz suyla durulayın"
+
+msgid "Clean with a mild detergent and a soft cloth"
+msgstr "Hafif bir deterjan ve yumuşak bir bezle temizleyin"
+
+msgid "Do not use abrasive cleaners"
+msgstr "Aşındırıcı temizleyiciler kullanmayın"
+
+msgid "Storage"
+msgstr "Saklama"
+
+msgid "Store in a dry place away from direct sunlight"
+msgstr "Doğrudan güneş ışığından uzak, kuru bir yerde saklayın"
+
+msgid "Keep in the original packaging when not in use"
+msgstr "Kullanmadığınızda orijinal ambalajında tutun"
+
+#: patterns/product-compare.php
+msgctxt "Pattern title"
+msgid "Product comparison"
+msgstr "Ürün karşılaştırması"
+
+#: patterns/product-compare.php
+msgctxt "Pattern description"
+msgid "A heading and a comparison table of the product's versions or similar products."
+msgstr "Bir başlık ve ürünün sürümlerini ya da benzer ürünleri karşılaştıran bir tablo."
+
+msgid "Compare versions"
+msgstr "Sürümleri karşılaştırın"
+
+msgid "Small"
+msgstr "Küçük"
+
+msgid "Medium"
+msgstr "Orta"
+
+msgid "Large"
+msgstr "Büyük"
+
+msgid "Capacity"
+msgstr "Kapasite"
+
+msgid "1 L"
+msgstr "1 L"
+
+msgid "2 L"
+msgstr "2 L"
+
+msgid "5 L"
+msgstr "5 L"
+
+msgid "Accessories"
+msgstr "Aksesuarlar"
+
+msgid "Full"
+msgstr "Tam"
+
+msgid "Warranty"
+msgstr "Garanti"
+
+msgid "1 year"
+msgstr "1 yıl"
+
+msgid "2 years"
+msgstr "2 yıl"
+
+#: patterns/product-compatibility.php
+msgctxt "Pattern title"
+msgid "Product compatibility"
+msgstr "Ürün uyumluluğu"
+
+#: patterns/product-compatibility.php
+msgctxt "Pattern description"
+msgid "A heading, a table of the models or systems the product works with, and a note."
+msgstr "Bir başlık, ürünün birlikte çalıştığı model ya da sistemlerin tablosu ve bir not."
+
+msgid "Compatibility"
+msgstr "Uyumluluk"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Series"
+msgstr "Seri"
+
+msgid "Compatible"
+msgstr "Uyumlu"
+
+msgid "Model A"
+msgstr "Model A"
+
+msgid "Series 100"
+msgstr "Seri 100"
+
+msgid "Model B"
+msgstr "Model B"
+
+msgid "Series 200"
+msgstr "Seri 200"
+
+msgid "Model C"
+msgstr "Model C"
+
+msgid "Series 300"
+msgstr "Seri 300"
+
+msgid "With adapter"
+msgstr "Adaptörle"
+
+msgid "Not sure your model is listed? Send us its name and we will check it for you."
+msgstr "Modelinizin listede olduğundan emin değil misiniz? Adını bize gönderin, sizin için kontrol edelim."
+
+#: patterns/product-downloads.php
+msgctxt "Pattern title"
+msgid "Product downloads"
+msgstr "Ürün indirmeleri"
+
+#: patterns/product-downloads.php
+msgctxt "Pattern description"
+msgid "A heading and the product's documents, such as a data sheet or a manual, to download."
+msgstr "Bir başlık ve ürünün indirilebilir belgeleri; örneğin teknik veri sayfası ya da kullanım kılavuzu."
+
+msgid "Downloads"
+msgstr "İndirmeler"
+
+msgid "Data sheet"
+msgstr "Teknik veri sayfası"
+
+msgid "Download"
+msgstr "İndir"
+
+msgid "User manual"
+msgstr "Kullanım kılavuzu"
+
+#: patterns/product-faq.php
+msgctxt "Pattern title"
+msgid "Product FAQ"
+msgstr "Ürün SSS"
+
+#: patterns/product-faq.php
+msgctxt "Pattern description"
+msgid "A heading and questions about the product that open to show the answer; search engines read them as an FAQ."
+msgstr "Bir başlık ve açıldığında cevabı gösteren, ürünle ilgili sorular; arama motorları bunları SSS olarak okur."
+
+msgid "Questions about this product"
+msgstr "Bu ürünle ilgili sorular"
+
+msgid "Is it delivered ready to use?"
+msgstr "Kullanıma hazır olarak mı teslim ediliyor?"
+
+msgid "Yes. It is tested before it leaves us and comes with everything needed to start."
+msgstr "Evet. Bizden çıkmadan önce test edilir ve başlamak için gereken her şeyle birlikte gelir."
+
+msgid "Can I order spare parts?"
+msgstr "Yedek parça sipariş edebilir miyim?"
+
+msgid "Yes. Spare parts are listed in the ordering section; ask us for anything not listed."
+msgstr "Evet. Yedek parçalar sipariş bölümünde listelenir; listede olmayanlar için bize sorun."
+
+msgid "How long is the warranty?"
+msgstr "Garanti süresi ne kadar?"
+
+msgid "Two years from delivery, covering manufacturing faults."
+msgstr "Teslimattan itibaren iki yıl; üretim hatalarını kapsar."
+
+#: patterns/product-figure.php
+msgctxt "Pattern title"
+msgid "Product figure"
+msgstr "Ürün görseli"
+
+#: patterns/product-figure.php
+msgctxt "Pattern description"
+msgid "A heading, a wide image and a paragraph, for a product photo, a diagram or a drawing."
+msgstr "Bir başlık, geniş bir görsel ve bir paragraf; ürün fotoğrafı, şema ya da çizim için."
+
+msgid "How it works"
+msgstr "Nasıl çalışır"
+
+msgid "Explain what the image shows: the parts, how they fit together and what the customer should notice."
+msgstr "Görselin neyi gösterdiğini anlatın: parçaları, nasıl birleştiklerini ve müşterinin neye dikkat etmesi gerektiğini."
+
+#: patterns/product-list.php
+msgctxt "Pattern title"
+msgid "Product features list"
+msgstr "Ürün özellikleri listesi"
+
+#: patterns/product-list.php
+msgctxt "Pattern description"
+msgid "A heading and a list, for a product's key features or what is in the box."
+msgstr "Bir başlık ve bir liste; ürünün öne çıkan özellikleri ya da kutu içeriği için."
+
+msgid "Key features"
+msgstr "Öne çıkan özellikler"
+
+msgid "Ready to use out of the box"
+msgstr "Kutudan çıktığı gibi kullanıma hazır"
+
+msgid "Made from durable, easy-to-clean materials"
+msgstr "Dayanıklı, kolay temizlenen malzemelerden üretilmiştir"
+
+msgid "Fits standard laboratory equipment"
+msgstr "Standart laboratuvar ekipmanlarına uyar"
+
+msgid "Supplied with a test certificate"
+msgstr "Test sertifikasıyla birlikte gelir"
+
+#: patterns/product-ordering.php
+msgctxt "Pattern title"
+msgid "Product ordering"
+msgstr "Ürün siparişi"
+
+#: patterns/product-ordering.php
+msgctxt "Pattern description"
+msgid "A heading, a table of order codes and pack sizes, and notes on ordering."
+msgstr "Bir başlık, sipariş kodları ve paket boyutları tablosu ve siparişle ilgili notlar."
+
+msgid "Ordering information"
+msgstr "Sipariş bilgileri"
+
+msgid "Code"
+msgstr "Kod"
+
+msgid "Description"
+msgstr "Açıklama"
+
+msgid "Pack size"
+msgstr "Paket boyutu"
+
+msgid "P-100"
+msgstr "P-100"
+
+msgid "Standard version"
+msgstr "Standart sürüm"
+
+msgid "P-100-10"
+msgstr "P-100-10"
+
+msgid "Standard version, pack of 10"
+msgstr "Standart sürüm, 10’lu paket"
+
+msgid "P-100-S"
+msgstr "P-100-S"
+
+msgid "Spare part set"
+msgstr "Yedek parça seti"
+
+msgid "Ask for a quote with the order codes you need; we answer within one working day."
+msgstr "İhtiyacınız olan sipariş kodlarıyla teklif isteyin; bir iş günü içinde yanıt veririz."
+
+msgid "Delivery times and prices depend on the quantity and the destination."
+msgstr "Teslim süreleri ve fiyatlar miktara ve teslimat yerine göre değişir."
+
+#: patterns/product-specs.php
+msgctxt "Pattern title"
+msgid "Product specifications"
+msgstr "Ürün teknik özellikleri"
+
+#: patterns/product-specs.php
+msgctxt "Pattern description"
+msgid "A heading, a two-column table of technical data and an image beside it."
+msgstr "Bir başlık, iki sütunlu bir teknik veri tablosu ve yanında bir görsel."
+
+msgid "Specifications"
+msgstr "Teknik özellikler"
+
+msgid "Material"
+msgstr "Malzeme"
+
+msgid "Stainless steel"
+msgstr "Paslanmaz çelik"
+
+msgid "Dimensions"
+msgstr "Boyutlar"
+
+msgid "120 x 80 x 40 mm"
+msgstr "120 x 80 x 40 mm"
+
+msgid "Weight"
+msgstr "Ağırlık"
+
+msgid "450 g"
+msgstr "450 g"
+
+msgid "Temperature range"
+msgstr "Sıcaklık aralığı"
+
+msgid "-20 to 120 C"
+msgstr "-20 ile 120 °C arası"
+
+msgid "Certification"
+msgstr "Sertifika"
+
+msgid "CE"
+msgstr "CE"
 
 #: patterns/services-alternating.php
 msgctxt "Pattern title"
@@ -2982,6 +3308,10 @@ msgstr "Orta"
 msgctxt "Custom template name"
 msgid "Landing page (no title)"
 msgstr "Açılış sayfası (başlıksız)"
+
+msgctxt "Custom template name"
+msgid "Product with sections"
+msgstr "Bölümlü ürün"
 
 msgctxt "Template part name"
 msgid "Header"

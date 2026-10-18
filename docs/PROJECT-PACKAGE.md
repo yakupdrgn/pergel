@@ -15,7 +15,7 @@ proje/
 ├─ package.yaml           # zorunlu: format, ad, site başlığı, dil, Pergel ayarları
 ├─ sitemap.yaml           # zorunlu: sayfa ağacı, şablon ve sayfa türü, menü
 ├─ content/*.md           # sayfa başına: frontmatter'da SEO ve bölümler, gövdede Markdown
-├─ media/                 # paketteki görseller (jpg, jpeg, png, webp, avif, gif)
+├─ media/                 # paketteki görseller (jpg, jpeg, png, webp, avif, gif) ve PDF'ler
 ├─ media.yaml             # görsel başına alt metin, açıklama, kaynak, lisans, yazar
 ├─ brand/tokens.json      # W3C Design Tokens; temanın tokens/default.json'unun üzerine yazılır
 ├─ brief.md               # serbest: firma, hedef kitle, ton (okuyucu yok sayar)
@@ -161,6 +161,8 @@ kullanılabilir. `wp pergel pattern fields <ad>` alanları örnek değerleriyle 
 | `image` | görsel, medya ve metin görseli | yol veya `{ src, alt }` |
 | `background` | kapak (cover) görseli | yol veya `{ src, alt }` |
 | `list` | liste | metin listesi |
+| `table` | tablo | `{ head, rows }` (`head` metin listesi, başlık satırı yoksa yazılmaz; `rows` satır listesi, her satır metin listesi) ya da yalnızca satır listesi |
+| `file` | dosya (veri sayfası, kılavuz) | yol veya `{ src, label }`; `label` bağlantı metni |
 | `summary` | açılır (details) bloğun başlığı | metin |
 | `quote`, `cite` | alıntı paragrafları ve kaynağı | metin |
 | `items` | aynı türden, alanları eşleşen kardeş bloklar | alan haritaları listesi |
@@ -171,6 +173,10 @@ kullanılabilir. `wp pergel pattern fields <ad>` alanları örnek değerleriyle 
   öğeler arasındaki ayraç ve boşluk blokları öğelerle birlikte gelir ve gider. Öğeler öğe
   içerebilir.
 - Metinler satır içi Markdown alır (`**kalın**`, `*italik*`, `` `kod` ``, `[bağlantı](url)`).
+- Tablo hücresi, pattern'deki aynı sütunun hücre etiketini (hizalama, satır başlığı) korur; alt
+  satır (tfoot), stil ve tablo açıklaması kalır.
+- `file` alanı yalnızca `media/` altındaki bir PDF'i (ya da görseli) alır; dosya ortam
+  kütüphanesine görsel gibi yüklenir.
 - `null` bloğu kaldırır. Yazılmayan alan pattern'in örnek metnini korur ve not olarak bildirilir.
 - Site verisi gösteren bloklar (sorgular, gezinme, formlar, harita, mağaza blokları, iç içe
   pattern'ler) alan değildir.

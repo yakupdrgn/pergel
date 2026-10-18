@@ -36,7 +36,8 @@ verir. Format hakkında bir şeyden emin değilsen o belgeye bak, tahmin etme.
    wp pergel pattern list                         # ad, başlık, kategori, alanlar
    wp pergel pattern list --category=banner       # banner, about, services, testimonials,
                                                   # pergel-faq, pergel-pricing, pergel-stats,
-                                                  # pergel-process, call-to-action, contact ...
+                                                  # pergel-process, pergel-product,
+                                                  # call-to-action, contact ...
    wp pergel pattern fields hero-split            # content dosyasına kopyalanacak bölüm
    ```
 

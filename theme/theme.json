@@ -349,6 +349,13 @@
 			"postTypes": [
 				"page"
 			]
+		},
+		{
+			"name": "single-product-sections",
+			"title": "Product with sections",
+			"postTypes": [
+				"product"
+			]
 		}
 	],
 	"templateParts": [

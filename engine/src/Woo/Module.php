@@ -52,6 +52,7 @@ final class Module implements Core\Module {
 		Pages::register();
 		MiniCart::register();
 		Trail::register();
+		Sections::register();
 		// Read here, so a shop without the lists does not load their class.
 		if ( true === Settings::get( 'woo.wishlist' ) || true === Settings::get( 'woo.compare' ) ) {
 			Lists::register();

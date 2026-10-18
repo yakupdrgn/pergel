@@ -15,3 +15,64 @@
 .wp-block-pergel-table-of-contents li + li {
 	margin-block-start: 0.25em;
 }
+
+/*
+ * The "Bar" style: a row of links to the top-level sections that stays
+ * under the header while the page scrolls, as a product page's section nav.
+ */
+.wp-block-pergel-table-of-contents.is-style-bar {
+	background-color: var(--wp--preset--color--base, canvas);
+	border-block-end: 1px solid var(--wp--preset--color--line, currentcolor);
+	position: sticky;
+	top: var(--wp-admin--admin-bar--height, 0px);
+	z-index: 10;
+}
+
+html:has(.pergel-header.is-sticky) .wp-block-pergel-table-of-contents.is-style-bar {
+	top: calc(var(--pergel-header-height, 0px) + var(--wp-admin--admin-bar--height, 0px));
+}
+
+.wp-block-pergel-table-of-contents.is-style-bar .wp-block-pergel-table-of-contents__title {
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.wp-block-pergel-table-of-contents.is-style-bar > ol {
+	column-gap: 1.5em;
+	display: flex;
+	list-style: none;
+	overflow-x: auto;
+	padding: 0;
+	scrollbar-width: thin;
+	white-space: nowrap;
+}
+
+.wp-block-pergel-table-of-contents.is-style-bar li + li {
+	margin-block-start: 0;
+}
+
+.wp-block-pergel-table-of-contents.is-style-bar ol ol {
+	display: none;
+}
+
+.wp-block-pergel-table-of-contents.is-style-bar a {
+	display: block;
+	padding-block: 0.875em;
+	text-decoration: none;
+}
+
+.wp-block-pergel-table-of-contents.is-style-bar a:is(:hover, :focus-visible) {
+	text-decoration: underline;
+}
+
+html:has(.wp-block-pergel-table-of-contents.is-style-bar) {
+	scroll-padding-block-start: calc(var(--wp-admin--admin-bar--height, 0px) + 4rem);
+}
+
+html:has(.pergel-header.is-sticky):has(.wp-block-pergel-table-of-contents.is-style-bar) {
+	scroll-padding-block-start: calc(var(--pergel-header-height, 0px) + var(--wp-admin--admin-bar--height, 0px) + 4rem);
+}

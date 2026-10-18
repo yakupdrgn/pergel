@@ -47,6 +47,11 @@ final class Package {
 	public const IMAGE_TYPES = array( 'jpg', 'jpeg', 'png', 'webp', 'avif', 'gif' );
 
 	/**
+	 * Other file types a package may hold, for file fields (a data sheet).
+	 */
+	public const FILE_TYPES = array( 'pdf' );
+
+	/**
 	 * Page types; all but "page" may be used once.
 	 */
 	public const PAGE_TYPES = array( 'page', 'posts', 'shop', 'cart', 'checkout', 'account' );
@@ -308,9 +313,11 @@ final class Package {
 				continue;
 			}
 			unset( $section['pattern'] );
-			$image = function ( string $src, ?string $alt ) use ( $media, $where ): array {
-				$path = $this->image( $src );
-				if ( null === $alt ) {
+			$image = function ( string $src, ?string $alt, string $kind = 'image' ) use ( $media, $where ): array {
+				$path = 'file' === $kind ? $this->file( $src ) : $this->image( $src );
+				if ( 'file' === $kind ) {
+					$alt = '';
+				} elseif ( null === $alt ) {
 					$alt = $this->alt( $path, $where );
 				}
 				return array( 'alt' => $alt ) + $media( $path );
@@ -374,14 +381,38 @@ final class Package {
 	 * @throws InvalidArgumentException When the path cannot be used.
 	 */
 	public function image( string $src ): string {
+		return $this->path( $src, self::IMAGE_TYPES, 'image' );
+	}
+
+	/**
+	 * Checks a file path: an image or a pdf file in the package.
+	 *
+	 * @param string $src Path as written.
+	 * @return string The path.
+	 * @throws InvalidArgumentException When the path cannot be used.
+	 */
+	public function file( string $src ): string {
+		return $this->path( $src, array_merge( self::IMAGE_TYPES, self::FILE_TYPES ), 'file' );
+	}
+
+	/**
+	 * Checks a media path.
+	 *
+	 * @param string             $src   Path as written.
+	 * @param array<int, string> $types File extensions allowed.
+	 * @param string             $what  "image" or "file", for messages.
+	 * @return string The path.
+	 * @throws InvalidArgumentException When the path cannot be used.
+	 */
+	private function path( string $src, array $types, string $what ): string {
 		if ( preg_match( '#^([a-z][a-z0-9+.-]*:|//)#i', $src ) ) {
-			throw new InvalidArgumentException( "\"$src\": only images in the package can be used; save the image under media/ and write its path" );
+			throw new InvalidArgumentException( "\"$src\": only {$what}s in the package can be used; save the $what under media/ and write its path" );
 		}
 		if ( str_starts_with( $src, '/' ) || str_contains( $src, '\\' ) || in_array( '..', explode( '/', $src ), true ) ) {
 			throw new InvalidArgumentException( "\"$src\": a path in the package is expected, like media/hero.jpg" );
 		}
-		if ( ! in_array( strtolower( pathinfo( $src, PATHINFO_EXTENSION ) ), self::IMAGE_TYPES, true ) ) {
-			throw new InvalidArgumentException( "\"$src\": an image is a " . implode( ', ', self::IMAGE_TYPES ) . ' file' );
+		if ( ! in_array( strtolower( pathinfo( $src, PATHINFO_EXTENSION ) ), $types, true ) ) {
+			throw new InvalidArgumentException( "\"$src\": " . ( 'image' === $what ? 'an image' : 'a file' ) . ' is a ' . implode( ', ', $types ) . ' file' );
 		}
 		if ( ! $this->holds( $src ) ) {
 			throw new InvalidArgumentException( "\"$src\": file not found in the package" );
@@ -489,7 +520,11 @@ final class Package {
 		foreach ( $data ?? array() as $path => $meta ) {
 			$where = "media.yaml: $path: ";
 			try {
-				$this->image( (string) $path );
+				if ( in_array( strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) ), self::FILE_TYPES, true ) ) {
+					$this->file( (string) $path );
+				} else {
+					$this->image( (string) $path );
+				}
 			} catch ( InvalidArgumentException $e ) {
 				$this->problems[] = 'media.yaml: ' . $e->getMessage();
 				continue;

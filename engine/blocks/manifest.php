@@ -879,6 +879,11 @@ return array (
     'supports' => 
     array (
       'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
       'color' => 
       array (
         'text' => true,
@@ -894,6 +899,20 @@ return array (
       array (
         'fontSize' => true,
         'lineHeight' => true,
+      ),
+    ),
+    'styles' => 
+    array (
+      0 => 
+      array (
+        'name' => 'default',
+        'label' => 'List',
+        'isDefault' => true,
+      ),
+      1 => 
+      array (
+        'name' => 'bar',
+        'label' => 'Bar',
       ),
     ),
     'editorScript' => 'file:./index.js',

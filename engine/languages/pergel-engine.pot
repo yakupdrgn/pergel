@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-18T10:51:34+03:00\n"
+"POT-Creation-Date: 2026-10-18T20:40:45+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -151,6 +151,9 @@ msgid "Menu"
 msgstr ""
 
 msgid "Comparison"
+msgstr ""
+
+msgid "Specifications"
 msgstr ""
 
 msgid "The headings of the content are listed here once there are at least two."
@@ -2000,6 +2003,14 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "summary"
+msgstr ""
+
+msgctxt "block style label"
+msgid "List"
+msgstr ""
+
+msgctxt "block style label"
+msgid "Bar"
 msgstr ""
 
 msgctxt "block title"

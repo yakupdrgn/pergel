@@ -50,6 +50,7 @@ final class Rules {
 		'pergel-pages',
 		'pergel-pricing',
 		'pergel-process',
+		'pergel-product',
 		'pergel-shop',
 		'pergel-stats',
 	);

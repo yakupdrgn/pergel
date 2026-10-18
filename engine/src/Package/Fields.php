@@ -32,6 +32,11 @@ use InvalidArgumentException;
  * - `image`: an image or media & text image, as a path/URL or { src, alt };
  *   a cover's image is `background`.
  * - `list`: a list block, as a list of item texts.
+ * - `table`: a table block, as { head, rows } (head: a list of texts, left
+ *   out for a table without a header row; rows: a list of rows, each a list
+ *   of texts), or only the list of rows.
+ * - `file`: a file block (a data sheet), as a path or { src, label }; the
+ *   label is the link text, the pattern's when left out.
  * - `summary`: the visible line of a details block (its paragraphs are text).
  * - `quote` and `cite`: paragraphs inside a quote, and its citation.
  * - `items`: two or more sibling blocks of the same kind whose fields match
@@ -60,7 +65,6 @@ final class Fields {
 		'core/latest-posts',
 		'core/categories',
 		'core/page-list',
-		'core/table',
 		'core/accordion',
 		'core/social-links',
 		'pergel/form',
@@ -71,7 +75,12 @@ final class Fields {
 	/**
 	 * Block names whose siblings may form items.
 	 */
-	private const LEAVES = array( 'core/paragraph', 'core/heading', 'core/image', 'core/buttons', 'core/button', 'core/list', 'core/list-item' );
+	private const LEAVES = array( 'core/paragraph', 'core/heading', 'core/image', 'core/buttons', 'core/button', 'core/list', 'core/list-item', 'core/table', 'core/file' );
+
+	/**
+	 * A file block's name link (not the download button): opening tag, text.
+	 */
+	private const FILE_LINK = '/(<a\b(?![^>]*\sdownload\b)[^>]*>)(.*?)<\/a>/s';
 
 	/**
 	 * Field schema of a pattern, for the catalogue and validation.
@@ -111,6 +120,7 @@ final class Fields {
 			$values[ $name ] = match ( $field['type'] ) {
 				'items' => array_map( array( self::class, 'example' ), $field['items'] ),
 				'image' => 'media/' . ( '' !== $field['default'] ? pathinfo( $field['default'], PATHINFO_FILENAME ) : 'image' ) . '.jpg',
+				'file'  => 'media/' . ( '' !== $field['default'] ? pathinfo( $field['default'], PATHINFO_FILENAME ) : 'file' ) . '.pdf',
 				default => $field['default'],
 			};
 		}
@@ -122,8 +132,8 @@ final class Fields {
 	 *
 	 * @param list<array<string, mixed>> $blocks parse_blocks() output.
 	 * @param array<string, mixed>       $values Field values.
-	 * @param Closure                    $media Turns an image path or URL, and the alt text written with it (null = none), into an attachment id (0 = none), URL and alt text.
-	 * @phpstan-param Closure(string, ?string): array{id: int, url: string, alt: string} $media
+	 * @param Closure                    $media Turns an image path or URL, and the alt text written with it (null = none), into an attachment id (0 = none), URL and alt text; a third argument "file" asks for a file field's file.
+	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param array<int, string>         $notes  Fields left with the pattern's content, by path.
 	 * @return list<array{blockName: string|null, attrs: array<string, mixed>, innerBlocks: list<array<string, mixed>>, innerHTML: string, innerContent: list<string|null>}> Blocks for serialize_blocks().
 	 * @throws InvalidArgumentException With the field path, for unknown fields and wrong values.
@@ -142,8 +152,8 @@ final class Fields {
 	 *
 	 * @param list<array<string, mixed>> $pattern The pattern's parse_blocks() output.
 	 * @param list<array<string, mixed>> $section The section's blocks.
-	 * @param Closure                    $image   Turns an image's URL, attachment id and alt text into a field value (a path or { src, alt }), null when it cannot be in the package.
-	 * @phpstan-param Closure(string, int, string): (string|array<string, string>|null) $image
+	 * @param Closure                    $image   Turns an image's URL, attachment id and alt text into a field value (a path or { src, alt }), null when it cannot be in the package; a fourth argument "file" asks for a file field's path.
+	 * @phpstan-param Closure(string, int, string, string=): (string|array<string, string>|null) $image
 	 * @param array<int, string>         $notes   Fields that could not be read, with why.
 	 * @return array<string, mixed>
 	 */
@@ -158,7 +168,7 @@ final class Fields {
 	 * @param array<string, mixed> $from  Scope in the pattern.
 	 * @param array<string, mixed> $to    The same scope in the section.
 	 * @param Closure              $image Image reader, see values().
-	 * @phpstan-param Closure(string, int, string): (string|array<string, string>|null) $image
+	 * @phpstan-param Closure(string, int, string, string=): (string|array<string, string>|null) $image
 	 * @param array<int, string>   $notes Report.
 	 * @param string               $where Path of the scope for messages.
 	 * @return array<string, mixed>
@@ -309,7 +319,7 @@ final class Fields {
 	 * @param array<string, mixed> $block Block.
 	 * @param string               $role  Role.
 	 * @param Closure              $image Image reader, see values().
-	 * @phpstan-param Closure(string, int, string): (string|array<string, string>|null) $image
+	 * @phpstan-param Closure(string, int, string, string=): (string|array<string, string>|null) $image
 	 * @return string|array<int|string, mixed>|null
 	 */
 	private static function value( array $block, string $role, Closure $image ): string|array|null {
@@ -344,6 +354,24 @@ final class Fields {
 					}
 				}
 				return array() === $items ? null : $items;
+			case 'table':
+				$cells = self::cells( $first );
+				$text  = static fn( array $row ): array => array_map( static fn( array $cell ): string => MarkdownWriter::inline( $cell['html'] ), $row );
+				$table = array( 'rows' => array_map( $text, $cells['rows'] ) );
+				return array() === $cells['head'] ? $table : array( 'head' => $text( $cells['head'] ) ) + $table;
+			case 'file':
+				if ( ! preg_match( '/<a\b[^>]*\shref="([^"]*)"/', $first, $href ) ) {
+					return "\0there is no file to read";
+				}
+				$url  = html_entity_decode( $href[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+				$path = $image( $url, (int) ( $block['attrs']['id'] ?? 0 ), '', 'file' );
+				if ( null === $path ) {
+					return "\0$url cannot be put in the package; the pattern's file stays";
+				}
+				return array(
+					'src'   => is_array( $path ) ? $path['src'] : $path,
+					'label' => preg_match( self::FILE_LINK, $first, $m ) ? MarkdownWriter::inline( $m[2] ) : '',
+				);
 			case 'summary':
 				return MarkdownWriter::inline( (string) MarkdownWriter::inner( $first, 'summary' ) );
 			case 'cite':
@@ -497,6 +525,8 @@ final class Fields {
 			'core/buttons'   => 'buttons',
 			'core/image'     => 'image',
 			'core/list'      => 'list',
+			'core/table'     => 'table',
+			'core/file'      => 'file',
 			default          => null,
 		};
 	}
@@ -611,6 +641,8 @@ final class Fields {
 			'buttons'             => 'buttons',
 			'image', 'background' => 'image',
 			'list'                => 'list',
+			'table'               => 'table',
+			'file'                => 'file',
 			default               => 'text',
 		};
 	}
@@ -642,6 +674,14 @@ final class Fields {
 				return basename( (string) parse_url( html_entity_decode( $m[1] ?? '' ), PHP_URL_PATH ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url -- pure PHP, a path only.
 			case 'list':
 				return array_map( static fn( array $item ): string => self::plain( (string) ( $item['innerContent'][0] ?? '' ) ), $block['innerBlocks'] );
+			case 'table':
+				$cells = self::cells( $html );
+				$text  = static fn( array $row ): array => array_map( static fn( array $cell ): string => self::plain( $cell['html'] ), $row );
+				$table = array( 'rows' => array_map( $text, $cells['rows'] ) );
+				return array() === $cells['head'] ? $table : array( 'head' => $text( $cells['head'] ) ) + $table;
+			case 'file':
+				preg_match( '/<a\b[^>]*\shref="([^"]*)"/', $html, $m );
+				return basename( (string) parse_url( html_entity_decode( $m[1] ?? '' ), PHP_URL_PATH ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url -- pure PHP, a path only.
 			case 'summary':
 				preg_match( '/<summary\b[^>]*>(.*?)<\/summary>/s', $html, $m );
 				return self::plain( $m[1] ?? '' );
@@ -659,7 +699,7 @@ final class Fields {
 	 * @param array<string, mixed> $scope  Scope block, changed in place.
 	 * @param array<string, mixed> $values Values for the scope.
 	 * @param Closure              $media Image resolver.
-	 * @phpstan-param Closure(string, ?string): array{id: int, url: string, alt: string} $media
+	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param array<int, string>   $notes  Report of fields left as they were.
 	 * @param string               $where  Path of the scope for messages.
 	 * @throws InvalidArgumentException For unknown fields and wrong values.
@@ -715,7 +755,7 @@ final class Fields {
 	 * @param array<int, int>      $members   Child indexes of the items.
 	 * @param mixed                $values    List of item values.
 	 * @param Closure              $media Image resolver.
-	 * @phpstan-param Closure(string, ?string): array{id: int, url: string, alt: string} $media
+	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param array<int, string>   $notes     Report.
 	 * @param string               $at        Field path.
 	 * @throws InvalidArgumentException When $values is not a list of maps.
@@ -792,7 +832,7 @@ final class Fields {
 	 * @param string               $role  Role.
 	 * @param mixed                $value Value.
 	 * @param Closure              $media Image resolver.
-	 * @phpstan-param Closure(string, ?string): array{id: int, url: string, alt: string} $media
+	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param string               $at    Field path.
 	 * @throws InvalidArgumentException For a value of the wrong shape.
 	 */
@@ -804,6 +844,12 @@ final class Fields {
 			case 'image':
 			case 'background':
 				self::write_image( $block, $value, $media, $at );
+				return;
+			case 'table':
+				self::write_table( $block, $value, $at );
+				return;
+			case 'file':
+				self::write_file( $block, $value, $media, $at );
 				return;
 			case 'list':
 				if ( ! is_array( $value ) || ! array_is_list( $value ) || array() === $value ) {
@@ -888,7 +934,7 @@ final class Fields {
 	 * @param array<string, mixed> $block Block.
 	 * @param mixed                $value Path/URL or { src, alt }.
 	 * @param Closure              $media Image resolver.
-	 * @phpstan-param Closure(string, ?string): array{id: int, url: string, alt: string} $media
+	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param string               $at    Field path.
 	 * @throws InvalidArgumentException For a value of the wrong shape.
 	 */
@@ -943,6 +989,142 @@ final class Fields {
 				1
 			);
 		}
+	}
+
+	/**
+	 * Writes a table's header row and body rows. A cell keeps the pattern's
+	 * opening tag for its column (alignment, a row header); the footer, the
+	 * style and the caption stay.
+	 *
+	 * @param array<string, mixed> $block Table block.
+	 * @param mixed                $value { head, rows } or a list of rows.
+	 * @param string               $at    Field path.
+	 * @throws InvalidArgumentException For a value of the wrong shape.
+	 */
+	private static function write_table( array &$block, mixed $value, string $at ): void {
+		if ( is_array( $value ) && array_is_list( $value ) ) {
+			$value = array( 'rows' => $value );
+		}
+		if ( ! is_array( $value ) || ! isset( $value['rows'] ) || array() !== array_diff( array_keys( $value ), array( 'head', 'rows' ) ) ) {
+			throw new InvalidArgumentException( "$at: a table is { head, rows } or a list of rows" );
+		}
+		$head = $value['head'] ?? array();
+		$rows = $value['rows'];
+		if ( ! is_array( $head ) || ! array_is_list( $head ) || ! is_array( $rows ) || ! array_is_list( $rows ) || ( array() === $head && array() === $rows ) ) {
+			throw new InvalidArgumentException( "$at: head is a list of texts and rows a list of rows" );
+		}
+		$html  = (string) $block['innerContent'][0];
+		$cells = self::cells( $html );
+		$body  = '';
+		foreach ( $rows as $r => $row ) {
+			if ( ! is_array( $row ) || ! array_is_list( $row ) || array() === $row ) {
+				throw new InvalidArgumentException( sprintf( '%s.rows[%d]: a row is a list of texts', $at, $r + 1 ) );
+			}
+			$like  = $cells['rows'][ min( $r, count( $cells['rows'] ) - 1 ) ] ?? array();
+			$body .= self::row( $row, $like, 'td', sprintf( '%s.rows[%d]', $at, $r + 1 ) );
+		}
+		$html = (string) preg_replace( '/<thead\b.*?<\/thead>/s', '', $html, 1 );
+		$html = preg_match( '/<tbody\b/', $html ) ? self::replace_inner( $html, 'tbody', $body ) : (string) preg_replace_callback( '/<\/table>|<tfoot\b/', static fn( array $m ): string => '<tbody>' . $body . '</tbody>' . $m[0], $html, 1 );
+		if ( array() !== $head ) {
+			$thead = '<thead>' . self::row( $head, $cells['head'], 'th', "$at.head" ) . '</thead>';
+			$html  = (string) preg_replace_callback( '/<table\b[^>]*>/', static fn( array $m ): string => $m[0] . $thead, $html, 1 );
+		}
+		$block['innerContent'][0] = $html;
+	}
+
+	/**
+	 * One table row.
+	 *
+	 * @param array<int, mixed>                       $texts Cell texts.
+	 * @param list<array{open: string, html: string}> $like  The pattern's cells in a row like it.
+	 * @param string                                  $tag   Cell tag when the pattern has none.
+	 * @param string                                  $at    Field path.
+	 */
+	private static function row( array $texts, array $like, string $tag, string $at ): string {
+		$html = '<tr>';
+		foreach ( $texts as $i => $text ) {
+			$open  = $like[ $i ]['open'] ?? ( array() === $like ? "<$tag>" : $like[ count( $like ) - 1 ]['open'] );
+			$html .= $open . self::html( $text, sprintf( '%s[%d]', $at, $i + 1 ) ) . '</' . substr( $open, 1, 2 ) . '>';
+		}
+		return $html . '</tr>';
+	}
+
+	/**
+	 * Header and body cells of a table.
+	 *
+	 * @param string $html Table markup.
+	 * @return array{head: list<array{open: string, html: string}>, rows: list<list<array{open: string, html: string}>>}
+	 */
+	private static function cells( string $html ): array {
+		$row  = static function ( string $tr ): array {
+			preg_match_all( '/(<t[hd]\b[^>]*>)(.*?)<\/t[hd]>/s', $tr, $found, PREG_SET_ORDER );
+			return array_map(
+				static fn( array $cell ): array => array(
+					'open' => $cell[1],
+					'html' => $cell[2],
+				),
+				$found
+			);
+		};
+		$head = array();
+		if ( preg_match( '/<thead\b[^>]*>.*?<tr\b[^>]*>(.*?)<\/tr>/s', $html, $m ) ) {
+			$head = $row( $m[1] );
+		}
+		$rows = array();
+		if ( preg_match( '/<tbody\b[^>]*>(.*?)<\/tbody>/s', $html, $m ) ) {
+			preg_match_all( '/<tr\b[^>]*>(.*?)<\/tr>/s', $m[1], $trs );
+			$rows = array_map( $row, $trs[1] );
+		}
+		return array(
+			'head' => $head,
+			'rows' => $rows,
+		);
+	}
+
+	/**
+	 * Writes a file block: its links, the attachment and the link text.
+	 *
+	 * @param array<string, mixed> $block File block.
+	 * @param mixed                $value Path or { src, label }.
+	 * @param Closure              $media File resolver.
+	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
+	 * @param string               $at    Field path.
+	 * @throws InvalidArgumentException For a value of the wrong shape.
+	 */
+	private static function write_file( array &$block, mixed $value, Closure $media, string $at ): void {
+		if ( is_string( $value ) ) {
+			$value = array( 'src' => $value );
+		}
+		if ( ! is_array( $value ) || ! isset( $value['src'] ) || ! is_string( $value['src'] ) || array() !== array_diff( array_keys( $value ), array( 'src', 'label' ) ) ) {
+			throw new InvalidArgumentException( "$at: a file is a path or { src, label }" );
+		}
+		try {
+			$found = $media( $value['src'], null, 'file' );
+		} catch ( InvalidArgumentException $e ) {
+			throw new InvalidArgumentException( "$at: " . $e->getMessage() );
+		}
+		if ( $found['id'] > 0 ) {
+			$block['attrs']['id'] = $found['id'];
+		} else {
+			unset( $block['attrs']['id'] );
+		}
+		$same                   = ( $block['attrs']['href'] ?? '' ) === $found['url'];
+		$block['attrs']['href'] = $found['url'];
+		$html                   = (string) $block['innerContent'][0];
+		$html                   = (string) preg_replace( '/(\s(?:href|data))="[^"]*"/', '$1="' . Markdown::attr( $found['url'] ) . '"', $html );
+		// The editor names the link with a random id the button points to. A
+		// new file gets one fixed per field and file, so imports stay
+		// idempotent and items apart.
+		if ( ! $same ) {
+			$hash = md5( $at . $found['url'] );
+			$name = 'wp-block-file--media-' . implode( '-', array( substr( $hash, 0, 8 ), substr( $hash, 8, 4 ), substr( $hash, 12, 4 ), substr( $hash, 16, 4 ), substr( $hash, 20, 12 ) ) );
+			$html = (string) preg_replace( '/(\s(?:id|aria-describedby))="wp-block-file--media-[^"]*"/', '$1="' . $name . '"', $html );
+		}
+		if ( isset( $value['label'] ) ) {
+			$label = self::html( $value['label'], "$at.label" );
+			$html  = (string) preg_replace_callback( self::FILE_LINK, static fn( array $m ): string => $m[1] . $label . '</a>', $html, 1 );
+		}
+		$block['innerContent'][0] = $html;
 	}
 
 	/**
