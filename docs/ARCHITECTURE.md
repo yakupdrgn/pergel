@@ -141,6 +141,21 @@ katman çalışır.
   kartı, liste sayfalarında sayfa numaralı canonical (tekil sayfanın canonical'ı çekirdekte),
   tek bir JSON-LD `@graph` (`pergel/seo/graph` filtresi). 404'te hiçbir şey basılmaz.
   Açıklama sırası: SEO paneli → özet → içeriğin başı; ön sayfada site sloganı.
+- `Seo\Facts` — saf PHP, içeriğin zaten taşıdığı yapılandırılmış veri (birim testli):
+  `pergel-faq` sınıflı bir bloğun içindeki Details blokları (soru `<summary>`, cevap iç
+  bloklarının düz metni) ve H3 ya da daha alt bir başlıkla açılan gruplar (soru kartları,
+  `faq-cards`) `FAQPage` olur; "Specifications" stilli tablolarda (`is-style-pergel-specs`) iki
+  hücreli satırlar ad + değer olur (başlık satırı ve üç sütunlu tablolar dışarıda). Ziyaretçi
+  aynı metni gördüğü için veri sayfadan ayrışamaz. Bütün `faq-*` pattern'lerinin kökü bu sınıfı
+  taşır.
+- `Seo\Faq` — tekil sayfada (parola korumalı değilse) `FAQPage` düğümünü etkin katmanın grafiğine
+  ekler: Pergel tek başınaysa `pergel/seo/graph`, Rank Math `rank_math/json_ld` (100), Yoast
+  `wpseo_schema_graph`, AIOSEO `aioseo_schema_output`, TSF `the_seo_framework_schema_graph_data`.
+  Grafiği süzülemeyen SEOPress'te ayrı bir betik basılır (`class="pergel-faq-schema"`, eklentinin
+  grafiğine dokunmaz). Grafikte zaten bir `FAQPage` varsa (eklentinin kendi SSS bloğu) eklenmez.
+  Ürünlerde teknik özellikler `Woo\Properties` ile Product düğümünün boş `additionalProperty`'sine
+  yazılır: WooCommerce'in kendi Product verisi (`woocommerce_structured_data_product`, 30) ve
+  Rank Math / Yoast / AIOSEO grafikleri (110).
 - `Seo\Meta` — `_pergel_seo_title`, `_pergel_seo_description`, `_pergel_seo_noindex`
   (REST'te, `edit_post` yetkisiyle) ve editörde build'siz "SEO" paneli
   (`engine/assets/seo-panel.js`).
@@ -150,12 +165,13 @@ katman çalışır.
   aktifken bunu söyleyen bir bildirim gösterir.
 
 **SEO matrisi** (`tools/seo/`): `matrix.sh` Pergel'i önce tek başına, sonra her ücretsiz SEO
-eklentisiyle sırayla çalıştırır; `check.mjs` her senaryoda yedi sayfanın (ön sayfa, blog, yazı,
-sayfa, kategori, arama, 404) `<head>`'ini ve site haritalarını okur. Kurallar: tek `<title>`,
+eklentisiyle sırayla çalıştırır; `check.mjs` her senaryoda sekiz sayfanın (ön sayfa, blog, yazı,
+sayfa, SSS sayfası, kategori, arama, 404) `<head>`'ini ve site haritalarını okur. Kurallar: tek `<title>`,
 en fazla bir açıklama / robots / Open Graph ve Twitter etiketi, dizine girecek sayfalarda tek
 canonical, sayfa başına en fazla bir `Organization` ve bir `WebSite`, eklenti varken Pergel
 JSON-LD'si yok (`class="pergel-schema"`), her `Organization` düğümünde marka telefonu ve sosyal
-profili, tek XML site haritası (robots.txt'teki de aynısı). CI'da `seo-matrix` işi eklentilerin
+profili, SSS sayfasında iki sorulu tek `FAQPage`, diğer sayfalarda hiç `FAQPage`, tek XML site
+haritası (robots.txt'teki de aynısı). CI'da `seo-matrix` işi eklentilerin
 wordpress.org'daki son sürümlerini kurar (`INSTALL=1`). Yerelde:
 
 ```bash
