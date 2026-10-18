@@ -1090,6 +1090,17 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   eklediği şablonlar paketten seçilmez.
 - **Menü varsayılanı sayfa ağacı:** `sitemap.yaml`'da `menu` yoksa menü sayfa ağacından üretilir
   (ön sayfa, sepet, ödeme, hesap ve `menu: false` sayfalar hariç).
+- **İçe aktarma yalnızca kendi yaptığını değiştirir (F5b):** Kayıtlar `_pergel_package` ve
+  `_pergel_package_key` meta'sıyla tanınır. Paketin bir adresinde başka bir sayfa varsa içe
+  aktarma ön kontrolde durur; tek istisna aynı türdeki WooCommerce sayfasının pakete alınmasıdır.
+- **Panel değişikliği ezilmez (F5b):** Kaydedilen yazının özeti tutulur; özet tutmuyorsa kayıt
+  `skip` ve not, `--force` ezer. Paketten çıkan kayıtlar `stale` listelenir, yalnızca `--prune`
+  ile çöpe taşınır veya silinir. Böylece tekrar içe aktarma hem idempotent hem güvenli.
+- **Marka token'ları alt temaya yazılır (F5b):** Ana temanın `tokens/default.json` dosyası
+  değiştirilmez (tema güncellemesi ezerdi); paket adıyla imzalı bir alt tema yazılır ve
+  etkinleştirilir. İmzasız aynı adlı dizine yazılmaz.
+- **Dil paketi indirilmez (F5b):** `locale` yalnızca yüklü dillerden biriyse ayarlanır; içe
+  aktarma ağa çıkmaz, eksik dil not olarak bildirilir.
 
 ## Aşamalar ve bitti tanımları
 

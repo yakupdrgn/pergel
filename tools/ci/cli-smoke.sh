@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Runs every `wp pergel settings`, `wp pergel modules`, `wp pergel search`,
-# `wp pergel starter`, `wp pergel package` and `wp pergel pattern` command against a site set up like tools/ci/setup-wp.sh and checks output
-# and exit codes.
+# `wp pergel starter`, `wp pergel package`, `wp pergel pattern` and
+# `wp pergel import` command against a site set up like tools/ci/setup-wp.sh
+# and checks output and exit codes.
 #
 #   tools/ci/cli-smoke.sh
 #
-# pergel_settings, the Site Logo and the reading settings are restored at the
-# end. The starter is installed and removed again, so do not run this on a
+# pergel_settings, the Site Logo, the reading settings, the site title,
+# tagline and theme are restored at the end, and what the import made is
+# deleted. The starter is installed and removed again, so do not run this on a
 # site where the corporate starter is in use.
 set -euo pipefail
 
@@ -26,7 +28,18 @@ logo=""
 svg=""
 previous_logo="$(wp option get site_logo 2> /dev/null || true)"
 reading="$(wp eval 'echo implode( " ", array( get_option( "show_on_front" ), (int) get_option( "page_on_front" ), (int) get_option( "page_for_posts" ) ) );')"
+blogname="$(wp option get blogname)"
+blogdescription="$(wp option get blogdescription)"
+theme="$(wp eval 'echo get_stylesheet();')"
+smoke_package=pergel-smoke-paket
 restore() {
+	wp theme activate "$theme" --quiet
+	rm -rf "$(wp eval 'echo get_theme_root();')/$smoke_package"
+	local made
+	made="$(wp post list --post_type=page,attachment,wp_navigation --post_status=any,trash --meta_key=_pergel_package --meta_value="$smoke_package" --field=ID --format=ids)"
+	[ -z "$made" ] || wp post delete $made --force --quiet
+	wp option update blogname "$blogname" --quiet
+	wp option update blogdescription "$blogdescription" --quiet
 	[ -z "$logo" ] || wp eval-file "$REPO_PHP/tools/seo/logo.php" remove "$logo" "$previous_logo"
 	[ -z "$svg" ] || wp post delete "$svg" --force --quiet
 	wp option delete pergel_settings --quiet
@@ -159,6 +172,39 @@ expect 0 'faq-accordion' wp pergel pattern list --category=pergel-faq --format=c
 expect 0 '- pattern: hero-split' wp pergel pattern fields hero-split
 expect 0 '"type": "items"' wp pergel pattern fields pergel/faq-accordion --format=json
 expect 1 '"pergel/nope" is not a Pergel pattern' wp pergel pattern fields nope
+echo "::endgroup::"
+
+echo "::group::wp pergel import"
+if ! wp plugin is-active woocommerce 2> /dev/null; then
+	expect 1 'type: a cart page needs WooCommerce' wp pergel import "$package"
+fi
+# The fixture under its own name and addresses, without the cart page.
+cp -r "$REPO/tests/fixtures/package" "$work/import"
+sed -i "s/^name: ornek-firma/name: $smoke_package/; s/^locale: tr_TR/locale: en_US/" "$work/import/package.yaml"
+cat > "$work/import/sitemap.yaml" << 'YAML'
+pages:
+  - slug: ""
+    title: Ana sayfa
+    content: content/home.md
+  - slug: pergel-smoke-hakkimizda
+    title: Hakkımızda
+    content: content/about.md
+    children:
+      - slug: ekip
+        title: Ekibimiz
+        template: page-landing
+YAML
+expect 0 'Dry run, nothing was saved. Package pergel-smoke-paket:' wp pergel import "$work_php/import" --dry-run
+expect 0 'none' wp eval 'echo get_page_by_path( "pergel-smoke-hakkimizda" ) ? "found" : "none";'
+expect 0 'Success: Package pergel-smoke-paket: 7 create' wp pergel import "$work_php/import"
+expect 0 "$smoke_package" wp eval 'echo get_stylesheet();'
+expect 0 'Ekibimiz' wp eval 'echo get_the_title( get_page_by_path( "pergel-smoke-hakkimizda/ekip" ) );'
+expect 0 'Success: Package pergel-smoke-paket: 16 keep;' wp pergel import "$work_php/import"
+sed -i '/children:/,$d' "$work/import/sitemap.yaml"
+expect 0 '1 stale' wp pergel import "$work_php/import"
+expect 0 '1 remove' wp pergel import "$work_php/import" --prune
+expect 0 'Success: Package pergel-smoke-paket: 15 keep;' wp pergel import "$work_php/import"
+expect 1 'not a directory' wp pergel import "$work_php/missing"
 echo "::endgroup::"
 
 exit "$failed"
