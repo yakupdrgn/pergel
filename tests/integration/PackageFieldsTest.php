@@ -11,6 +11,7 @@ namespace Pergel\Tests\Integration;
 
 use InvalidArgumentException;
 use Pergel\Package\Fields;
+use Pergel\Package\Package;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -137,8 +138,8 @@ final class PackageFieldsTest extends TestCase {
 		$this->assertSame( 1, substr_count( $html, '<!-- /wp:button -->' ) );
 		$this->assertStringContainsString( '"id":7', $html );
 		$this->assertStringContainsString( '<img src="http://site.test/wp-content/uploads/tarla.jpg" alt="Yüklenen görsel" style="border-radius:var(--wp--custom--radius--card);aspect-ratio:4/3;object-fit:cover" class="wp-image-7"/>', $html );
-		// The eyebrow keeps the pattern's text.
-		$this->assertStringContainsString( 'text-transform:uppercase">Mühendislik ve destek</p>', $html );
+		// The eyebrow keeps the pattern's text, in the site's language.
+		$this->assertStringContainsString( 'text-transform:uppercase">' . esc_html( (string) Fields::schema( (array) Package::pattern( 'pergel/hero-split' ) )['eyebrow']['default'] ) . '</p>', $html );
 	}
 
 	public function test_items_are_cloned_and_removed(): void {
