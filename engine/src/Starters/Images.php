@@ -123,13 +123,11 @@ final class Images {
 
 		$small = imagecreatetruecolor( $final[0], $final[1] );
 		imagecopyresampled( $small, $image, 0, 0, 0, 0, $final[0], $final[1], $width, $height );
-		imagedestroy( $image );
 		$image = $small;
 
 		$webp = function_exists( 'imagewebp' );
 		$path = $file . ( $webp ? '.webp' : '.png' );
 		$done = $webp ? imagewebp( $image, $path, 82 ) : imagepng( $image, $path, 9 );
-		imagedestroy( $image );
 		if ( ! $done ) {
 			throw new InvalidArgumentException( esc_html( "Could not write $path." ) );
 		}
