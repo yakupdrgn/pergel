@@ -129,7 +129,7 @@ jobs:
         run: bash tools/ci/setup-wp.sh
       - name: Integration tests
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
-        run: PERGEL_WP_DIR="$WP_DIR" php vendor/bin/phpunit -c phpunit-integration.xml.dist
+        run: PERGEL_WP_DIR="$WP_DIR" php vendor/bin/phpunit -c phpunit-integration.xml.dist --display-deprecations
       - name: WP-CLI commands
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: bash tools/ci/cli-smoke.sh
@@ -148,8 +148,11 @@ jobs:
           bash tools/ci/smoke.sh "${paths[@]}" --missing /pergel-budget-missing/
       - name: PHP notices
         if: always()
+        # WP-CLI's own phar is not yet clean on newer PHP versions (php-cli-tools on 8.5); only
+        # its lines are left out, everything from WordPress, WooCommerce and Pergel still fails.
         run: |
-          if [ -s "$WP_DIR/wp-content/debug.log" ]; then cat "$WP_DIR/wp-content/debug.log"; exit 1; fi
+          log="$WP_DIR/wp-content/debug.log"
+          if [ -s "$log" ] && grep -v 'phar://[^ ]*/wp-cli/' "$log" | grep -q .; then cat "$log"; exit 1; fi
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
