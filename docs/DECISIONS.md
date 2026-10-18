@@ -1062,6 +1062,35 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
       WooCommerce'in sayfalama/sıralama sorgularında ve aşırı yaygın arama kelimesinde. CI
       bütçesi 5.000 üründe kalıyor; 50.000 için limit yazılmadı (yerel, tek seferlik ölçüm).
 
+## F5 kararları (18 Ekim 2026)
+
+- **F5 altı PR'da:** F5a paket okuyucu ve denetim (`wp pergel package validate`,
+  `wp pergel pattern list|fields`); F5b `wp pergel import`; F5c dışa aktarma; F5d Abilities/MCP
+  (salt okunur, varsayılan kapalı, istek sınırlı); F5e Claude skill'leri; F5f prova paketi ve
+  CI'da iki kez kurulumla idempotentlik denetimi.
+- **YAML ve Markdown okuyucuları motorun kendi kodu:** Paketin YAML alt kümesi
+  (`engine/src/Package/Yaml.php`) ve Markdown alt kümesi (`Markdown.php`) saf PHP'dir; vendor
+  bağımlılığı, PHP eklentisi veya derleme yoktur. Okunmayan sözdizimi (anchor, tag, girintide
+  sekme, `#` başlık, HTML) sessizce başka türlü okunmaz, satır numarasıyla reddedilir. YAML 1.2
+  çekirdek şeması: `yes`/`no` metindir. `Yaml::dump` dışa aktarma ve `pattern fields` için blok
+  biçiminde yazar; yazdığı her şey okuyucudan aynı değerle döner (birim testi).
+- **Pattern alanları bloklardan çıkarılır:** Elle tutulan bir alan listesi yok. `Fields`
+  pattern'in bloklarını tarar: başlık, ilk başlıktan önceki paragraf (`eyebrow`), paragraflar,
+  düğmeler, görsel, kapak görseli, liste, details başlığı, alıntı; alanları eşleşen kardeş
+  bloklar `items` olur, ikinci alan `_2` adını alır. 144 pattern'in tamamı örnek değerleriyle
+  doldurulup denetimden geçer. Değer verilmeyen alan pattern metnini korur ve not olur; `null`
+  bloğu kaldırır; öğeler arasındaki ayraçlar öğelerle gelir ve gider.
+- **Görseller yalnızca paketin içinden:** Bölüm alanları, ayarlar ve Markdown yalnızca paketteki
+  bir dosyayı gösterebilir; adres ve paket dışı yol reddedilir. Paket kendi başına tamdır ve her
+  görselin alt metni, kaynağı ve lisansı `media.yaml`'da tutulur.
+- **Sorun ve not ayrımı:** İçe aktarmayı durduran sorunlar ile durdurmayan notlar (örnek metin
+  kalan alan, alt metni olmayan görsel, kullanılmayan content dosyası) ayrı bildirilir; teslim
+  edilecek paket `--strict` ile temiz olmalıdır. Hepsi tek seferde, dosya ve yerle bildirilir.
+- **Sayfa şablonları temanın `customTemplates` listesinden:** WooCommerce gibi eklentilerin
+  eklediği şablonlar paketten seçilmez.
+- **Menü varsayılanı sayfa ağacı:** `sitemap.yaml`'da `menu` yoksa menü sayfa ağacından üretilir
+  (ön sayfa, sepet, ödeme, hesap ve `menu: false` sayfalar hariç).
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

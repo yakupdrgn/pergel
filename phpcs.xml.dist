@@ -54,10 +54,11 @@
 			</property>
 		</properties>
 	</rule>
-	<!-- Token compiler, block manifest and dev tools run only under WP-CLI or CI; their exception
-	     messages go to a terminal, never into HTML. -->
+	<!-- Token compiler, package reader, block manifest and dev tools run only under WP-CLI or CI;
+	     their exception messages go to a terminal, never into HTML. -->
 	<rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">
 		<exclude-pattern>engine/src/Tokens/*</exclude-pattern>
+		<exclude-pattern>engine/src/Package/*</exclude-pattern>
 		<exclude-pattern>engine/src/Blocks/Manifest.php</exclude-pattern>
 		<exclude-pattern>tools/*</exclude-pattern>
 	</rule>
