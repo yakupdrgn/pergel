@@ -159,7 +159,7 @@ final class SellingTest extends TestCase {
 			$this->markTestSkipped( 'WooCommerce is active on this site.' );
 		}
 		foreach ( array( Modes::class, Selling::class, Pages::class, \Pergel\Woo\Fields::class ) as $class ) {
-			$this->assertFalse( class_exists( $class, false ), $class );
+			$this->assertNotContains( $class, $GLOBALS['pergel_site_classes'], $class );
 		}
 		$this->assertFalse( has_filter( 'woocommerce_is_purchasable' ) );
 	}

@@ -291,14 +291,16 @@ final class StarterTest extends TestCase {
 	}
 
 	/**
-	 * Reading settings as stored.
+	 * Reading settings as stored. As text: the option cache keeps the 60 an
+	 * earlier update_option() was given, the database "60", and WordPress
+	 * skips an update to the same value in the other type.
 	 *
-	 * @return array<string, mixed>
+	 * @return array<string, string>
 	 */
 	private function options(): array {
 		$options = array();
 		foreach ( self::OPTIONS as $option ) {
-			$options[ $option ] = get_option( $option );
+			$options[ $option ] = (string) get_option( $option );
 		}
 		return $options;
 	}
