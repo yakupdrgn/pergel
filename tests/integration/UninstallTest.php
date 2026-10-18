@@ -79,11 +79,13 @@ final class UninstallTest extends TestCase {
 			require_once ABSPATH . 'wp-admin/includes/user.php';
 			wp_delete_user( $this->made['user'] );
 		}
+		// Added again, not updated: update_option() skips a value equal to
+		// the default the settings give a missing option, which would leave
+		// default settings deleted.
 		foreach ( $this->saved as $option => $value ) {
-			if ( false === $value ) {
-				delete_option( $option );
-			} else {
-				update_option( $option, $value );
+			delete_option( $option );
+			if ( false !== $value ) {
+				add_option( $option, $value, '', Shop::ATTRIBUTES_OPTION !== $option );
 			}
 		}
 		Settings::flush();
