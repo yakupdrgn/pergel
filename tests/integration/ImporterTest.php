@@ -99,6 +99,11 @@ final class ImporterTest extends TestCase {
 		Settings::flush();
 		if ( get_stylesheet() !== $this->theme ) {
 			switch_theme( $this->theme );
+			// switch_theme() leaves after_switch_theme to the next request,
+			// where WooCommerce resets its catalog settings; the site was
+			// not really switched, so nothing should run there.
+			delete_option( 'theme_switched' );
+			delete_option( 'theme_mods_' . self::NAME );
 		}
 		$child = get_theme_root() . '/' . self::NAME;
 		if ( is_dir( $child ) ) {
