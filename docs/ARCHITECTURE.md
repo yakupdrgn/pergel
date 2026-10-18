@@ -561,8 +561,9 @@ görünmez (`Settings\Screen::shown`).
   fiyat aralığı boş (önbellek anahtarı ayrı: `pergel-no-price`), `price_html` boş, satın
   alınamaz; fiyatsız varyasyonlar seçilebilir kalır. WooCommerce yapılandırılmış verisinde ve
   Rank Math / Yoast / AIOSEO graph süzgeçlerinde `offers` silinir; Google for WooCommerce
-  feed'ine yalnızca herkese satılan ürünler girer. Fiyat gizleyen listelerde (mağaza ya da
-  kategori modu) `min_price`/`max_price` ve fiyat sıralaması istekten düşer, sıralama menüsünden
+  feed'ine yalnızca herkese satılan ürünler girer. Kullanımdaki modlardan biri (mağaza,
+  kategori ya da ürün) ziyaretçiden fiyat gizliyorsa bütün listelerde `min_price`/`max_price` ve
+  fiyat sıralaması istekten düşer, sıralama menüsünden
   ve varsayılan sıralamadan çıkar, fiyat filtresi blokları basılmaz; Store API ürün
   listelerinde aynı parametreler ve fiyat aralığı kaldırılır. Gizli üründe sepete ekleme formu
   blokları (`add-to-cart-with-options`, `add-to-cart-form`) hiç basılmaz; yoksa boş bir form ve

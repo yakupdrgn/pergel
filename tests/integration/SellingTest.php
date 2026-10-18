@@ -356,6 +356,29 @@ final class SellingTest extends TestCase {
 		$this->assertSame( '', Selling::price_filter( '<div>filter</div>' ) );
 	}
 
+	public function test_one_hidden_price_takes_the_price_tools_from_every_listing(): void {
+		$this->needs_woocommerce();
+		$options = array(
+			'menu_order' => 'Default',
+			'price'      => 'Low to high',
+		);
+		$this->product();
+		$this->assertSame( $options, Selling::orderby_options( $options ) );
+
+		// The shop sells; one product in catalog mode would give its price away
+		// to a range filter or a price sorting, in the shop and in the Store API.
+		$this->product( array(), 'catalog' );
+		Modes::flush();
+		$this->assertSame( array( 'menu_order' => 'Default' ), Selling::orderby_options( $options ) );
+		$this->assertSame( '', Selling::price_filter( '<div>filter</div>' ) );
+		$range = new \WP_REST_Request( 'GET', '/wc/store/v1/products/collection-data' );
+		$range->set_param( 'calculate_price_range', true );
+		$range->set_param( 'min_price', '10' );
+		Selling::store_api( null, null, $range );
+		$this->assertFalse( $range->get_param( 'calculate_price_range' ) );
+		$this->assertNull( $range->get_param( 'min_price' ) );
+	}
+
 	public function test_cart_form_leaves_a_hidden_product(): void {
 		$this->needs_woocommerce();
 		$sale  = $this->product();

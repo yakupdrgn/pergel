@@ -606,9 +606,15 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   taşımaz; Yoast'ın ücretsiz sürümü ürün şeması basmaz, süzgeç Yoast WooCommerce SEO için
   güvenlik ağıdır.
 - **Fiyat geri okunamasın:** Fiyat gizleyen listede fiyat filtresi, fiyat sıralaması ve Store
-  API fiyat aralığı kapanır; aksi hâlde aralık daraltılarak fiyat bulunabilirdi.
-- **Modlar ön yüzde ve Store API'de uygulanır:** Yönetim ekranları, mağaza yöneticisinin REST
-  istekleri, cron ve WP-CLI fiyatları görür; sipariş, rapor ve içe aktarma bozulmaz.
+  API fiyat aralığı kapanır; aksi hâlde aralık daraltılarak fiyat bulunabilirdi. F6b'de
+  genişledi: kullanımdaki herhangi bir mod (ürünün kendi modu ya da ikinci bir kategori dahil)
+  ziyaretçiden fiyat gizliyorsa fiyat araçları bütün listelerde kapanır. Satan bir listede de
+  gizli ürün bulunabiliyordu; gizli ürünleri sorgudan dışlamak daha ince ama mod çözümünü SQL'e
+  taşımayı gerektiriyor, 1.0 için güvenli taraf seçildi.
+- **Modlar ön yüzde, Store API'de ve REST'te uygulanır:** Yönetim ekranları, `edit_products`
+  yetkili kullanıcının REST ve AJAX istekleri, cron ve WP-CLI fiyatları görür; sipariş, rapor ve
+  içe aktarma bozulmaz. F6b'ye kadar REST'te yalnızca Store API'de uygulanıyordu ve
+  `pergel/v1/shop-list` gizli fiyatları herkese gösteriyordu.
 - **Mini sepeti WooCommerce'ten devralmak:** WooCommerce mini sepeti kendi kanca kaydıyla her
   header pattern'ine ekliyordu; `woo.mini_cart` kapalıyken ya da hiçbir şey satılmazken de
   görünüyordu. Pergel header'larında karar `Woo\MiniCart`'ta (öncelik 20) verilir.

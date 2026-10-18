@@ -196,20 +196,24 @@ final class Selling {
 	}
 
 	/**
-	 * Whether the listing of this request hides prices: the product
-	 * category on screen, or the shop.
-	 *
-	 * @param string $category Category slug; '' for the queried one.
+	 * Whether listings go without the price filter and price sorting for
+	 * this visitor: the shop, a category or a product hides its price from
+	 * them. Filtering or sorting a list that holds such a product gives its
+	 * price away (narrow the range until it drops out), and a product's
+	 * own mode or a second category can hide it inside a listing that
+	 * sells, so the price tools are off in every listing while any mode in
+	 * use hides prices.
 	 */
-	public static function listing_hidden( string $category = '' ): bool {
+	public static function listing_hidden(): bool {
 		if ( ! Modes::enforced() ) {
 			return false;
 		}
-		if ( '' === $category && is_product_category() ) {
-			$term     = get_queried_object();
-			$category = $term instanceof \WP_Term ? $term->slug : '';
+		foreach ( array_merge( array( Modes::site() ), Modes::index()['used'] ) as $mode ) {
+			if ( ! Modes::sells( $mode ) ) {
+				return true;
+			}
 		}
-		return ! Modes::sells( '' === $category ? Modes::site() : Modes::of_category( $category ) );
+		return false;
 	}
 
 	/**
@@ -219,16 +223,15 @@ final class Selling {
 	 * @param \WP $wp Current request.
 	 */
 	public static function request( \WP $wp ): void {
-		$category = $wp->query_vars['product_cat'] ?? '';
-		$category = is_string( $category ) ? basename( $category ) : '';
-		if ( ! self::listing_hidden( $category ) ) {
+		if ( ! self::listing_hidden() ) {
 			return;
 		}
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Removes, reads nothing.
 		foreach ( self::PRICE_PARAMS as $param ) {
 			unset( $wp->query_vars[ $param ], $_GET[ $param ], $_REQUEST[ $param ] );
 		}
-		if ( isset( $_GET['orderby'] ) && is_string( $_GET['orderby'] ) && str_starts_with( $_GET['orderby'], 'price' ) ) {
+		$orderby = isset( $_GET['orderby'] ) && is_string( $_GET['orderby'] ) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : '';
+		if ( str_starts_with( $orderby, 'price' ) ) {
 			unset( $_GET['orderby'], $_REQUEST['orderby'] );
 		}
 		// phpcs:enable
@@ -283,7 +286,7 @@ final class Selling {
 
 	/**
 	 * Store API product lists: no price filter, price sorting or price
-	 * range while the shop hides prices.
+	 * range while any mode in use hides prices (see listing_hidden()).
 	 *
 	 * @param mixed            $response Response so far; passed through.
 	 * @param mixed            $handler  Route handler.
