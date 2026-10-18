@@ -24,6 +24,8 @@
 # Dizinin KENDİSİ değil İÇERİĞİ dışlanır (`/*`); böylece Pergel'e özgü bir
 # skill eklenirse aşağıya `!/.claude/skills/<ad>/` yazmak yeterli olur.
 /.claude/skills/*
+!/.claude/skills/pergel-package/
+!/.claude/skills/pergel-brand/
 /.claude/settings*.json
 
 # Editör / IDE

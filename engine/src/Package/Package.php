@@ -164,9 +164,10 @@ final class Package {
 	 * @param Closure              $pattern   Parsed blocks of a pattern by name, null when there is none.
 	 * @param array<int, string>   $templates Page template slugs the theme has.
 	 * @param array<string, mixed> $tokens    The theme's token tree that brand/tokens.json changes.
+	 * @param string[]             $fonts     Theme directories fontFace files may come from; empty skips the files.
 	 * @phpstan-param Closure(string): (list<array<string, mixed>>|null) $pattern
 	 */
-	public function check( Closure $pattern, array $templates, array $tokens ): void {
+	public function check( Closure $pattern, array $templates, array $tokens, array $fonts = array() ): void {
 		foreach ( $this->pages as $page ) {
 			if ( '' !== $page['template'] && ! in_array( $page['template'], $templates, true ) ) {
 				$this->problems[] = sprintf( 'sitemap.yaml: %s: template: "%s" is not a page template; templates: %s', $page['where'], $page['template'], implode( ', ', $templates ) );
@@ -185,7 +186,10 @@ final class Package {
 
 		if ( null !== $this->tokens ) {
 			try {
-				Compiler::compile( Compiler::merge( $tokens, $this->tokens ), 'brand/tokens.json' );
+				$settings = Compiler::compile( Compiler::merge( $tokens, $this->tokens ), 'brand/tokens.json' );
+				if ( array() !== $fonts ) {
+					Compiler::check_font_files( $settings, 'brand/tokens.json', $fonts );
+				}
 			} catch ( Invalid $e ) {
 				$this->problems = array_merge( $this->problems, $e->problems );
 			}
@@ -214,7 +218,8 @@ final class Package {
 				$templates[] = (string) $name;
 			}
 		}
-		$this->check( Closure::fromCallable( array( self::class, 'pattern' ) ), $templates, $tokens );
+		// The package's child theme has no font files of its own; they come from the parent.
+		$this->check( Closure::fromCallable( array( self::class, 'pattern' ) ), $templates, $tokens, array( get_template_directory() ) );
 	}
 
 	/**

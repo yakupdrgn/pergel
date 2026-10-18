@@ -1,7 +1,9 @@
 # Proje paketi formatı (K12)
 
 > Durum: format 1. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
-> F5b'de (`wp pergel import`), dışa aktarma F5c'de (`wp pergel export`) tamamlandı.
+> F5b'de (`wp pergel import`), dışa aktarma F5c'de (`wp pergel export`) tamamlandı. Paketi
+> Claude Code ile hazırlamak için depoda iki skill var (F5e): `pergel-package` ve
+> `pergel-brand` (`.claude/skills/`).
 
 Her Pergel sitesi, platformdan bağımsız dosyalardan oluşan bir proje paketinden üretilir. Aynı
 paket tekrar uygulandığında aynı site çıkar (idempotent). Paket, AI ile site kurmanın ve gerekirse
@@ -37,8 +39,8 @@ Okuyucu bütün paketi okur ve her şeyi bir seferde, dosyası ve yeriyle bildir
 var:
 
 - **Sorun** (problem) içe aktarmayı durdurur: bilinmeyen anahtar, eksik dosya, tanınmayan
-  pattern veya alan, geçersiz ayar, derlenmeyen veya düşük kontrastlı token, paket dışından
-  görsel.
+  pattern veya alan, geçersiz ayar, derlenmeyen veya düşük kontrastlı token, temada olmayan
+  font dosyası, paket dışından görsel.
 - **Not** (note) durdurmaz: pattern'in örnek metnini koruyan alan, alt metni olmayan görsel,
   hiçbir sayfanın kullanmadığı content dosyası. `--strict` notları da sorun sayar; teslim
   edilecek paketler `--strict` ile temiz olmalıdır.
@@ -218,6 +220,10 @@ kurallarla derlenir: çözülmeyen başvuru veya düşük kontrastlı renk çift
 { "radius": { "card": { "$value": "{radius.large}" } } }
 ```
 
+Paket font dosyası taşımaz; `font-family` token'ının `fontFace` dosyaları ana temadan gelir
+(Figtree, Geist, Lexend Exa, Manrope, Space Grotesk). Ana temada olmayan dosya denetimde sorun
+olur; içe aktarma yarıda kalmaz.
+
 ## İçe aktarma
 
 ```sh
@@ -320,3 +326,16 @@ sayılmaz.
 - İçerikte yalnızca çekirdek bloklar ve kayıtlı Pergel blokları oluşur; "Özel HTML" bloğu yok.
 - Paket sır içermez (API anahtarı, şifre). Ortam bilgileri ayrı ve git dışında tutulur.
 - Panelde yapılan değişiklikler `wp pergel export` ile pakete geri yazılır.
+
+## Claude skill'leri (F5e)
+
+Depodaki `.claude/skills/` altında, Claude Code'un bu depoda açıldığında kullandığı iki skill
+vardır. Format bu belgede kalır; skill'ler iş sırasını ve iyi paketin ölçütünü verir.
+
+| Skill | Ne yapar |
+| --- | --- |
+| `pergel-package` | Brief'ten paketi hazırlar: sayfa ağacı, pattern seçimi (`pattern list` / `fields` veya yapay zekâ erişimi), içerik, görseller; `validate --strict` temizlenene kadar düzeltir, geliştirme sitesine iki kez içe aktararak ikincinin yalnızca `keep` verdiğini doğrular. Var olan paketi değiştirmeden önce `export` ile panel değişikliklerini geri alır. |
+| `pergel-brand` | Marka renklerini, fontlarını ve köşe yuvarlaklığını `brand/tokens.json`'a çevirir; zorunlu renk slug'larını ve 4.5:1 kontrastı korur, fontu ana temadakilerden seçer. Tutmayan marka rengini sessizce değiştirmez, öneri sunar. |
+
+İkisi de canlı siteye içe aktarmaz, firma bilgisi uydurmaz, web'den görsel indirmez; bilgi
+eksikse kullanıcıya sorar.

@@ -1123,6 +1123,13 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   yapılır, böylece her değişiklik pakette iz bırakır. Modül varsayılan olarak kapalıdır, her
   yetenek bir yetki ister ve kullanıcı başına dakikada 60 çağrıyla sınırlıdır. MCP'ye açılması
   `meta.mcp.public` ile MCP Adapter gibi ayrı bir eklentiye bırakılır.
+- **Skill'ler formatı tekrar etmez (F5e):** `pergel-package` ve `pergel-brand` depoda
+  `.claude/skills/` altındadır (`.gitignore`'da adıyla açılır). Formatın tek kaynağı
+  `docs/PROJECT-PACKAGE.md`; skill'ler iş sırasını, sınırları (canlıya içe aktarma yok, uydurma
+  firma bilgisi yok, web'den görsel yok) ve bitti ölçütünü (`validate --strict` temiz, ikinci içe
+  aktarma yalnızca `keep`) verir. Denetimin yakalamadığı bir sorun skill'e not olarak değil,
+  denetime kural olarak eklenir: marka fontunun dosyası artık `package validate`'te aranıyor
+  (önceden içe aktarmanın son adımında, sayfalar yazıldıktan sonra hata veriyordu).
 
 ## Aşamalar ve bitti tanımları
 
