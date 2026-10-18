@@ -129,7 +129,7 @@ jobs:
         run: bash tools/ci/setup-wp.sh
       - name: Integration tests
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
-        run: PERGEL_WP_DIR="$WP_DIR" php vendor/bin/phpunit -c phpunit-integration.xml.dist --display-deprecations
+        run: PERGEL_WP_DIR="$WP_DIR" php vendor/bin/phpunit -c phpunit-integration.xml.dist --display-deprecations --fail-on-deprecation
       - name: WP-CLI commands
         if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: bash tools/ci/cli-smoke.sh
