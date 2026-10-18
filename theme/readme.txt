@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,14 @@ layers, WooCommerce features and content types come from the companion
 Pergel Engine plugin, so changing the theme never loses content.
 
 == Changelog ==
+
+= 1.0.0 =
+* First stable release.
+* Everything is edited in Appearance > Editor: design tokens compiled into theme.json, three style variations (Clinical Air, Graphite Engineering, Lab Precision), six headers, six footers and a mega menu.
+* 15 templates, among them the WooCommerce shop, product, cart, checkout and order confirmation pages.
+* 140+ patterns for heroes, services, pricing, team, FAQ, contact, posts and shop sections.
+* Turkish translation included.
+* Checked in CI on PHP 8.1 to 8.5, MariaDB and MySQL, with an accessibility audit, visual regression tests and a performance budget.
 
 = 0.1.0 =
 * Initial skeleton.
