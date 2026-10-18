@@ -290,6 +290,38 @@ final class PackageTest extends TestCase {
 		$this->assertNull( $package->tokens );
 	}
 
+	public function test_brand_fonts_come_from_the_parent_theme(): void {
+		$font = static fn( string $file ): string => (string) wp_json_encode(
+			array(
+				'font-family' => array(
+					'heading' => array(
+						'$value'      => array( 'Lexend Exa', 'sans-serif' ),
+						'$extensions' => array(
+							'com.ariumlab.pergel' => array(
+								'fontFace' => array(
+									array(
+										'src'        => "file:./assets/fonts/lexend-exa/$file",
+										'fontWeight' => '300 900',
+									),
+								),
+							),
+						),
+					),
+				),
+			)
+		);
+
+		$package = $this->package( array( 'brand/tokens.json' => $font( 'lexend-exa-latin-wght-normal.woff2' ) ) );
+		$this->assertSame( array(), $package->problems );
+
+		self::remove( $this->copy );
+		$package = $this->package( array( 'brand/tokens.json' => $font( 'yok.woff2' ) ) );
+		$this->assertSame(
+			array( 'brand/tokens.json: font-family.heading: file:./assets/fonts/lexend-exa/yok.woff2 does not exist in the theme' ),
+			$package->problems
+		);
+	}
+
 	public function test_a_missing_package(): void {
 		$package = Package::read( self::FIXTURE . '/yok' );
 		$this->assertCount( 1, $package->problems );

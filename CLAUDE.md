@@ -5,7 +5,8 @@ yönetilebilen bir sistemdir: blok tema `pergel` + yardımcı eklenti `pergel-en
 için ince bir child tema. İlk proje ariumlab.com'dur (child tema `ariumlab`, ayrı repoda).
 
 Önce şunları oku: `docs/DECISIONS.md` (K1–K13), `docs/ARCHITECTURE.md`, `docs/CONVENTIONS.md`.
-Proje paketinin formatı `docs/PROJECT-PACKAGE.md` dosyasındadır.
+Proje paketinin formatı `docs/PROJECT-PACKAGE.md` dosyasındadır. Paket hazırlarken
+`pergel-package`, marka token'ları için `pergel-brand` skill'ini kullan (`.claude/skills/`).
 
 ## Sınırlar (kesin)
 

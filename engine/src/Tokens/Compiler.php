@@ -462,7 +462,7 @@ final class Compiler {
 	 * @param string[]             $dirs     Theme directory first, then the parent.
 	 * @throws Invalid When a file is missing.
 	 */
-	private static function check_font_files( array $settings, string $label, array $dirs ): void {
+	public static function check_font_files( array $settings, string $label, array $dirs ): void {
 		$problems = array();
 		$families = $settings['typography']['fontFamilies'] ?? array();
 		foreach ( is_array( $families ) ? $families : array() as $family ) {
