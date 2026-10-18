@@ -21,22 +21,28 @@ package-lock.json -diff
 # `git archive` bu yolları paket dışında bırakır. Tema ve eklenti zip'leri
 # yalnızca theme/ ve engine/ içeriğinden üretilir; geliştirme araçları,
 # testler ve iç belgeler web'den erişilebilir bir dizine düşmemeli.
+# Yollar `/` ile köke bağlıdır: `starters/` tek başına engine/src/Starters/
+# klasörünü de dışarıda bırakıyordu (Windows'ta büyük-küçük harf ayrımı yok).
 # ---------------------------------------------------------------------------
-.github/            export-ignore
-.claude/            export-ignore
-.gitattributes      export-ignore
-.gitignore          export-ignore
-.editorconfig       export-ignore
-tools/              export-ignore
-tests/              export-ignore
-docs/               export-ignore
-starters/           export-ignore
-CLAUDE.md           export-ignore
-README.md           export-ignore
-composer.json       export-ignore
-composer.lock       export-ignore
-package.json        export-ignore
-package-lock.json   export-ignore
-phpcs.xml.dist      export-ignore
-phpstan.neon.dist   export-ignore
+/.github/            export-ignore
+/.claude/            export-ignore
+/.gitattributes      export-ignore
+/.gitignore          export-ignore
+/.editorconfig       export-ignore
+/tools/              export-ignore
+/tests/              export-ignore
+/docs/               export-ignore
+/starters/           export-ignore
+/CLAUDE.md           export-ignore
+/README.md           export-ignore
+/composer.json       export-ignore
+/composer.lock       export-ignore
+/package.json        export-ignore
+/package-lock.json   export-ignore
+/phpcs.xml.dist      export-ignore
+/phpstan.neon.dist   export-ignore
+/phpunit.xml.dist    export-ignore
+/phpunit-integration.xml.dist export-ignore
+/playwright*.mjs     export-ignore
+/examples/           export-ignore
 **/.gitkeep         export-ignore
