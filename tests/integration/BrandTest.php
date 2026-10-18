@@ -123,11 +123,17 @@ final class BrandTest extends TestCase {
 	public function test_text_is_escaped_in_paragraphs_and_headings(): void {
 		Settings::update( array( 'brand' => array( 'name' => 'Ariumlab & Co "Lab"' ) ) );
 
-		$this->assertSame( '<p class="wp-block-paragraph">Ariumlab &amp; Co &quot;Lab&quot;</p>', self::render( 'paragraph', 'content', array( 'key' => 'name' ), '<p>Fallback</p>' ) );
+		// Compared as parsed: WordPress 7.2 writes the quotes of a bound text as they are.
 		$this->assertSame(
-			'<h2 class="wp-block-heading">Ariumlab &amp; Co &quot;Lab&quot;</h2>',
-			self::render( 'heading', 'content', array( 'key' => 'name' ), '<h2 class="wp-block-heading">Fallback</h2>' )
+			\WP_HTML_Processor::normalize( '<p class="wp-block-paragraph">Ariumlab &amp; Co &quot;Lab&quot;</p>' ),
+			\WP_HTML_Processor::normalize( self::render( 'paragraph', 'content', array( 'key' => 'name' ), '<p>Fallback</p>' ) )
 		);
+		$this->assertSame(
+			\WP_HTML_Processor::normalize( '<h2 class="wp-block-heading">Ariumlab &amp; Co &quot;Lab&quot;</h2>' ),
+			\WP_HTML_Processor::normalize( self::render( 'heading', 'content', array( 'key' => 'name' ), '<h2 class="wp-block-heading">Fallback</h2>' ) )
+		);
+		// The parser would also accept a bare &, so the markup itself is checked for it.
+		$this->assertStringContainsString( 'Ariumlab &amp; Co', self::render( 'paragraph', 'content', array( 'key' => 'name' ), '<p>Fallback</p>' ) );
 	}
 
 	public function test_empty_value_keeps_the_saved_text(): void {
