@@ -1,7 +1,7 @@
 # Proje paketi formatı (K12)
 
-> Durum: format 1. Okuyucu ve denetim F5a'da tamamlandı (`wp pergel package validate`);
-> içe aktarma (`wp pergel import`) F5b'de, dışa aktarma F5c'de gelir.
+> Durum: format 1. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
+> F5b'de (`wp pergel import`) tamamlandı; dışa aktarma F5c'de gelir.
 
 Her Pergel sitesi, platformdan bağımsız dosyalardan oluşan bir proje paketinden üretilir. Aynı
 paket tekrar uygulandığında aynı site çıkar (idempotent). Paket, AI ile site kurmanın ve gerekirse
@@ -217,6 +217,54 @@ kurallarla derlenir: çözülmeyen başvuru veya düşük kontrastlı renk çift
 ```json
 { "radius": { "card": { "$value": "{radius.large}" } } }
 ```
+
+## İçe aktarma
+
+```sh
+wp pergel import ./proje --dry-run   # ne olacağını gösterir, hiçbir şey kaydetmez
+wp pergel import ./proje             # siteyi paketten kurar
+wp pergel import ./proje             # tekrar: değişmeyen her şey "keep"
+wp pergel import ./proje --prune     # paketten çıkan sayfaları çöpe, görselleri siler
+```
+
+Sıra: önce paket denetlenir (`package validate` ile aynı; `--strict` notları da sorun sayar),
+sonra site. Sorun varsa hiçbir şey kaydedilmez. Ardından site başlığı, slogan ve dil; kullanılan
+görseller; Pergel ayarları; sayfalar; okuma ayarları (ön sayfa, yazılar sayfası, WooCommerce
+sayfaları); menü (`wp_navigation`); son olarak `brand/tokens.json` için alt tema. Her adım bir
+satır bildirir: `create`, `update`, `keep`, `set`, `adopt`, `skip`, `stale`, `remove`.
+
+**Paketin yaptığını tanıma.** İçe aktarmanın yaptığı her sayfa, görsel ve menü
+`_pergel_package` (paket adı) ve `_pergel_package_key` (sayfa yolu, görsel yolu veya `menu`)
+meta'sını taşır. Tekrar içe aktarmada bunlar bulunur, adres değişse de aynı kayıt güncellenir.
+Paketin yapmadığı kayda dokunulmaz.
+
+**Tekrar üretilebilirlik.** Her kayıtta iki özet tutulur: paketten üretilen verinin özeti
+(`_pergel_package_source`) ve kaydedildiği andaki yazının özeti (`_pergel_package_saved`;
+başlık, içerik, adres, üst sayfa, sıra, durum, şablon, SEO). Paket değişmediyse kayıt `keep`.
+Paket değiştiyse `update`. Yazı panelde düzenlendiyse (özet tutmuyorsa) `skip` ve not:
+panel değişikliği ezilmez; `--force` ezer. Görseller dosya özetiyle (sha1) karşılaştırılır:
+aynı dosya `keep` (alt metin, açıklama veya kaynak değiştiyse `update`), başka dosya
+`update` (eski ek silinir, yenisi yüklenir).
+
+**Paketten çıkanlar.** Önceki içe aktarmanın yapıp paketin artık içermediği sayfa, görsel ve
+menü `stale` olarak listelenir ve yerinde kalır. `--prune` sayfaları ve menüyü çöpe taşır,
+görselleri siler.
+
+**Ön kontrol.** Paketin bir adresinde paketin yapmadığı bir sayfa varsa içe aktarma başlamaz
+(`/blog/ is page 7, which this package did not make; move or delete it first`); siteyi ezen
+bir varsayılan yoktur. İstisna WooCommerce sayfalarıdır: `type: cart` gibi bir sayfanın adresinde
+WooCommerce'in o türdeki sayfası varsa pakete alınır (`adopt`); içeriği ve bloğu korunur, başlık
+ve adres paketten gelir. WooCommerce sayfası hiç yoksa önce WooCommerce'in kendi kurulumuyla
+oluşturulur. Mağaza türlü sayfa WooCommerce etkin değilken sorundur.
+
+**Dil.** `locale` yalnızca site dili yüklüyse (`en_US` her zaman) ayarlanır; değilse not:
+içe aktarma dil paketi indirmez.
+
+**Alt tema.** `brand/tokens.json` varsa tema dizinine paket adıyla bir alt tema yazılır
+(`style.css` başlığında `Pergel package: <ad>`; `tokens/default.json` birleşik token'lar;
+`theme.json` derlenir) ve etkinleştirilir. Bu imza olmayan aynı adlı bir dizin veya paketin
+yazmadığı etkin bir alt tema sorundur. Paketten `brand/tokens.json` çıkarılırsa ana tema
+yeniden etkinleşir.
 
 ## Kurallar
 
