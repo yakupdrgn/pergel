@@ -5,7 +5,7 @@
 #
 # The engine and theme come from `git archive HEAD`, so the files that
 # .gitattributes leaves out (tests, .gitkeep) are not checked and uncommitted
-# changes are not either. Both tools exit 0 with findings; this script fails
+# changes are not either. Neither tool's exit code says enough; this script fails
 # on any Plugin Check finding and on Theme Check's REQUIRED and WARNING lines,
 # apart from the ones accepted in tools/ci/review.php.
 set -euo pipefail
@@ -46,7 +46,8 @@ if printf '%s\n' "$found" | grep -q -v -e '^$' -e '^FILE: ' -e '^file,line,'; th
 fi
 
 echo "::group::Theme Check $THEME_CHECK"
-wp theme-check run pergel --format=json > "$DIST/theme-check.json"
+# Exits 1 on a REQUIRED line, accepted or not; review.php decides.
+wp theme-check run pergel --format=json > "$DIST/theme-check.json" || true
 echo "::endgroup::"
 php "$REPO/tools/ci/review.php" "$DIST/theme-check.json" || status=1
 

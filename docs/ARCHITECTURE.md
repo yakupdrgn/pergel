@@ -441,7 +441,7 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   denetler; perf probe en yavaş sorguyu rapora yazar. Mağaza ve ölçek işlerinde PHP JIT kapalıdır.
 - **İnceleme** (CI'da `review` işi): `tools/ci/review.sh` motoru ve temayı `git archive HEAD` ile
   zip'e girecekleri hâliyle siteye kopyalar, Plugin Check ve Theme Check'i sabit sürümleriyle
-  çalıştırır. İki araç da bulguyla 0 döndüğü için çıktı okunur: her Plugin Check bulgusu ve Theme
+  çalıştırır. Araçların çıkış kodu yetmediği için çıktı okunur: her Plugin Check bulgusu ve Theme
   Check'in REQUIRED/WARNING satırları (`tools/ci/review.php`'deki gerekçeli istisnalar dışında)
   işi kırar. Kabul edilen bulgular DECISIONS F6b'de.
 
