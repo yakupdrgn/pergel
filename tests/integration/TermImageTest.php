@@ -113,7 +113,6 @@ final class TermImageTest extends TestCase {
 		$file    = $uploads['path'] . '/pergel-term-image-test.png';
 		$image   = imagecreatetruecolor( 8, 6 );
 		imagepng( $image, $file );
-		imagedestroy( $image );
 		$id = wp_insert_attachment(
 			array(
 				'post_title'     => 'Pergel term image test',
