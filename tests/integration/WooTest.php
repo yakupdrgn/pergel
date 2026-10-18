@@ -36,6 +36,11 @@ final class WooTest extends TestCase {
 	 */
 	private mixed $saved;
 
+	/**
+	 * The main query before go_to() replaced it.
+	 */
+	private ?\WP_Query $query = null;
+
 	protected function setUp(): void {
 		$this->saved = get_option( Settings::OPTION, false );
 	}
@@ -51,6 +56,9 @@ final class WooTest extends TestCase {
 		remove_all_filters( 'pergel/woo/classic_files' );
 		remove_filter( 'woocommerce_is_cart', '__return_true' );
 		Settings::flush();
+		if ( null !== $this->query ) {
+			$GLOBALS['wp_the_query'] = $this->query; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Puts back the query go_to() replaced.
+		}
 		wp_reset_query();
 	}
 
@@ -321,7 +329,8 @@ final class WooTest extends TestCase {
 	 * @param array<string, mixed> $vars Query vars.
 	 */
 	private function go_to( array $vars ): void {
-		$GLOBALS['wp_the_query'] = new \WP_Query( $vars ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Test page view; reset in tearDown.
+		$this->query           ??= $GLOBALS['wp_the_query'];
+		$GLOBALS['wp_the_query'] = new \WP_Query( $vars ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Test page view; put back in tearDown.
 		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query']; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- As above.
 	}
 
