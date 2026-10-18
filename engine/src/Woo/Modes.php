@@ -227,8 +227,10 @@ final class Modes {
 
 	/**
 	 * Whether the modes apply to this request. They apply on the front end,
-	 * to the Store API and to front-end AJAX. The admin screens, the REST API
-	 * for shop managers, cron and WP-CLI see every price.
+	 * to the Store API, and to AJAX and other REST routes unless a shop
+	 * manager asks. The admin screens, cron and WP-CLI see every price.
+	 * Pergel's own REST routes (pergel/v1/shop-list) render prices, so the
+	 * REST API is off only for those who may edit products.
 	 */
 	public static function enforced(): bool {
 		if ( null !== self::$enforced ) {
@@ -241,7 +243,7 @@ final class Modes {
 		} elseif ( is_admin() ) {
 			$enforced = false;
 		} elseif ( WC()->is_rest_api_request() ) {
-			$enforced = WC()->is_store_api_request();
+			$enforced = WC()->is_store_api_request() || ! current_user_can( 'edit_products' );
 		} else {
 			$enforced = true;
 		}

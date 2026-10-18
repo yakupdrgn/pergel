@@ -314,6 +314,50 @@ final class ListsTest extends TestCase {
 		$this->assertSame( 1, substr_count( $html, 'add-to-cart=' ) );
 	}
 
+	public function test_list_route_hides_prices_over_http(): void {
+		$this->needs_woocommerce();
+		$this->lists( array( 'compare' => true ) );
+		$catalog = $this->simple( Modes::CATALOG );
+		$uri     = $_SERVER['REQUEST_URI'] ?? null;
+		// A REST request as the browser sends it, not a direct call.
+		$_SERVER['REQUEST_URI'] = '/' . rest_get_url_prefix() . '/pergel/v1/shop-list';
+		Modes::flush();
+		// The routes follow the lists that are on when the server starts; the
+		// test site boots with them off, so start a server with the route.
+		$server                    = $GLOBALS['wp_rest_server'] ?? null;
+		$GLOBALS['wp_rest_server'] = null;
+		$hooked                    = has_action( 'rest_api_init', array( Lists::class, 'routes' ) );
+		if ( false === $hooked ) {
+			add_action( 'rest_api_init', array( Lists::class, 'routes' ) );
+		}
+		try {
+			$request = new \WP_REST_Request( 'GET', '/pergel/v1/shop-list' );
+			$request->set_query_params(
+				array(
+					'kind' => 'compare',
+					'ids'  => (string) $catalog->get_id(),
+				)
+			);
+			$data = rest_do_request( $request )->get_data();
+		} finally {
+			$GLOBALS['wp_rest_server'] = $server;
+			if ( false === $hooked ) {
+				remove_action( 'rest_api_init', array( Lists::class, 'routes' ) );
+			}
+			if ( null === $uri ) {
+				unset( $_SERVER['REQUEST_URI'] );
+			} else {
+				$_SERVER['REQUEST_URI'] = $uri;
+			}
+		}
+
+		$this->assertIsArray( $data );
+		$this->assertSame( array( $catalog->get_id() ), $data['ids'] );
+		$this->assertStringNotContainsString( 'woocommerce-Price-amount', (string) $data['html'] );
+		$this->assertStringNotContainsString( 'add-to-cart=', (string) $data['html'] );
+		$this->assertTrue( Modes::enforced() );
+	}
+
 	public function test_empty_list_says_so(): void {
 		$this->needs_woocommerce();
 		$this->assertStringContainsString( esc_html( Lists::empty_text( 'wishlist' ) ), ListView::render( 'wishlist', array() ) );
