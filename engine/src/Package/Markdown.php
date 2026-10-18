@@ -369,12 +369,17 @@ final class Markdown {
 	}
 
 	/**
-	 * Checks a link address.
+	 * Checks a link address. Browsers skip spaces and control characters in
+	 * front of a scheme and inside it ("\x01javascript:"), so an address
+	 * with any of them is refused before the scheme is read.
 	 *
 	 * @param string $url Address as written.
 	 * @throws InvalidArgumentException For a scheme that is not allowed.
 	 */
 	public static function url( string $url ): string {
+		if ( preg_match( '/[\x00-\x20\x7F]/', $url ) ) {
+			throw new InvalidArgumentException( 'the link "' . addcslashes( $url, "\0..\37\177" ) . '" has spaces or control characters; write a space as %20' );
+		}
 		if ( preg_match( '/^([a-zA-Z][a-zA-Z0-9+.-]*):/', $url, $m ) && ! in_array( strtolower( $m[1] ), self::SCHEMES, true ) ) {
 			throw new InvalidArgumentException( "the link \"$url\" uses $m[1]:, which is not allowed" );
 		}

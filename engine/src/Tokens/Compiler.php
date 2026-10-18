@@ -426,6 +426,8 @@ final class Compiler {
 	 * @throws \InvalidArgumentException When an entry is malformed.
 	 */
 	private static function font_faces( mixed $faces, string $family ): array {
+		// The fontFace properties theme.json knows; WordPress writes them into @font-face rules.
+		$known = array( 'fontFamily', 'fontStyle', 'fontWeight', 'fontDisplay', 'fontStretch', 'unicodeRange', 'fontVariant', 'fontFeatureSettings', 'fontVariationSettings', 'ascentOverride', 'descentOverride', 'lineGapOverride', 'sizeAdjust', 'src' );
 		if ( ! is_array( $faces ) || ! array_is_list( $faces ) ) {
 			throw new \InvalidArgumentException( 'fontFace must be a list' );
 		}
@@ -434,6 +436,17 @@ final class Compiler {
 		foreach ( $faces as $face ) {
 			if ( ! is_array( $face ) || ! isset( $face['src'] ) ) {
 				throw new \InvalidArgumentException( 'each fontFace needs src' );
+			}
+			foreach ( $face as $key => $value ) {
+				if ( ! in_array( $key, $known, true ) ) {
+					throw new \InvalidArgumentException( 'unknown fontFace property "' . (string) $key . '"' );
+				}
+				if ( 'src' !== $key && ( ! is_scalar( $value ) || 1 === preg_match( '/[;{}<>\\\\\x00-\x1F]/', (string) $value ) ) ) {
+					throw new \InvalidArgumentException( "fontFace $key must be a plain value" );
+				}
+				if ( 'fontFamily' === $key ) {
+					Css::font_family( $value );
+				}
 			}
 			$src = (array) $face['src'];
 			foreach ( $src as $url ) {

@@ -62,6 +62,15 @@ final class MarkdownTest extends TestCase {
 		} catch ( InvalidArgumentException $e ) {
 			$this->assertStringContainsString( 'javascript:', $e->getMessage() );
 		}
+		foreach ( array( "\x01javascript:alert(1)", "java\tscript:alert(1)", 'a b' ) as $url ) {
+			try {
+				Markdown::url( $url );
+				$this->fail( 'Expected an error.' );
+			} catch ( InvalidArgumentException $e ) {
+				$this->assertStringContainsString( 'spaces or control characters', $e->getMessage() );
+			}
+		}
+		$this->assertSame( '/a%20b/', Markdown::url( '/a%20b/' ) );
 		try {
 			self::convert( "Metin\n\n# Başlık" );
 			$this->fail( 'Expected an error.' );
