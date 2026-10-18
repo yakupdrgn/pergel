@@ -113,6 +113,92 @@ final class PackageFieldsTest extends TestCase {
 		}
 	}
 
+	public function test_values_read_every_pattern_back(): void {
+		$keep  = static fn( string $url, int $id, string $alt ): array => array(
+			'src' => $url,
+			'alt' => $alt,
+		);
+		$media = static fn( string $src, ?string $alt ): array => array(
+			'id'  => 0,
+			'url' => $src,
+			'alt' => $alt ?? '',
+		);
+		$differ = array();
+		foreach ( \WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
+			if ( ! str_starts_with( $pattern['name'], 'pergel/' ) ) {
+				continue;
+			}
+			$blocks = parse_blocks( $pattern['content'] );
+			$notes  = array();
+			$values = Fields::values( $blocks, $blocks, $keep, $notes );
+			$this->assertSame( array(), $notes, $pattern['name'] );
+			// A media & text image without an attachment gets the class the editor gives it.
+			$filled = str_replace( ' class="size-full"', '', serialize_blocks( Fields::fill( $blocks, $values, $media ) ) );
+			if ( serialize_blocks( $blocks ) !== $filled ) {
+				$differ[] = $pattern['name'];
+			}
+		}
+		$this->assertSame( array(), $differ );
+	}
+
+	public function test_values_follow_removed_fields_and_counted_items(): void {
+		$read = static function ( string $slug, array $values ): array {
+			$notes  = array();
+			$blocks = parse_blocks( self::fill( $slug, $values ) );
+			$back   = Fields::values(
+				self::blocks( $slug ),
+				$blocks,
+				static fn( string $url, int $id, string $alt ): ?string => 7 === $id ? 'media/' . basename( $url ) : null,
+				$notes
+			);
+			return array( $back, $notes );
+		};
+
+		$hero = array(
+			'eyebrow' => null,
+			'heading' => 'Topraktan **sofraya**',
+			'text'    => 'Bal & zeytinyağı, [ürünler](/urunler/)',
+			'buttons' => array(
+				array(
+					'label' => 'Ürünler',
+					'url'   => '/urunler/?a=1&b=2',
+				),
+			),
+			'image'   => 'media/tarla.jpg',
+		);
+		$this->assertSame( array( $hero, array() ), $read( 'pergel/hero-split', $hero ) );
+
+		$plan  = array(
+			'heading' => 'Plan',
+			'text'    => '1 ₺',
+		);
+		foreach ( array( 1, 4 ) as $count ) {
+			$back = $read( 'pergel/pricing-three', array( 'items' => array_fill( 0, $count, $plan ) ) )[0];
+			$this->assertCount( $count, $back['items'] );
+			$this->assertSame( array( 'Plan', '1 ₺' ), array( $back['items'][ $count - 1 ]['heading'], $back['items'][ $count - 1 ]['text'] ) );
+		}
+
+		foreach ( array( 0, 1, 8 ) as $count ) {
+			$items = array();
+			for ( $n = 1; $n <= $count; $n++ ) {
+				$items[] = array(
+					'summary' => "Soru $n",
+					'text'    => "Cevap $n",
+				);
+			}
+			$this->assertSame( $items, $read( 'pergel/faq-accordion', array( 'items' => $items ) )[0]['items'] );
+		}
+		$this->assertCount( 7, $read( 'pergel/contact-details-list', array( 'items' => array_fill( 0, 7, array() ) ) )[0]['items'] );
+
+		$this->assertSame( array( 'Bir', 'İki', 'Üç', 'Dört' ), $read( 'pergel/hero-checklist', array( 'list' => array( 'Bir', 'İki', 'Üç', 'Dört' ) ) )[0]['list'] );
+
+		// An image outside the package is left out with a note.
+		list( $cover, $notes ) = $read( 'pergel/hero-cover', array() );
+		$this->assertArrayNotHasKey( 'background', $cover );
+		$this->assertMatchesRegularExpression( '/^background: http\S+ cannot be put in the package/', $notes[0] );
+		$this->assertSame( 'media/kapak.jpg', $read( 'pergel/hero-cover', array( 'background' => 'media/kapak.jpg' ) )[0]['background'] );
+	}
+
 	public function test_fills_texts_buttons_and_image(): void {
 		$notes = array();
 		$html  = self::fill(

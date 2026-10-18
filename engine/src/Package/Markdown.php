@@ -331,10 +331,10 @@ final class Markdown {
 	 * @throws InvalidArgumentException When a link uses a scheme that is not allowed.
 	 */
 	private static function spans( string $text ): string {
-		// Code spans first: nothing inside them is Markdown.
+		// Code spans first: nothing inside them is Markdown. \` is not one.
 		$held = array();
 		$text = (string) preg_replace_callback(
-			'/`([^`]+)`/',
+			'/(?<!\\\\)`([^`]+)`/',
 			static function ( array $m ) use ( &$held ): string {
 				$held[] = '<code>' . self::text( $m[1] ) . '</code>';
 				return "\x01" . ( count( $held ) - 1 ) . "\x02";

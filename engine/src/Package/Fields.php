@@ -99,6 +99,227 @@ final class Fields {
 	}
 
 	/**
+	 * Reads a section back into field values: the reverse of fill(). The
+	 * section is lined up with the pattern block by block, so a field whose
+	 * block is gone reads as null and items are counted. A field that cannot
+	 * be read (an image outside the package) is left out with a note.
+	 *
+	 * @param list<array<string, mixed>> $pattern The pattern's parse_blocks() output.
+	 * @param list<array<string, mixed>> $section The section's blocks.
+	 * @param Closure                    $image   Turns an image's URL, attachment id and alt text into a field value (a path or { src, alt }), null when it cannot be in the package.
+	 * @phpstan-param Closure(string, int, string): (string|array<string, string>|null) $image
+	 * @param array<int, string>         $notes   Fields that could not be read, with why.
+	 * @return array<string, mixed>
+	 */
+	public static function values( array $pattern, array $section, Closure $image, array &$notes = array() ): array {
+		$named = array_values( array_filter( $section, static fn( array $block ): bool => null !== $block['blockName'] ) );
+		return self::read_scope( self::root( $pattern ), self::root( $named ), $image, $notes, '' );
+	}
+
+	/**
+	 * Values of one scope.
+	 *
+	 * @param array<string, mixed> $from  Scope in the pattern.
+	 * @param array<string, mixed> $to    The same scope in the section.
+	 * @param Closure              $image Image reader, see values().
+	 * @phpstan-param Closure(string, int, string): (string|array<string, string>|null) $image
+	 * @param array<int, string>   $notes Report.
+	 * @param string               $where Path of the scope for messages.
+	 * @return array<string, mixed>
+	 */
+	private static function read_scope( array $from, array $to, Closure $image, array &$notes, string $where ): array {
+		$values = array();
+		foreach ( self::scan( $from ) as $slot ) {
+			$name = $slot['name'];
+			$at   = $where . $name;
+			$path = self::follow( $from, $to, $slot['path'] );
+			if ( null === $path ) {
+				$values[ $name ] = null;
+				continue;
+			}
+			$block = self::at( $to, $path );
+			if ( 'items' === $slot['role'] ) {
+				$holder = self::at( $from, $slot['path'] );
+				$items  = array();
+				foreach ( self::align( $holder, $block, $slot['members'] )['items'] as $n => $item ) {
+					$items[] = self::read_scope( $holder['innerBlocks'][ $item[0] ], $block['innerBlocks'][ $item[1] ], $image, $notes, sprintf( '%s[%d].', $at, $n + 1 ) );
+				}
+				$values[ $name ] = $items;
+				continue;
+			}
+			$value = self::value( $block, $slot['role'], $image );
+			if ( is_string( $value ) && str_starts_with( $value, "\0" ) ) {
+				$notes[] = "$at: " . substr( $value, 1 );
+				continue;
+			}
+			$values[ $name ] = $value;
+		}
+		return $values;
+	}
+
+	/**
+	 * The section path of the block at a pattern path, or null when it is gone.
+	 *
+	 * @param array<string, mixed> $from Scope in the pattern.
+	 * @param array<string, mixed> $to   The same scope in the section.
+	 * @param array<int, int>      $path Pattern path.
+	 * @return array<int, int>|null
+	 */
+	private static function follow( array $from, array $to, array $path ): ?array {
+		$found = array();
+		foreach ( $path as $i ) {
+			$map = self::align( $from, $to, self::members( $from['innerBlocks'] ) )['map'];
+			if ( ! isset( $map[ $i ] ) ) {
+				return null;
+			}
+			$from    = $from['innerBlocks'][ $i ];
+			$to      = $to['innerBlocks'][ $map[ $i ] ];
+			$found[] = $map[ $i ];
+		}
+		return $found;
+	}
+
+	/**
+	 * Lines up a block's children in the pattern with its children in the
+	 * section: the longest run of blocks of the same kind in the same order
+	 * (blocks the same down to their attributes count for more), where
+	 * pattern blocks may be gone and items may have been added after the
+	 * last one.
+	 *
+	 * @param array<string, mixed> $from    Block in the pattern.
+	 * @param array<string, mixed> $to      The same block in the section.
+	 * @param list<int>|null       $members Child indexes of the pattern's items.
+	 * @return array{map: array<int, int>, items: list<array{0: int, 1: int}>} Pattern child index => section child index; items as [ pattern member, section child ].
+	 */
+	private static function align( array $from, array $to, ?array $members ): array {
+		$p = $from['innerBlocks'];
+		$q = $to['innerBlocks'];
+		// Tokens: pattern children, then after the last item one (-1) that
+		// takes any number of added items and the blocks between them.
+		$tokens = array_keys( array_values( $p ) );
+		$extra  = array();
+		if ( null !== $members ) {
+			array_splice( $tokens, (int) end( $members ) + 1, 0, array( -1 ) );
+			$extra = array( $p[ $members[0] ]['blockName'] );
+			foreach ( self::joiner( $p, $members ) as $block ) {
+				$extra[] = $block['blockName'];
+			}
+		}
+		$n    = count( $tokens );
+		$m    = count( $q );
+		$pair = static function ( int $i, int $j ) use ( $tokens, $p, $q, $extra ): int {
+			$token = $tokens[ $i ];
+			if ( -1 === $token ) {
+				return in_array( $q[ $j ]['blockName'], $extra, true ) ? 1 : 0;
+			}
+			if ( $p[ $token ]['blockName'] !== $q[ $j ]['blockName'] ) {
+				return 0;
+			}
+			$a = $p[ $token ]['attrs'];
+			$b = $q[ $j ]['attrs'];
+			unset( $a['metadata'], $b['metadata'] );
+			return $a == $b ? 3 : 2; // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual -- the same attributes in any key order.
+		};
+		// $best[i][j]: the best score for tokens from i and section blocks from j.
+		$best = array_fill( 0, $n + 1, array_fill( 0, $m + 1, 0 ) );
+		for ( $i = $n - 1; $i >= 0; $i-- ) {
+			for ( $j = $m; $j >= 0; $j-- ) {
+				$score = max( $best[ $i + 1 ][ $j ], $j < $m ? $best[ $i ][ $j + 1 ] : 0 );
+				$gain  = $j < $m ? $pair( $i, $j ) : 0;
+				if ( $gain > 0 ) {
+					// The extra token stays to take the next block too.
+					$score = max( $score, $gain + ( -1 === $tokens[ $i ] ? $best[ $i ][ $j + 1 ] : $best[ $i + 1 ][ $j + 1 ] ) );
+				}
+				$best[ $i ][ $j ] = $score;
+			}
+		}
+		$map   = array();
+		$items = array();
+		$first = $members[0] ?? -1;
+		$i     = 0;
+		$j     = 0;
+		while ( $i < $n ) {
+			$gain  = $j < $m ? $pair( $i, $j ) : 0;
+			$token = $tokens[ $i ];
+			if ( $gain > 0 && $best[ $i ][ $j ] === $gain + ( -1 === $token ? $best[ $i ][ $j + 1 ] : $best[ $i + 1 ][ $j + 1 ] ) ) {
+				if ( -1 === $token ) {
+					if ( $q[ $j ]['blockName'] === $extra[0] ) {
+						$items[] = array( $first, $j );
+					}
+				} else {
+					$map[ $token ] = $j;
+					if ( null !== $members && in_array( $token, $members, true ) ) {
+						$items[] = array( $token, $j );
+					}
+					++$i;
+				}
+				++$j;
+			} elseif ( $j >= $m || $best[ $i ][ $j ] === $best[ $i + 1 ][ $j ] ) {
+				++$i;
+			} else {
+				++$j;
+			}
+		}
+		return array(
+			'map'   => $map,
+			'items' => $items,
+		);
+	}
+
+	/**
+	 * Value of one field as a package writes it, or a note starting with a
+	 * NUL byte when it cannot be read.
+	 *
+	 * @param array<string, mixed> $block Block.
+	 * @param string               $role  Role.
+	 * @param Closure              $image Image reader, see values().
+	 * @phpstan-param Closure(string, int, string): (string|array<string, string>|null) $image
+	 * @return string|array<int|string, mixed>|null
+	 */
+	private static function value( array $block, string $role, Closure $image ): string|array|null {
+		$first = (string) ( $block['innerContent'][0] ?? '' );
+		switch ( $role ) {
+			case 'buttons':
+				$buttons = array();
+				foreach ( $block['innerBlocks'] as $button ) {
+					if ( preg_match( '/<a\b([^>]*)>(.*?)<\/a>/s', (string) ( $button['innerContent'][0] ?? '' ), $m ) ) {
+						$buttons[] = array(
+							'label' => MarkdownWriter::inline( $m[2] ),
+							'url'   => preg_match( '/\shref="([^"]*)"/', $m[1], $href ) ? html_entity_decode( $href[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '',
+						);
+					}
+				}
+				return array() === $buttons ? null : $buttons;
+			case 'image':
+			case 'background':
+				$html = implode( '', array_filter( $block['innerContent'], 'is_string' ) );
+				if ( ! preg_match( '/<img\b[^>]*>/', $html, $img ) || ! preg_match( '/\ssrc="([^"]*)"/', $img[0], $src ) ) {
+					return "\0there is no image to read";
+				}
+				$alt   = preg_match( '/\salt="([^"]*)"/', $img[0], $a ) ? html_entity_decode( $a[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '';
+				$url   = html_entity_decode( $src[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+				$value = $image( $url, (int) ( $block['attrs'][ 'core/media-text' === $block['blockName'] ? 'mediaId' : 'id' ] ?? 0 ), $alt );
+				return $value ?? "\0$url cannot be put in the package; the pattern's image stays";
+			case 'list':
+				$items = array();
+				foreach ( $block['innerBlocks'] as $item ) {
+					if ( preg_match( '/<li\b[^>]*>(.*?)(?:<\/li>\s*)?$/s', (string) ( $item['innerContent'][0] ?? '' ), $m ) ) {
+						$items[] = MarkdownWriter::inline( $m[1] );
+					}
+				}
+				return array() === $items ? null : $items;
+			case 'summary':
+				return MarkdownWriter::inline( (string) MarkdownWriter::inner( $first, 'summary' ) );
+			case 'cite':
+				return MarkdownWriter::inline( (string) MarkdownWriter::inner( (string) end( $block['innerContent'] ), 'cite' ) );
+			default:
+				$tag  = 'core/heading' === $block['blockName'] ? 'h' . (int) ( $block['attrs']['level'] ?? 2 ) : 'p';
+				$text = MarkdownWriter::inner( $first, $tag );
+				return null === $text ? "\0there is no <$tag> to read" : MarkdownWriter::inline( $text );
+		}
+	}
+
+	/**
 	 * Wraps blocks in a container so the root is scanned like any other.
 	 *
 	 * @param list<array<string, mixed>> $blocks Blocks.

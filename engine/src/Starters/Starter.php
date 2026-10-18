@@ -11,6 +11,7 @@ declare( strict_types=1 );
 namespace Pergel\Starters;
 
 use InvalidArgumentException;
+use Pergel\Package\Package;
 use WP_Block_Patterns_Registry;
 use WP_Post;
 
@@ -249,21 +250,10 @@ final class Starter {
 				$sections[] = serialize_block( $block );
 				continue;
 			}
-			$slug    = (string) ( $block['attrs']['slug'] ?? '' );
-			$pattern = self::pattern( $slug );
-			$roots   = self::blocks( $slug );
+			$slug  = (string) ( $block['attrs']['slug'] ?? '' );
+			$roots = self::blocks( $slug );
 			if ( 1 === count( $roots ) ) {
-				$roots[0]['attrs']['metadata'] = array_merge(
-					(array) ( $roots[0]['attrs']['metadata'] ?? array() ),
-					array_filter(
-						array(
-							'patternName' => $slug,
-							'name'        => $pattern['title'] ?? '',
-							'description' => $pattern['description'] ?? '',
-							'categories'  => $pattern['categories'] ?? array(),
-						)
-					)
-				);
+				$roots[0]['attrs'] = Package::marked( $roots[0]['attrs'], $slug, self::pattern( $slug ) );
 			}
 			$sections[] = serialize_blocks( $roots );
 		}

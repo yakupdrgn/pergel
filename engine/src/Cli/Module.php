@@ -43,6 +43,7 @@ final class Module implements Core\Module {
 		WP_CLI::add_command( 'pergel package', PackageCommand::class );
 		WP_CLI::add_command( 'pergel pattern', PatternCommand::class );
 		WP_CLI::add_command( 'pergel import', ImportCommand::class );
+		WP_CLI::add_command( 'pergel export', ExportCommand::class );
 		if ( in_array( 'search', Core\Plugin::loaded(), true ) ) {
 			WP_CLI::add_command( 'pergel search', SearchCommand::class );
 		}

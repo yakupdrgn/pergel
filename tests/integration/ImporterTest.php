@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Pergel\Package\Exporter;
 use Pergel\Package\Importer;
 use Pergel\Package\Package;
 use Pergel\Seo\Meta;
@@ -235,6 +236,51 @@ final class ImporterTest extends TestCase {
 		unlink( "$this->dir/brand/tokens.json" );
 		$this->import();
 		$this->assertSame( get_template(), get_stylesheet() );
+	}
+
+	public function test_an_export_imports_back_unchanged(): void {
+		$this->import();
+		$out = sys_get_temp_dir() . '/pergel-export-' . bin2hex( random_bytes( 4 ) );
+		try {
+			$exporter = new Exporter( $out, self::NAME );
+			$this->assertSame( array(), $exporter->preflight() );
+			$exporter->run();
+			$this->assertSame( array(), $exporter->notes );
+			$this->assertSame( array( 'create' ), array_values( array_unique( array_column( $exporter->rows, 'action' ) ) ) );
+			foreach ( array( 'package.yaml', 'sitemap.yaml', 'media.yaml', 'content/home.md', 'content/pergel-test-hakkimizda.md', 'media/tarla.png', 'media/logo-beyaz.png' ) as $file ) {
+				$this->assertFileExists( "$out/$file" );
+			}
+			$this->assertFileEquals( "$this->dir/media/tarla.png", "$out/media/tarla.png" );
+			$home = (string) file_get_contents( "$out/content/home.md" );
+			$this->assertStringContainsString( "  - pattern: hero-split\n", $home );
+			$this->assertStringContainsString( 'heading: Topraktan **sofraya**', $home );
+			$this->assertStringContainsString( "## Neden biz?\n\nÜreticiden **doğrudan** gelir.\n", $home );
+			$this->assertStringContainsString( '- pergel-test-hakkimizda', (string) file_get_contents( "$out/sitemap.yaml" ) );
+
+			// The exported package makes the same site, so everything is kept.
+			$package = Package::read( $out );
+			$package->check_theme();
+			$this->assertSame( array(), $package->problems );
+			$importer = new Importer( $package, false, false, false );
+			$this->assertSame( array(), $importer->preflight() );
+			$importer->run();
+			$rows = array_filter( $importer->rows, static fn( array $row ): bool => in_array( $row['type'], array( 'page', 'image', 'menu', 'setting' ), true ) );
+			$this->assertSame( array( 'keep' ), array_values( array_unique( array_column( $rows, 'action' ) ) ), (string) wp_json_encode( $rows ) );
+
+			// Exporting again changes no file.
+			$again = new Exporter( $out, self::NAME );
+			$again->run();
+			$this->assertSame( array( 'keep' ), array_values( array_unique( array_column( $again->rows, 'action' ) ) ) );
+		} finally {
+			if ( is_dir( $out ) ) {
+				self::remove( $out );
+			}
+		}
+	}
+
+	public function test_an_export_into_a_folder_with_other_files_is_refused(): void {
+		$this->assertStringContainsString( 'holds no package.yaml', implode( "\n", ( new Exporter( __DIR__, self::NAME ) )->preflight() ) );
+		$this->assertStringContainsString( 'holds the package ornek-firma', implode( "\n", ( new Exporter( __DIR__ . '/../fixtures/package', self::NAME ) )->preflight() ) );
 	}
 
 	/**
