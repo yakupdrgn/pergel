@@ -30,3 +30,7 @@ if ( ! class_exists( Pergel\Core\Plugin::class, false ) || ! in_array( 'settings
 	fwrite( STDERR, "Pergel Engine is not active in $pergel_wp_dir.\n" );
 	exit( 1 );
 }
+
+// The classes the site loaded, before a test touched one (a test that names
+// a constant loads its class; SellingTest asks what the site itself loads).
+$GLOBALS['pergel_site_classes'] = get_declared_classes();
