@@ -1,0 +1,19 @@
+pages:
+  - slug: ""
+    title: Ana sayfa
+    content: content/home.md
+  - slug: hakkimizda
+    title: Hakkımızda
+    content: content/hakkimizda.md
+  - slug: hizmetler
+    title: Hizmetler
+    content: content/hizmetler.md
+  - slug: projeler
+    title: Projeler
+    content: content/projeler.md
+  - slug: blog
+    title: Blog
+    type: posts
+  - slug: iletisim
+    title: İletişim
+    content: content/iletisim.md

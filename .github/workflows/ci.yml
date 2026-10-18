@@ -466,3 +466,70 @@ jobs:
             /tmp/pergel-requests.log
             /tmp/pergel-wp/wp-content/debug.log
           if-no-files-found: ignore
+
+  rehearsal:
+    name: Rehearsal site from the project package
+    runs-on: ubuntu-24.04
+    needs: [lint, syntax]
+    timeout-minutes: 20
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wordpress
+          MARIADB_PASSWORD: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_DIR: /tmp/pergel-wp
+      SITE_URL: http://127.0.0.1:8080
+      # The package brings the content; the seed of the other jobs would be
+      # pages the import did not make.
+      SEED: 0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: mysqli, gd, intl, zip, zlib
+          ini-values: opcache.enable_cli=1
+          tools: wp-cli
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Install WordPress + Pergel
+        run: bash tools/ci/setup-wp.sh
+      - name: Site language of the package (retried; downloads.wordpress.org times out at times)
+        run: for i in 1 2 3; do wp --path="$WP_DIR" language core install tr_TR && exit 0; sleep 15; done; exit 1
+      - name: Build from the package twice and export it back
+        run: bash tools/ci/rehearsal.sh examples/ornek-mimarlik
+      - name: Start PHP server
+        run: |
+          bash tools/ci/serve.sh > /tmp/php-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null "$SITE_URL/" && exit 0; sleep 1; done
+          cat /tmp/php-server.log; exit 1
+      - name: Smoke
+        run: bash tools/ci/smoke.sh / /hakkimizda/ /hizmetler/ /projeler/ /iletisim/ /blog/ /wp-sitemap.xml --missing /pergel-budget-missing/
+      - name: Performance budget (rehearsal)
+        run: npm run budget -- --budget tests/budget/rehearsal.json --base "$SITE_URL" --log "$WP_DIR/wp-content/pergel-perf.jsonl" --label ci-rehearsal
+      - name: PHP notices
+        if: always()
+        run: |
+          if [ -s "$WP_DIR/wp-content/debug.log" ]; then cat "$WP_DIR/wp-content/debug.log"; exit 1; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rehearsal-report
+          path: |
+            reports/
+            /tmp/php-server.log
+            /tmp/pergel-requests.log
+          if-no-files-found: ignore

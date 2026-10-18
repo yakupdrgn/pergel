@@ -21,6 +21,9 @@ DB_HOST="${DB_HOST:-127.0.0.1:3306}" # The database must exist and be empty.
 # WooCommerce for the shop job: "latest" or a version from wordpress.org, set
 # up by tools/ci/shop.php. Empty (the default) keeps the site without it.
 WOOCOMMERCE="${WOOCOMMERCE:-}"
+# 0 leaves the site without the fixed content of tools/fixtures/seed.php, as a
+# project package expects it (the rehearsal job imports one into it).
+SEED="${SEED:-1}"
 # Copy instead of symlinking where symlinks are unreliable (Git Bash on Windows).
 LINK_MODE="${LINK_MODE:-symlink}"
 # PHP needs a native path on Windows (Git Bash); same path on Linux.
@@ -100,7 +103,7 @@ PHP
 wp theme activate pergel
 wp plugin activate pergel-engine
 MSYS_NO_PATHCONV=1 wp rewrite structure '/%postname%/' # keep Git Bash from rewriting the argument
-wp eval-file "$REPO_PHP/tools/fixtures/seed.php"
+if [ "$SEED" != 0 ]; then wp eval-file "$REPO_PHP/tools/fixtures/seed.php"; fi
 wp pergel info
 echo "::endgroup::"
 

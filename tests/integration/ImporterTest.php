@@ -218,6 +218,19 @@ final class ImporterTest extends TestCase {
 		$this->assertSame( array( "sitemap.yaml: pages[2]: /pergel-test-hakkimizda/ is page $id, which this package did not make; move or delete it first" ), $problems );
 	}
 
+	public function test_a_language_that_is_not_installed_is_a_note_before_anything_is_saved(): void {
+		$yaml = (string) file_get_contents( "$this->dir/package.yaml" );
+		if ( in_array( 'zu_ZA', get_available_languages(), true ) ) {
+			$this->markTestSkipped( 'zu_ZA is installed on this site.' );
+		}
+		$this->write( 'package.yaml', str_replace( 'locale: tr_TR', 'locale: zu_ZA', $yaml ) );
+		$note = 'package.yaml: locale: zu_ZA is not installed, the site language stays as it is; wp language core install zu_ZA installs it';
+		$this->assertSame( array( $note ), $this->importer()->site_notes() );
+
+		$this->write( 'package.yaml', str_replace( 'locale: tr_TR', 'locale: en_US', $yaml ) );
+		$this->assertSame( array(), $this->importer()->site_notes() );
+	}
+
 	public function test_brand_tokens_make_a_child_theme(): void {
 		copy( __DIR__ . '/../fixtures/package/brand/tokens.json', "$this->dir/brand/tokens.json" );
 		$rows  = $this->import();

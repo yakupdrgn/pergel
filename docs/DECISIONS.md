@@ -1130,6 +1130,21 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   aktarma yalnızca `keep`) verir. Denetimin yakalamadığı bir sorun skill'e not olarak değil,
   denetime kural olarak eklenir: marka fontunun dosyası artık `package validate`'te aranıyor
   (önceden içe aktarmanın son adımında, sayfalar yazıldıktan sonra hata veriyordu).
+- **Prova sitesi CI'da her değişiklikte kurulur (F5f):** Gerçek prova hedefi seçilene kadar
+  `examples/ornek-mimarlik` (uydurma bir mimarlık ofisi, GPL görseller) prova paketidir.
+  `tools/ci/rehearsal.sh` onu tohum içeriksiz (`SEED=0`) boş siteye kurar; ikinci içe aktarma
+  yalnızca `keep`, dışa aktarma dosya dosya aynı paket vermelidir, ardından duman testi ve
+  `rehearsal.json` bütçesi. Paket dışa aktarmanın çıktısıdır: tek biçim, tek kaynak.
+- **`--strict` kayıttan önce ve sonra (F5f):** İçe aktarmada `--strict` paketin notlarını ve
+  sitenin notlarını (yüklü olmayan dil) hiçbir şey kaydedilmeden sorun sayar; içe aktarmanın
+  kendi notlarında (panelde düzenlenmiş sayfa vb.) işi bitirir ama sıfırdan farklı kodla çıkar.
+  CI'da sessiz bir not provayı yeşil bırakamaz.
+- **İçe aktarma paketin dilinde çalışır (F5f):** WordPress pattern'in metnini ilk okumada,
+  başlığını `init`'te kaydederken o anki dilde saklar ve başlığı bölümün metadata'sına yazar.
+  Dil ilk içe aktarmada değiştiği için sayfalar ilk seferde İngilizce, ikincide Türkçe metadata
+  alıyor, ikinci içe aktarma `update` veriyordu. İçe aktarma artık pattern okunmadan önce
+  `switch_to_locale` ile paketin diline geçer ve temanın pattern'lerini yeniden kaydeder
+  (çekirdeğin `_register_theme_block_patterns()`'ı).
 
 ## Aşamalar ve bitti tanımları
 

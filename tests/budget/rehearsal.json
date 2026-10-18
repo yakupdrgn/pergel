@@ -1,0 +1,33 @@
+{
+	"$comment": "Rehearsal budget (plan F5). The CI rehearsal job measures the pages of the rehearsal site, built on an empty site (no seed content) from the project package examples/ornek-mimarlik by tools/ci/rehearsal.sh: the same shared limits as budget.json, with the fonts of the package's brand (Manrope, as in the clinical-air variation). The contact page loads the form module (three more files) and the blog page, with no posts on this site, the no-results pattern.",
+	"runs": 3,
+	"pages": [
+		{ "name": "front", "path": "/" },
+		{ "name": "about", "path": "/hakkimizda/" },
+		{ "name": "services", "path": "/hizmetler/" },
+		{ "name": "projects", "path": "/projeler/" },
+		{ "name": "contact", "path": "/iletisim/", "limits": { "pergel_files": 50 } },
+		{ "name": "blog", "path": "/blog/", "limits": { "pergel_files": 47 } },
+		{ "name": "404", "path": "/pergel-budget-missing/", "status": 404 }
+	],
+	"limits": {
+		"*": {
+			"pergel_files": 45,
+			"queries": 50,
+			"writes": 0,
+			"htmlKB": 90,
+			"requests": 20,
+			"jsKB": 25,
+			"cssKB": 60,
+			"fontKB": 45,
+			"bodyCssLinks": 0,
+			"h1": [ 1, 1 ],
+			"jsonld": 1,
+			"emoji": 0,
+			"fontPreloads": 2,
+			"unusedPreloads": 0,
+			"axe": 0,
+			"overflowX": 0
+		}
+	}
+}
