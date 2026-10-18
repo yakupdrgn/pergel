@@ -1216,7 +1216,9 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
   Plugin Check 2.1.0 ve Theme Check 20260901 ile denetlenir; her Plugin Check bulgusu ve Theme
   Check'in REQUIRED/WARNING satırları işi kırar. Bilerek kabul edilenler gerekçesiyle kodda
   (`phpcs:ignore … --`) veya `tools/ci/review.*` içinde durur: `Update URI` başlığı
-  (WordPress.org başka bir eklentinin güncellemesini bu slug'a önermesin), Turnstile betiği ve
+  (WordPress.org başka bir eklentinin güncellemesini bu slug'a önermesin), Plugin Check'in
+  koddan tahmin edip PHPCS'e verdiği geçersiz önek (`InvalidPrefixPassed`, kanca adından
+  `pergel/forms/subject`; önek eksikleri kendi kodlarıyla yine yakalanır), Turnstile betiği ve
   doğrulaması (yalnızca Cloudflare sunar), kendi tablolarımızın önekten gelen adları,
   `load_plugin_textdomain` (WordPress.org'da değiliz, çeviriler `languages/`'da), WP-CLI ve REST
   JSON'a giden istisna mesajları, `.l10n.php` dosyalarındaki bağlam ayırıcı (`\x04`). Ekran
