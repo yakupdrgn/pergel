@@ -1276,6 +1276,27 @@ PR'da kapatıldı ve her biri bir testle sabitlendi.
 - **Ekran görüntüsü:** `theme/screenshot.png` kurumsal starter'ın ön sayfası, 1200x900, ayrı ve
   geçici bir yerel sitede (boş veritabanı) alındı.
 
+### CI dakikaları: hafif PR denetimi (18 Ekim 2026, kullanıcı kararı)
+
+- **Sorun:** Repo özel; GitHub ücretsiz planda özel repolara ayda 2.000 Actions dakikası verir.
+  Tam CI (17 iş) bir çalıştırmada yaklaşık 62 dakika tutuyordu ve her PR birleştikten sonra
+  `main` için bir kez daha çalışıyordu. Ekim'de 82 çalıştırmayla kota doldu; v1.0.0 etiketinin
+  sürüm işi başlatılamadı (taslak sürüm aynı araçla yerelde hazırlandı). Kullanıcı ücret ödemek
+  istemedi.
+- **Karar:** PR'da yalnızca hızlı işler çalışır: `lint`, iki `syntax`, `budget` (entegrasyon
+  testleri, WP-CLI, smoke, çeviriler, bütçe, editör kontrolü) ve `review` (zip'ler); yaklaşık
+  10 dakika. `compat`, `shop`, `scale`, `visual`, `seo-matrix` ve `rehearsal` PR'a `full-ci`
+  etiketi eklenince, elle başlatılan çalıştırmada ve haftada bir (pazartesi 03:00 UTC, yalnızca
+  `yakupdrgn/pergel`'de) çalışır. `main`'e birleştirme yeniden çalıştırılmaz (PR'ın denetlediği
+  ağaçtır); yalnızca `docs/` ve `.md` değişiklikleri CI başlatmaz. Başka bir etiket hiçbir iş
+  başlatmaz ve süren çalıştırmayı iptal etmez.
+- **`full-ci` ne zaman:** WooCommerce, arama, pattern/tema görünümü, SEO köprüsü, paket içe
+  aktarma ya da desteklenen sürümler (PHP/WordPress/veritabanı) değiştiğinde ve sürüm etiketinden
+  önce. Ağır testlerin yerelde koşabilenleri (WooCommerce'li ve WooCommerce'siz entegrasyon,
+  zip incelemesi) her PR'dan önce yerelde de çalıştırılır.
+- **Elenenler:** Repoyu herkese açmak (sınırsız dakika, ama kod görünür olur); kendi
+  bilgisayarında runner (WSL2 + Docker kurulumu, makine açık kalmalı); ücretli dakika.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
