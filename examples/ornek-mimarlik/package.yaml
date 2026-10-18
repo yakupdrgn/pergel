@@ -1,0 +1,15 @@
+format: 1
+name: ornek-mimarlik
+title: Örnek Mimarlık
+tagline: Yaşayan binalar tasarlıyoruz
+locale: tr_TR
+settings:
+  brand:
+    name: Örnek Mimarlık Ltd. Şti.
+    email: info@ornek-mimarlik.test
+    phone: +90 212 555 01 01
+    street: Örnek Sokak No. 1
+    locality: İstanbul
+    country: TR
+  seo:
+    og_image: media/paylasim.jpg

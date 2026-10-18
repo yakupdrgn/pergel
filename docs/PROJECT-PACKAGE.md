@@ -3,7 +3,8 @@
 > Durum: format 1. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
 > F5b'de (`wp pergel import`), dışa aktarma F5c'de (`wp pergel export`) tamamlandı. Paketi
 > Claude Code ile hazırlamak için depoda iki skill var (F5e): `pergel-package` ve
-> `pergel-brand` (`.claude/skills/`).
+> `pergel-brand` (`.claude/skills/`). Örnek paket `examples/ornek-mimarlik/` CI'da her
+> değişiklikte boş siteye iki kez kurulup geri dışa aktarılıyor (F5f).
 
 Her Pergel sitesi, platformdan bağımsız dosyalardan oluşan bir proje paketinden üretilir. Aynı
 paket tekrar uygulandığında aynı site çıkar (idempotent). Paket, AI ile site kurmanın ve gerekirse
@@ -233,8 +234,10 @@ wp pergel import ./proje             # tekrar: değişmeyen her şey "keep"
 wp pergel import ./proje --prune     # paketten çıkan sayfaları çöpe, görselleri siler
 ```
 
-Sıra: önce paket denetlenir (`package validate` ile aynı; `--strict` notları da sorun sayar),
-sonra site. Sorun varsa hiçbir şey kaydedilmez. Ardından site başlığı, slogan ve dil; kullanılan
+Sıra: önce paket denetlenir (`package validate` ile aynı), sonra site. Sorun varsa hiçbir şey
+kaydedilmez. `--strict` paketin ve sitenin notlarını (yüklü olmayan dil) da kayıttan önce sorun
+sayar; içe aktarmanın kendi notlarında (panelde düzenlenmiş sayfa, başka adres alan sayfa) ise
+sıfırdan farklı kodla biter. Ardından site başlığı, slogan ve dil; kullanılan
 görseller; Pergel ayarları; sayfalar; okuma ayarları (ön sayfa, yazılar sayfası, WooCommerce
 sayfaları); menü (`wp_navigation`); son olarak `brand/tokens.json` için alt tema. Her adım bir
 satır bildirir: `create`, `update`, `keep`, `set`, `adopt`, `skip`, `stale`, `remove`.
@@ -264,7 +267,10 @@ ve adres paketten gelir. WooCommerce sayfası hiç yoksa önce WooCommerce'in ke
 oluşturulur. Mağaza türlü sayfa WooCommerce etkin değilken sorundur.
 
 **Dil.** `locale` yalnızca site dili yüklüyse (`en_US` her zaman) ayarlanır; değilse not:
-içe aktarma dil paketi indirmez.
+içe aktarma dil paketi indirmez (`wp language core install tr_TR`). Dil yüklüyse içe aktarma
+baştan o dile geçer ve temanın pattern'lerini o dilde yeniden kaydeder: pattern'lerin alan
+olmayan metinleri (form etiketleri, yedek adres) ve bölümlerin metadata'sındaki pattern adı
+ilk içe aktarmada da paketin dilinde yazılır, ikinci içe aktarma onları değişmiş saymaz.
 
 **Alt tema.** `brand/tokens.json` varsa tema dizinine paket adıyla bir alt tema yazılır
 (`style.css` başlığında `Pergel package: <ad>`; `tokens/default.json` birleşik token'lar;
@@ -339,3 +345,23 @@ vardır. Format bu belgede kalır; skill'ler iş sırasını ve iyi paketin öl�
 
 İkisi de canlı siteye içe aktarmaz, firma bilgisi uydurmaz, web'den görsel indirmez; bilgi
 eksikse kullanıcıya sorar.
+
+## Örnek paket ve prova sitesi (F5f)
+
+`examples/ornek-mimarlik/` uydurma bir mimarlık ofisinin tam paketidir: altı sayfa (ana sayfa,
+hakkımızda, hizmetler, projeler, blog, iletişim), Türkçe içerik, depo için üretilmiş GPL
+görseller, marka token'ları (Manrope, yeşil vurgu) ve marka bilgileri. Paketteki dosyalar
+`wp pergel export`'un çıktısıdır; dışa aktarmanın biçimine uymayan elle yazılmış bir değişiklik
+CI'dan geçmez. Açıklama `brief.md`'dedir (okuyucu yok sayar).
+
+`tools/ci/rehearsal.sh [paket]` paketi boş bir siteye kurar (`SEED=0 tools/ci/setup-wp.sh`,
+paketin dili yüklü) ve dört şeyi sınar:
+
+1. `package validate --strict` temiz;
+2. ilk `import --strict` her şeyi tek seferde yapar;
+3. ikinci `import --strict` yalnızca `keep` verir;
+4. siteyi paketin bir kopyasına dışa aktarmak dosya dosya aynı paketi verir (`diff -r`).
+
+CI'daki "Rehearsal site from the project package" işi bunun ardından sayfaları duman testinden
+ve `tests/budget/rehearsal.json` bütçesinden (axe dahil) geçirir. Gerçek bir firmanın paketi de
+aynı betikle sınanır.

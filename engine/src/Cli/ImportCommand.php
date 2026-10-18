@@ -49,7 +49,8 @@ final class ImportCommand {
 	 * : Remove what an earlier import made and the package no longer has.
 	 *
 	 * [--strict]
-	 * : Stop on notes as well as problems.
+	 * : Stop on notes about the package or the site as well as problems, before
+	 * anything is saved, and fail on notes the import itself gives.
 	 *
 	 * [--format=<format>]
 	 * : Output format.
@@ -69,21 +70,23 @@ final class ImportCommand {
 	 * @param array<string, string> $assoc_args Associative arguments.
 	 */
 	public function __invoke( array $args, array $assoc_args ): void {
-		$dry_run = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
-		$package = Package::read( $args[0] ?? '' );
-		if ( array() === $package->problems ) {
-			$package->check_theme();
-		}
-		$problems = $package->problems;
-		if ( (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'strict', false ) ) {
-			$problems = array_merge( $problems, $package->notes );
-		}
+		$dry_run  = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
+		$strict   = (bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'strict', false );
+		$package  = Package::read( $args[0] ?? '' );
 		$importer = new Importer(
 			$package,
 			$dry_run,
 			(bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'force', false ),
 			(bool) WP_CLI\Utils\get_flag_value( $assoc_args, 'prune', false )
 		);
+		$importer->use_locale();
+		if ( array() === $package->problems ) {
+			$package->check_theme();
+		}
+		$problems = $package->problems;
+		if ( $strict ) {
+			$problems = array_merge( $problems, $package->notes, $importer->site_notes() );
+		}
 		if ( array() === $problems ) {
 			$problems = $importer->preflight();
 		}
@@ -113,8 +116,14 @@ final class ImportCommand {
 		$text = sprintf( 'Package %s: %s; %d notes.', $package->site['name'], $parts ? implode( ', ', $parts ) : 'nothing to do', count( $importer->notes ) );
 		if ( $dry_run ) {
 			WP_CLI::log( "Dry run, nothing was saved. $text" );
-			return;
 		}
-		WP_CLI::success( $text );
+		// Notes of the import itself (a page WordPress gave another address, a page
+		// edited in the panel) come once something is saved; --strict fails on them.
+		if ( $strict && array() !== $importer->notes ) {
+			WP_CLI::error( "$text --strict stops on notes." );
+		}
+		if ( ! $dry_run ) {
+			WP_CLI::success( $text );
+		}
 	}
 }

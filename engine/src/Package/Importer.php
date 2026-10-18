@@ -174,6 +174,49 @@ final class Importer {
 	}
 
 	/**
+	 * Notes about this site known before anything is saved, so that --strict
+	 * can stop on them as it does on the package's own: a language that is
+	 * not installed.
+	 *
+	 * @return list<string>
+	 */
+	public function site_notes(): array {
+		$locale = $this->package->site['locale'];
+		if ( null === $locale || 'en_US' === $locale || in_array( $locale, get_available_languages(), true ) ) {
+			return array();
+		}
+		return array( sprintf( 'package.yaml: locale: %1$s is not installed, the site language stays as it is; wp language core install %1$s installs it', $locale ) );
+	}
+
+	/**
+	 * Switches this request to the package's language when the site has it.
+	 * Call it before anything reads a pattern: WordPress keeps a pattern's
+	 * markup from its first read, so pattern text that is not a field (form
+	 * labels, a fallback address) would otherwise come in the site's previous
+	 * language on the first import and in the package's on the next. The
+	 * theme's patterns are registered again for the same reason: WordPress
+	 * translates their titles when it registers them on init and writes the
+	 * title and description into the metadata of every section made from them.
+	 */
+	public function use_locale(): void {
+		$locale = $this->package->site['locale'];
+		if ( null === $locale || array() !== $this->site_notes() || determine_locale() === $locale ) {
+			return;
+		}
+		switch_to_locale( $locale );
+		$registry = \WP_Block_Patterns_Registry::get_instance();
+		$theme    = wp_get_theme();
+		foreach ( array_filter( array( $theme, $theme->parent() ) ) as $source ) {
+			foreach ( $source->get_block_patterns() as $pattern ) {
+				if ( $registry->is_registered( $pattern['slug'] ) ) {
+					$registry->unregister( $pattern['slug'] );
+				}
+			}
+		}
+		_register_theme_block_patterns();
+	}
+
+	/**
 	 * Runs the import.
 	 *
 	 * @throws InvalidArgumentException When WordPress refuses a post or an image, or the child theme cannot be written.
@@ -205,13 +248,10 @@ final class Importer {
 		if ( null !== $site['tagline'] ) {
 			$options['blogdescription'] = $site['tagline'];
 		}
-		if ( null !== $site['locale'] ) {
-			if ( 'en_US' === $site['locale'] || in_array( $site['locale'], get_available_languages(), true ) ) {
-				$options['WPLANG'] = 'en_US' === $site['locale'] ? '' : $site['locale'];
-			} else {
-				$this->notes[] = sprintf( 'package.yaml: locale: %1$s is not installed, the site language stays as it is; wp language core install %1$s installs it', $site['locale'] );
-			}
+		if ( null !== $site['locale'] && array() === $this->site_notes() ) {
+			$options['WPLANG'] = 'en_US' === $site['locale'] ? '' : $site['locale'];
 		}
+		$this->notes = array_merge( $this->notes, $this->site_notes() );
 		foreach ( $options as $option => $value ) {
 			$this->option( $option, $value );
 		}
