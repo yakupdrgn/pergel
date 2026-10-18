@@ -56,6 +56,9 @@ final class Module implements Core\Module {
 		if ( true === Settings::get( 'woo.wishlist' ) || true === Settings::get( 'woo.compare' ) ) {
 			Lists::register();
 		}
+		// Also with the wishlist off, so a saved list stays exportable and erasable.
+		add_filter( 'wp_privacy_personal_data_exporters', array( Lists::class, 'exporters' ) );
+		add_filter( 'wp_privacy_personal_data_erasers', array( Lists::class, 'erasers' ) );
 		if ( true === Settings::get( 'woo.swatches' ) ) {
 			Swatches::register();
 		}

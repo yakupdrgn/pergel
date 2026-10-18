@@ -33,6 +33,19 @@ final class Markdown {
 	private const SCHEMES = array( 'http', 'https', 'mailto', 'tel' );
 
 	/**
+	 * Deepest nesting of quotes and lists, so a crafted file cannot exhaust
+	 * the stack.
+	 */
+	private const MAX_DEPTH = 16;
+
+	/**
+	 * Quotes and lists open around the block being read.
+	 *
+	 * @var int
+	 */
+	private int $depth = 0;
+
+	/**
 	 * Use convert().
 	 *
 	 * @param Closure $image Turns an image path and its alt text into an attachment id (0 = none) and URL.
@@ -220,8 +233,24 @@ final class Markdown {
 			$inner[] = (string) preg_replace( '/^\s*> ?/', '', $lines[ $i ] );
 			++$i;
 		}
-		$blocks = $this->blocks( $inner, $offset + $start );
+		$this->enter();
+		try {
+			$blocks = $this->blocks( $inner, $offset + $start );
+		} finally {
+			--$this->depth;
+		}
 		return "<!-- wp:quote -->\n<blockquote class=\"wp-block-quote\">" . implode( "\n\n", $blocks ) . "</blockquote>\n<!-- /wp:quote -->";
+	}
+
+	/**
+	 * Opens one more level of quote or list.
+	 *
+	 * @throws InvalidArgumentException When it is one level too many.
+	 */
+	private function enter(): void {
+		if ( ++$this->depth > self::MAX_DEPTH ) {
+			throw new InvalidArgumentException( 'quotes and lists nest at most ' . self::MAX_DEPTH . ' deep' );
+		}
 	}
 
 	/**
@@ -256,7 +285,12 @@ final class Markdown {
 				if ( array() === $texts ) {
 					break;
 				}
-				$nested[ count( $texts ) - 1 ][] = $this->list_block( $lines, $i, $own );
+				$this->enter();
+				try {
+					$nested[ count( $texts ) - 1 ][] = $this->list_block( $lines, $i, $own );
+				} finally {
+					--$this->depth;
+				}
 				continue;
 			}
 			if ( (bool) preg_match( '/^\s*\d+[.)]\s/', $line ) !== $ordered ) {

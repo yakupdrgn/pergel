@@ -415,6 +415,10 @@ final class Schema {
 				return array( sprintf( '%02d:%s', (int) $parts[1], $parts[2] ) );
 		}
 
+		// Too long even with every character four bytes and tags around them: refused before the cleaning.
+		if ( is_string( $raw ) && $max > 0 && strlen( $raw ) > 8 * $max ) {
+			return 'too_long';
+		}
 		$text = self::text( $raw, 'textarea' === $type );
 		if ( null === $text ) {
 			return 'invalid_type';

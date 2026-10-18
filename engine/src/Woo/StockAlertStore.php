@@ -416,7 +416,8 @@ final class StockAlertStore {
 	}
 
 	/**
-	 * Eraser callback: deletes the address's rows.
+	 * Eraser callback: deletes the address's rows. A row that cannot be
+	 * deleted is reported as kept and ends the run.
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Batch number (always the first, since rows go away).
@@ -424,16 +425,21 @@ final class StockAlertStore {
 	 */
 	public static function erase( string $email, int $page = 1 ): array {
 		unset( $page );
-		$rows    = self::by_email( $email, 1 );
-		$removed = false;
+		$rows     = self::by_email( $email, 1 );
+		$removed  = false;
+		$retained = false;
 		foreach ( $rows as $row ) {
-			$removed = self::delete( $row['id'] ) || $removed;
+			if ( self::delete( $row['id'] ) ) {
+				$removed = true;
+			} else {
+				$retained = true;
+			}
 		}
 		return array(
 			'items_removed'  => $removed,
-			'items_retained' => false,
+			'items_retained' => $retained,
 			'messages'       => array(),
-			'done'           => count( $rows ) < self::BATCH,
+			'done'           => $retained || count( $rows ) < self::BATCH,
 		);
 	}
 
@@ -451,7 +457,8 @@ final class StockAlertStore {
 	}
 
 	/**
-	 * Rows of an address.
+	 * Rows of an address, and of the account with that address (a customer
+	 * who signed up and later changed the account's email).
 	 *
 	 * @param string $email Email address.
 	 * @param int    $page  Batch number.
@@ -464,8 +471,9 @@ final class StockAlertStore {
 		if ( '' === $email || ! self::installed() ) {
 			return array();
 		}
+		$user  = get_user_by( 'email', $email );
 		$table = self::table();
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE email = %s ORDER BY id ASC LIMIT %d OFFSET %d", $email, self::BATCH, ( max( 1, $page ) - 1 ) * self::BATCH ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
+		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE email = %s OR ( user_id > 0 AND user_id = %d ) ORDER BY id ASC LIMIT %d OFFSET %d", $email, $user instanceof \WP_User ? $user->ID : 0, self::BATCH, ( max( 1, $page ) - 1 ) * self::BATCH ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- Own table.
 		return array_map( array( self::class, 'row' ), is_array( $rows ) ? array_values( $rows ) : array() );
 	}
 

@@ -58,8 +58,8 @@ final class Toc {
 		if ( $post instanceof \WP_Post && ( post_password_required( $post ) || ( ! is_post_publicly_viewable( $post ) && ! current_user_can( 'read_post', $post->ID ) ) ) ) {
 			$post = null;
 		}
-		$max     = is_int( $attributes['maxLevel'] ?? null ) ? max( 2, min( 6, $attributes['maxLevel'] ) ) : self::MAX_LEVEL;
-		$items   = array();
+		$max   = is_int( $attributes['maxLevel'] ?? null ) ? max( 2, min( 6, $attributes['maxLevel'] ) ) : self::MAX_LEVEL;
+		$items = array();
 		foreach ( $post instanceof \WP_Post ? self::headings( $post ) : array() as $heading ) {
 			if ( $heading['level'] >= 2 && $heading['level'] <= $max ) {
 				$items[] = $heading;

@@ -254,8 +254,11 @@ final class Abilities {
 			set_transient( $key, $count + 1, self::WINDOW );
 			try {
 				return $run( $input );
+			} catch ( \InvalidArgumentException $e ) {
+				return new WP_Error( 'pergel_ability_failed', $e->getMessage(), array( 'status' => 400 ) );
 			} catch ( Throwable $e ) {
-				return new WP_Error( 'pergel_ability_failed', $e->getMessage(), array( 'status' => 500 ) );
+				// Paths and queries in the message stay on the server.
+				return new WP_Error( 'pergel_ability_failed', __( 'The site could not answer. Try again later.', 'pergel-engine' ), array( 'status' => 500 ) );
 			}
 		};
 	}
@@ -340,8 +343,8 @@ final class Abilities {
 			$args['post_status'] = array_values( array_diff( $args['post_status'], array( 'private' ) ) );
 		}
 		$query = new WP_Query( $args );
-		$front    = (int) get_option( 'page_on_front' );
-		$pages    = array();
+		$front = (int) get_option( 'page_on_front' );
+		$pages = array();
 		foreach ( $query->posts ?? array() as $post ) {
 			if ( ! $post instanceof WP_Post ) {
 				continue;

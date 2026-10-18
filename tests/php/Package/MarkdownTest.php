@@ -113,6 +113,22 @@ final class MarkdownTest extends TestCase {
 		);
 	}
 
+	public function test_quotes_and_lists_nest_a_limited_depth(): void {
+		$this->assertStringContainsString( '<blockquote class="wp-block-quote"><!-- wp:quote -->', self::convert( '> > a' ) );
+		$list = '';
+		for ( $level = 0; $level < 20; $level++ ) {
+			$list .= str_repeat( '  ', $level ) . "- item\n";
+		}
+		foreach ( array( str_repeat( '>', 5000 ) . ' a', $list ) as $markdown ) {
+			try {
+				self::convert( $markdown );
+				$this->fail( 'Expected an error.' );
+			} catch ( InvalidArgumentException $e ) {
+				$this->assertStringContainsString( 'nest at most 16 deep', $e->getMessage() );
+			}
+		}
+	}
+
 	public function test_json_matches_serialize_block_attributes(): void {
 		$this->assertSame( '{"a":"\\u003cb\\u003e \\u002d\\u002d \\u0026 \\u0022q\\u0022 ç/"}', Markdown::json( array( 'a' => '<b> -- & "q" ç/' ) ) );
 	}

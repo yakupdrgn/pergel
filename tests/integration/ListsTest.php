@@ -390,6 +390,28 @@ final class ListsTest extends TestCase {
 		$this->assertStringContainsString( $two->get_name(), ListView::page( array( 'kind' => 'wishlist' ) ) );
 	}
 
+	public function test_privacy_tools_export_and_erase_the_saved_wishlist(): void {
+		$this->needs_woocommerce();
+		$one  = $this->simple();
+		$user = $this->customer();
+		wp_update_user(
+			array(
+				'ID'         => $user,
+				'user_email' => 'wish-' . $user . '@example.invalid',
+			)
+		);
+		update_user_meta( $user, Lists::META, (string) $one->get_id() );
+
+		$this->assertArrayHasKey( 'pergel-wishlist', apply_filters( 'wp_privacy_personal_data_exporters', array() ) );
+		$this->assertArrayHasKey( 'pergel-wishlist', apply_filters( 'wp_privacy_personal_data_erasers', array() ) );
+		$export = Lists::export( 'wish-' . $user . '@example.invalid' );
+		$this->assertSame( $one->get_name(), $export['data'][0]['data'][0]['value'] );
+		$this->assertTrue( Lists::erase( 'wish-' . $user . '@example.invalid' )['items_removed'] );
+		$this->assertSame( array(), Lists::saved( $user ) );
+		$this->assertFalse( Lists::erase( 'wish-' . $user . '@example.invalid' )['items_removed'] );
+		$this->assertSame( array(), Lists::export( 'nobody@example.invalid' )['data'] );
+	}
+
 	public function test_visitor_list_page_is_drawn_by_the_script(): void {
 		$this->needs_woocommerce();
 		$this->lists( array( 'compare' => true ) );

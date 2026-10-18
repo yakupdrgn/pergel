@@ -725,11 +725,12 @@ final class Importer {
 	 * The child theme's style.css.
 	 */
 	private function theme_header(): string {
+		$title = trim( str_replace( array( "\r", "\n", '*/' ), ' ', $this->package->site['title'] ) );
 		return implode(
 			"\n",
 			array(
 				'/*',
-				'Theme Name: ' . $this->package->site['title'],
+				'Theme Name: ' . $title,
 				'Template: ' . get_template(),
 				'Description: Brand tokens of the project package ' . $this->package->site['name'] . '. Written by wp pergel import; changes here are overwritten.',
 				'Version: 1.0.0',

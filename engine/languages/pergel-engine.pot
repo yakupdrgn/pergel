@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-18T09:48:07+03:00\n"
+"POT-Creation-Date: 2026-10-18T09:59:48+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -77,6 +77,9 @@ msgid "Returns the settings under Pergel → Settings by group: the module switc
 msgstr ""
 
 msgid "Too many requests. Try again in a minute."
+msgstr ""
+
+msgid "The site could not answer. Try again later."
 msgstr ""
 
 #. translators: %s: pattern name.
@@ -305,7 +308,10 @@ msgstr ""
 msgid "Back to the messages"
 msgstr ""
 
-msgid "When you send a message with a form on this site, we keep your name, email address, the message and any phone number or company name you enter, so we can answer you. The message is also emailed to us. Your IP address is used only for a few minutes to stop spam and is not stored with the message."
+msgid "When you send a message with a form on this site, we keep your name, email address, the message and any phone number or company name you enter, so we can answer you. The message is also emailed to us. Your IP address is used only for a few minutes to stop spam and is not stored with the message. If the form shows a Cloudflare Turnstile check, Cloudflare receives your IP address and browser details to tell people from bots."
+msgstr ""
+
+msgid "Some form messages could not be deleted; delete them under Messages."
 msgstr ""
 
 msgid "Quote request"

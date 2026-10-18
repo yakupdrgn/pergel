@@ -384,7 +384,7 @@ final class Inbox {
 		}
 		$ids = get_posts(
 			array(
-				'post_type'        => self::TYPE,
+				'post_type'      => self::TYPE,
 				'post_status'    => array( 'private', 'trash' ),
 				'fields'         => 'ids',
 				'posts_per_page' => self::BATCH,

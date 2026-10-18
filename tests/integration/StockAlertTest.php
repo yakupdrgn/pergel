@@ -696,6 +696,20 @@ final class StockAlertTest extends TestCase {
 		$this->assertNull( StockAlertStore::find( $product->get_id(), 'ada@example.invalid' ) );
 		$this->assertNotNull( StockAlertStore::find( $product->get_id(), 'grace@example.invalid' ) );
 		$this->assertFalse( StockAlertStore::erase( 'ada@example.invalid' )['items_removed'] );
+
+		$user          = (int) wp_insert_user(
+			array(
+				'user_login' => 'pergel_stock_' . wp_rand(),
+				'user_pass'  => wp_generate_password(),
+				'user_email' => 'other@example.invalid',
+				'role'       => 'customer',
+			)
+		);
+		$this->users[] = $user;
+		StockAlertStore::save( $product->get_id(), 'old-address@example.invalid', $user, StockAlertStore::ACTIVE );
+		$this->assertCount( 1, StockAlertStore::export( 'other@example.invalid' )['data'], 'The account\'s alerts under an earlier address count.' );
+		$this->assertTrue( StockAlertStore::erase( 'other@example.invalid' )['items_removed'] );
+		$this->assertNull( StockAlertStore::find( $product->get_id(), 'old-address@example.invalid' ) );
 	}
 
 	public function test_admin_list_shows_the_alerts_to_shop_managers(): void {

@@ -153,6 +153,14 @@ final class SchemaTest extends TestCase {
 				'abcd',
 				'too_long',
 			),
+			'text far too long'    => array(
+				array(
+					'type' => 'text',
+					'max'  => 3,
+				),
+				str_repeat( '<b></b>', 10 ),
+				'too_long',
+			),
 			'textarea keeps lines' => array( array( 'type' => 'textarea' ), "a  b\r\n\r\n\r\n\r\nc", "a b\n\nc" ),
 			'email ok'             => array( array( 'type' => 'email' ), ' info@ariumlab.com ', 'info@ariumlab.com' ),
 			'email empty'          => array( array( 'type' => 'email' ), '', '' ),
