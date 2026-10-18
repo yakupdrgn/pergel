@@ -439,11 +439,15 @@ Pattern'ler `theme/patterns/*.php` dosyalarıdır; WordPress dosya başlığınd
   (`tests/budget/scale.json`) son sayfalar, sıralama, fiyat filtresi, arama ve yazı arşivlerinde
   sorgu sayısını, toplam sorgu süresini (`query_ms`) ve en yavaş tek sorguyu (`slowest_ms`)
   denetler; perf probe en yavaş sorguyu rapora yazar. Mağaza ve ölçek işlerinde PHP JIT kapalıdır.
-- **İnceleme** (CI'da `review` işi): `tools/ci/review.sh` motoru ve temayı `git archive HEAD` ile
-  zip'e girecekleri hâliyle siteye kopyalar, Plugin Check ve Theme Check'i sabit sürümleriyle
-  çalıştırır. Araçların çıkış kodu yetmediği için çıktı okunur: her Plugin Check bulgusu ve Theme
+- **İnceleme** (CI'da `review` işi): `tools/ci/review.sh` sürüm zip'lerini
+  (`tools/release.php package`, `git archive HEAD`) WP-CLI ile kurar, Plugin Check ve Theme
+  Check'i sabit sürümleriyle çalıştırır ve zip'leri `release-zips` artifact'ı olarak saklar. Araçların çıkış kodu yetmediği için çıktı okunur: her Plugin Check bulgusu ve Theme
   Check'in REQUIRED/WARNING satırları (`tools/ci/review.php`'deki gerekçeli istisnalar dışında)
   işi kırar. Kabul edilen bulgular DECISIONS F6b'de.
+- **Sürüm** (F6e): `php tools/release.php check` sürümün her yerde aynı olduğunu, changelog
+  girdilerini, gereksinim başlıklarını ve ekran görüntüsünü denetler (lint işi); `bump X.Y.Z`
+  sürümü yazar. `main`'deki bir `v*` etiketi `.github/workflows/release.yml` ile zip'li taslak
+  GitHub sürümü açar.
 
 ## Starter'lar (F3c)
 
