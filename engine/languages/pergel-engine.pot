@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T18:41:38+03:00\n"
+"POT-Creation-Date: 2026-10-18T06:48:00+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -32,6 +32,56 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://ariumlab.com/"
+msgstr ""
+
+msgid "Pergel"
+msgstr ""
+
+msgid "Read the patterns, pages, design tokens and settings of a site built with Pergel."
+msgstr ""
+
+msgid "List Pergel patterns"
+msgstr ""
+
+msgid "Lists the Pergel patterns a page can be built from, with their categories and the fields a project package fills in them."
+msgstr ""
+
+msgid "Optional: only patterns in this category, like banner or pergel-faq."
+msgstr ""
+
+msgid "Get the fields of a Pergel pattern"
+msgstr ""
+
+msgid "Returns the fields of one Pergel pattern with their types and sample values, and a section of a project package content file that uses them."
+msgstr ""
+
+msgid "Pattern name, like hero-split."
+msgstr ""
+
+msgid "List pages and their sections"
+msgstr ""
+
+msgid "Lists the pages in menu order with their address, template and status, the patterns their sections were made from, and the project package that made them."
+msgstr ""
+
+msgid "Get the design tokens"
+msgstr ""
+
+msgid "Returns the design tokens of the active theme (colors, fonts, spacing, radius, shadows): the Pergel theme's, merged with what a child theme changes. A project package writes such changes in brand/tokens.json."
+msgstr ""
+
+msgid "Get the Pergel settings"
+msgstr ""
+
+msgid "Returns the settings under Pergel → Settings by group: the module switches, the brand details, SEO, performance, forms, search and shop."
+msgstr ""
+
+msgid "Too many requests. Try again in a minute."
+msgstr ""
+
+#. translators: %s: pattern name.
+#, php-format
+msgid "\"%s\" is not a Pergel pattern; pergel/list-patterns lists them."
 msgstr ""
 
 msgid "Breadcrumb"
@@ -95,9 +145,6 @@ msgid "The wide panel that a Mega menu item of the navigation opens."
 msgstr ""
 
 msgid "Menu"
-msgstr ""
-
-msgid "Pergel"
 msgstr ""
 
 msgid "Comparison"
@@ -459,6 +506,12 @@ msgid "Own search index for the search page, the product search and the suggesti
 msgstr ""
 
 msgid "WooCommerce support. It loads only while WooCommerce is active."
+msgstr ""
+
+msgid "AI access"
+msgstr ""
+
+msgid "Lets AI agents read the patterns, pages, design tokens and settings through the WordPress Abilities API and an MCP server, as a logged-in user with the right permissions and at most 60 requests a minute. Nothing is changed through it."
 msgstr ""
 
 msgid "Brand name"

@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Core;
 
+use Pergel\Abilities;
 use Pergel\Blocks;
 use Pergel\Brand;
 use Pergel\Cli;
@@ -47,6 +48,7 @@ final class Plugin {
 			Forms\Module::class,
 			Search\Module::class,
 			Woo\Module::class,
+			Abilities\Module::class,
 			Cli\Module::class,
 		);
 

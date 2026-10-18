@@ -1117,6 +1117,12 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
 - **Aynı içerik düzenlenmiş sayılmaz (F5c):** Kayıt paketin yazacağıyla zaten aynıysa (panelde
   düzenlenmiş olsa bile) `keep` olur ve özetleri yenilenir. Panelde düzenlenip dışa aktarılan
   bir site böylece kendi paketiyle çakışmaz.
+- **Yapay zekâ erişimi çekirdeğin Abilities API'siyle (F5d):** WordPress 7.1'deki Abilities API
+  kullanılır; Pergel kendi REST ucu, MCP sunucusu ya da API anahtarı yazmaz. Yetenekler salt
+  okunurdur (desenler, sayfalar, token'lar, ayarlar); yazma işi `wp pergel import` ile paketten
+  yapılır, böylece her değişiklik pakette iz bırakır. Modül varsayılan olarak kapalıdır, her
+  yetenek bir yetki ister ve kullanıcı başına dakikada 60 çağrıyla sınırlıdır. MCP'ye açılması
+  `meta.mcp.public` ile MCP Adapter gibi ayrı bir eklentiye bırakılır.
 
 ## Aşamalar ve bitti tanımları
 

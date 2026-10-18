@@ -64,7 +64,7 @@ final class Labels {
 			'modules'     => array(
 				'modules' => array(
 					'title'  => __( 'Modules', 'pergel-engine' ),
-					'fields' => array( 'brand', 'seo', 'performance', 'forms', 'search', 'woo' ),
+					'fields' => array( 'brand', 'seo', 'performance', 'forms', 'search', 'woo', 'abilities' ),
 				),
 			),
 			'brand'       => array(
@@ -185,6 +185,10 @@ final class Labels {
 				'woo'         => array(
 					'label' => __( 'Shop', 'pergel-engine' ),
 					'help'  => __( 'WooCommerce support. It loads only while WooCommerce is active.', 'pergel-engine' ),
+				),
+				'abilities'   => array(
+					'label' => __( 'AI access', 'pergel-engine' ),
+					'help'  => __( 'Lets AI agents read the patterns, pages, design tokens and settings through the WordPress Abilities API and an MCP server, as a logged-in user with the right permissions and at most 60 requests a minute. Nothing is changed through it.', 'pergel-engine' ),
 				),
 			),
 			'brand'       => array(

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-16 15:41+0000\n"
-"PO-Revision-Date: 2026-10-16 15:41+0000\n"
+"POT-Creation-Date: 2026-10-18 03:48+0000\n"
+"PO-Revision-Date: 2026-10-18 03:48+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,6 +32,55 @@ msgstr "Ariumlab"
 #. Author URI of the plugin
 msgid "https://ariumlab.com/"
 msgstr "https://ariumlab.com/"
+
+msgid "Pergel"
+msgstr "Pergel"
+
+msgid "Read the patterns, pages, design tokens and settings of a site built with Pergel."
+msgstr "Pergel ile kurulmuş bir sitenin desenlerini, sayfalarını, tasarım token'larını ve ayarlarını okur."
+
+msgid "List Pergel patterns"
+msgstr "Pergel desenlerini listele"
+
+msgid "Lists the Pergel patterns a page can be built from, with their categories and the fields a project package fills in them."
+msgstr "Bir sayfanın kurulabileceği Pergel desenlerini kategorileriyle ve proje paketinin içlerinde doldurduğu alanlarla listeler."
+
+msgid "Optional: only patterns in this category, like banner or pergel-faq."
+msgstr "İsteğe bağlı: yalnızca bu kategorideki desenler, örneğin banner veya pergel-faq."
+
+msgid "Get the fields of a Pergel pattern"
+msgstr "Bir Pergel deseninin alanlarını getir"
+
+msgid "Returns the fields of one Pergel pattern with their types and sample values, and a section of a project package content file that uses them."
+msgstr "Bir Pergel deseninin alanlarını türleri ve örnek değerleriyle, bir de bu alanları kullanan, proje paketi içerik dosyasına yazılabilecek bir bölüm döndürür."
+
+msgid "Pattern name, like hero-split."
+msgstr "Desen adı, örneğin hero-split."
+
+msgid "List pages and their sections"
+msgstr "Sayfaları ve bölümlerini listele"
+
+msgid "Lists the pages in menu order with their address, template and status, the patterns their sections were made from, and the project package that made them."
+msgstr "Sayfaları menü sırasıyla; adresleri, şablonları ve durumları, bölümlerinin yapıldığı desenler ve onları oluşturan proje paketiyle listeler."
+
+msgid "Get the design tokens"
+msgstr "Tasarım token'larını getir"
+
+msgid "Returns the design tokens of the active theme (colors, fonts, spacing, radius, shadows): the Pergel theme's, merged with what a child theme changes. A project package writes such changes in brand/tokens.json."
+msgstr "Etkin temanın tasarım token'larını (renkler, yazı tipleri, boşluklar, köşe yuvarlaklığı, gölgeler) döndürür: Pergel temasınınkiler, alt temanın değiştirdikleriyle birleştirilmiş olarak. Proje paketi bu değişiklikleri brand/tokens.json dosyasına yazar."
+
+msgid "Get the Pergel settings"
+msgstr "Pergel ayarlarını getir"
+
+msgid "Returns the settings under Pergel → Settings by group: the module switches, the brand details, SEO, performance, forms, search and shop."
+msgstr "Pergel → Ayarlar altındaki ayarları gruplarıyla döndürür: modül anahtarları, marka bilgileri, SEO, performans, formlar, arama ve mağaza."
+
+msgid "Too many requests. Try again in a minute."
+msgstr "Çok fazla istek. Bir dakika sonra yeniden deneyin."
+
+#. translators: %s: pattern name.
+msgid "\"%s\" is not a Pergel pattern; pergel/list-patterns lists them."
+msgstr "\"%s\" bir Pergel deseni değil; desenleri pergel/list-patterns listeler."
 
 msgid "Breadcrumb"
 msgstr "Sayfa yolu"
@@ -92,9 +141,6 @@ msgstr "Gezinme menüsündeki bir Mega menü öğesinin açtığı geniş panel.
 
 msgid "Menu"
 msgstr "Menü"
-
-msgid "Pergel"
-msgstr "Pergel"
 
 msgid "Comparison"
 msgstr "Karşılaştırma"
@@ -442,6 +488,12 @@ msgstr "Arama sayfası, ürün araması ve yazarken öneriler için kendi arama 
 
 msgid "WooCommerce support. It loads only while WooCommerce is active."
 msgstr "WooCommerce desteği. Yalnızca WooCommerce etkinken yüklenir."
+
+msgid "AI access"
+msgstr "Yapay zekâ erişimi"
+
+msgid "Lets AI agents read the patterns, pages, design tokens and settings through the WordPress Abilities API and an MCP server, as a logged-in user with the right permissions and at most 60 requests a minute. Nothing is changed through it."
+msgstr "Yapay zekâ ajanlarının desenleri, sayfaları, tasarım token'larını ve ayarları WordPress Abilities API ve bir MCP sunucusu üzerinden okumasını sağlar. Ajanlar yetkisi uygun, oturum açmış bir kullanıcı olarak ve dakikada en fazla 60 istekle erişir. Bu yolla hiçbir şey değiştirilmez."
 
 msgid "Brand name"
 msgstr "Marka adı"

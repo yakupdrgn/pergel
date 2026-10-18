@@ -27,7 +27,7 @@ final class PatternCommand {
 	 * ## OPTIONS
 	 *
 	 * [--category=<category>]
-	 * : Only patterns in this category, like pergel-hero.
+	 * : Only patterns in this category, like banner or pergel-faq.
 	 *
 	 * [--format=<format>]
 	 * : Output format.
@@ -42,7 +42,7 @@ final class PatternCommand {
 	 * ## EXAMPLES
 	 *
 	 *     wp pergel pattern list
-	 *     wp pergel pattern list --category=pergel-hero
+	 *     wp pergel pattern list --category=banner
 	 *
 	 * @subcommand list
 	 *
@@ -65,7 +65,7 @@ final class PatternCommand {
 				'name'       => substr( $pattern['name'], strlen( 'pergel/' ) ),
 				'title'      => $pattern['title'],
 				'categories' => implode( ', ', $categories ),
-				'fields'     => self::summary( Fields::schema( (array) Package::pattern( $pattern['name'] ) ) ),
+				'fields'     => Fields::summary( Fields::schema( (array) Package::pattern( $pattern['name'] ) ) ),
 			);
 		}
 		usort( $rows, static fn( array $a, array $b ): int => strcmp( $a['name'], $b['name'] ) );
@@ -118,40 +118,7 @@ final class PatternCommand {
 			WP_CLI::line( (string) wp_json_encode( $schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 			return;
 		}
-		$section = array( 'pattern' => substr( $name, strlen( 'pergel/' ) ) ) + self::example( $schema );
+		$section = array( 'pattern' => substr( $name, strlen( 'pergel/' ) ) ) + Fields::example( $schema );
 		WP_CLI::line( rtrim( Yaml::dump( array( $section ) ), "\n" ) );
-	}
-
-	/**
-	 * Field names in one line, items as name[count]{fields}.
-	 *
-	 * @param array<string, array<string, mixed>> $schema Field schema.
-	 */
-	private static function summary( array $schema ): string {
-		$names = array();
-		foreach ( $schema as $name => $field ) {
-			$names[] = 'items' === $field['type']
-				? sprintf( '%s[%d]{%s}', $name, count( $field['items'] ), self::summary( $field['items'][0] ?? array() ) )
-				: $name;
-		}
-		return implode( ' ', $names );
-	}
-
-	/**
-	 * Values a package could write: the sample texts, images under media/.
-	 *
-	 * @param array<string, array<string, mixed>> $schema Field schema.
-	 * @return array<string, mixed>
-	 */
-	private static function example( array $schema ): array {
-		$values = array();
-		foreach ( $schema as $name => $field ) {
-			$values[ $name ] = match ( $field['type'] ) {
-				'items' => array_map( array( self::class, 'example' ), $field['items'] ),
-				'image' => 'media/' . ( '' !== $field['default'] ? pathinfo( $field['default'], PATHINFO_FILENAME ) : 'image' ) . '.jpg',
-				default => $field['default'],
-			};
-		}
-		return $values;
 	}
 }

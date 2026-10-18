@@ -79,6 +79,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				'abilities'   => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 			// Company details: block bindings and Organization schema.
 			'brand'       => array(
