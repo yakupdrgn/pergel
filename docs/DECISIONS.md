@@ -1169,6 +1169,59 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   Nightly bir sonraki WordPress sürümüdür ve CI'ı kırmadan başarısız olabilir; F6d bu satırı
   zorunlu yapar. Sözdizimi denetimi en eski ve en yeni PHP'de (8.1, 8.5).
 
+### F6b: güvenlik incelemesi (18 Ekim 2026)
+
+İnceleme eklentinin dışa açık her yüzünü (REST, formlar, stok uyarısı, arama önerileri,
+Abilities, paket içe aktarma, bloklar, gizlilik araçları) tek tek okudu; bulunan açıklar aynı
+PR'da kapatıldı ve her biri bir testle sabitlendi.
+
+- **Satış modları REST'te de geçerli:** `pergel/v1/shop-list` gibi rotalar teklif, katalog ve
+  girişe kapalı ürünlerin fiyatını ve sepet bağlantısını anonim ziyaretçiye çiziyordu; modlar
+  REST isteklerinde yalnızca Store API'ye uygulanıyordu. Artık mağaza yöneticisi dışında herkese
+  her rotada uygulanır. Bir listede herhangi bir mod fiyatı gizliyorsa fiyat filtresi, fiyata
+  göre sıralama ve Store API fiyat aralığı kapanır (gizli fiyat aralıktan okunamaz).
+- **Ziyaretçi ve sınırlar (`Core\Visitor`):** formlar, stok uyarısı ve arama önerileri aynı
+  sınırlayıcıyı kullanır. Adres `REMOTE_ADDR`'dır; vekil sunucu veya CDN arkasında
+  `wp-config.php`'deki `PERGEL_CLIENT_IP_HEADER` başlığı adlandırır (yalnızca her istek o
+  vekilden geçiyorsa; yoksa başlığı herkes yazabilir). IPv6 /64 başına sayılır. Sınırlar sabit
+  pencerelidir; kalıcı nesne önbelleğiyle atomik, onsuz transient ile yaklaşık.
+- **Formlar:** başka bir siteden gelen tarayıcı POST'u (`Origin` başka) geri çevrilir. Yalnızca
+  alanları geçerli mesaj sınıra sayılır; yazım hatası düzelten ziyaretçi hakkını harcamaz. Site
+  saatte en çok 50 mesaj alır (`pergel/forms/hourly_cap`). Jetonun yaş sınırı yok: sayfalar
+  günlerce önbellekte kalır ve önbellekteki formun gönderebilmesi gerekir; kopyalanan jeton yine
+  bağlantı ve site sınırlarından geçer. E-postalar `text/plain; charset=UTF-8`.
+- **Stok uyarısı:** misafir her durumda aynı yanıtı alır; bir adresin kayıtlı olup olmadığı
+  öğrenilemez. Bir adrese günde en çok üç onay e-postası gider. E-posta bağlantıları düğmeli bir
+  sayfa açar; e-posta tarayıcıları (link scanner) bağlantıyı açınca hiçbir şey onaylanmaz veya
+  silinmez. Bağlantılar uyarılar kapatıldıktan sonra da çalışır. Teklif ve katalog ürünleri uyarı
+  almaz ve göndermez. Arama önerileri iki karakterden başlar.
+- **İçerik ve paket girdileri:** Markdown bağlantısında boşluk veya kontrol karakteri reddedilir
+  (`java\tscript:` gibi şema atlatmaları). Font adları ve `fontFace` değerleri CSS kuralının
+  dışına taşamaz. Harita bloğu yalnızca `https://www.google.com/maps…` gömme adreslerini yükler.
+  Paket dosyaları gerçek yoluyla paketin içinde olmalıdır (sembolik bağlantı dışarıyı okutamaz).
+  YAML 32, Markdown alıntı ve listeleri 16 düzeyden derin iç içe geçemez (yığın tüketimi). Ayar
+  metni sınırın sekiz katından uzunsa temizlenmeden reddedilir. Child tema başlığındaki site adı
+  tek satırda kalır.
+- **Görünürlük:** `pergel/list-pages` yeteneği yalnızca kullanıcının düzenleyebileceği sayfaları
+  listeler; içindekiler bloğu parolalı veya okunamayan yazının başlıklarını göstermez; SEO başlığı
+  kaçışlanır; SEO eklentisine verilen JSON `< > &` karakterlerini kaçışlı tutar. Bir yeteneğin
+  beklenmeyen hatası mesajını göstermez (yol ve sorgu sızmasın), genel bir metin ve 500 döner;
+  geçersiz girdi 400 ile kendi mesajını verir.
+- **Gizlilik araçları:** kişisel veri dışa aktarma ve silme çöp kutusundaki form mesajlarına da
+  ulaşır; silinemeyen kayıt "tutuldu" olarak bildirilir ve tur biter. Kayıtlı istek listesi
+  (wishlist) dışa aktarılır ve silinir (modül kapalıyken de). Stok uyarıları hesabın önceki
+  e-posta adresiyle verilenler dahil bulunur. Gizlilik metni Turnstile'ı anar.
+- **Plugin Check ve Theme Check CI'da (`review` işi):** zip'lerin içeriği (`git archive`)
+  Plugin Check 2.1.0 ve Theme Check 20260901 ile denetlenir; her Plugin Check bulgusu ve Theme
+  Check'in REQUIRED/WARNING satırları işi kırar. Bilerek kabul edilenler gerekçesiyle kodda
+  (`phpcs:ignore … --`) veya `tools/ci/review.*` içinde durur: `Update URI` başlığı
+  (WordPress.org başka bir eklentinin güncellemesini bu slug'a önermesin), Turnstile betiği ve
+  doğrulaması (yalnızca Cloudflare sunar), kendi tablolarımızın önekten gelen adları,
+  `load_plugin_textdomain` (WordPress.org'da değiliz, çeviriler `languages/`'da), WP-CLI ve REST
+  JSON'a giden istisna mesajları, `.l10n.php` dosyalarındaki bağlam ayırıcı (`\x04`). Ekran
+  görüntüsü eksikliği F6e'ye kadar kabul edilir. Blokların `render.php` dosyaları doğrudan
+  çağrılınca çıkar (`ABSPATH`).
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

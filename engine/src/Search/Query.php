@@ -82,7 +82,7 @@ final class Query {
 		$values[] = $limit;
 		$sql      = 'SELECT m.object_id, SUM(m.w) AS score FROM (' . implode( ' UNION ALL ', $parts ) . ") m $join GROUP BY m.object_id HAVING COUNT(*) = %d ORDER BY $order LIMIT %d";
 
-		$rows    = $wpdb->get_results( $wpdb->prepare( $sql, $values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery -- Built from placeholders only; cached above by last-changed.
+		$rows    = $wpdb->get_results( $wpdb->prepare( $sql, $values ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Built from placeholders only; cached above by last-changed.
 		$results = array();
 		foreach ( is_array( $rows ) ? $rows : array() as $row ) {
 			$results[ (int) $row['object_id'] ] = (int) $row['score'];

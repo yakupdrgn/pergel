@@ -257,6 +257,43 @@ jobs:
             /tmp/pergel-requests.log
           if-no-files-found: ignore
 
+  review:
+    name: Plugin Check + Theme Check (zip contents)
+    runs-on: ubuntu-24.04
+    needs: [lint, syntax]
+    timeout-minutes: 15
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wordpress
+          MARIADB_PASSWORD: wordpress
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      WP_DIR: /tmp/pergel-wp
+      SEED: 0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: mysqli, gd, intl, zip, zlib
+          tools: wp-cli
+      - name: Install WordPress + Pergel
+        run: bash tools/ci/setup-wp.sh
+      - name: Plugin Check and Theme Check
+        run: bash tools/ci/review.sh
+      - name: PHP notices
+        if: always()
+        run: |
+          if [ -s "$WP_DIR/wp-content/debug.log" ]; then cat "$WP_DIR/wp-content/debug.log"; exit 1; fi
+
   shop:
     name: Shop (WooCommerce ${{ matrix.woocommerce }}) smoke, budget, checkout
     runs-on: ubuntu-24.04

@@ -427,7 +427,7 @@ final class Form {
 	 */
 	private static function enqueue_challenge(): void {
 		if ( '' !== self::turnstile()['site'] ) {
-			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Cloudflare serves the current version.
+			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion, PluginCheck.CodeAnalysis.EnqueuedResourceOffloading.OffloadedContent -- Turnstile is opt-in (a site key is set) and only Cloudflare serves it, at its current version.
 			wp_enqueue_script( 'pergel-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), null, array( 'strategy' => 'defer' ) );
 		}
 	}

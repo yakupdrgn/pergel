@@ -29,9 +29,10 @@ use Pergel\Settings\Settings;
  *
  * The token has no age limit: pages are cached for days, and a form on a
  * cached page must still send. A copied token still has to pass the
- * limits, which count per connection and for the whole site. Code that knows the post a form is about checks
- * its own fields (pergel/forms/subject_values) and hears about each stored
- * message (pergel/forms/received), e.g. to pass a quote on.
+ * limits, which count per connection and for the whole site. Code that
+ * knows the post a form is about checks its own fields
+ * (pergel/forms/subject_values) and hears about each stored message
+ * (pergel/forms/received), e.g. to pass a quote on.
  *
  * @phpstan-import-type Spec from Form
  * @phpstan-type Result array{code: string, errors: array<string, string>, spec: Spec|null, entry: int}
@@ -349,7 +350,7 @@ final class Submit {
 			return false;
 		}
 		$answer = wp_remote_post(
-			'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+			'https://challenges.cloudflare.com/turnstile/v0/siteverify', // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- The Turnstile answer can only be checked by Cloudflare.
 			array(
 				'timeout' => 10,
 				'body'    => array(

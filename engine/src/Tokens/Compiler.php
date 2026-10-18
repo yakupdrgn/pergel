@@ -7,6 +7,9 @@
 
 declare( strict_types=1 );
 
+// Messages name files, lines and keys; WP-CLI prints them and REST returns them as JSON, never as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
+
 namespace Pergel\Tokens;
 
 /**

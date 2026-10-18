@@ -7,4 +7,6 @@
 
 declare( strict_types=1 );
 
+defined( 'ABSPATH' ) || exit;
+
 echo \Pergel\Blocks\Breadcrumb::render(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in markup().
