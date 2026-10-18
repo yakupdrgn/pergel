@@ -225,7 +225,49 @@ final class Package {
 	 */
 	public static function pattern( string $name ): ?array {
 		$pattern = str_starts_with( $name, 'pergel/' ) ? \WP_Block_Patterns_Registry::get_instance()->get_registered( $name ) : null;
-		return is_array( $pattern ) ? array_values( parse_blocks( $pattern['content'] ) ) : null;
+		return is_array( $pattern ) ? self::mark( array_values( parse_blocks( $pattern['content'] ) ), $name, $pattern ) : null;
+	}
+
+	/**
+	 * Marks a pattern's one root block the way the block inserter marks a
+	 * section: the section opens in content-only mode, and the exporter
+	 * knows which pattern it came from. A pattern with several roots stays
+	 * unmarked.
+	 *
+	 * @param list<array<string, mixed>> $blocks  The pattern's parsed blocks.
+	 * @param string                     $name    Pattern name.
+	 * @param array<string, mixed>       $pattern The registered pattern.
+	 * @return list<array<string, mixed>>
+	 */
+	public static function mark( array $blocks, string $name, array $pattern ): array {
+		$roots = array_keys( array_filter( $blocks, static fn( array $block ): bool => null !== $block['blockName'] ) );
+		if ( 1 === count( $roots ) ) {
+			$blocks[ $roots[0] ]['attrs'] = self::marked( (array) $blocks[ $roots[0] ]['attrs'], $name, $pattern );
+		}
+		return $blocks;
+	}
+
+	/**
+	 * A root block's attributes with the pattern's metadata, see mark().
+	 *
+	 * @param array<string, mixed> $attrs   Block attributes.
+	 * @param string               $name    Pattern name.
+	 * @param array<string, mixed> $pattern The registered pattern.
+	 * @return array<string, mixed>
+	 */
+	public static function marked( array $attrs, string $name, array $pattern ): array {
+		$attrs['metadata'] = array_merge(
+			(array) ( $attrs['metadata'] ?? array() ),
+			array_filter(
+				array(
+					'patternName' => $name,
+					'name'        => $pattern['title'] ?? '',
+					'description' => $pattern['description'] ?? '',
+					'categories'  => $pattern['categories'] ?? array(),
+				)
+			)
+		);
+		return $attrs;
 	}
 
 	/**

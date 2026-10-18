@@ -60,7 +60,7 @@ final class Importer {
 	/**
 	 * Header that marks a child theme a package wrote.
 	 */
-	private const THEME_MARK = 'Pergel package';
+	public const THEME_MARK = 'Pergel package';
 
 	/**
 	 * What happened, one row per item.
@@ -461,7 +461,18 @@ final class Importer {
 		$title              = (string) $postarr['post_title'];
 		$source             = self::hash( $postarr );
 		if ( null !== $existing ) {
-			$owned  = isset( $this->owned[ $key ] );
+			$owned = isset( $this->owned[ $key ] );
+			if ( $owned && self::matches( $existing, $postarr ) ) {
+				// Already as the package has it, edited in the panel or not
+				// (a package exported from this site): kept, and from now on
+				// compared with this package.
+				$this->rows[] = Starter::row( 'keep', $type, $key, $existing->ID, $title );
+				if ( ! $this->dry_run ) {
+					update_post_meta( $existing->ID, self::SOURCE, $source );
+					update_post_meta( $existing->ID, self::SAVED, self::state( $existing ) );
+				}
+				return $existing->ID;
+			}
 			$edited = $owned && (string) get_post_meta( $existing->ID, self::SAVED, true ) !== self::state( $existing );
 			if ( $edited && ! $this->force ) {
 				$this->rows[]  = Starter::row( 'skip', $type, $key, $existing->ID, $title );
@@ -703,6 +714,29 @@ final class Importer {
 			}
 		}
 		return self::hash( $state );
+	}
+
+	/**
+	 * Whether a post already holds what saving it would write.
+	 *
+	 * @param WP_Post              $post    Post.
+	 * @param array<string, mixed> $postarr What save() was given.
+	 */
+	private static function matches( WP_Post $post, array $postarr ): bool {
+		foreach ( array( 'post_title', 'post_content', 'post_name', 'post_parent', 'menu_order', 'post_status' ) as $field ) {
+			if ( isset( $postarr[ $field ] ) && (string) $post->$field !== (string) $postarr[ $field ] ) {
+				return false;
+			}
+		}
+		if ( isset( $postarr['page_template'] ) && (string) get_page_template_slug( $post ) !== ( 'default' === $postarr['page_template'] ? '' : (string) $postarr['page_template'] ) ) {
+			return false;
+		}
+		foreach ( (array) ( $postarr['meta_input'] ?? array() ) as $meta_key => $value ) {
+			if ( (string) get_post_meta( $post->ID, (string) $meta_key, true ) !== (string) $value ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

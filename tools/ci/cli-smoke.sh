@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Runs every `wp pergel settings`, `wp pergel modules`, `wp pergel search`,
-# `wp pergel starter`, `wp pergel package`, `wp pergel pattern` and
-# `wp pergel import` command against a site set up like tools/ci/setup-wp.sh
-# and checks output and exit codes.
+# `wp pergel starter`, `wp pergel package`, `wp pergel pattern`,
+# `wp pergel import` and `wp pergel export` command against a site set up
+# like tools/ci/setup-wp.sh and checks output and exit codes.
 #
 #   tools/ci/cli-smoke.sh
 #
@@ -205,6 +205,27 @@ expect 0 '1 stale' wp pergel import "$work_php/import"
 expect 0 '1 remove' wp pergel import "$work_php/import" --prune
 expect 0 'Success: Package pergel-smoke-paket: 15 keep;' wp pergel import "$work_php/import"
 expect 1 'not a directory' wp pergel import "$work_php/missing"
+echo "::endgroup::"
+
+echo "::group::wp pergel export"
+# Imports a package and fails when the import would change anything.
+import_unchanged() {
+	local out
+	out="$(wp pergel import "$1" 2>&1)" || { echo "$out"; return 1; }
+	echo "$out"
+	! grep -qE '^(create|update|replace|adopt|set|skip|stale|remove)\b' <<< "$out"
+}
+expect 0 'Dry run, nothing was written. Package pergel-smoke-paket:' wp pergel export "$work_php/export" --name="$smoke_package" --dry-run
+expect 1 '' test -e "$work/export"
+expect 0 'Success: Package pergel-smoke-paket:' wp pergel export "$work_php/export" --name="$smoke_package" --strict
+expect 0 'pattern: hero-split' cat "$work/export/content/home.md"
+expect 0 '"radius"' cat "$work/export/brand/tokens.json"
+expect 0 'Success: Package pergel-smoke-paket:' import_unchanged "$work_php/export"
+expect 0 ' keep; 0 notes.' wp pergel export "$work_php/export" --name="$smoke_package" --strict
+rm "$work/export/content/home.md"
+expect 0 'create	file	content/home.md' wp pergel export "$work_php/export" --name="$smoke_package"
+expect 1 'holds no package.yaml' wp pergel export "$work_php" --name="$smoke_package"
+expect 1 'holds the package pergel-smoke-paket' wp pergel export "$work_php/export" --name=baska-paket
 echo "::endgroup::"
 
 exit "$failed"

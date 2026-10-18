@@ -1101,6 +1101,22 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   etkinleştirilir. İmzasız aynı adlı dizine yazılmaz.
 - **Dil paketi indirilmez (F5b):** `locale` yalnızca yüklü dillerden biriyse ayarlanır; içe
   aktarma ağa çıkmaz, eksik dil not olarak bildirilir.
+- **Dışa aktarma içe aktarmanın tersidir ve kendini sınar (F5c):** `wp pergel export` siteyi
+  pakete yazar; her bölüm pattern'e geri doldurulur, her Markdown parçası bloklara geri
+  çevrilir ve sayfayla karşılaştırılır. İçe aktarmada aynı dönmeyecek her şey (Markdown'a
+  yazılamayan blok, alanlarının ötesinde düzenlenmiş bölüm, ortam kütüphanesi dışındaki görsel)
+  sessiz değişiklik değil nottur. Dışa aktarılan paketi aynı siteye içe aktarmak her kayıtta
+  `keep` verir (entegrasyon testi ve CI duman testi).
+- **Bölümler pattern adıyla tanınır (F5c):** Blok ekleyicinin yaptığı gibi içe aktarma ve
+  starter'lar da bölümün kök bloğuna `metadata.patternName` yazar; dışa aktarma bu adla
+  pattern'i bulur ve alanları okur. Adı olmayan bloklar Markdown gövdesine gider.
+- **Varsayılan, paketin yaptığı sayfalar (F5c):** Dışa aktarma yalnızca paketin sayfalarını
+  yazar; `--all` her yayımlanmış sayfayı. Ayarlardan yalnızca varsayılandan farklı olanlar,
+  menü yalnızca sayfa ağacından üretilen varsayılandan farklıysa yazılır. WooCommerce
+  sayfalarının blokları yazılmaz: içe aktarma o sayfaları zaten benimser.
+- **Aynı içerik düzenlenmiş sayılmaz (F5c):** Kayıt paketin yazacağıyla zaten aynıysa (panelde
+  düzenlenmiş olsa bile) `keep` olur ve özetleri yenilenir. Panelde düzenlenip dışa aktarılan
+  bir site böylece kendi paketiyle çakışmaz.
 
 ## Aşamalar ve bitti tanımları
 

@@ -1,7 +1,7 @@
 # Proje paketi formatı (K12)
 
 > Durum: format 1. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
-> F5b'de (`wp pergel import`) tamamlandı; dışa aktarma F5c'de gelir.
+> F5b'de (`wp pergel import`), dışa aktarma F5c'de (`wp pergel export`) tamamlandı.
 
 Her Pergel sitesi, platformdan bağımsız dosyalardan oluşan bir proje paketinden üretilir. Aynı
 paket tekrar uygulandığında aynı site çıkar (idempotent). Paket, AI ile site kurmanın ve gerekirse
@@ -266,8 +266,57 @@ içe aktarma dil paketi indirmez.
 yazmadığı etkin bir alt tema sorundur. Paketten `brand/tokens.json` çıkarılırsa ana tema
 yeniden etkinleşir.
 
+## Dışa aktarma
+
+```sh
+wp pergel export ./proje --dry-run         # ne yazılacağını gösterir, hiçbir şey yazmaz
+wp pergel export ./proje                   # paketin yaptığı sayfaları pakete yazar
+wp pergel export ./proje --strict          # not varsa hata verir
+wp pergel export ./site --all --name=site  # paketle kurulmamış bir sitenin tüm sayfaları
+```
+
+İçe aktarmanın tersidir: site başlığı, slogan ve dil, varsayılandan farklı Pergel ayarları,
+sayfalar ve SEO alanları, menü, kullanılan görseller ve etkin alt temanın token'ları. Paket adı
+verilmezse sayfaları yapan paketin adı kullanılır (birden çok paket varsa `--name` gerekir);
+`--all` ile ve paket yoksa site başlığından türetilir.
+
+**Sayfalar.** Varsayılan olarak yalnızca paketin yaptığı yayımlanmış sayfalar, `--all` ile tüm
+yayımlanmış sayfalar yazılır. Ön sayfa `slug: ""` ve `content/home.md` olur; yazılar sayfası ve
+WooCommerce sayfaları türleriyle yazılır, içerikleri yazılmaz. Paketin tutamayacağı yapılar not
+olur: ön sayfanın alt sayfaları ve üst sayfası dışa aktarılmayan sayfalar en üste taşınır,
+pakete uymayan adres (`ürünler`) dönüştürülür (`urunler`).
+
+**İçerik.** Kök bloğu `metadata.patternName` taşıyan (blok ekleyicinin, içe aktarmanın ve
+starter'ların eklediği) bir bölüm, pattern adı ve alanlarıyla `sections` altına yazılır; diğer
+bloklar Markdown gövdesine. Gövde bölümlerin arasındaysa yerinde `- markdown: true` durur.
+Markdown'a yazılamayan blok (grup, sütunlar, kısa kod) dışarıda kalır ve not olur.
+
+**Denetim.** Her bölüm pattern'e geri doldurulur, her Markdown parçası bloklara geri çevrilir
+ve sayfadakiyle karşılaştırılır (varlıklar, boşluklar ve blok meta verisi hariç). Farklıysa not:
+bölüm alanlarının ötesinde düzenlenmişse (blok eklenmiş, stil değişmiş) içe aktarma pattern'i bu
+alanlarla geri verir. Yazılan paket sonunda `package validate` gibi denetlenir; sorun hatadır.
+
+**Görseller.** Blok, ayar veya Markdown'daki görsel ortam kütüphanesinde aranır (ek kimliği,
+adresi veya boyutlu kopyasının adresi). Paketin yaptığı görsel kendi yolunu korur, diğerleri
+`media/<dosya adı>` olur; özgün dosya kopyalanır. `media.yaml`'a alt metin, açıklama, kaynak,
+lisans ve sahibi yazılır. Bölümdeki alt metin görselinkinden farklıysa alan `{ src, alt }`
+olur. Kütüphane dışındaki görsel not olur.
+
+**Menü.** Paketin menüsü, yoksa en yeni `wp_navigation`. Sayfaya giden bağlantı sayfa yolu,
+diğerleri `{ label, url }` olur; site içi adresler köke göre yazılır. Menü sayfa ağacının
+varsayılanıyla aynıysa `menu` yazılmaz.
+
+**Alt tema.** Etkin alt temanın `tokens/default.json` dosyası `brand/tokens.json` olur. Alt
+temayı bu paket yazmadıysa not: o sitede içe aktarmadan önce Pergel teması etkin olmalıdır.
+
+**Klasör.** Hedef boş, yeni veya aynı paketin klasörü olmalıdır. Tekrar dışa aktarma yalnızca
+değişen dosyaları yazar (`create`, `update`, `keep`) ve sitede artık olmayan içerik ve görsel
+dosyalarını siler (`remove`). Dışa aktarılan paket aynı siteye içe aktarılırsa her kayıt `keep`
+olur: içeriği paketin yazacağıyla zaten aynı olan sayfa, panelde düzenlenmiş olsa da değişmiş
+sayılmaz.
+
 ## Kurallar
 
 - İçerikte yalnızca çekirdek bloklar ve kayıtlı Pergel blokları oluşur; "Özel HTML" bloğu yok.
 - Paket sır içermez (API anahtarı, şifre). Ortam bilgileri ayrı ve git dışında tutulur.
-- Panelde yapılan değişiklikler `wp pergel export` ile pakete geri yazılabilecek (F5c).
+- Panelde yapılan değişiklikler `wp pergel export` ile pakete geri yazılır.
