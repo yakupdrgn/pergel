@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,11 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.1.0 =
+* Product pages built from sections: an FAQ section adds FAQPage schema and a specifications table adds the product's additionalProperty values, both joined to the SEO plugin's graph when one is active.
+* Project packages, format 2: `products/<SKU>.md` fills an existing product found by its SKU (description, template, and optionally the name, short description, price and SEO fields). A package never creates a product, and `--prune` releases one instead of deleting it. `wp pergel export` writes the products a package owns.
+* Package fields: tables (`head` and `rows`) and file links.
 
 = 1.0.0 =
 * First stable release.
