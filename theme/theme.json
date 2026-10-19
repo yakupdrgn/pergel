@@ -203,7 +203,7 @@
 		}
 	},
 	"styles": {
-		"css": "body { overflow-wrap: break-word; }",
+		"css": "body { overflow-wrap: break-word; } .wp-block-post-content > .wp-block-group.alignfull:not(.has-background) + .wp-block-group.alignfull:not(.has-background) { padding-top: 0 !important; }",
 		"color": {
 			"background": "var(--wp--preset--color--base)",
 			"text": "var(--wp--preset--color--contrast)"

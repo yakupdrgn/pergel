@@ -1414,6 +1414,19 @@ F7 metinleri yazılırken üç sayfa paketle ifade edilemedi; üçü tek değiş
   `docs/DECISIONS.md`, "Canlı geçiş kontrol listesi", adım 3.
 - "Tested up to" 7.1 olarak kalır. Etiket ve taslak sürüm kullanıcı onayıyla oluşturulur.
 
+## Bölüm ritmi (19 Ekim 2026, kullanıcı kararı)
+
+- **Arka plansız iki tam genişlik bölüm art arda gelirse ikincinin üst dolgusu sıfırlanır.**
+  Pattern'lerin çoğu üstte ve altta `spacing|80` dolgu kullanır (133 bölümden 113'ü).
+  İki beyaz bölüm arasında 104 + 16 + 104 = 224 px boş alan kalıyordu, telefonda 132 px.
+  Arada renk değişmediği için bu alan bölüm sınırı olarak değil, kopukluk olarak
+  görünüyordu. ariumlab f7 provasında services ve ariumbot-s sayfalarında fark edildi.
+- Kuralla boşluk, önceki bölümün alt dolgusu artı blok aralığı kadar olur: 120 px, telefonda
+  74 px. Renkli bölümler (`has-background`) ve cover blokları kendi dolgularını korur.
+- **`!important` gerekiyor:** dolgu, blok ayarı olarak satır içi stilde yazılı. Kural yalnız
+  `post-content` içindeki doğrudan bölümleri kapsar. Editörde bir bölüme elle verilen üst
+  dolgu da bu durumda sıfırlanır; bunu kabul ettik.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
