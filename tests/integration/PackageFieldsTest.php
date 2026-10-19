@@ -250,6 +250,9 @@ final class PackageFieldsTest extends TestCase {
 		$notes = array();
 		self::fill( 'pergel/contact-form-centered', array(), $notes );
 		$this->assertSame( array( 'eyebrow', 'heading', 'text' ), $notes );
+		// Read back, it is left out again.
+		$pattern = self::blocks( 'pergel/contact-form-centered' );
+		$this->assertArrayNotHasKey( 'form', Fields::values( $pattern, $pattern, static fn(): ?string => null ) );
 
 		$blocks = parse_blocks( self::fill( 'pergel/contact-quote-form', array( 'form' => $form ) ) );
 		$attrs  = null;

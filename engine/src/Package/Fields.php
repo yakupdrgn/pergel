@@ -217,6 +217,10 @@ final class Fields {
 				$notes[] = "$at: " . substr( $value, 1 );
 				continue;
 			}
+			// The pattern's own form is left out, as fill() reads it.
+			if ( 'form' === $slot['role'] && self::value( self::at( $from, $slot['path'] ), 'form', $image ) === $value ) {
+				continue;
+			}
 			$values[ $name ] = $value;
 		}
 		return $values;
