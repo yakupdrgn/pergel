@@ -1446,6 +1446,15 @@ F7 metinleri yazılırken üç sayfa paketle ifade edilemedi; üçü tek değiş
   olsa tablo kenardan kenara uzardı. `wide` diğer bölümlerin içeriğiyle aynı hizaya gelir.
 - Geriye uyumlu bir ekleme; 1.2.1 sürümüyle çıkar.
 
+## v1.2.1 sürümü (19 Ekim 2026, kullanıcı kararı)
+
+- PR #45 (bölüm ritmi) ve PR #46 (paketteki bölüm `align`) birlikte çıkar. İkisi de geriye
+  uyumlu, bu yüzden numara yama sürümü: 1.2.1.
+- **Neden şimdi:** ariumlab.com paketi `align: wide` kullanıyor. Eski sürüm bu anahtarı
+  tanımaz ve içe aktarmayı durdurur. ariumlab-site reposundaki `docs/DECISIONS.md`,
+  "Canlı geçiş kontrol listesi", adım 3.
+- Etiket ve taslak sürüm kullanıcı onayıyla oluşturulur.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
