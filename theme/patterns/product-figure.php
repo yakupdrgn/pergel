@@ -19,8 +19,8 @@ defined( 'ABSPATH' ) || exit;
 <h2 class="wp-block-heading"><?php esc_html_e( 'How it works', 'pergel' ); ?></h2>
 <!-- /wp:heading -->
 
-<!-- wp:image {"aspectRatio":"16/9","scale":"cover","style":{"border":{"radius":"var(\u002d\u002dwp\u002d\u002dcustom\u002d\u002dradius\u002d\u002dcard)"}}} -->
-<figure class="wp-block-image has-custom-border"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/images/placeholders/landscape.svg' ) ); ?>" alt="" style="border-radius:var(--wp--custom--radius--card);aspect-ratio:16/9;object-fit:cover"/></figure>
+<!-- wp:image {"style":{"border":{"radius":"var(\u002d\u002dwp\u002d\u002dcustom\u002d\u002dradius\u002d\u002dcard)"}}} -->
+<figure class="wp-block-image has-custom-border"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/images/placeholders/landscape.svg' ) ); ?>" alt="" style="border-radius:var(--wp--custom--radius--card)"/></figure>
 <!-- /wp:image -->
 
 <!-- wp:paragraph -->
