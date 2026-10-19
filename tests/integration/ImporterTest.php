@@ -63,6 +63,13 @@ final class ImporterTest extends TestCase {
 	private array $saved = array();
 
 	/**
+	 * Products made for a test, deleted after it.
+	 *
+	 * @var list<int>
+	 */
+	private array $products = array();
+
+	/**
 	 * Active theme before the test.
 	 *
 	 * @var string
@@ -93,6 +100,9 @@ final class ImporterTest extends TestCase {
 		);
 		foreach ( $posts as $post ) {
 			'attachment' === $post->post_type ? wp_delete_attachment( $post->ID, true ) : wp_delete_post( $post->ID, true );
+		}
+		foreach ( $this->products as $id ) {
+			wc_get_product( $id )?->delete( true );
 		}
 		if ( get_stylesheet() !== $this->theme ) {
 			switch_theme( $this->theme );
@@ -291,9 +301,160 @@ final class ImporterTest extends TestCase {
 		}
 	}
 
+	public function test_products_are_filled_in_by_sku_and_only_released(): void {
+		$id = $this->shop_product( 'PERGEL-TEST-1' );
+		$this->products_only(
+			<<<'MD'
+			---
+			title: Hassas terazi
+			excerpt: Kısa **açıklama**.
+			template: single-product-sections
+			seo:
+			  title: Terazi | Örnek
+			---
+
+			## Teknik özellikler
+
+			Gövde metni.
+			MD
+		);
+		$front = get_option( 'page_on_front' );
+
+		$rows = $this->import();
+		$this->assertSame( 'adopt', self::row( $rows, 'products/PERGEL-TEST-1.md' )['action'] );
+		$this->assertSame( array(), array_filter( $rows, static fn( array $row ): bool => in_array( $row['type'], array( 'page', 'menu' ), true ) ) );
+		$this->assertSame( $front, get_option( 'page_on_front' ) );
+
+		$product = wc_get_product( $id );
+		$this->assertSame( 'Hassas terazi', $product->get_name() );
+		$this->assertSame( 'Kısa <strong>açıklama</strong>.', $product->get_short_description() );
+		$this->assertStringContainsString( 'Gövde metni.', $product->get_description() );
+		$this->assertSame( 'single-product-sections', get_page_template_slug( $id ) );
+		$this->assertSame( 'Terazi | Örnek', get_post_meta( $id, Meta::TITLE, true ) );
+		// No price in the file: the shop's price stays.
+		$this->assertSame( '100', $product->get_regular_price() );
+		$this->assertSame( 7, $product->get_stock_quantity() );
+
+		// The shop's own fields change without the product counting as edited.
+		$product->set_stock_quantity( 3 );
+		$product->save();
+		$this->assertSame( array( 'keep' ), array_values( array_unique( array_column( $this->import(), 'action' ) ) ) );
+
+		wp_update_post(
+			array(
+				'ID'         => $id,
+				'post_title' => 'Panelde',
+			)
+		);
+		$importer = $this->importer();
+		$importer->run();
+		$this->assertSame( 'skip', self::row( $importer->rows, 'products/PERGEL-TEST-1.md' )['action'] );
+		$this->assertSame( 'Panelde', get_the_title( $id ) );
+		$importer = $this->importer( force: true );
+		$importer->run();
+		$this->assertSame( 'update', self::row( $importer->rows, 'products/PERGEL-TEST-1.md' )['action'] );
+		$this->assertSame( 'Hassas terazi', get_the_title( $id ) );
+
+		$this->write( 'products/PERGEL-TEST-1.md', "---\ntitle: Hassas terazi\nprice: { regular: 120, sale: 99.5 }\n---\n" );
+		$this->assertSame( 'update', self::row( $this->import(), 'products/PERGEL-TEST-1.md' )['action'] );
+		$product = wc_get_product( $id );
+		$this->assertSame( '120', $product->get_regular_price() );
+		$this->assertSame( '99.5', $product->get_price() );
+		$this->assertSame( 'Kısa <strong>açıklama</strong>.', $product->get_short_description() );
+		$this->assertSame( array( 'keep' ), array_values( array_unique( array_column( $this->import(), 'action' ) ) ) );
+
+		unlink( "$this->dir/products/PERGEL-TEST-1.md" );
+		$this->write( 'products/PERGEL-TEST-2.md', "---\ntitle: İkinci\n---\n" );
+		$this->shop_product( 'PERGEL-TEST-2' );
+		$this->assertSame( 'stale', self::row( $this->import(), 'products/PERGEL-TEST-1.md' )['action'] );
+		$this->assertSame( 'release', self::row( $this->import( prune: true ), 'products/PERGEL-TEST-1.md' )['action'] );
+		$this->assertSame( 'publish', get_post_status( $id ) );
+		$this->assertSame( '', get_post_meta( $id, Importer::META, true ) );
+		$this->assertSame( 'Hassas terazi', get_the_title( $id ) );
+	}
+
+	public function test_a_product_the_shop_does_not_have_or_a_price_it_cannot_take_stops_the_import(): void {
+		$this->shop_product( 'PERGEL-TEST-V', 'variable' );
+		$this->products_only( "---\ntitle: Yok\n---\n" );
+		$this->write( 'products/PERGEL-TEST-V.md', "---\nprice: { regular: 10 }\n---\n" );
+
+		$problems = implode( "\n", $this->importer()->preflight() );
+		$this->assertStringContainsString( 'products/PERGEL-TEST-1.md: the shop has no product with the SKU PERGEL-TEST-1', $problems );
+		$this->assertStringContainsString( 'products/PERGEL-TEST-V.md: price: product ', $problems );
+	}
+
+	public function test_an_export_writes_the_products_back(): void {
+		$this->shop_product( 'PERGEL-TEST-1' );
+		$this->products_only( "---\ntitle: Hassas terazi\nexcerpt: Kısa **açıklama**.\nprice: { regular: 120 }\n---\n\nGövde metni.\n" );
+		$this->import();
+		$out = sys_get_temp_dir() . '/pergel-export-' . bin2hex( random_bytes( 4 ) );
+		try {
+			$exporter = new Exporter( $out, self::NAME );
+			$this->assertSame( array(), $exporter->preflight() );
+			$exporter->run();
+			$this->assertSame( array(), $exporter->notes );
+			$this->assertFileDoesNotExist( "$out/sitemap.yaml" );
+			$this->assertStringContainsString( "format: 2\n", (string) file_get_contents( "$out/package.yaml" ) );
+			$product = (string) file_get_contents( "$out/products/PERGEL-TEST-1.md" );
+			$this->assertStringContainsString( 'Hassas terazi', $product );
+			$this->assertStringContainsString( 'Kısa **açıklama**.', $product );
+			$this->assertStringContainsString( "price:\n  regular: \"120\"\n", $product );
+			$this->assertStringEndsWith( "---\n\nGövde metni.\n", $product );
+
+			$package = Package::read( $out );
+			$package->check_theme();
+			$this->assertSame( array(), $package->problems );
+			$importer = new Importer( $package, false, false, false );
+			$this->assertSame( array(), $importer->preflight() );
+			$importer->run();
+			$this->assertSame( 'keep', self::row( $importer->rows, 'products/PERGEL-TEST-1.md' )['action'] );
+		} finally {
+			if ( is_dir( $out ) ) {
+				self::remove( $out );
+			}
+		}
+	}
+
 	public function test_an_export_into_a_folder_with_other_files_is_refused(): void {
 		$this->assertStringContainsString( 'holds no package.yaml', implode( "\n", ( new Exporter( __DIR__, self::NAME ) )->preflight() ) );
 		$this->assertStringContainsString( 'holds the package ornek-firma', implode( "\n", ( new Exporter( __DIR__ . '/../fixtures/package', self::NAME ) )->preflight() ) );
+	}
+
+	/**
+	 * A shop product with a SKU, a price of 100 and 7 in stock, deleted
+	 * after the test.
+	 *
+	 * @param string $sku  SKU.
+	 * @param string $type simple or variable.
+	 */
+	private function shop_product( string $sku, string $type = 'simple' ): int {
+		if ( ! class_exists( \WC_Product_Simple::class ) ) {
+			$this->markTestSkipped( 'WooCommerce is not active on this site.' );
+		}
+		$product = 'variable' === $type ? new \WC_Product_Variable() : new \WC_Product_Simple();
+		$product->set_name( "Ürün $sku" );
+		$product->set_sku( $sku );
+		$product->set_regular_price( '100' );
+		$product->set_manage_stock( true );
+		$product->set_stock_quantity( 7 );
+		$product->set_status( 'publish' );
+		$id               = $product->save();
+		$this->products[] = $id;
+		return $id;
+	}
+
+	/**
+	 * Makes the package copy one of products alone: format 2, no sitemap
+	 * and no page content, with products/PERGEL-TEST-1.md.
+	 *
+	 * @param string $product Contents of products/PERGEL-TEST-1.md.
+	 */
+	private function products_only( string $product ): void {
+		$this->write( 'package.yaml', str_replace( 'format: 1', 'format: 2', (string) file_get_contents( "$this->dir/package.yaml" ) ) );
+		unlink( "$this->dir/sitemap.yaml" );
+		self::remove( "$this->dir/content" );
+		mkdir( "$this->dir/products" );
+		$this->write( 'products/PERGEL-TEST-1.md', $product );
 	}
 
 	/**

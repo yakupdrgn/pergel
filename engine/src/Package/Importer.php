@@ -22,14 +22,19 @@ use WP_Post;
 
 /**
  * Applies a checked package: site options, images, Pergel settings, pages,
- * reading settings, the menu and, for brand tokens, a child theme.
+ * reading settings, the menu, products and, for brand tokens, a child theme.
  *
  * Every post the package makes carries its name and its key (the page path
- * as "/path", the image path, or "menu"), so a second import finds it
- * instead of making a copy. Two hashes say what changed since then: one of
- * what the package asked for, one of the post as it was saved. A package
- * that did not change keeps the post; a post edited in the panel since the
- * import is skipped with a note, unless $force.
+ * as "/path", the image path, the product file or "menu"), so a second
+ * import finds it instead of making a copy. Two hashes say what changed
+ * since then: one of what the package asked for, one of the post as it was
+ * saved. A package that did not change keeps the post; a post edited in the
+ * panel since the import is skipped with a note, unless $force.
+ *
+ * Products are never made or removed: the shop's product with the file's
+ * SKU is adopted, and only the fields the file writes are saved and
+ * compared, so a stock or price change in the shop is not an edit unless
+ * the package sets that field too.
  *
  * @phpstan-import-type Page from Package
  * @phpstan-type Row array{action: string, type: string, key: string, id: string, title: string}
@@ -120,7 +125,7 @@ final class Importer {
 	) {
 		$posts = get_posts(
 			array(
-				'post_type'      => array( 'page', 'attachment', 'wp_navigation' ),
+				'post_type'      => array( 'page', 'attachment', 'wp_navigation', 'product' ),
 				'post_status'    => 'any',
 				'posts_per_page' => -1,
 				'meta_key'       => self::META, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- CLI only.
@@ -139,9 +144,10 @@ final class Importer {
 
 	/**
 	 * What stops the import on this site, checked before anything is saved:
-	 * shop pages without WooCommerce, pages at the package's addresses that
-	 * the package did not make, and a theme folder or active child theme the
-	 * package cannot use.
+	 * shop pages or products without WooCommerce, pages at the package's
+	 * addresses that the package did not make, a product SKU the shop does
+	 * not have or whose price cannot be set, and a theme folder or active
+	 * child theme the package cannot use.
 	 *
 	 * @return list<string>
 	 */
@@ -157,6 +163,19 @@ final class Importer {
 			$taken = get_page_by_path( $page['path'] );
 			if ( $taken instanceof WP_Post && $taken->ID !== $this->shop_page( $page['type'] ) ) {
 				$problems[] = sprintf( 'sitemap.yaml: %s: /%s/ is page %d, which this package did not make; move or delete it first', $page['where'], $page['path'], $taken->ID );
+			}
+		}
+
+		if ( array() !== $this->package->products && ! Woo::active() ) {
+			$problems[] = 'products/: products need WooCommerce; install and activate it first';
+		} elseif ( array() !== $this->package->products ) {
+			foreach ( $this->package->products as $product ) {
+				$post = $this->product( $product['sku'] );
+				if ( null === $post ) {
+					$problems[] = sprintf( '%s: the shop has no product with the SKU %s; a package fills in products, it does not make them', $product['file'], $product['sku'] );
+				} elseif ( null !== $product['price'] && ! self::has_price( $post->ID ) ) {
+					$problems[] = sprintf( '%s: price: product %d is not a simple or external product; set its prices in the shop', $product['file'], $post->ID );
+				}
 			}
 		}
 
@@ -224,9 +243,12 @@ final class Importer {
 	public function run(): void {
 		$this->site_options();
 		$this->settings();
-		$this->pages();
-		$this->reading();
-		$this->menu();
+		if ( $this->package->sitemap ) {
+			$this->pages();
+			$this->reading();
+			$this->menu();
+		}
+		$this->products();
 		try {
 			$this->theme();
 		} catch ( RuntimeException $e ) {
@@ -418,6 +440,95 @@ final class Importer {
 	}
 
 	/**
+	 * Products: the fields each products/<SKU>.md writes, saved on the shop's
+	 * product with that SKU.
+	 *
+	 * @throws InvalidArgumentException When the shop has no such product or WordPress refuses it.
+	 */
+	private function products(): void {
+		foreach ( $this->package->products as $product ) {
+			$key      = $product['file'];
+			$existing = $this->product( $product['sku'] );
+			if ( null === $existing ) {
+				throw new InvalidArgumentException( esc_html( "$key: the shop has no product with the SKU {$product['sku']}" ) );
+			}
+			$postarr = array( 'post_type' => 'product' );
+			if ( null !== $product['title'] ) {
+				$postarr['post_title'] = $product['title'];
+			}
+			if ( $product['content'] ) {
+				$postarr['post_content'] = $this->package->page_content( $key, Closure::fromCallable( array( Package::class, 'pattern' ) ), $this->media() );
+			}
+			if ( null !== $product['excerpt'] ) {
+				$postarr['post_excerpt'] = Markdown::inline( $product['excerpt'] );
+			}
+			if ( null !== $product['template'] ) {
+				$postarr['page_template'] = '' === $product['template'] ? 'default' : $product['template'];
+			}
+			$seo = array_intersect_key( $this->seo( $key ), self::seo_keys( $this->package->content[ $key ]['seo'] ) );
+			if ( array() !== $seo ) {
+				$postarr['meta_input'] = $seo;
+			}
+			if ( null !== $product['price'] ) {
+				$postarr['price'] = array();
+				foreach ( $product['price'] as $which => $price ) {
+					$postarr['price'][ "_{$which}_price" ] = $price;
+				}
+			}
+			$this->save( $key, $postarr, $existing, 'product', isset( $this->owned[ $key ] ) ? null : 'adopt' );
+		}
+	}
+
+	/**
+	 * The shop's product for a SKU: the one this package filled in before,
+	 * or the one WooCommerce finds by the SKU.
+	 *
+	 * @param string $sku SKU.
+	 */
+	private function product( string $sku ): ?WP_Post {
+		$owned = $this->owned[ "products/$sku.md" ] ?? null;
+		if ( null !== $owned ) {
+			return $owned;
+		}
+		$id   = function_exists( 'wc_get_product_id_by_sku' ) ? (int) wc_get_product_id_by_sku( $sku ) : 0;
+		$post = $id > 0 ? get_post( $id ) : null;
+		// A variation has a SKU too; a product file is about a whole product.
+		return $post instanceof WP_Post && 'product' === $post->post_type ? $post : null;
+	}
+
+	/**
+	 * Whether a product's price is its own: a simple or external product.
+	 *
+	 * @param int $id Product ID.
+	 */
+	private static function has_price( int $id ): bool {
+		$product = function_exists( 'wc_get_product' ) ? wc_get_product( $id ) : null;
+		return $product instanceof \WC_Product && in_array( $product->get_type(), array( 'simple', 'external' ), true );
+	}
+
+	/**
+	 * Sets a product's prices through WooCommerce, which keeps its active
+	 * price and lookup table in step.
+	 *
+	 * @param int                   $id     Product ID.
+	 * @param array<string, string> $prices _regular_price and/or _sale_price => decimal text, "" for none.
+	 * @throws InvalidArgumentException When the product's price is not its own.
+	 */
+	private static function set_prices( int $id, array $prices ): void {
+		$product = wc_get_product( $id );
+		if ( ! $product instanceof \WC_Product || ! self::has_price( $id ) ) {
+			throw new InvalidArgumentException( esc_html( "product $id: only a simple or external product's price can be set" ) );
+		}
+		if ( isset( $prices['_regular_price'] ) ) {
+			$product->set_regular_price( $prices['_regular_price'] );
+		}
+		if ( isset( $prices['_sale_price'] ) ) {
+			$product->set_sale_price( $prices['_sale_price'] );
+		}
+		$product->save();
+	}
+
+	/**
 	 * Brand tokens: a child theme of the active Pergel theme whose
 	 * tokens/default.json is the package's, built and activated. Without
 	 * tokens the package's child theme, if active, gives way to Pergel.
@@ -463,25 +574,37 @@ final class Importer {
 
 	/**
 	 * Lists, and with $prune removes, what the package made and no longer has.
-	 * Pages and the menu go to the trash; images are deleted.
+	 * Pages and the menu go to the trash; images are deleted. A product is
+	 * only released: it stays in the shop as it is, no longer the package's.
+	 * Without a sitemap the package leaves pages and the menu alone.
 	 */
 	private function stale(): void {
+		$stale = array();
 		foreach ( $this->owned as $key => $post ) {
-			if ( isset( $this->seen[ $key ] ) ) {
+			if ( isset( $this->seen[ $key ] ) || ( ! $this->package->sitemap && in_array( $post->post_type, array( 'page', 'wp_navigation' ), true ) ) ) {
 				continue;
 			}
+			$stale[]      = $key;
 			$type         = array(
 				'page'          => 'page',
 				'attachment'    => 'image',
 				'wp_navigation' => 'menu',
 			)[ $post->post_type ] ?? $post->post_type;
-			$this->rows[] = Starter::row( $this->prune ? 'remove' : 'stale', $type, $key, $post->ID, $post->post_title );
-			if ( $this->prune && ! $this->dry_run ) {
+			$product      = 'product' === $post->post_type;
+			$this->rows[] = Starter::row( $this->prune ? ( $product ? 'release' : 'remove' ) : 'stale', $type, $key, $post->ID, $post->post_title );
+			if ( ! $this->prune || $this->dry_run ) {
+				continue;
+			}
+			if ( $product ) {
+				foreach ( array( self::META, self::KEY, self::SOURCE, self::SAVED ) as $meta_key ) {
+					delete_post_meta( $post->ID, $meta_key );
+				}
+			} else {
 				'attachment' === $post->post_type ? wp_delete_attachment( $post->ID, true ) : wp_trash_post( $post->ID );
 			}
 		}
-		if ( ! $this->prune && array_diff_key( $this->owned, $this->seen ) ) {
-			$this->notes[] = 'Items marked stale were made by an earlier import and are no longer in the package; --prune removes them';
+		if ( ! $this->prune && array() !== $stale ) {
+			$this->notes[] = 'Items marked stale were made by an earlier import and are no longer in the package; --prune removes them (a product is only released and stays in the shop as it is)';
 		}
 	}
 
@@ -498,8 +621,10 @@ final class Importer {
 	 */
 	private function save( string $key, array $postarr, ?WP_Post $existing, string $type, ?string $action = null ): int {
 		$this->seen[ $key ] = true;
-		$title              = (string) $postarr['post_title'];
+		$title              = (string) ( $postarr['post_title'] ?? $existing->post_title ?? '' );
 		$source             = self::hash( $postarr );
+		// A product's state covers only the fields the package writes.
+		$fields = 'product' === $postarr['post_type'] ? self::fields( $postarr ) : null;
 		if ( null !== $existing ) {
 			$owned = isset( $this->owned[ $key ] );
 			if ( $owned && self::matches( $existing, $postarr ) ) {
@@ -509,11 +634,11 @@ final class Importer {
 				$this->rows[] = Starter::row( 'keep', $type, $key, $existing->ID, $title );
 				if ( ! $this->dry_run ) {
 					update_post_meta( $existing->ID, self::SOURCE, $source );
-					update_post_meta( $existing->ID, self::SAVED, self::state( $existing ) );
+					update_post_meta( $existing->ID, self::SAVED, self::state( $existing, $fields ) );
 				}
 				return $existing->ID;
 			}
-			$edited = $owned && (string) get_post_meta( $existing->ID, self::SAVED, true ) !== self::state( $existing );
+			$edited = $owned && self::edited( $existing );
 			if ( $edited && ! $this->force ) {
 				$this->rows[]  = Starter::row( 'skip', $type, $key, $existing->ID, $title );
 				$this->notes[] = sprintf( '%s %s (%d) was edited in the panel after the last import and is kept as it is; --force overwrites it', $type, $key, $existing->ID );
@@ -531,6 +656,8 @@ final class Importer {
 			return $existing->ID ?? 0;
 		}
 
+		$prices = (array) ( $postarr['price'] ?? array() );
+		unset( $postarr['price'] );
 		$postarr['ID']         = $existing->ID ?? 0;
 		$postarr['meta_input'] = (array) ( $postarr['meta_input'] ?? array() ) + array(
 			self::META   => $this->package->site['name'],
@@ -542,16 +669,21 @@ final class Importer {
 		// without the unfiltered_html capability gets (WP-CLI has no user).
 		$filtered = false !== has_filter( 'content_save_pre', 'wp_filter_post_kses' );
 		kses_remove_filters();
-		$id = wp_insert_post( wp_slash( $postarr ), true );
+		// A product keeps every field the package does not write.
+		$id = null !== $fields ? wp_update_post( wp_slash( $postarr ), true ) : wp_insert_post( wp_slash( $postarr ), true );
+		if ( ! is_wp_error( $id ) && array() !== $prices ) {
+			self::set_prices( $id, $prices );
+		}
 		if ( $filtered ) {
 			kses_init_filters();
 		}
 		if ( is_wp_error( $id ) ) {
 			throw new InvalidArgumentException( esc_html( "$key: " . $id->get_error_message() ) );
 		}
+		clean_post_cache( $id );
 		$saved = get_post( $id );
 		if ( $saved instanceof WP_Post ) {
-			update_post_meta( $id, self::SAVED, self::state( $saved ) );
+			update_post_meta( $id, self::SAVED, self::state( $saved, $fields ) );
 		}
 		$this->rows[] = Starter::row( $action, $type, $key, $id, $title );
 		return $id;
@@ -662,7 +794,7 @@ final class Importer {
 	}
 
 	/**
-	 * SEO fields of a page from its content file.
+	 * SEO fields of a page or product from its content file.
 	 *
 	 * @param string|null $file Content file.
 	 * @return array<string, string|bool>
@@ -674,6 +806,26 @@ final class Importer {
 			Meta::DESCRIPTION => (string) ( $seo['description'] ?? '' ),
 			Meta::NOINDEX     => (bool) ( $seo['noindex'] ?? false ),
 		);
+	}
+
+	/**
+	 * The SEO meta keys of the seo fields a content file writes.
+	 *
+	 * @param array<string, mixed> $seo The seo map as written.
+	 * @return array<string, true>
+	 */
+	private static function seo_keys( array $seo ): array {
+		$keys = array();
+		foreach ( array(
+			'title'       => Meta::TITLE,
+			'description' => Meta::DESCRIPTION,
+			'noindex'     => Meta::NOINDEX,
+		) as $field => $meta_key ) {
+			if ( array_key_exists( $field, $seo ) ) {
+				$keys[ $meta_key ] = true;
+			}
+		}
+		return $keys;
 	}
 
 	/**
@@ -743,10 +895,27 @@ final class Importer {
 
 	/**
 	 * A post as saved, to tell later whether it was edited in the panel.
+	 * With $fields only those fields count, and their names come first, as
+	 * "post_title,_regular_price:hash", so that the same fields are compared
+	 * later even when the package writes other fields by then.
 	 *
-	 * @param WP_Post $post Post.
+	 * @param WP_Post                 $post   Post.
+	 * @param array<int, string>|null $fields Post fields, page_template and meta keys; null for every field a page has.
 	 */
-	private static function state( WP_Post $post ): string {
+	private static function state( WP_Post $post, ?array $fields = null ): string {
+		if ( null !== $fields ) {
+			$state = array();
+			foreach ( $fields as $field ) {
+				if ( 'page_template' === $field ) {
+					$state[] = get_page_template_slug( $post );
+				} elseif ( str_starts_with( $field, 'post_' ) ) {
+					$state[] = (string) $post->$field;
+				} else {
+					$state[] = (string) get_post_meta( $post->ID, $field, true );
+				}
+			}
+			return implode( ',', $fields ) . ':' . self::hash( $state );
+		}
 		$state = array( $post->post_title, $post->post_content, $post->post_name, $post->post_parent, $post->menu_order, $post->post_status );
 		if ( 'page' === $post->post_type ) {
 			$state[] = get_page_template_slug( $post );
@@ -758,13 +927,43 @@ final class Importer {
 	}
 
 	/**
+	 * Whether a post was edited in the panel since the package saved it,
+	 * judged by the fields its saved state names.
+	 *
+	 * @param WP_Post $post Post.
+	 */
+	private static function edited( WP_Post $post ): bool {
+		$saved  = (string) get_post_meta( $post->ID, self::SAVED, true );
+		$fields = null;
+		if ( str_contains( $saved, ':' ) ) {
+			$list   = explode( ':', $saved, 2 )[0];
+			$fields = '' === $list ? array() : explode( ',', $list );
+		}
+		return self::state( $post, $fields ) !== $saved;
+	}
+
+	/**
+	 * The fields a product's save() arguments write, see state().
+	 *
+	 * @param array<string, mixed> $postarr What save() was given.
+	 * @return list<string>
+	 */
+	private static function fields( array $postarr ): array {
+		return array_merge(
+			array_values( array_intersect( array( 'post_title', 'post_content', 'post_excerpt', 'page_template' ), array_keys( $postarr ) ) ),
+			array_keys( (array) ( $postarr['meta_input'] ?? array() ) ),
+			array_keys( (array) ( $postarr['price'] ?? array() ) )
+		);
+	}
+
+	/**
 	 * Whether a post already holds what saving it would write.
 	 *
 	 * @param WP_Post              $post    Post.
 	 * @param array<string, mixed> $postarr What save() was given.
 	 */
 	private static function matches( WP_Post $post, array $postarr ): bool {
-		foreach ( array( 'post_title', 'post_content', 'post_name', 'post_parent', 'menu_order', 'post_status' ) as $field ) {
+		foreach ( array( 'post_title', 'post_content', 'post_excerpt', 'post_name', 'post_parent', 'menu_order', 'post_status' ) as $field ) {
 			if ( isset( $postarr[ $field ] ) && (string) $post->$field !== (string) $postarr[ $field ] ) {
 				return false;
 			}
@@ -772,7 +971,7 @@ final class Importer {
 		if ( isset( $postarr['page_template'] ) && (string) get_page_template_slug( $post ) !== ( 'default' === $postarr['page_template'] ? '' : (string) $postarr['page_template'] ) ) {
 			return false;
 		}
-		foreach ( (array) ( $postarr['meta_input'] ?? array() ) as $meta_key => $value ) {
+		foreach ( (array) ( $postarr['meta_input'] ?? array() ) + (array) ( $postarr['price'] ?? array() ) as $meta_key => $value ) {
 			if ( (string) get_post_meta( $post->ID, (string) $meta_key, true ) !== (string) $value ) {
 				return false;
 			}

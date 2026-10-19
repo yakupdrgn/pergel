@@ -19,8 +19,8 @@ use Pergel\Tokens\Compiler;
 use Pergel\Tokens\Invalid;
 
 /**
- * Reads package.yaml, sitemap.yaml, content/*.md, media.yaml and
- * brand/tokens.json, and reports every problem at once as
+ * Reads package.yaml, sitemap.yaml, content/*.md, products/*.md, media.yaml
+ * and brand/tokens.json, and reports every problem at once as
  * "file: where: problem", so the author fixes them in one pass.
  * See docs/PROJECT-PACKAGE.md for the format.
  *
@@ -33,13 +33,21 @@ use Pergel\Tokens\Invalid;
  *
  * @phpstan-type Page array{path: string, parent: string|null, slug: string, title: string, content: string|null, template: string, type: string, menu: bool, where: string}
  * @phpstan-type Content array{seo: array<string, mixed>, sections: list<array<string, mixed>>, body: string, offset: int}
+ * @phpstan-type Product array{sku: string, file: string, title: string|null, excerpt: string|null, template: string|null, price: array<string, string>|null, content: bool}
  */
 final class Package {
 
 	/**
-	 * Package format this engine reads.
+	 * Newest package format this engine reads; it reads every format up to it.
+	 * Format 2 adds products/*.md.
 	 */
-	public const FORMAT = 1;
+	public const FORMAT = 2;
+
+	/**
+	 * Format of a package without products, which the exporter keeps writing
+	 * so that such a package still reads on engines from before products.
+	 */
+	public const PAGES_FORMAT = 1;
 
 	/**
 	 * Image file types a package may hold.
@@ -67,6 +75,11 @@ final class Package {
 	private const SLUG = '/^[a-z0-9]+(-[a-z0-9]+)*$/';
 
 	/**
+	 * SKUs a product file may be named after.
+	 */
+	public const SKU = '/^[A-Za-z0-9][A-Za-z0-9._-]*$/';
+
+	/**
 	 * Site details from package.yaml.
 	 *
 	 * @var array{name: string, title: string, tagline: string|null, locale: string|null}
@@ -77,6 +90,22 @@ final class Package {
 		'tagline' => null,
 		'locale'  => null,
 	);
+
+	/**
+	 * Format from package.yaml.
+	 *
+	 * @var int
+	 */
+	public int $format = self::PAGES_FORMAT;
+
+	/**
+	 * Whether the package has a sitemap.yaml. A package of products alone
+	 * may leave it out; the site's pages, reading settings and menu then
+	 * stay as they are.
+	 *
+	 * @var bool
+	 */
+	public bool $sitemap = false;
 
 	/**
 	 * Settings from package.yaml as written: group => key => value, images as package paths.
@@ -100,7 +129,16 @@ final class Package {
 	public array $menu = array();
 
 	/**
-	 * Content files by package path.
+	 * Products by SKU, from products/<SKU>.md. A product is never made: the
+	 * import fills in the shop's product with that SKU, and a field the file
+	 * leaves out stays as the shop has it.
+	 *
+	 * @var array<string, Product>
+	 */
+	public array $products = array();
+
+	/**
+	 * Content files and product files by package path.
 	 *
 	 * @var array<string, Content>
 	 */
@@ -155,6 +193,7 @@ final class Package {
 		}
 		$package->read_site();
 		$package->read_media();
+		$package->read_products();
 		$package->read_sitemap();
 		$package->read_tokens();
 		foreach ( $package->files( 'content', '.md' ) as $file ) {
@@ -170,15 +209,23 @@ final class Package {
 	 * templates, setting values and design tokens.
 	 *
 	 * @param Closure              $pattern   Parsed blocks of a pattern by name, null when there is none.
-	 * @param array<int, string>   $templates Page template slugs the theme has.
+	 * @param array<string, mixed> $templates Template slugs the theme has, by post type (page, product).
 	 * @param array<string, mixed> $tokens    The theme's token tree that brand/tokens.json changes.
 	 * @param string[]             $fonts     Theme directories fontFace files may come from; empty skips the files.
 	 * @phpstan-param Closure(string): (list<array<string, mixed>>|null) $pattern
+	 * @phpstan-param array<string, list<string>> $templates
 	 */
 	public function check( Closure $pattern, array $templates, array $tokens, array $fonts = array() ): void {
+		$pages = $templates['page'] ?? array();
 		foreach ( $this->pages as $page ) {
-			if ( '' !== $page['template'] && ! in_array( $page['template'], $templates, true ) ) {
-				$this->problems[] = sprintf( 'sitemap.yaml: %s: template: "%s" is not a page template; templates: %s', $page['where'], $page['template'], implode( ', ', $templates ) );
+			if ( '' !== $page['template'] && ! in_array( $page['template'], $pages, true ) ) {
+				$this->problems[] = sprintf( 'sitemap.yaml: %s: template: "%s" is not a page template; templates: %s', $page['where'], $page['template'], implode( ', ', $pages ) );
+			}
+		}
+		$products = $templates['product'] ?? array();
+		foreach ( $this->products as $product ) {
+			if ( null !== $product['template'] && '' !== $product['template'] && ! in_array( $product['template'], $products, true ) ) {
+				$this->problems[] = sprintf( '%s: template: "%s" is not a product template; templates: %s', $product['file'], $product['template'], array() === $products ? '(none)' : implode( ', ', $products ) );
 			}
 		}
 
@@ -219,11 +266,16 @@ final class Package {
 			$this->problems = array_merge( $this->problems, $e->problems );
 			$tokens         = array();
 		}
-		// The theme's own page templates; plugins add templates of their own that a package does not choose.
-		$templates = array();
+		// The theme's own page and product templates; plugins add templates of their own that a package does not choose.
+		$templates = array(
+			'page'    => array(),
+			'product' => array(),
+		);
 		foreach ( wp_get_theme_data_custom_templates() as $name => $data ) {
-			if ( in_array( 'page', (array) $data['postTypes'], true ) ) {
-				$templates[] = (string) $name;
+			foreach ( array_keys( $templates ) as $type ) {
+				if ( in_array( $type, (array) $data['postTypes'], true ) ) {
+					$templates[ $type ][] = (string) $name;
+				}
 			}
 		}
 		// The package's child theme has no font files of its own; they come from the parent.
@@ -288,7 +340,7 @@ final class Package {
 	 * (or the body where a `markdown: true` section stands). Problems are
 	 * added to $this->problems; the markup leaves out what has a problem.
 	 *
-	 * @param string  $file    Content file, as the sitemap names it.
+	 * @param string  $file    Content file as the sitemap names it, or a product file.
 	 * @param Closure $pattern Parsed blocks of a pattern by name, see check().
 	 * @param Closure $media   Turns a package image path into an attachment id (0 = none) and URL.
 	 * @phpstan-param Closure(string): (list<array<string, mixed>>|null) $pattern
@@ -447,9 +499,11 @@ final class Package {
 
 		$format = $data['format'] ?? null;
 		if ( null === $format ) {
-			$this->problems[] = $where . 'format: required; write format: ' . self::FORMAT;
-		} elseif ( self::FORMAT !== $format ) {
-			$this->problems[] = $where . 'format: this engine reads format ' . self::FORMAT;
+			$this->problems[] = $where . 'format: required; write format: ' . self::PAGES_FORMAT . ', or ' . self::FORMAT . ' for a package with products';
+		} elseif ( ! is_int( $format ) || $format < 1 || $format > self::FORMAT ) {
+			$this->problems[] = $where . 'format: this engine reads formats 1 to ' . self::FORMAT;
+		} else {
+			$this->format = $format;
 		}
 
 		$name = $data['name'] ?? null;
@@ -545,10 +599,15 @@ final class Package {
 	}
 
 	/**
-	 * Reads sitemap.yaml and the content files its pages use.
+	 * Reads sitemap.yaml and the content files its pages use. Only a package
+	 * with products may leave it out.
 	 */
 	private function read_sitemap(): void {
-		$data = $this->yaml( 'sitemap.yaml', true );
+		if ( array() !== $this->products && ! $this->holds( 'sitemap.yaml' ) ) {
+			return;
+		}
+		$this->sitemap = true;
+		$data          = $this->yaml( 'sitemap.yaml', true );
 		if ( null === $data ) {
 			return;
 		}
@@ -769,11 +828,95 @@ final class Package {
 	}
 
 	/**
+	 * Reads products/<SKU>.md: a content file whose frontmatter may also
+	 * hold the product's title, short description (excerpt), template and
+	 * price.
+	 */
+	private function read_products(): void {
+		$files = $this->files( 'products', '.md' );
+		if ( array() !== $files && $this->format < 2 ) {
+			$this->problems[] = 'package.yaml: format: a package with products/ is format 2';
+		}
+		$skus = array();
+		foreach ( $files as $file ) {
+			$sku = substr( $file, strlen( 'products/' ), -strlen( '.md' ) );
+			if ( ! preg_match( self::SKU, $sku ) ) {
+				$this->problems[] = "$file: a product file is named after the product's SKU, like products/AB-100.md (letters, digits, . _ and -, right under products/)";
+				continue;
+			}
+			// The shop's database matches SKUs without regard to case.
+			$same = strtolower( $sku );
+			if ( isset( $skus[ $same ] ) ) {
+				$this->problems[] = "$file: {$skus[$same]} is the same SKU";
+				continue;
+			}
+			$skus[ $same ] = $file;
+
+			$front = $this->read_content( $file, array( 'title', 'excerpt', 'template', 'price' ) );
+			if ( null === $front ) {
+				continue;
+			}
+			$where   = "$file: ";
+			$product = array(
+				'sku'      => $sku,
+				'file'     => $file,
+				'title'    => null,
+				'excerpt'  => null,
+				'template' => null,
+				'price'    => null,
+				'content'  => array() !== $this->content[ $file ]['sections'] || '' !== trim( $this->content[ $file ]['body'] ),
+			);
+			foreach ( array( 'title', 'excerpt', 'template' ) as $key ) {
+				if ( ! array_key_exists( $key, $front ) ) {
+					continue;
+				}
+				if ( ! is_string( $front[ $key ] ) || ( 'title' === $key && '' === trim( $front[ $key ] ) ) ) {
+					$this->problems[] = $where . "$key: text is expected";
+					continue;
+				}
+				$product[ $key ] = $front[ $key ];
+			}
+			if ( array_key_exists( 'price', $front ) ) {
+				$product['price'] = $this->read_price( $front['price'], $where . 'price' );
+			}
+			$this->products[ $sku ] = $product;
+		}
+	}
+
+	/**
+	 * Reads a product's price, { regular: 120, sale: 99 }; null empties one.
+	 *
+	 * @param mixed  $price Value as written.
+	 * @param string $where Message prefix.
+	 * @return array<string, string>|null Prices as decimal text, "" for none; null with a problem.
+	 */
+	private function read_price( mixed $price, string $where ): ?array {
+		if ( ! self::is_map( $price ) || array() === $price ) {
+			$this->problems[] = "$where: a map like { regular: 120, sale: 99 } is expected";
+			return null;
+		}
+		$this->keys( $price, array( 'regular', 'sale' ), "$where: " );
+		$read = array();
+		foreach ( array_intersect_key( $price, array_flip( array( 'regular', 'sale' ) ) ) as $key => $value ) {
+			if ( null === $value ) {
+				$read[ $key ] = '';
+			} elseif ( ( is_int( $value ) || is_float( $value ) || is_string( $value ) ) && preg_match( '/^\d+(\.\d+)?$/', (string) $value ) ) {
+				$read[ $key ] = (string) $value;
+			} else {
+				$this->problems[] = "$where.$key: a price like 120 or 99.90 is expected, or null for none";
+			}
+		}
+		return $read;
+	}
+
+	/**
 	 * Reads a content file: YAML frontmatter between --- lines, then Markdown.
 	 *
-	 * @param string $file Package path.
+	 * @param string             $file  Package path.
+	 * @param array<int, string> $extra Frontmatter keys besides seo and sections; a product file has more.
+	 * @return array<string, mixed>|null The frontmatter; null when the file cannot be read.
 	 */
-	private function read_content( string $file ): void {
+	private function read_content( string $file, array $extra = array() ): ?array {
 		$text  = str_replace( array( "\r\n", "\r" ), "\n", self::read_file( $this->dir . '/' . $file ) );
 		$text  = str_starts_with( $text, "\u{FEFF}" ) ? substr( $text, 3 ) : $text;
 		$lines = explode( "\n", $text );
@@ -787,27 +930,27 @@ final class Package {
 			}
 			if ( $end >= $total ) {
 				$this->problems[] = "$file: line 1: the frontmatter has no closing --- line";
-				return;
+				return null;
 			}
 			try {
 				$front = Yaml::parse( implode( "\n", array_slice( $lines, 1, $end - 1 ) ) ) ?? array();
 			} catch ( InvalidArgumentException $e ) {
 				$this->problems[] = "$file: " . self::shift( $e->getMessage(), 1 );
-				return;
+				return null;
 			}
 			if ( ! self::is_map( $front ) ) {
 				$this->problems[] = "$file: the frontmatter is a map like { seo: ..., sections: ... }";
-				return;
+				return null;
 			}
 			$start = $end + 1;
 		}
 
 		$where = "$file: ";
-		if ( array_key_exists( 'title', $front ) ) {
+		if ( array_key_exists( 'title', $front ) && ! in_array( 'title', $extra, true ) ) {
 			$this->problems[] = $where . '"title" is set in sitemap.yaml, not in the content file';
 			unset( $front['title'] );
 		}
-		$this->keys( $front, array( 'seo', 'sections' ), $where );
+		$this->keys( $front, array_merge( array( 'seo', 'sections' ), $extra ), $where );
 
 		$seo = $front['seo'] ?? array();
 		if ( ! self::is_map( $seo ) ) {
@@ -857,6 +1000,7 @@ final class Package {
 			'body'     => implode( "\n", array_slice( $lines, $start ) ),
 			'offset'   => $start,
 		);
+		return $front;
 	}
 
 	/**

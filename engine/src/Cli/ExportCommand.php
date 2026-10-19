@@ -24,14 +24,16 @@ final class ExportCommand {
 	 *
 	 * The reverse of `wp pergel import`: the site title, tagline and
 	 * language, the Pergel settings that are not their defaults, the pages
-	 * with their SEO fields, the menu, the images in use and an active child
-	 * theme's design tokens. A section a pattern made is written as the
+	 * with their SEO fields, the menu, the products the package filled in
+	 * (products/<SKU>.md, with the fields it wrote), the images in use and
+	 * an active child theme's design tokens. A section a pattern made is written as the
 	 * pattern's fields, other blocks as Markdown. Each is read back as an
 	 * import would and compared with the page: what would not come back the
 	 * same is a note.
 	 *
-	 * By default the pages a package made are exported, under that package's
-	 * name. --all exports every published page.
+	 * By default the pages and products a package made or filled in are
+	 * exported, under that package's name. --all exports every published
+	 * page.
 	 *
 	 * The folder must be empty, new or hold the same package; exporting again
 	 * rewrites what changed and removes the content files and images the
@@ -44,7 +46,7 @@ final class ExportCommand {
 	 * : Package folder.
 	 *
 	 * [--name=<name>]
-	 * : Package name. Defaults to the package that made the pages, or with --all to the site title.
+	 * : Package name. Defaults to the package that made the pages or filled in the products, or with --all to the site title.
 	 *
 	 * [--all]
 	 * : Export every published page, not only the package's.
@@ -86,12 +88,12 @@ final class ExportCommand {
 		if ( '' === $name ) {
 			$names = Exporter::names();
 			if ( count( $names ) > 1 ) {
-				WP_CLI::error( sprintf( 'Pages were made by %d packages (%s); choose one with --name.', count( $names ), implode( ', ', $names ) ) );
+				WP_CLI::error( sprintf( 'Pages or products come from %d packages (%s); choose one with --name.', count( $names ), implode( ', ', $names ) ) );
 			}
 			$name = $names[0] ?? '';
 			if ( '' === $name ) {
 				if ( ! $all ) {
-					WP_CLI::error( 'No page was made by a package; --all exports every page.' );
+					WP_CLI::error( 'No page or product comes from a package; --all exports every page.' );
 				}
 				$name = sanitize_title( remove_accents( (string) get_option( 'blogname' ) ) );
 				$name = (bool) preg_match( '/^[a-z0-9]+(-[a-z0-9]+)*$/', $name ) ? $name : 'site';

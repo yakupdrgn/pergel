@@ -27,12 +27,18 @@ final class ImportCommand {
 	 * package did not make stops the import before anything is saved. Then
 	 * sets the site title, tagline and language, imports the images in use,
 	 * saves the Pergel settings, makes the pages, the reading settings and
-	 * the menu, and for brand/tokens.json writes and activates a child theme.
+	 * the menu, fills in the products of products/*.md, and for
+	 * brand/tokens.json writes and activates a child theme.
+	 *
+	 * A product is found by its SKU and never made: a SKU the shop does not
+	 * have stops the import. Only the fields the file writes are saved; the
+	 * price is left as it is unless the file sets it.
 	 *
 	 * Importing again finds what the package made before. What did not change
 	 * is kept; a page or menu edited in the panel since is skipped with a
 	 * note, unless --force. What the package no longer has is listed as
-	 * stale; --prune moves those pages to the trash and deletes those images.
+	 * stale; --prune moves those pages to the trash, deletes those images and
+	 * lets go of those products, which stay in the shop as they are.
 	 *
 	 * ## OPTIONS
 	 *
@@ -43,7 +49,7 @@ final class ImportCommand {
 	 * : Show what would happen without saving anything.
 	 *
 	 * [--force]
-	 * : Overwrite pages and the menu even when they were edited in the panel.
+	 * : Overwrite pages, products and the menu even when they were edited in the panel.
 	 *
 	 * [--prune]
 	 * : Remove what an earlier import made and the package no longer has.
