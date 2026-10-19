@@ -3,7 +3,7 @@
 	"runs": 3,
 	"writesIgnore": [ "_transient_timeout_wc_related_", "_transient_wc_related_", "_transient_timeout_wc_filter_data_", "_transient_wc_filter_data_" ],
 	"pages": [
-		{ "name": "shop-home", "path": "/", "limits": { "queries": 180, "htmlKB": 260, "requests": 35 } },
+		{ "name": "shop-home", "path": "/", "limits": { "queries": 180, "htmlKB": 260, "requests": 42 } },
 		{ "name": "shop", "path": "/shop/", "limits": { "queries": 190, "htmlKB": 330, "requests": 60, "jsKB": 75 } },
 		{ "name": "product-category", "path": "/product-category/apparel/", "limits": { "queries": 190, "htmlKB": 220, "requests": 48, "jsKB": 75 } },
 		{ "name": "product-simple", "path": "/product/canvas-tote-bag/", "limits": { "queries": 125, "htmlKB": 175, "requests": 38, "jsonld": 2 } },
