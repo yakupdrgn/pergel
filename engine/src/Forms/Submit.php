@@ -181,7 +181,7 @@ final class Submit {
 
 		$values = array();
 		$labels = Form::labels( $spec['kind'] );
-		foreach ( Form::fields( $spec['kind'], $spec['optional'] ) as $name => $field ) {
+		foreach ( Form::fields( $spec['kind'], $spec['optional'], $spec['message'] ) as $name => $field ) {
 			[ $value, $error ] = self::check(
 				array(
 					'type' => $field['type'],

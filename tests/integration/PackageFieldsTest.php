@@ -233,10 +233,11 @@ final class PackageFieldsTest extends TestCase {
 
 	public function test_forms_take_their_settings(): void {
 		$form   = array(
-			'kind'         => 'contact',
-			'company'      => true,
-			'submit_label' => 'Send request',
-			'fields'       => array(
+			'kind'             => 'contact',
+			'company'          => true,
+			'message_required' => false,
+			'submit_label'     => 'Send request',
+			'fields'           => array(
 				array( 'label' => 'Country' ),
 				array(
 					'label'    => 'Your request',
@@ -284,12 +285,14 @@ final class PackageFieldsTest extends TestCase {
 						'options'  => array( 'General', 'Sample' ),
 					),
 				),
-				'company'     => true,
+				'company'         => true,
+				'messageRequired' => false,
 			),
 			$attrs
 		);
 		$back = Fields::values( self::blocks( 'pergel/contact-quote-form' ), $blocks, static fn(): ?string => null );
 		$this->assertSame( 'contact', $back['form']['kind'] );
+		$this->assertFalse( $back['form']['message_required'] );
 		$this->assertSame( array( 'General', 'Sample' ), $back['form']['fields'][1]['options'] );
 
 		$cases = array(

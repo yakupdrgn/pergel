@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-19 11:41+0000\n"
-"PO-Revision-Date: 2026-10-19 11:41+0000\n"
+"POT-Creation-Date: 2026-10-19 13:37+0000\n"
+"PO-Revision-Date: 2026-10-19 13:37+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1393,6 +1393,12 @@ msgstr "Telefon alanı"
 
 msgid "Company field"
 msgstr "Firma alanı"
+
+msgid "Message is required"
+msgstr "Mesaj zorunlu"
+
+msgid "Turn off when your own fields already say what is needed."
+msgstr "Kendi alanlarınız ne istendiğini zaten soruyorsa kapatın."
 
 msgid "Ask for consent"
 msgstr "Onay iste"

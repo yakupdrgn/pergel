@@ -27,6 +27,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"messageRequired": {
+			"type": "boolean",
+			"default": true
+		},
 		"submitLabel": {
 			"type": "string",
 			"default": ""

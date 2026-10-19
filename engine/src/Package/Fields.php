@@ -40,7 +40,7 @@ use Pergel\Forms\Form;
  *   label is the link text, the pattern's when left out.
  * - `summary`: the visible line of a details block (its paragraphs are text).
  * - `quote` and `cite`: paragraphs inside a quote, and its citation.
- * - `form`: a Pergel form, as { kind, phone, company, consent,
+ * - `form`: a Pergel form, as { kind, phone, company, consent, message_required,
  *   submit_label, success_message, about_post, fields }; fields is a list
  *   of { label, type, required, options }. Settings left out keep the
  *   pattern's.
@@ -81,14 +81,15 @@ final class Fields {
 	 * block's default.
 	 */
 	private const FORM = array(
-		'kind'            => array( 'kind', 'contact' ),
-		'phone'           => array( 'phone', true ),
-		'company'         => array( 'company', false ),
-		'consent'         => array( 'consent', false ),
-		'submit_label'    => array( 'submitLabel', '' ),
-		'success_message' => array( 'successMessage', '' ),
-		'about_post'      => array( 'aboutPost', false ),
-		'fields'          => array( 'fields', array() ),
+		'kind'             => array( 'kind', 'contact' ),
+		'phone'            => array( 'phone', true ),
+		'company'          => array( 'company', false ),
+		'consent'          => array( 'consent', false ),
+		'submit_label'     => array( 'submitLabel', '' ),
+		'success_message'  => array( 'successMessage', '' ),
+		'message_required' => array( 'messageRequired', true ),
+		'about_post'       => array( 'aboutPost', false ),
+		'fields'           => array( 'fields', array() ),
 	);
 
 	/**

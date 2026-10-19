@@ -485,6 +485,21 @@ final class FormsTest extends TestCase {
 		$this->assertContains( 'Country', array_column( Inbox::export( 'ada@example.invalid' )['data'][0]['data'], 'name' ) );
 	}
 
+	public function test_the_message_can_be_optional(): void {
+		$html = do_blocks( '<!-- wp:pergel/form {"kind":"quote","messageRequired":false} /-->' );
+		$this->assertSame( 1, preg_match( '/<textarea[^>]*name="message"[^>]*>/', $html, $field ) );
+		$this->assertStringNotContainsString( ' required', $field[0] );
+		$this->assertMatchesRegularExpression( '/-message">' . preg_quote( esc_html__( 'What do you need?', 'pergel-engine' ), '/' ) . '<\/label>/', $html );
+		$this->assertSame( 1, preg_match( '/name="token" value="([^"]+)"/', $html, $token ) );
+		$this->assertFalse( Form::verify( $token[1] )['message'] ?? null );
+
+		$result = Submit::handle( array( 'token' => Form::sign( array( 'message' => false ) + self::spec( false ) ) ) + array( 'message' => '' ) + self::fields(), $this->ip );
+		$this->assertSame( 'sent', $result['code'] );
+
+		// A token from before the setting keeps the message required.
+		$this->assertTrue( Form::verify( Form::sign( self::spec() ) )['message'] ?? null );
+	}
+
 	public function test_the_page_shows_the_result_of_a_form_sent_without_javascript(): void {
 		$_GET['pergel_form']    = 'sent';
 		$_GET['pergel_form_id'] = 'pergel-form-2';
