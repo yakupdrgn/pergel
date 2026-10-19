@@ -744,7 +744,8 @@ final class Fields {
 			$name = $slot['name'];
 			$at   = $where . $name;
 			if ( ! array_key_exists( $name, $values ) ) {
-				$kept[] = array( $at );
+				// A form's settings are not sample text: left out, it is the pattern's form.
+				$kept[] = 'form' === $slot['role'] ? array() : array( $at );
 				continue;
 			}
 			$value  = $values[ $name ];

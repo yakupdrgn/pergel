@@ -246,6 +246,11 @@ final class PackageFieldsTest extends TestCase {
 				),
 			),
 		);
+		// A form left out is the pattern's form, not sample text to replace.
+		$notes = array();
+		self::fill( 'pergel/contact-form-centered', array(), $notes );
+		$this->assertSame( array( 'eyebrow', 'heading', 'text' ), $notes );
+
 		$blocks = parse_blocks( self::fill( 'pergel/contact-quote-form', array( 'form' => $form ) ) );
 		$attrs  = null;
 		$walk   = static function ( array $list ) use ( &$walk, &$attrs ): void {
