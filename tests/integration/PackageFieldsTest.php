@@ -94,7 +94,7 @@ final class PackageFieldsTest extends TestCase {
 		$this->assertArrayNotHasKey( 'items', Fields::schema( self::blocks( 'pergel/testimonial-with-image' ) ) );
 		// The rows after a heading group are.
 		$contact = Fields::schema( self::blocks( 'pergel/contact-inverse' ) );
-		$this->assertSame( array( 'eyebrow', 'heading', 'text', 'items' ), array_keys( $contact ) );
+		$this->assertSame( array( 'eyebrow', 'heading', 'text', 'items', 'form' ), array_keys( $contact ) );
 	}
 
 	public function test_without_values_every_pattern_is_unchanged(): void {
@@ -133,8 +133,10 @@ final class PackageFieldsTest extends TestCase {
 			$values = Fields::values( $blocks, $blocks, $keep, $notes );
 			$this->assertSame( array(), $notes, $pattern['name'] );
 			// A media & text image without an attachment gets the class the editor gives it.
-			$filled = str_replace( ' class="size-full"', '', serialize_blocks( Fields::fill( $blocks, $values, $media ) ) );
-			if ( serialize_blocks( $blocks ) !== $filled ) {
+			// A root-relative link is written with the home address in front.
+			$home   = 'href="' . untrailingslashit( home_url() ) . '/';
+			$filled = str_replace( array( ' class="size-full"', $home ), array( '', 'href="/' ), serialize_blocks( Fields::fill( $blocks, $values, $media ) ) );
+			if ( str_replace( $home, 'href="/', serialize_blocks( $blocks ) ) !== $filled ) {
 				$differ[] = $pattern['name'];
 			}
 		}
@@ -220,12 +222,86 @@ final class PackageFieldsTest extends TestCase {
 		$this->assertSame( array( 'eyebrow' ), $notes );
 		$this->assertStringContainsString( '<h1 class="wp-block-heading">Topraktan <strong>sofraya</strong></h1>', $html );
 		$this->assertStringContainsString( '<p class="has-muted-color has-text-color has-large-font-size">Bal &amp; zeytinyağı</p>', $html );
-		$this->assertStringContainsString( '<a class="wp-block-button__link wp-element-button" href="/urunler/?a=1&amp;b=2">Ürünler</a>', $html );
+		// A root-relative address keeps the directory of a site in a subdirectory.
+		$this->assertStringContainsString( '<a class="wp-block-button__link wp-element-button" href="' . esc_attr( home_url( '/urunler/?a=1&b=2' ) ) . '">Ürünler</a>', $html );
 		$this->assertSame( 1, substr_count( $html, '<!-- /wp:button -->' ) );
 		$this->assertStringContainsString( '"id":7', $html );
 		$this->assertStringContainsString( '<img src="http://site.test/wp-content/uploads/tarla.jpg" alt="Yüklenen görsel" style="border-radius:var(--wp--custom--radius--card);aspect-ratio:4/3;object-fit:cover" class="wp-image-7"/>', $html );
 		// The eyebrow keeps the pattern's text, in the site's language.
 		$this->assertStringContainsString( 'text-transform:uppercase">' . esc_html( (string) Fields::schema( (array) Package::pattern( 'pergel/hero-split' ) )['eyebrow']['default'] ) . '</p>', $html );
+	}
+
+	public function test_forms_take_their_settings(): void {
+		$form   = array(
+			'kind'         => 'contact',
+			'company'      => true,
+			'submit_label' => 'Send request',
+			'fields'       => array(
+				array( 'label' => 'Country' ),
+				array(
+					'label'    => 'Your request',
+					'type'     => 'select',
+					'required' => true,
+					'options'  => array( 'General', 'Sample', 'General' ),
+				),
+			),
+		);
+		$blocks = parse_blocks( self::fill( 'pergel/contact-quote-form', array( 'form' => $form ) ) );
+		$attrs  = null;
+		$walk   = static function ( array $list ) use ( &$walk, &$attrs ): void {
+			foreach ( $list as $block ) {
+				if ( 'pergel/form' === $block['blockName'] ) {
+					$attrs = $block['attrs'];
+				}
+				$walk( $block['innerBlocks'] );
+			}
+		};
+		$walk( $blocks );
+
+		// The pattern's consent stays; kind at its default is left out.
+		$this->assertEquals(
+			array(
+				'consent'     => true,
+				'submitLabel' => 'Send request',
+				'fields'      => array(
+					array(
+						'label'    => 'Country',
+						'type'     => 'text',
+						'required' => false,
+					),
+					array(
+						'label'    => 'Your request',
+						'type'     => 'select',
+						'required' => true,
+						'options'  => array( 'General', 'Sample' ),
+					),
+				),
+				'company'     => true,
+			),
+			$attrs
+		);
+		$back = Fields::values( self::blocks( 'pergel/contact-quote-form' ), $blocks, static fn(): ?string => null );
+		$this->assertSame( 'contact', $back['form']['kind'] );
+		$this->assertSame( array( 'General', 'Sample' ), $back['form']['fields'][1]['options'] );
+
+		$cases = array(
+			'form: a form is a map of settings'                  => 'x',
+			'form: "title" is not a form setting'                => array( 'title' => 'x' ),
+			'form.kind: one of contact, quote'                   => array( 'kind' => 'order' ),
+			'form.phone: true or false'                          => array( 'phone' => 'yes' ),
+			'form.fields[1].type: one of text, textarea'         => array( 'fields' => array( array( 'label' => 'x', 'type' => 'date' ) ) ),
+			'form.fields[1].options: a list of 1 to 30 choices'  => array( 'fields' => array( array( 'label' => 'x', 'type' => 'select' ) ) ),
+			'form.fields[1].options: only a select field'        => array( 'fields' => array( array( 'label' => 'x', 'options' => array( 'a' ) ) ) ),
+			'form.fields[1].label: a text of at most 100'        => array( 'fields' => array( array( 'type' => 'text' ) ) ),
+		);
+		foreach ( $cases as $message => $value ) {
+			try {
+				self::fill( 'pergel/contact-quote-form', array( 'form' => $value ) );
+				$this->fail( "Expected: $message" );
+			} catch ( InvalidArgumentException $e ) {
+				$this->assertStringStartsWith( $message, $e->getMessage() );
+			}
+		}
 	}
 
 	public function test_items_are_cloned_and_removed(): void {

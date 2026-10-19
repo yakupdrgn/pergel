@@ -14,6 +14,7 @@ namespace Pergel\Package;
 
 use Closure;
 use InvalidArgumentException;
+use Pergel\Forms\Form;
 
 /**
  * Finds the fields of a pattern from its blocks and writes package values
@@ -39,6 +40,10 @@ use InvalidArgumentException;
  *   label is the link text, the pattern's when left out.
  * - `summary`: the visible line of a details block (its paragraphs are text).
  * - `quote` and `cite`: paragraphs inside a quote, and its citation.
+ * - `form`: a Pergel form, as { kind, phone, company, consent,
+ *   submit_label, success_message, about_post, fields }; fields is a list
+ *   of { label, type, required, options }. Settings left out keep the
+ *   pattern's.
  * - `items`: two or more sibling blocks of the same kind whose fields match
  *   (one may have fields the other lacks, as a featured price plan does);
  *   a list of field maps, one per item. Items may hold items.
@@ -46,7 +51,7 @@ use InvalidArgumentException;
  * so on. Texts take inline Markdown. A null value removes the block; a
  * field left out keeps the pattern's text and is reported.
  *
- * Blocks that show site data (queries, navigation, forms, maps, shop blocks,
+ * Blocks that show site data (queries, navigation, maps, shop blocks,
  * nested patterns, bound paragraphs) have no fields.
  */
 final class Fields {
@@ -67,9 +72,23 @@ final class Fields {
 		'core/page-list',
 		'core/accordion',
 		'core/social-links',
-		'pergel/form',
 		'pergel/map',
 		'pergel/logo-marquee',
+	);
+
+	/**
+	 * Settings of a form field: package key => block attribute and the
+	 * block's default.
+	 */
+	private const FORM = array(
+		'kind'            => array( 'kind', 'contact' ),
+		'phone'           => array( 'phone', true ),
+		'company'         => array( 'company', false ),
+		'consent'         => array( 'consent', false ),
+		'submit_label'    => array( 'submitLabel', '' ),
+		'success_message' => array( 'successMessage', '' ),
+		'about_post'      => array( 'aboutPost', false ),
+		'fields'          => array( 'fields', array() ),
 	);
 
 	/**
@@ -331,11 +350,13 @@ final class Fields {
 					if ( preg_match( '/<a\b([^>]*)>(.*?)<\/a>/s', (string) ( $button['innerContent'][0] ?? '' ), $m ) ) {
 						$buttons[] = array(
 							'label' => MarkdownWriter::inline( $m[2] ),
-							'url'   => preg_match( '/\shref="([^"]*)"/', $m[1], $href ) ? html_entity_decode( $href[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '',
+							'url'   => preg_match( '/\shref="([^"]*)"/', $m[1], $href ) ? MarkdownWriter::address( html_entity_decode( $href[1], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) : '',
 						);
 					}
 				}
 				return array() === $buttons ? null : $buttons;
+			case 'form':
+				return self::form( (array) $block['attrs'] );
 			case 'image':
 			case 'background':
 				$html = implode( '', array_filter( $block['innerContent'], 'is_string' ) );
@@ -527,6 +548,7 @@ final class Fields {
 			'core/list'      => 'list',
 			'core/table'     => 'table',
 			'core/file'      => 'file',
+			'pergel/form'    => 'form',
 			default          => null,
 		};
 	}
@@ -643,6 +665,7 @@ final class Fields {
 			'list'                => 'list',
 			'table'               => 'table',
 			'file'                => 'file',
+			'form'                => 'form',
 			default               => 'text',
 		};
 	}
@@ -668,6 +691,8 @@ final class Fields {
 					);
 				}
 				return $buttons;
+			case 'form':
+				return self::form( (array) $block['attrs'] );
 			case 'image':
 			case 'background':
 				preg_match( '/<img\b[^>]*\bsrc="([^"]*)"/', $html, $m );
@@ -851,6 +876,9 @@ final class Fields {
 			case 'file':
 				self::write_file( $block, $value, $media, $at );
 				return;
+			case 'form':
+				self::write_form( $block, $value, $at );
+				return;
 			case 'list':
 				if ( ! is_array( $value ) || ! array_is_list( $value ) || array() === $value ) {
 					throw new InvalidArgumentException( "$at: a list of texts is expected" );
@@ -906,7 +934,7 @@ final class Fields {
 			if ( ! is_array( $button ) || ! isset( $button['label'], $button['url'] ) || array() !== array_diff( array_keys( $button ), array( 'label', 'url' ) ) ) {
 				throw new InvalidArgumentException( "$where: a button is { label, url }" );
 			}
-			$url  = Markdown::url( trim( (string) $button['url'] ) );
+			$url  = Markdown::href( trim( (string) $button['url'] ) );
 			$html = (string) $block['innerBlocks'][ $i ]['innerContent'][0];
 			$html = (string) preg_replace_callback(
 				'/<a\b[^>]*>/',
@@ -1125,6 +1153,137 @@ final class Fields {
 			$html  = (string) preg_replace_callback( self::FILE_LINK, static fn( array $m ): string => $m[1] . $label . '</a>', $html, 1 );
 		}
 		$block['innerContent'][0] = $html;
+	}
+
+	/**
+	 * A form block's settings as a form field value, every setting named.
+	 *
+	 * @param array<string, mixed> $attrs Block attributes.
+	 * @return array<string, mixed>
+	 */
+	private static function form( array $attrs ): array {
+		$form = array();
+		foreach ( self::FORM as $key => $setting ) {
+			$form[ $key ] = $attrs[ $setting[0] ] ?? $setting[1];
+		}
+		$fields = array();
+		foreach ( is_array( $form['fields'] ) ? $form['fields'] : array() as $field ) {
+			if ( ! is_array( $field ) ) {
+				continue;
+			}
+			$item = array(
+				'label'    => (string) ( $field['label'] ?? '' ),
+				'type'     => (string) ( $field['type'] ?? 'text' ),
+				'required' => true === ( $field['required'] ?? false ),
+			);
+			if ( 'select' === $item['type'] ) {
+				$item['options'] = array_map( 'strval', array_values( (array) ( $field['options'] ?? array() ) ) );
+			}
+			$fields[] = $item;
+		}
+		$form['fields'] = $fields;
+		return $form;
+	}
+
+	/**
+	 * Writes a form block's settings. A setting left out keeps the
+	 * pattern's; one set to the block's default is left out of the markup,
+	 * as the editor does.
+	 *
+	 * @param array<string, mixed> $block Form block.
+	 * @param mixed                $value Map of settings.
+	 * @param string               $at    Field path.
+	 * @throws InvalidArgumentException For a value of the wrong shape.
+	 */
+	private static function write_form( array &$block, mixed $value, string $at ): void {
+		$keys = implode( ', ', array_keys( self::FORM ) );
+		if ( ! is_array( $value ) || ( array() !== $value && array_is_list( $value ) ) ) {
+			throw new InvalidArgumentException( "$at: a form is a map of settings: $keys" );
+		}
+		foreach ( $value as $key => $setting ) {
+			if ( ! isset( self::FORM[ $key ] ) ) {
+				throw new InvalidArgumentException( "$at: \"$key\" is not a form setting; settings: $keys" );
+			}
+			$where   = "$at.$key";
+			$default = self::FORM[ $key ][1];
+			if ( 'kind' === $key ) {
+				if ( ! in_array( $setting, Form::KINDS, true ) ) {
+					throw new InvalidArgumentException( "$where: one of " . implode( ', ', Form::KINDS ) );
+				}
+			} elseif ( 'fields' === $key ) {
+				$setting = self::form_fields( $setting, $where );
+			} elseif ( is_bool( $default ) ) {
+				if ( ! is_bool( $setting ) ) {
+					throw new InvalidArgumentException( "$where: true or false" );
+				}
+			} elseif ( is_string( $setting ) || is_int( $setting ) || is_float( $setting ) ) {
+				$setting = trim( (string) $setting );
+			} else {
+				throw new InvalidArgumentException( "$where: a text is expected" );
+			}
+			if ( $setting === $default ) {
+				unset( $block['attrs'][ self::FORM[ $key ][0] ] );
+			} else {
+				$block['attrs'][ self::FORM[ $key ][0] ] = $setting;
+			}
+		}
+	}
+
+	/**
+	 * A form's own fields, checked, in the block's shape.
+	 *
+	 * @param mixed  $value List of { label, type, required, options }.
+	 * @param string $at    Field path.
+	 * @return list<array<string, mixed>>
+	 * @throws InvalidArgumentException For a value of the wrong shape.
+	 */
+	private static function form_fields( mixed $value, string $at ): array {
+		if ( ! is_array( $value ) || ! array_is_list( $value ) || count( $value ) > Form::MAX_EXTRA ) {
+			throw new InvalidArgumentException( sprintf( '%s: a list of at most %d { label, type, required, options } is expected', $at, Form::MAX_EXTRA ) );
+		}
+		$fields = array();
+		foreach ( $value as $n => $field ) {
+			$where = sprintf( '%s[%d]', $at, $n + 1 );
+			if ( ! is_array( $field ) || array() !== array_diff( array_keys( $field ), array( 'label', 'type', 'required', 'options' ) ) ) {
+				throw new InvalidArgumentException( "$where: a field is { label, type, required, options }" );
+			}
+			$label = is_string( $field['label'] ?? null ) ? trim( $field['label'] ) : '';
+			if ( '' === $label || mb_strlen( $label ) > Form::MAX_LABEL ) {
+				throw new InvalidArgumentException( sprintf( '%s.label: a text of at most %d characters is expected', $where, Form::MAX_LABEL ) );
+			}
+			$type = $field['type'] ?? 'text';
+			if ( ! in_array( $type, Form::EXTRA_TYPES, true ) ) {
+				throw new InvalidArgumentException( "$where.type: one of " . implode( ', ', Form::EXTRA_TYPES ) );
+			}
+			$required = $field['required'] ?? false;
+			if ( ! is_bool( $required ) ) {
+				throw new InvalidArgumentException( "$where.required: true or false" );
+			}
+			$item = array(
+				'label'    => $label,
+				'type'     => $type,
+				'required' => $required,
+			);
+			if ( 'select' !== $type ) {
+				if ( isset( $field['options'] ) ) {
+					throw new InvalidArgumentException( "$where.options: only a select field has options" );
+				}
+				$fields[] = $item;
+				continue;
+			}
+			$options = $field['options'] ?? null;
+			if ( ! is_array( $options ) || ! array_is_list( $options ) || array() === $options || count( $options ) > Form::MAX_OPTIONS ) {
+				throw new InvalidArgumentException( sprintf( '%s.options: a list of 1 to %d choices is expected', $where, Form::MAX_OPTIONS ) );
+			}
+			foreach ( $options as $option ) {
+				if ( ( ! is_string( $option ) && ! is_int( $option ) && ! is_float( $option ) ) || '' === trim( (string) $option ) ) {
+					throw new InvalidArgumentException( "$where.options: every choice is a text" );
+				}
+			}
+			$item['options'] = array_values( array_unique( array_map( static fn( mixed $option ): string => trim( (string) $option ), $options ) ) );
+			$fields[]        = $item;
+		}
+		return $fields;
 	}
 
 	/**
