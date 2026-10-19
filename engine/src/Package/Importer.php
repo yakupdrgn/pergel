@@ -465,8 +465,11 @@ final class Importer {
 				'kind' => 'post-type',
 			);
 		} else {
+			// A root-relative address is the site's own, so it keeps the directory of a
+			// site in a subdirectory, as page links do; export makes it relative again.
+			$url    = (string) $item['url'];
 			$attrs += array(
-				'url'  => (string) $item['url'],
+				'url'  => str_starts_with( $url, '/' ) && ! str_starts_with( $url, '//' ) ? home_url( $url ) : $url,
 				'kind' => 'custom',
 			);
 		}

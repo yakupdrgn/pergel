@@ -46,6 +46,7 @@ final class ImporterTest extends TestCase {
 	  - pergel-test-hakkimizda
 	  - { page: pergel-test-hakkimizda/ekip, label: Ekip }
 	  - { label: Instagram, url: "https://instagram.com/ornek" }
+	  - { label: Ürünler, url: "/urunler/#liste" }
 	YAML;
 
 	/**
@@ -156,6 +157,7 @@ final class ImporterTest extends TestCase {
 		$this->assertStringContainsString( '"label":"Hakkımızda","type":"page","id":' . $made['/pergel-test-hakkimizda'], $menu );
 		$this->assertStringContainsString( '"label":"Ekip"', $menu );
 		$this->assertStringContainsString( '"url":"https://instagram.com/ornek","kind":"custom"', $menu );
+		$this->assertStringContainsString( '"url":"' . home_url( '/urunler/#liste' ) . '","kind":"custom"', $menu );
 
 		$again = $this->import();
 		$this->assertSame( array( 'keep' ), array_values( array_unique( array_column( $again, 'action' ) ) ), (string) wp_json_encode( $again ) );
