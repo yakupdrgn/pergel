@@ -86,6 +86,21 @@ function seed(): void {
 		)
 	);
 
+	// Questions the SEO matrix expects as a FAQPage (Pergel\Seo\Faq).
+	$details = '<!-- wp:details --><details class="wp-block-details"><summary>%s</summary>' . $paragraph . '</details><!-- /wp:details -->';
+	seed_post(
+		array(
+			'post_type'    => 'page',
+			'post_name'    => 'pergel-sample-faq',
+			'post_title'   => 'Pergel sample FAQ',
+			'post_content' => sprintf( $paragraph, $lorem ) . "\n\n"
+				. '<!-- wp:group {"className":"pergel-faq"} --><div class="wp-block-group pergel-faq">'
+				. sprintf( $details, 'Is the budget checked on every release?', 'Yes, on every pull request with the full-ci label and before each release.' )
+				. sprintf( $details, 'Does an SEO plugin change the result?', 'No. The questions reach the graph of whichever plugin prints it.' )
+				. '</div><!-- /wp:group -->',
+		)
+	);
+
 	// A static front page whose first section carries the H1, and a posts page.
 	$front = seed_post(
 		array(

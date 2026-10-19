@@ -1316,6 +1316,9 @@ verisini paket dosyalarına çeviren bir eşleyici olur.
   satırları) ve `file` (PDF bağlantısı).
 - **Şema bloklardan üretilir** ve SEO eklentisinin grafiğine eklenir (K8): SSS bölümündeki
   açılır bloklardan `FAQPage`, teknik özellik tablosundan Product `additionalProperty`.
+  Soru, `pergel-faq` sınıflı bir bloğun içinde olmalıdır: sayfanın başka yerindeki açılır
+  bloklar SSS sayılmaz. Bütün SSS pattern'leri bu sınıfı taşır, kart düzenindeki SSS de
+  (H3 ile açılan gruplar) okunur. Eklentinin kendi `FAQPage`'i varsa o kalır.
 - **Bölümlü ürün ayrı bir şablondur** (`single-product-sections`, "Bölümlü ürün"): açıklama
   akordeon yerine tam genişlikte, üstte bölüm menüsü. Paket ürünü bu şablona atar; şablonu
   seçmeyen dükkânların ürün sayfası değişmez.

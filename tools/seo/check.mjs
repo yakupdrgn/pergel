@@ -9,8 +9,9 @@
  * sitemaps, and fails when a tag is printed twice, a page has two
  * Organization or WebSite nodes, Pergel prints its fallback next to a
  * plugin, the Organization node lacks the brand details, the visible
- * breadcrumb (pergel/breadcrumb) differs from the BreadcrumbList, or the site
- * serves more than one sitemap. tools/seo/matrix.sh runs it for every scenario.
+ * breadcrumb (pergel/breadcrumb) differs from the BreadcrumbList, the FAQ
+ * page lacks its one FAQPage (or another page has one), or the site serves
+ * more than one sitemap. tools/seo/matrix.sh runs it for every scenario.
  */
 import { parseArgs } from 'node:util';
 
@@ -53,6 +54,7 @@ const PAGES = [
 	{ path: '/blog/', indexable: true, trail: true },
 	{ path: '/pergel-sample-post/', indexable: true, described: true, trail: true },
 	{ path: '/pergel-sample-page/', indexable: true, described: true, trail: true },
+	{ path: '/pergel-sample-faq/', indexable: true, described: true, trail: true, questions: 2 },
 	{ path: '/?category_name=pergel-test', indexable: true, trail: true },
 	{ path: '/?s=pergel', indexable: false },
 	{ path: '/pergel-seo-missing/', indexable: false, status: 404 },
@@ -171,7 +173,7 @@ function breadcrumb( where, html, all, trail ) {
 	return visible.length;
 }
 
-async function page( { path, indexable, described = false, trail = false, status = 200 } ) {
+async function page( { path, indexable, described = false, trail = false, questions = 0, status = 200 } ) {
 	const res = await get( BASE + path, { redirect: 'follow' } );
 	const html = await res.text();
 	const where = `${ args.scenario } ${ path }`;
@@ -211,7 +213,13 @@ async function page( { path, indexable, described = false, trail = false, status
 	const pergel = scripts.filter( ( m ) => /\bpergel-schema\b/.test( attrs( m[ 1 ] ).class ?? '' ) ).length;
 	const orgs = all.filter( isOrganization );
 	const sites = all.filter( ( n ) => types( n ).includes( 'WebSite' ) );
-	Object.assign( row, { ld: scripts.length, pergel, organization: orgs.length, website: sites.length, trail: breadcrumb( where, html, all, trail ) } );
+	const faqs = all.filter( ( n ) => types( n ).includes( 'FAQPage' ) );
+	Object.assign( row, { ld: scripts.length, pergel, organization: orgs.length, website: sites.length, trail: breadcrumb( where, html, all, trail ), faq: faqs.length } );
+	if ( faqs.length !== ( questions ? 1 : 0 ) ) {
+		fail( where, `${ faqs.length } FAQPage nodes, expected ${ questions ? 1 : 0 }` );
+	} else if ( questions && [ faqs[ 0 ].mainEntity ?? [] ].flat().length !== questions ) {
+		fail( where, `FAQPage has ${ [ faqs[ 0 ].mainEntity ?? [] ].flat().length } questions, expected ${ questions }` );
+	}
 	if ( orgs.length > 1 ) {
 		fail( where, `${ orgs.length } Organization nodes` );
 	}
