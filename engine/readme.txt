@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.2.1 =
+* Project packages: a section can set its width with `align: wide`, `full` or `none`, as the editor's width control does. An export writes it back for a section whose width differs from its pattern.
 
 = 1.2.0 =
 * Form block: up to ten extra fields of your own (short text, long text, phone, list), sent with the message under their labels. The message field can be made optional, for a quote form whose own fields already say what is needed.
