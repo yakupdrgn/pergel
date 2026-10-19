@@ -1336,6 +1336,12 @@ verisini paket dosyalarına çeviren bir eşleyici olur.
   pakette `sitemap.yaml` isteğe bağlıdır ve yoksa sayfalara, okuma ayarlarına, menüye
   dokunulmaz. Motor 1'den kendi numarasına kadar her formatı okur; dışa aktarma ürünsüz paketi
   format 1 yazar ki eski motorlar okuyabilsin.
+- **Ürün görselleri kırpılmaz (#35).** `product-figure` (16/9) ve `product-specs` (1/1)
+  görseli `object-fit: cover` ile kesiyordu; fotoğrafa uyar, ama bu bölümler şema ve ölçü
+  çizimi içindir ve ariumlab'ın 1280x606 çizimlerinin kenarları kayboluyordu. Görsel kendi
+  oranında gösterilir, kart köşesi kalır.
+- **v1.1.0 (19 Ekim 2026):** dört PR (#32–#34, #35) birleşti; "Tested up to" 7.1 kalır (7.2
+  beta'sı yok). Etiket ve taslak sürüm kullanıcı onayıyla.
 
 ## Aşamalar ve bitti tanımları
 
