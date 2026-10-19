@@ -280,6 +280,28 @@ final class ImporterTest extends TestCase {
 		$this->assertSame( array( "sitemap.yaml: pages[2]: adopt: page $id belongs to the package baska-paket" ), $problems );
 	}
 
+	public function test_an_attachment_at_the_address_of_a_page_stops_the_import(): void {
+		$id = wp_insert_attachment(
+			array(
+				'post_title'     => 'Ek',
+				'post_name'      => 'pergel-test-hakkimizda',
+				'post_mime_type' => 'image/png',
+			)
+		);
+		$about_page = "  - slug: pergel-test-hakkimizda
+    title: Hakkımızda
+    content: content/about.md
+";
+		$this->write( 'sitemap.yaml', str_replace( $about_page, $about_page . "    adopt: true
+", self::SITEMAP ) );
+		try {
+			$problems = $this->importer()->preflight();
+		} finally {
+			wp_delete_attachment( $id, true );
+		}
+		$this->assertSame( array( "sitemap.yaml: pages[2]: /pergel-test-hakkimizda/ is the address of the attachment $id; give the attachment another slug first" ), $problems );
+	}
+
 	public function test_a_language_that_is_not_installed_is_a_note_before_anything_is_saved(): void {
 		$yaml = (string) file_get_contents( "$this->dir/package.yaml" );
 		if ( in_array( 'zu_ZA', get_available_languages(), true ) ) {

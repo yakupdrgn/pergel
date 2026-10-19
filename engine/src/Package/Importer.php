@@ -168,6 +168,13 @@ final class Importer {
 			if ( isset( $this->owned[ '/' . $page['path'] ] ) ) {
 				continue;
 			}
+			// WordPress keeps pages and attachments in one address space, so a page
+			// saved at an attachment's address would get a -2 address.
+			$taken = '' === $page['path'] ? null : get_page_by_path( $page['path'] );
+			if ( $taken instanceof WP_Post && 'attachment' === $taken->post_type ) {
+				$problems[] = sprintf( 'sitemap.yaml: %s: /%s/ is the address of the attachment %d; give the attachment another slug first', $page['where'], $page['path'], $taken->ID );
+				continue;
+			}
 			if ( $page['adopt'] ) {
 				$found = $this->adoptable( $page );
 				if ( null === $found ) {
@@ -182,10 +189,6 @@ final class Importer {
 				$adopted[ $found->ID ] = $page['where'];
 				continue;
 			}
-			if ( '' === $page['path'] ) {
-				continue;
-			}
-			$taken = get_page_by_path( $page['path'] );
 			if ( $taken instanceof WP_Post && $taken->ID !== $this->shop_page( $page['type'] ) ) {
 				$problems[] = sprintf( 'sitemap.yaml: %s: /%s/ is page %d, which this package did not make; move or delete it first, or set adopt: true to take it over', $page['where'], $page['path'], $taken->ID );
 			}
