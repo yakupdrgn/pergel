@@ -182,31 +182,54 @@ final class Submit {
 		$values = array();
 		$labels = Form::labels( $spec['kind'] );
 		foreach ( Form::fields( $spec['kind'], $spec['optional'] ) as $name => $field ) {
-			$check = Schema::field(
+			[ $value, $error ] = self::check(
 				array(
 					'type' => $field['type'],
 					'max'  => $field['max'],
 				),
+				$field['required'],
+				$labels[ $name ],
 				$input[ $name ] ?? ''
 			);
-			if ( is_string( $check ) ) {
-				$result['errors'][ $name ] = Labels::problem( $check );
-			} elseif ( $field['required'] && '' === $check[0] ) {
-				/* translators: %s: field label. */
-				$result['errors'][ $name ] = sprintf( __( 'Fill in %s.', 'pergel-engine' ), $labels[ $name ] );
-			} elseif ( 'email' === $name && ! is_email( (string) $check[0] ) ) {
-				$result['errors'][ $name ] = Labels::problem( 'invalid_email' );
+			if ( '' !== $error ) {
+				$result['errors'][ $name ] = $error;
 			} else {
-				$values[ $name ] = (string) $check[0];
+				$values[ $name ] = $value;
 			}
 		}
+
+		// The post's fields and the editor's own fields come before the message.
+		$added = array();
 		if ( $spec['subject'] > 0 ) {
-			$about            = self::subject_values( $spec['subject'], $input );
+			$about            = self::subject_values( $spec['subject'], $input, array_column( $spec['extra'], 'key' ) );
 			$result['errors'] = $result['errors'] + $about['errors'];
-			$at               = array_search( 'message', array_keys( $values ), true );
-			$values           = false === $at
-				? $values + $about['values']
-				: array_slice( $values, 0, $at, true ) + $about['values'] + array_slice( $values, $at, null, true );
+			$added            = $about['values'];
+		}
+		foreach ( $spec['extra'] as $extra ) {
+			$field             = Form::extra_field( $extra );
+			[ $value, $error ] = self::check(
+				'select' === $field['type'] ? array(
+					'type'    => 'enum',
+					'options' => $field['options'],
+				) : array(
+					'type' => $field['type'],
+					'max'  => $field['max'],
+				),
+				$field['required'],
+				$extra['label'],
+				$input[ $extra['key'] ] ?? ''
+			);
+			if ( '' !== $error ) {
+				$result['errors'][ $extra['key'] ] = $error;
+			} else {
+				$added[ $extra['key'] ] = $value;
+			}
+		}
+		if ( array() !== $added ) {
+			$at     = array_search( 'message', array_keys( $values ), true );
+			$values = false === $at
+				? $values + $added
+				: array_slice( $values, 0, $at, true ) + $added + array_slice( $values, $at, null, true );
 		}
 		if ( $spec['consent'] && '1' !== ( $input['consent'] ?? null ) ) {
 			$result['errors']['consent'] = __( 'Tick the box to agree, so we can answer you.', 'pergel-engine' );
@@ -231,11 +254,12 @@ final class Submit {
 			$values['consent'] = gmdate( 'c' );
 		}
 
-		$entry           = Inbox::store( $spec['kind'], $values, $spec['post'] );
+		$own             = Form::extra_labels( $spec['extra'] );
+		$entry           = Inbox::store( $spec['kind'], $values, $spec['post'], $own );
 		$result['code']  = 'sent';
 		$result['entry'] = $entry;
 		if ( $entry > 0 ) {
-			update_post_meta( $entry, Inbox::META_MAILED, self::mail( $spec['kind'], $values, $spec['post'], $entry ) ? 1 : 0 );
+			update_post_meta( $entry, Inbox::META_MAILED, self::mail( $spec['kind'], $values, $spec['post'], $entry, $own ) ? 1 : 0 );
 
 			/**
 			 * Fires after a message is stored and mailed.
@@ -251,13 +275,40 @@ final class Submit {
 	}
 
 	/**
+	 * Checks one field.
+	 *
+	 * @param array{type: string, max?: int, options?: list<string>} $rule     Rule for Schema::field().
+	 * @param bool                                                   $required Whether it must be filled in.
+	 * @param string                                                 $label    Field label, for the error.
+	 * @param mixed                                                  $raw      Untrusted value.
+	 * @return array{0: string, 1: string} Clean value and error; the error is '' when the value is good.
+	 */
+	private static function check( array $rule, bool $required, string $label, mixed $raw ): array {
+		// An unchosen list has no value, which is not one of its choices.
+		$check = 'enum' === $rule['type'] && '' === $raw ? array( '' ) : Schema::field( $rule, $raw );
+		if ( is_string( $check ) ) {
+			return array( '', Labels::problem( $check ) );
+		}
+		$value = (string) $check[0];
+		if ( $required && '' === $value ) {
+			/* translators: %s: field label. */
+			return array( '', sprintf( __( 'Fill in %s.', 'pergel-engine' ), $label ) );
+		}
+		if ( 'email' === $rule['type'] && '' !== $value && ! is_email( $value ) ) {
+			return array( '', Labels::problem( 'invalid_email' ) );
+		}
+		return array( $value, '' );
+	}
+
+	/**
 	 * Checks the fields a form shows about the post it is on.
 	 *
 	 * @param int          $subject Post the form is about.
 	 * @param array<mixed> $input   Untrusted input, unslashed.
+	 * @param string[]     $extra   Names of the editor's own fields.
 	 * @return array{values: array<string, string>, errors: array<string, string>}
 	 */
-	private static function subject_values( int $subject, array $input ): array {
+	private static function subject_values( int $subject, array $input, array $extra ): array {
 		/**
 		 * Filters the checked values of the fields added with
 		 * pergel/forms/subject_fields. Return an array with 'values' (clean
@@ -269,7 +320,7 @@ final class Submit {
 		 * @param array<mixed> $input   Untrusted input, unslashed.
 		 */
 		$checked = apply_filters( 'pergel/forms/subject_values', null, $subject, $input );
-		$own     = array_merge( array_keys( Form::fields( 'contact', Form::OPTIONAL ) ), array( 'consent' ) );
+		$own     = array_merge( array_keys( Form::fields( 'contact', Form::OPTIONAL ) ), array( 'consent' ), $extra );
 		$clean   = array(
 			'values' => array(),
 			'errors' => array(),
@@ -375,9 +426,10 @@ final class Submit {
 	 * @param array<string, string> $values Clean field values.
 	 * @param int                   $post   Page the form was on.
 	 * @param int                   $entry  Stored message.
+	 * @param array<string, string> $own    Labels of the editor's own fields.
 	 * @return bool Whether wp_mail() accepted it.
 	 */
-	private static function mail( string $kind, array $values, int $post, int $entry ): bool {
+	private static function mail( string $kind, array $values, int $post, int $entry, array $own ): bool {
 		$site    = wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
 		$name    = $values['name'] ?? '';
 		$subject = 'quote' === $kind
@@ -385,7 +437,7 @@ final class Submit {
 			? sprintf( __( '[%1$s] Quote request from %2$s', 'pergel-engine' ), $site, $name )
 			/* translators: 1: site name, 2: sender's name. */
 			: sprintf( __( '[%1$s] Message from %2$s', 'pergel-engine' ), $site, $name );
-		$labels = Form::labels( $kind );
+		$labels = Form::labels( $kind ) + $own;
 		$lines  = array();
 		foreach ( $values as $field => $value ) {
 			$lines[] = ( $labels[ $field ] ?? $field ) . ":\n" . $value . "\n";

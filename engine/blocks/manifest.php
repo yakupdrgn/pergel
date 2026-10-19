@@ -313,6 +313,17 @@ return array (
         'type' => 'boolean',
         'default' => false,
       ),
+      'fields' => 
+      array (
+        'type' => 'array',
+        'default' => 
+        array (
+        ),
+        'items' => 
+        array (
+          'type' => 'object',
+        ),
+      ),
     ),
     'supports' => 
     array (

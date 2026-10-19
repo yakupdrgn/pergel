@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-19 05:20+0000\n"
-"PO-Revision-Date: 2026-10-19 05:20+0000\n"
+"POT-Creation-Date: 2026-10-19 07:37+0000\n"
+"PO-Revision-Date: 2026-10-19 07:37+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -249,6 +249,9 @@ msgstr "Mesaj gönderilemedi. Bağlantınızı kontrol edip yeniden deneyin."
 msgid "This form has expired. Reload the page and send it again."
 msgstr "Bu formun süresi doldu. Sayfayı yenileyip formu yeniden gönderin."
 
+msgid "Choose…"
+msgstr "Seçin…"
+
 msgid "I agree that my details are used to answer this message."
 msgstr "Bilgilerimin bu mesajı yanıtlamak için kullanılmasını kabul ediyorum."
 
@@ -330,12 +333,12 @@ msgstr "Gönderildi"
 msgid "Failed"
 msgstr "Başarısız"
 
+msgid "Tick the box to agree, so we can answer you."
+msgstr "Size yanıt verebilmemiz için onay kutusunu işaretleyin."
+
 #. translators: %s: field label.
 msgid "Fill in %s."
 msgstr "%s alanını doldurun."
-
-msgid "Tick the box to agree, so we can answer you."
-msgstr "Size yanıt verebilmemiz için onay kutusunu işaretleyin."
 
 #. translators: 1: site name, 2: sender's name.
 msgid "[%1$s] Quote request from %2$s"
@@ -1339,6 +1342,45 @@ msgstr "Sayma süresi (milisaniye)"
 msgid "The number counts up from zero when it scrolls into view. 0 shows it at once."
 msgstr "Sayı, görünür alana girdiğinde sıfırdan yukarı sayar. 0 girilirse sayı hemen gösterilir."
 
+msgid "Extra fields"
+msgstr "Ek alanlar"
+
+msgid "Shown before the message field, in this order."
+msgstr "Mesaj alanından önce, bu sırayla gösterilir."
+
+msgid "Label"
+msgstr "Etiket"
+
+msgid "Type"
+msgstr "Tür"
+
+msgid "Short text"
+msgstr "Kısa metin"
+
+msgid "Long text"
+msgstr "Uzun metin"
+
+msgid "List"
+msgstr "Liste"
+
+msgid "Choices"
+msgstr "Seçenekler"
+
+msgid "One per line."
+msgstr "Her satıra bir tane."
+
+msgid "Required"
+msgstr "Zorunlu"
+
+msgid "Move up"
+msgstr "Yukarı taşı"
+
+msgid "Move down"
+msgstr "Aşağı taşı"
+
+msgid "Add field"
+msgstr "Alan ekle"
+
 msgid "Kind"
 msgstr "Tür"
 
@@ -1455,9 +1497,6 @@ msgstr "Satıştaki ürünlerde de bağlantıları göster"
 
 msgid "Otherwise the block shows only where a product has no price or cart."
 msgstr "Aksi halde blok yalnızca fiyatı veya sepeti olmayan ürünlerde görünür."
-
-msgid "List"
-msgstr "Liste"
 
 msgid "Show"
 msgstr "Göster"

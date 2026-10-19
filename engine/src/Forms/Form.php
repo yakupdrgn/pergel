@@ -23,7 +23,13 @@ use Pergel\Core\Plugin;
  * post adds fields with pergel/forms/subject_fields and checks them with
  * pergel/forms/subject_values, e.g. a product's options on a quote form.
  *
- * @phpstan-type Spec array{kind: string, optional: list<string>, consent: bool, time: int, post: int, subject: int, id: string}
+ * The editor can add its own fields (the fields attribute): a label, a
+ * type, whether it is required and, for a list, its choices. They travel
+ * in the token too and come before the message field, named extra_1,
+ * extra_2 and so on in their order; the labels are kept with the message.
+ *
+ * @phpstan-type Extra array{key: string, label: string, type: string, required: bool, options: list<string>}
+ * @phpstan-type Spec array{kind: string, optional: list<string>, consent: bool, time: int, post: int, subject: int, id: string, extra: list<Extra>}
  */
 final class Form {
 
@@ -33,6 +39,19 @@ final class Form {
 	 * Fields the editor can switch on.
 	 */
 	public const OPTIONAL = array( 'phone', 'company' );
+
+	/**
+	 * Types of the editor's own fields.
+	 */
+	public const EXTRA_TYPES = array( 'text', 'textarea', 'tel', 'select' );
+
+	/**
+	 * At most this many own fields, list choices and characters in a
+	 * label or choice, so the token stays small.
+	 */
+	public const MAX_EXTRA   = 10;
+	public const MAX_OPTIONS = 30;
+	public const MAX_LABEL   = 100;
 
 	/**
 	 * Interactivity store namespace.
@@ -63,6 +82,7 @@ final class Form {
 		$consent  = true === ( $attributes['consent'] ?? false );
 		$post_id  = $block instanceof \WP_Block && is_int( $block->context['postId'] ?? null ) ? $block->context['postId'] : (int) get_the_ID();
 		$subject  = true === ( $attributes['aboutPost'] ?? false ) ? $post_id : 0;
+		$extra    = self::extra( $attributes['fields'] ?? array() );
 		$id       = 'pergel-form-' . ( ++self::$count );
 		$token    = self::sign(
 			array(
@@ -73,6 +93,7 @@ final class Form {
 				'post'     => $post_id,
 				'subject'  => $subject,
 				'id'       => $id,
+				'extra'    => $extra,
 			)
 		);
 
@@ -93,8 +114,11 @@ final class Form {
 		$labels = self::labels( $kind );
 		$fields = '';
 		foreach ( self::fields( $kind, $optional ) as $name => $field ) {
-			if ( 'message' === $name && $subject > 0 ) {
-				$fields .= self::subject_fields( $subject, $id );
+			if ( 'message' === $name ) {
+				$fields .= $subject > 0 ? self::subject_fields( $subject, $id ) : '';
+				foreach ( $extra as $own ) {
+					$fields .= self::field( $id, $own['key'], self::extra_field( $own ), $own['label'] );
+				}
 			}
 			$fields .= self::field( $id, $name, $field, $labels[ $name ] );
 		}
@@ -206,6 +230,91 @@ final class Form {
 	}
 
 	/**
+	 * The editor's own fields from the block attribute, cleaned and named
+	 * in their order. A field without a label, or a list without choices,
+	 * is left out.
+	 *
+	 * @param mixed $fields Block attribute.
+	 * @return list<array<string, mixed>>
+	 * @phpstan-return list<Extra>
+	 */
+	public static function extra( mixed $fields ): array {
+		$extra = array();
+		foreach ( is_array( $fields ) ? $fields : array() as $field ) {
+			if ( count( $extra ) >= self::MAX_EXTRA ) {
+				break;
+			}
+			if ( ! is_array( $field ) ) {
+				continue;
+			}
+			$label   = self::short( $field['label'] ?? '' );
+			$type    = in_array( $field['type'] ?? null, self::EXTRA_TYPES, true ) ? $field['type'] : 'text';
+			$options = array();
+			if ( 'select' === $type ) {
+				foreach ( is_array( $field['options'] ?? null ) ? $field['options'] : array() as $option ) {
+					$option = self::short( $option );
+					if ( '' !== $option && ! in_array( $option, $options, true ) && count( $options ) < self::MAX_OPTIONS ) {
+						$options[] = $option;
+					}
+				}
+			}
+			if ( '' === $label || ( 'select' === $type && array() === $options ) ) {
+				continue;
+			}
+			$extra[] = array(
+				'key'      => 'extra_' . ( count( $extra ) + 1 ),
+				'label'    => $label,
+				'type'     => $type,
+				'required' => true === ( $field['required'] ?? false ),
+				'options'  => $options,
+			);
+		}
+		return $extra;
+	}
+
+	/**
+	 * How one of the editor's own fields is drawn and checked.
+	 *
+	 * @param array<string, mixed> $extra Own field.
+	 * @phpstan-param Extra $extra
+	 * @return array{type: string, max: int, required: bool, autocomplete: string, options: list<string>}
+	 */
+	public static function extra_field( array $extra ): array {
+		return array(
+			'type'         => $extra['type'],
+			'max'          => match ( $extra['type'] ) {
+				'tel'      => 32,
+				'textarea' => 2000,
+				'select'   => self::MAX_LABEL,
+				default    => 200,
+			},
+			'required'     => $extra['required'],
+			'autocomplete' => 'tel' === $extra['type'] ? 'tel' : 'on',
+			'options'      => $extra['options'],
+		);
+	}
+
+	/**
+	 * Labels of the editor's own fields, by name.
+	 *
+	 * @param array<int, array<string, mixed>> $extra Own fields.
+	 * @phpstan-param list<Extra> $extra
+	 * @return array<string, string>
+	 */
+	public static function extra_labels( array $extra ): array {
+		return array_column( $extra, 'label', 'key' );
+	}
+
+	/**
+	 * One line of plain text, cut to MAX_LABEL characters.
+	 *
+	 * @param mixed $text Untrusted text.
+	 */
+	private static function short( mixed $text ): string {
+		return is_string( $text ) ? mb_substr( trim( (string) preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $text ) ) ), 0, self::MAX_LABEL ) : '';
+	}
+
+	/**
 	 * Text for a result code of Submit::handle(), and "offline" for a
 	 * request that did not reach the site.
 	 *
@@ -272,6 +381,8 @@ final class Form {
 			'post'     => $spec['post'],
 			'subject'  => $spec['subject'],
 			'id'       => $spec['id'],
+			// Signed clean, so cleaning again gives the same fields; tokens from 1.1 have none.
+			'extra'    => self::extra( $spec['extra'] ?? array() ),
 		);
 	}
 
@@ -339,22 +450,26 @@ final class Form {
 	/**
 	 * One field with its label and error slot.
 	 *
-	 * @param string                                                              $id    Form id.
-	 * @param string                                                              $name  Field name.
-	 * @param array{type: string, max: int, required: bool, autocomplete: string} $field Field definition.
-	 * @param string                                                              $label Label text.
+	 * @param string                                                                                      $id    Form id.
+	 * @param string                                                                                      $name  Field name.
+	 * @param array{type: string, max: int, required: bool, autocomplete: string, options?: list<string>} $field Field definition.
+	 * @param string                                                                                      $label Label text.
 	 */
 	private static function field( string $id, string $name, array $field, string $label ): string {
 		$input   = $id . '-' . $name;
 		$attrs   = ' id="' . esc_attr( $input ) . '" name="' . esc_attr( $name ) . '"'
 			. ' autocomplete="' . esc_attr( $field['autocomplete'] ) . '"'
-			. ( 'textarea' === $field['type'] ? '' : ' maxlength="' . esc_attr( (string) $field['max'] ) . '"' )
+			. ( in_array( $field['type'], array( 'textarea', 'select' ), true ) ? '' : ' maxlength="' . esc_attr( (string) $field['max'] ) . '"' )
 			. ( $field['required'] ? ' required' : '' )
 			. ' aria-describedby="' . esc_attr( $input ) . '-error" data-wp-bind--aria-invalid="state.invalid"';
-		$control = 'textarea' === $field['type']
-			? '<textarea rows="6"' . $attrs . '></textarea>'
-			: '<input type="' . esc_attr( $field['type'] ) . '"' . $attrs . '>';
-		return '<div class="wp-block-pergel-form__field is-' . esc_attr( $name ) . '" ' . wp_interactivity_data_wp_context( array( 'field' => $name ) ) . '>'
+		$control = match ( $field['type'] ) {
+			'textarea' => '<textarea rows="' . ( 'message' === $name ? 6 : 3 ) . '"' . $attrs . '></textarea>',
+			'select'   => '<select' . $attrs . '><option value="">' . esc_html__( 'Choose…', 'pergel-engine' ) . '</option>'
+				. implode( '', array_map( static fn ( string $option ): string => '<option>' . esc_html( $option ) . '</option>', $field['options'] ?? array() ) )
+				. '</select>',
+			default    => '<input type="' . esc_attr( $field['type'] ) . '"' . $attrs . '>',
+		};
+		return '<div class="wp-block-pergel-form__field is-' . esc_attr( $name ) . ( 'textarea' === $field['type'] && 'message' !== $name ? ' is-wide' : '' ) . '" ' . wp_interactivity_data_wp_context( array( 'field' => $name ) ) . '>'
 			. '<label for="' . esc_attr( $input ) . '">' . esc_html( $label ) . ( $field['required'] ? ' <span aria-hidden="true">*</span>' : '' ) . '</label>'
 			. $control
 			. self::error( $input )

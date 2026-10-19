@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-19T08:20:21+03:00\n"
+"POT-Creation-Date: 2026-10-19T10:36:53+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -256,6 +256,9 @@ msgstr ""
 msgid "This form has expired. Reload the page and send it again."
 msgstr ""
 
+msgid "Choose…"
+msgstr ""
+
 msgid "I agree that my details are used to answer this message."
 msgstr ""
 
@@ -340,12 +343,12 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+msgid "Tick the box to agree, so we can answer you."
+msgstr ""
+
 #. translators: %s: field label.
 #, php-format
 msgid "Fill in %s."
-msgstr ""
-
-msgid "Tick the box to agree, so we can answer you."
 msgstr ""
 
 #. translators: 1: site name, 2: sender's name.
@@ -1379,6 +1382,45 @@ msgstr ""
 msgid "The number counts up from zero when it scrolls into view. 0 shows it at once."
 msgstr ""
 
+msgid "Extra fields"
+msgstr ""
+
+msgid "Shown before the message field, in this order."
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Short text"
+msgstr ""
+
+msgid "Long text"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "Choices"
+msgstr ""
+
+msgid "One per line."
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Move up"
+msgstr ""
+
+msgid "Move down"
+msgstr ""
+
+msgid "Add field"
+msgstr ""
+
 msgid "Kind"
 msgstr ""
 
@@ -1494,9 +1536,6 @@ msgid "Links on products for sale too"
 msgstr ""
 
 msgid "Otherwise the block shows only where a product has no price or cart."
-msgstr ""
-
-msgid "List"
 msgstr ""
 
 msgid "Show"

@@ -26,6 +26,7 @@ final class Inbox {
 	public const META_EMAIL  = '_pergel_email';
 	public const META_PAGE   = '_pergel_page';
 	public const META_MAILED = '_pergel_mailed';
+	public const META_LABELS = '_pergel_labels';
 
 	/**
 	 * Where the message was passed on: label and result by service id.
@@ -91,9 +92,10 @@ final class Inbox {
 	 * @param string                $kind   contact or quote.
 	 * @param array<string, string> $values Clean field values.
 	 * @param int                   $page   Page the form was on.
+	 * @param array<string, string> $labels Labels of the editor's own fields, by name.
 	 * @return int Entry id, 0 when it could not be stored.
 	 */
-	public static function store( string $kind, array $values, int $page ): int {
+	public static function store( string $kind, array $values, int $page, array $labels = array() ): int {
 		if ( ! post_type_exists( self::TYPE ) ) {
 			self::register_type();
 		}
@@ -108,11 +110,23 @@ final class Inbox {
 					self::META_FIELDS => $values,
 					self::META_EMAIL  => strtolower( $values['email'] ?? '' ),
 					self::META_PAGE   => $page,
-				),
+				) + ( array() === $labels ? array() : array( self::META_LABELS => $labels ) ),
 			),
 			true
 		);
 		return is_int( $id ) ? $id : 0;
+	}
+
+	/**
+	 * Field labels of a stored message: the form's own and those kept with it.
+	 *
+	 * @param int    $id   Entry.
+	 * @param string $kind contact or quote.
+	 * @return array<string, string>
+	 */
+	private static function labels( int $id, string $kind ): array {
+		$kept = get_post_meta( $id, self::META_LABELS, true );
+		return Form::labels( '' === $kind ? 'contact' : $kind ) + array_filter( is_array( $kept ) ? $kept : array(), 'is_string' );
 	}
 
 	/**
@@ -221,7 +235,7 @@ final class Inbox {
 	public static function message_box( \WP_Post $post ): void {
 		$kind   = (string) get_post_meta( $post->ID, self::META_KIND, true );
 		$values = get_post_meta( $post->ID, self::META_FIELDS, true );
-		$labels = Form::labels( '' === $kind ? 'contact' : $kind );
+		$labels = self::labels( $post->ID, $kind );
 		echo '<table class="form-table" role="presentation"><tbody>';
 		foreach ( is_array( $values ) ? $values : array() as $field => $value ) {
 			if ( ! is_string( $field ) || ! is_string( $value ) ) {
@@ -313,7 +327,7 @@ final class Inbox {
 		foreach ( $entries as $id ) {
 			$values = get_post_meta( $id, self::META_FIELDS, true );
 			$kind   = (string) get_post_meta( $id, self::META_KIND, true );
-			$labels = Form::labels( '' === $kind ? 'contact' : $kind );
+			$labels = self::labels( $id, $kind );
 			$items  = array(
 				array(
 					'name'  => __( 'Received', 'pergel-engine' ),

@@ -365,6 +365,121 @@ final class FormsTest extends TestCase {
 		$this->assertStringNotContainsString( 'test-about', do_blocks( '<!-- wp:pergel/form /-->' ) );
 	}
 
+	public function test_own_fields_are_drawn_before_the_message_and_signed(): void {
+		$fields = array(
+			array(
+				'label'    => ' Country ',
+				'required' => true,
+			),
+			array( 'label' => '' ),
+			array(
+				'label'   => 'Your request',
+				'type'    => 'select',
+				'options' => array( 'Pricing', '', 'Pricing', '<b>Demo</b>' ),
+			),
+			array(
+				'label' => 'Empty list',
+				'type'  => 'select',
+			),
+			array(
+				'label' => 'Delivery address',
+				'type'  => 'textarea',
+			),
+			array(
+				'label' => 'Mobile',
+				'type'  => 'tel',
+				'extra' => 'ignored',
+			),
+		);
+		$html   = do_blocks( '<!-- wp:pergel/form ' . wp_json_encode( array( 'fields' => $fields ) ) . ' /-->' );
+
+		$this->assertStringContainsString( '<label for="pergel-form-1-extra_1">Country <span aria-hidden="true">*</span></label><input type="text" id="pergel-form-1-extra_1" name="extra_1" autocomplete="on" maxlength="200" required', $html );
+		$this->assertStringContainsString( '<select id="pergel-form-1-extra_2" name="extra_2" autocomplete="on" aria-describedby', $html );
+		$this->assertStringContainsString( '<option value="">' . esc_html__( 'Choose…', 'pergel-engine' ) . '</option><option>Pricing</option><option>Demo</option></select>', $html );
+		$this->assertStringContainsString( 'class="wp-block-pergel-form__field is-extra_3 is-wide"', $html );
+		$this->assertStringContainsString( 'name="extra_4" autocomplete="tel"', $html );
+		$this->assertStringNotContainsString( 'Empty list', $html );
+		$this->assertMatchesRegularExpression( '/name="extra_4".*is-message/s', $html );
+		$this->assertSame( 1, preg_match( '/name="token" value="([^"]+)"/', $html, $token ) );
+		$spec = Form::verify( $token[1] );
+		$this->assertNotNull( $spec );
+		$this->assertSame(
+			array(
+				'extra_1' => 'Country',
+				'extra_2' => 'Your request',
+				'extra_3' => 'Delivery address',
+				'extra_4' => 'Mobile',
+			),
+			Form::extra_labels( $spec['extra'] )
+		);
+		$this->assertSame( array( 'Pricing', 'Demo' ), $spec['extra'][1]['options'] );
+		$this->assertTrue( $spec['extra'][0]['required'] );
+
+		// A token from 1.1 has no own fields.
+		$this->assertSame( array(), Form::verify( Form::sign( self::spec() ) )['extra'] ?? null );
+	}
+
+	public function test_own_fields_are_checked_kept_and_mailed_with_their_labels(): void {
+		$spec = array(
+			'extra' => Form::extra(
+				array(
+					array(
+						'label'    => 'Country',
+						'required' => true,
+					),
+					array(
+						'label'    => 'Your request',
+						'type'     => 'select',
+						'options'  => array( 'Pricing', 'Demo' ),
+						'required' => true,
+					),
+					array(
+						'label'   => 'Product',
+						'type'    => 'select',
+						'options' => array( 'Ariumbot' ),
+					),
+					array(
+						'label' => 'Mobile',
+						'type'  => 'tel',
+					),
+				)
+			),
+		) + self::spec( false );
+
+		$wrong = Submit::handle(
+			array(
+				'token'   => Form::sign( $spec ),
+				'extra_2' => 'Something else',
+				'extra_4' => 'call me',
+			) + self::fields(),
+			$this->ip
+		);
+		$this->assertSame( 'invalid', $wrong['code'] );
+		$this->assertSame( array( 'extra_1', 'extra_2', 'extra_4' ), array_keys( $wrong['errors'] ) );
+		/* translators: %s: field label. */
+		$this->assertSame( sprintf( __( 'Fill in %s.', 'pergel-engine' ), 'Country' ), $wrong['errors']['extra_1'] );
+		$this->assertSame( array(), $this->mails );
+
+		$result = Submit::handle(
+			array(
+				'token'   => Form::sign( $spec ),
+				'extra_1' => ' Estonia ',
+				'extra_2' => 'Demo',
+			) + self::fields(),
+			$this->ip
+		);
+		$this->assertSame( 'sent', $result['code'] );
+		$stored = get_post_meta( $result['entry'], Inbox::META_FIELDS, true );
+		$this->assertIsArray( $stored );
+		$this->assertSame( array( 'name', 'email', 'phone', 'extra_1', 'extra_2', 'extra_3', 'extra_4', 'message' ), array_keys( $stored ) );
+		$this->assertSame( 'Estonia', $stored['extra_1'] );
+		$this->assertSame( '', $stored['extra_3'] );
+		$this->assertSame( Form::extra_labels( $spec['extra'] ), get_post_meta( $result['entry'], Inbox::META_LABELS, true ) );
+		$this->assertStringContainsString( "Country:\nEstonia\n", (string) $this->mails[0]['message'] );
+		$this->assertStringContainsString( "Your request:\nDemo\n", (string) $this->mails[0]['message'] );
+		$this->assertContains( 'Country', array_column( Inbox::export( 'ada@example.invalid' )['data'][0]['data'], 'name' ) );
+	}
+
 	public function test_the_page_shows_the_result_of_a_form_sent_without_javascript(): void {
 		$_GET['pergel_form']    = 'sent';
 		$_GET['pergel_form_id'] = 'pergel-form-2';

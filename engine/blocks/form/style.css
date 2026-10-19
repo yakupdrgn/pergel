@@ -14,6 +14,7 @@
 
 .wp-block-pergel-form > :not(.wp-block-pergel-form__field),
 .wp-block-pergel-form__field.is-message,
+.wp-block-pergel-form__field.is-wide,
 .wp-block-pergel-form__field.is-consent {
 	grid-column: 1 / -1;
 }
