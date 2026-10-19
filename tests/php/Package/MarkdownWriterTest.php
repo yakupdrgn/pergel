@@ -56,6 +56,16 @@ final class MarkdownWriterTest extends TestCase {
 		$this->assertSame( $back ?? $html, Markdown::inline( $markdown ) );
 	}
 
+	public function test_heading_anchor(): void {
+		$block = array(
+			'blockName'    => 'core/heading',
+			'attrs'        => array( 'level' => 3 ),
+			'innerBlocks'  => array(),
+			'innerContent' => array( "\n<h3 class=\"wp-block-heading\" id=\"warranty\">Warranty</h3>\n" ),
+		);
+		$this->assertSame( '### Warranty {#warranty}', MarkdownWriter::block( $block, static fn(): ?string => null ) );
+	}
+
 	public function test_inner(): void {
 		$this->assertSame( 'a <p>b</p> c', MarkdownWriter::inner( '<div><p class="x">a <p>b</p> c</p></div>', 'p' ) );
 		$this->assertNull( MarkdownWriter::inner( '<div>x</div>', 'p' ) );

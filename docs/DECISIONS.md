@@ -1384,6 +1384,26 @@ Sayfaları silip yeniden yapmak kimliklerini, yorumlarını ve iç bağlantılar
   prova) kök alana gidiyordu. Dışa aktarma site adresini zaten siliyordu, gidiş-dönüş değişmez.
   İçerikteki (Markdown) bağlantılar şimdilik olduğu gibi yazılır.
 
+## v1.3: içerik boşlukları (19 Ekim 2026, kullanıcı kararı)
+
+F7 metinleri yazılırken üç sayfa paketle ifade edilemedi; üçü tek değişiklikte kapatıldı.
+
+- **Form bir paket alanıdır** (`form`). İletişim ve teklif sayfalarının ek alanlı formları
+  (ülke, talep türü, ürün listesi) içerik dosyasında yazılabilir; yoksa bu sayfalar ya
+  içeriksiz sahiplenilecek ya da elle düzenlenecekti. Değer bloğun ayarlarıdır, bloğun kendi
+  doğrulamasıyla aynı sınırlar (en çok 10 ek alan, 30 seçenek, 100 karakter etiket) kontrol
+  edilir. Yazılmayan ayar pattern'inkini korur; varsayılana eşit ayar, editörün yaptığı gibi,
+  işaretlemeye yazılmaz. Dışa aktarma bütün ayarları yazar, böylece gidiş-dönüş kayıpsızdır.
+- **Markdown başlığı çapa alır:** `## Garanti {#warranty}`. Hukuki bilgi sayfası ve
+  yönlendirmeler `#gts`, `#warranty` gibi çapalara gidiyor. Ad harfle başlar; harf, rakam, `-`
+  ve `_` içerir; geçersiz ad satır numarasıyla reddedilir. Çapa, editörün kaydettiği gibi
+  başlığın `id` özniteliğidir.
+- **İçerikteki kök göreli bağlantılar da `home_url` ile yazılır** (Markdown, metin alanları ve
+  düğmeler), menüde olduğu gibi. `Markdown::url()` yalnız denetim olarak kalır (menü doğrulaması
+  ve dışa aktarma onu kullanır); adresi çözen `Markdown::href()`, tersini
+  `MarkdownWriter::address()` yapar. Pattern'lerdeki düz `/x/` adresleri artık yeniden
+  yazıldığında site adresini alır; kök alandaki sitede davranış değişmez.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

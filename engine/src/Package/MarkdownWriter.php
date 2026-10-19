@@ -41,7 +41,8 @@ final class MarkdownWriter {
 					return null;
 				}
 				$text = self::inline( $text );
-				return '' === $text || str_contains( $text, "\n" ) ? null : str_repeat( '#', $level ) . ' ' . $text;
+				$id   = preg_match( '/<h' . $level . '\b[^>]*\sid="([A-Za-z][A-Za-z0-9_-]*)"/', $html, $m ) ? ' {#' . $m[1] . '}' : '';
+				return '' === $text || str_contains( $text, "\n" ) ? null : str_repeat( '#', $level ) . ' ' . $text . $id;
 			case 'core/list':
 				return self::list_block( $block );
 			case 'core/quote':
@@ -113,7 +114,7 @@ final class MarkdownWriter {
 				} elseif ( in_array( $tag, array( 'em', 'i' ), true ) ) {
 					$stack[] = array( $tag, '*', '*', '' );
 				} elseif ( 'a' === $tag ) {
-					$href    = preg_match( '/\shref="([^"]*)"/i', $m[3], $h ) ? self::decode( $h[1] ) : '';
+					$href    = preg_match( '/\shref="([^"]*)"/i', $m[3], $h ) ? self::address( self::decode( $h[1] ) ) : '';
 					$stack[] = array( 'a', '[', '](' . $href . ')', '' );
 				} else {
 					// Other tags (span, mark, s) are left out; their text stays.
@@ -278,6 +279,20 @@ final class MarkdownWriter {
 		$text = (string) preg_replace( '/([\\\\`*\[\]])/', '\\\\$1', $text );
 		// An underscore inside a word is not emphasis.
 		return (string) preg_replace( '/(?<![\p{L}\p{N}])_|_(?![\p{L}\p{N}])/u', '\\\\_', $text );
+	}
+
+	/**
+	 * A link address as a package writes it: on a site, one under the home
+	 * address starts with / again. The reverse of Markdown::href().
+	 *
+	 * @param string $url Address in the markup.
+	 */
+	public static function address( string $url ): string {
+		if ( ! function_exists( 'home_url' ) ) {
+			return $url;
+		}
+		$home = untrailingslashit( home_url() );
+		return str_starts_with( $url, $home . '/' ) ? substr( $url, strlen( $home ) ) : $url;
 	}
 
 	/**

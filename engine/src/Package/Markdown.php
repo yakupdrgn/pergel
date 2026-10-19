@@ -21,12 +21,15 @@ use InvalidArgumentException;
  * "this block contains unexpected content" warning. Pure PHP for unit tests.
  *
  * Blocks: paragraphs, ## to ###### headings (the page title is the only
- * H1, so # is refused), - * + and 1. lists (nested by indentation),
- * > quotes, ``` code, --- separators, a line holding only ![alt](src
- * "caption") as an image and | tables with a |---| row.
+ * H1, so # is refused; a closing {#name} is the heading's HTML anchor),
+ * - * + and 1. lists (nested by indentation), > quotes, ``` code, ---
+ * separators, a line holding only ![alt](src "caption") as an image and |
+ * tables with a |---| row.
  * Inline: **strong**, *em* or _em_, `code`, [text](url) and a line ending in
  * two spaces or \ as a line break. HTML is shown as text, never run: the
- * package format has no Custom HTML block.
+ * package format has no Custom HTML block. On a site, a link address that
+ * starts with one / gets the home address in front, so it works when
+ * WordPress is in a subdirectory.
  */
 final class Markdown {
 
@@ -145,8 +148,16 @@ final class Markdown {
 		if ( 1 === $level ) {
 			throw new InvalidArgumentException( 'a # heading is the page title, which the page already has; start body headings at ##' );
 		}
+		$id = '';
+		if ( preg_match( '/\s*\{#([^}]*)\}$/', $text, $m ) ) {
+			if ( ! preg_match( '/^[A-Za-z][A-Za-z0-9_-]*$/', $m[1] ) ) {
+				throw new InvalidArgumentException( "the heading anchor {#$m[1]} is not a name; start with a letter and use letters, digits, - and _" );
+			}
+			$text = substr( $text, 0, -strlen( $m[0] ) );
+			$id   = ' id="' . $m[1] . '"';
+		}
 		$attrs = 2 === $level ? '' : ' {"level":' . $level . '}';
-		return "<!-- wp:heading$attrs -->\n<h$level class=\"wp-block-heading\">" . self::inline( $text ) . "</h$level>\n<!-- /wp:heading -->";
+		return "<!-- wp:heading$attrs -->\n<h$level class=\"wp-block-heading\"$id>" . self::inline( $text ) . "</h$level>\n<!-- /wp:heading -->";
 	}
 
 	/**
@@ -391,7 +402,7 @@ final class Markdown {
 		$text = (string) preg_replace_callback(
 			'/\[([^\]]+)\]\(\s*([^)\s]+)\s*\)/',
 			static function ( array $m ) use ( &$held ): string {
-				$held[] = '<a href="' . self::attr( self::url( $m[2] ) ) . '">';
+				$held[] = '<a href="' . self::attr( self::href( $m[2] ) ) . '">';
 				$held[] = '</a>';
 				return "\x01" . ( count( $held ) - 2 ) . "\x02" . $m[1] . "\x01" . ( count( $held ) - 1 ) . "\x02";
 			},
@@ -421,6 +432,20 @@ final class Markdown {
 			throw new InvalidArgumentException( "the link \"$url\" uses $m[1]:, which is not allowed" );
 		}
 		return $url;
+	}
+
+	/**
+	 * A checked link address as it goes in the markup: on a site, one that
+	 * starts with a single / gets the home address in front, so it keeps the
+	 * directory of a site in a subdirectory. MarkdownWriter::address() is
+	 * the reverse.
+	 *
+	 * @param string $url Address as written.
+	 * @throws InvalidArgumentException For a scheme that is not allowed.
+	 */
+	public static function href( string $url ): string {
+		$url = self::url( $url );
+		return str_starts_with( $url, '/' ) && ! str_starts_with( $url, '//' ) && function_exists( 'home_url' ) ? home_url( $url ) : $url;
 	}
 
 	/**

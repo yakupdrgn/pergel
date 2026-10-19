@@ -47,6 +47,20 @@ final class MarkdownTest extends TestCase {
 		);
 	}
 
+	public function test_headings_take_an_anchor(): void {
+		$this->assertSame(
+			"<!-- wp:heading -->\n<h2 class=\"wp-block-heading\" id=\"warranty\">Warranty <em>policy</em></h2>\n<!-- /wp:heading -->\n\n"
+			. "<!-- wp:heading {\"level\":3} -->\n<h3 class=\"wp-block-heading\" id=\"gts_v2\">Terms</h3>\n<!-- /wp:heading -->",
+			self::convert( "## Warranty *policy* {#warranty}\n\n### Terms {#gts_v2} ###" )
+		);
+		try {
+			self::convert( "Metin\n\n## Başlık {#2-bad}" );
+			$this->fail( 'Expected an error.' );
+		} catch ( InvalidArgumentException $e ) {
+			$this->assertStringStartsWith( 'line 3: the heading anchor {#2-bad} is not a name', $e->getMessage() );
+		}
+	}
+
 	public function test_inline_spans_escape_html(): void {
 		$this->assertSame(
 			'<strong>Kalın</strong>, <em>eğik</em>, <em>alt</em>, <code>&lt;b&gt;</code>, <a href="/urunler/?a=1&amp;b=2">ürünler</a>, &lt;script&gt; "tırnak" snake_case_word *yıldız*<br>yeni satır',

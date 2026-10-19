@@ -173,6 +173,7 @@ kullanılabilir. `wp pergel pattern fields <ad>` alanları örnek değerleriyle 
 | `file` | dosya (veri sayfası, kılavuz) | yol veya `{ src, label }`; `label` bağlantı metni |
 | `summary` | açılır (details) bloğun başlığı | metin |
 | `quote`, `cite` | alıntı paragrafları ve kaynağı | metin |
+| `form` | Pergel formu | `{ kind, phone, company, consent, submit_label, success_message, about_post, fields }` |
 | `items` | aynı türden, alanları eşleşen kardeş bloklar | alan haritaları listesi |
 
 - Aynı kapsamda ikinci bir alan `text_2`, `heading_2` diye adlandırılır.
@@ -181,21 +182,30 @@ kullanılabilir. `wp pergel pattern fields <ad>` alanları örnek değerleriyle 
   öğeler arasındaki ayraç ve boşluk blokları öğelerle birlikte gelir ve gider. Öğeler öğe
   içerebilir.
 - Metinler satır içi Markdown alır (`**kalın**`, `*italik*`, `` `kod` ``, `[bağlantı](url)`).
+- `/` ile başlayan (kök göreli) bağlantı ve düğme adresi sitenin adresiyle yazılır (`home_url`),
+  böylece alt dizindeki bir sitede de çalışır; dışa aktarma adresi yine `/` ile yazar.
+- `form` ayarları: `kind` `contact` veya `quote`; `phone`, `company`, `consent` (onay kutusu),
+  `about_post` (formu bulunduğu yazı veya ürün hakkında sorar) `true`/`false`; `submit_label` ve
+  `success_message` metin (boş: varsayılan). `fields` en çok 10 ek alan:
+  `{ label, type, required, options }`; `type` `text` (varsayılan), `textarea`, `tel` veya
+  `select`; `options` yalnızca `select` için ve zorunlu (en çok 30 seçenek). Yazılmayan ayar
+  pattern'in ayarını korur.
 - Tablo hücresi, pattern'deki aynı sütunun hücre etiketini (hizalama, satır başlığı) korur; alt
   satır (tfoot), stil ve tablo açıklaması kalır.
 - `file` alanı yalnızca `media/` altındaki bir PDF'i (ya da görseli) alır; dosya ortam
   kütüphanesine görsel gibi yüklenir.
 - `null` bloğu kaldırır. Yazılmayan alan pattern'in örnek metnini korur ve not olarak bildirilir.
-- Site verisi gösteren bloklar (sorgular, gezinme, formlar, harita, mağaza blokları, iç içe
+- Site verisi gösteren bloklar (sorgular, gezinme, harita, mağaza blokları, iç içe
   pattern'ler) alan değildir.
 
 ### Markdown alt kümesi
 
-Paragraflar; `##`–`######` başlıklar (`#` reddedilir: H1 sayfa başlığıdır); `-`, `*`, `+` ve
+Paragraflar; `##`–`######` başlıklar (`#` reddedilir: H1 sayfa başlığıdır; sondaki
+`{#garanti}` başlığa HTML çapası verir, bağlantı `/sayfa/#garanti` olur); `-`, `*`, `+` ve
 `1.` listeler (girintiyle iç içe); `>` alıntılar; ```` ``` ```` kod; `---` ayraç; tek başına
 bir satırda `![alt](media/x.jpg "açıklama")` görsel; `|---|` satırlı tablolar. HTML metin olarak
-gösterilir, çalıştırılmaz; pakette "Özel HTML" bloğu yoktur. Hatalar satır numarasıyla
-bildirilir.
+gösterilir, çalıştırılmaz; pakette "Özel HTML" bloğu yoktur. Bağlantılar alanlardaki gibi
+çözülür. Hatalar satır numarasıyla bildirilir.
 
 ### YAML alt kümesi
 
