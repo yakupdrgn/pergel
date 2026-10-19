@@ -19,8 +19,8 @@ use WP_Post;
 
 /**
  * The reverse of Importer: site options, Pergel settings, pages, the menu,
- * images and brand tokens as package.yaml, sitemap.yaml, content/*.md,
- * media/, media.yaml and brand/tokens.json.
+ * products, images and brand tokens as package.yaml, sitemap.yaml,
+ * content/*.md, products/*.md, media/, media.yaml and brand/tokens.json.
  *
  * A section a pattern made (its root block names the pattern, as the block
  * inserter and the importer mark it) is read back into the pattern's
@@ -32,6 +32,8 @@ use WP_Post;
  *
  * By default the pages a package made are exported, so a site built from
  * a package gives that package back; $all exports every published page.
+ * Products are exported when the package filled them in, each with the
+ * fields it wrote: a package of products without pages gets no sitemap.
  *
  * @phpstan-import-type Row from Importer
  * @phpstan-type Item array{label: string, page: string|null, url: string|null, children: list<array<string, mixed>>}
@@ -139,14 +141,14 @@ final class Exporter {
 	}
 
 	/**
-	 * Names of the packages that made pages on this site.
+	 * Names of the packages that made pages or filled in products on this site.
 	 *
 	 * @return list<string>
 	 */
 	public static function names(): array {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- CLI only, one query.
-		$names = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT m.meta_value FROM {$wpdb->postmeta} m JOIN {$wpdb->posts} p ON p.ID = m.post_id WHERE m.meta_key = %s AND p.post_type = 'page' AND p.post_status = 'publish' ORDER BY m.meta_value", Importer::META ) );
+		$names = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT m.meta_value FROM {$wpdb->postmeta} m JOIN {$wpdb->posts} p ON p.ID = m.post_id WHERE m.meta_key = %s AND ( ( p.post_type = 'page' AND p.post_status = 'publish' ) OR ( p.post_type = 'product' AND p.post_status <> 'trash' ) ) ORDER BY m.meta_value", Importer::META ) );
 		return array_values( array_map( 'strval', (array) $names ) );
 	}
 
@@ -182,20 +184,29 @@ final class Exporter {
 	/**
 	 * Runs the export.
 	 *
-	 * @throws InvalidArgumentException When there are no pages to export or a file cannot be written.
+	 * @throws InvalidArgumentException When there are no pages or products to export or a file cannot be written.
 	 */
 	public function run(): void {
-		$pages = $this->find_pages();
-		if ( array() === $pages ) {
-			throw new InvalidArgumentException( esc_html( $this->all ? 'There is no published page to export.' : "No published page was made by the package $this->name; --all exports every page." ) );
+		$pages    = $this->find_pages();
+		$products = $this->find_products();
+		if ( array() === $pages && array() === $products ) {
+			throw new InvalidArgumentException( esc_html( $this->all ? 'There is no published page to export.' : "No published page or product was made by the package $this->name; --all exports every page." ) );
 		}
-		$sitemap = array( 'pages' => $this->sitemap( $pages, $this->children( $pages ), 0 ) );
-		$menu    = $this->menu();
-		if ( null !== $menu ) {
-			$sitemap['menu'] = $menu;
+		$sitemap = null;
+		if ( array() !== $pages ) {
+			$sitemap = array( 'pages' => $this->sitemap( $pages, $this->children( $pages ), 0 ) );
+			$menu    = $this->menu();
+			if ( null !== $menu ) {
+				$sitemap['menu'] = $menu;
+			}
 		}
-		$this->put( 'package.yaml', $this->site(), '' );
-		$this->put( 'sitemap.yaml', Yaml::dump( $sitemap ), '' );
+		foreach ( $products as $product ) {
+			$this->product( $product );
+		}
+		$this->put( 'package.yaml', $this->site( array() !== $products ), '' );
+		if ( null !== $sitemap ) {
+			$this->put( 'sitemap.yaml', Yaml::dump( $sitemap ), '' );
+		}
 		$this->tokens();
 		if ( array() !== $this->media ) {
 			ksort( $this->media );
@@ -229,6 +240,84 @@ final class Exporter {
 			$pages[ $page->ID ] = $page;
 		}
 		return $pages;
+	}
+
+	/**
+	 * Products the package filled in, by ID.
+	 *
+	 * @return array<int, WP_Post>
+	 */
+	private function find_products(): array {
+		if ( ! post_type_exists( 'product' ) ) {
+			return array();
+		}
+		$products = array();
+		$query    = array(
+			'post_type'      => 'product',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'meta_key'       => Importer::META, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- CLI only.
+			'meta_value'     => $this->name, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- CLI only.
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		);
+		foreach ( get_posts( $query ) as $product ) {
+			$products[ $product->ID ] = $product;
+		}
+		return $products;
+	}
+
+	/**
+	 * Writes a product's file, products/<SKU>.md, with the fields the
+	 * package wrote when it filled the product in.
+	 *
+	 * @param WP_Post $product Product.
+	 */
+	private function product( WP_Post $product ): void {
+		$sku = (string) get_post_meta( $product->ID, '_sku', true );
+		if ( ! preg_match( Package::SKU, $sku ) || isset( $this->files[ "products/$sku.md" ] ) ) {
+			$this->notes[] = sprintf( 'product %d (%s): its SKU "%s" cannot name a product file of its own; it is left out', $product->ID, $product->post_title, $sku );
+			return;
+		}
+		$file   = "products/$sku.md";
+		$saved  = (string) get_post_meta( $product->ID, Importer::SAVED, true );
+		$fields = str_contains( $saved, ':' ) ? explode( ',', (string) strstr( $saved, ':', true ) ) : array( 'post_title', 'post_content', 'post_excerpt', 'page_template', Meta::TITLE, Meta::DESCRIPTION, Meta::NOINDEX );
+		$writes = static fn( string $field ): bool => in_array( $field, $fields, true );
+
+		$front = array();
+		if ( $writes( 'post_title' ) ) {
+			$front['title'] = $product->post_title;
+		}
+		if ( $writes( 'post_excerpt' ) ) {
+			$front['excerpt'] = MarkdownWriter::inline( $product->post_excerpt );
+			if ( Markdown::inline( $front['excerpt'] ) !== $product->post_excerpt ) {
+				$this->notes[] = "$file: excerpt: the short description does not come back the same from Markdown; check it after an import";
+			}
+		}
+		if ( $writes( 'page_template' ) ) {
+			$front['template'] = (string) get_page_template_slug( $product );
+		}
+		foreach ( array( 'regular', 'sale' ) as $which ) {
+			if ( $writes( "_{$which}_price" ) ) {
+				$price                    = (string) get_post_meta( $product->ID, "_{$which}_price", true );
+				$front['price'][ $which ] = '' === $price ? null : $price;
+			}
+		}
+		$seo = array();
+		foreach ( array(
+			'title'       => Meta::TITLE,
+			'description' => Meta::DESCRIPTION,
+			'noindex'     => Meta::NOINDEX,
+		) as $key => $meta_key ) {
+			if ( $writes( $meta_key ) ) {
+				$seo[ $key ] = 'noindex' === $key ? Meta::noindex( $product->ID ) : (string) get_post_meta( $product->ID, $meta_key, true );
+			}
+		}
+		if ( array() !== $seo ) {
+			$front['seo'] = $seo;
+		}
+		$blocks = $writes( 'post_content' ) ? parse_blocks( $product->post_content ) : array();
+		$this->put( $file, $this->document( $file, $blocks, $front ), $product->post_title );
 	}
 
 	/**
@@ -381,6 +470,23 @@ final class Exporter {
 			$file = "content/$base-$n.md";
 		}
 
+		$front = array();
+		if ( array() !== $seo ) {
+			$front['seo'] = $seo;
+		}
+		$this->put( $file, $this->document( $file, $blocks, $front ), $page->post_title );
+		return $file;
+	}
+
+	/**
+	 * A content file's text: the frontmatter given, the sections read back
+	 * into pattern fields, and the other blocks as Markdown.
+	 *
+	 * @param string                                                                                                                                                                                 $file   Package path, for notes.
+	 * @param array<int|string, array{blockName: string|null, attrs: array<string, mixed>, innerBlocks: array<int, array<string, mixed>>, innerHTML: string, innerContent: array<int, string|null>}> $blocks Parsed blocks.
+	 * @param array<string, mixed>                                                                                                                                                                   $front  Frontmatter before the sections.
+	 */
+	private function document( string $file, array $blocks, array $front ): string {
 		$sections = array();
 		$body     = array();
 		$runs     = 0;
@@ -389,7 +495,7 @@ final class Exporter {
 		foreach ( array_values( $blocks ) as $i => $block ) {
 			if ( null === $block['blockName'] ) {
 				if ( '' !== trim( (string) $block['innerHTML'] ) ) {
-					$this->notes[] = sprintf( '%s: page %d has HTML outside blocks (classic content), which is left out', $file, $page->ID );
+					$this->notes[] = sprintf( '%s: HTML outside blocks (classic content) is left out', $file );
 				}
 				continue;
 			}
@@ -428,10 +534,6 @@ final class Exporter {
 			$this->notes[] = "$file: blocks next to each other run together in Markdown (two lists, say); check the page after an import";
 		}
 
-		$front = array();
-		if ( array() !== $seo ) {
-			$front['seo'] = $seo;
-		}
 		if ( array() !== $sections ) {
 			$front['sections'] = $sections;
 		}
@@ -439,8 +541,7 @@ final class Exporter {
 		if ( array() !== $body ) {
 			$text .= ( '' === $text ? '' : "\n" ) . implode( "\n\n", $body ) . "\n";
 		}
-		$this->put( $file, $text, $page->post_title );
-		return $file;
+		return $text;
 	}
 
 	/**
@@ -758,16 +859,19 @@ final class Exporter {
 
 	/**
 	 * The package.yaml text: the site title, tagline, language and the
-	 * Pergel settings that are not their defaults.
+	 * Pergel settings that are not their defaults. A package without
+	 * products stays format 1, which engines from before products read.
+	 *
+	 * @param bool $products Whether the package has products.
 	 */
-	private function site(): string {
+	private function site( bool $products ): string {
 		$title = html_entity_decode( (string) get_option( 'blogname' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 		if ( '' === trim( $title ) ) {
 			$title         = $this->name;
 			$this->notes[] = "package.yaml: the site has no title; the package uses its name, $title";
 		}
 		$site     = array(
-			'format'  => Package::FORMAT,
+			'format'  => $products ? Package::FORMAT : Package::PAGES_FORMAT,
 			'name'    => $this->name,
 			'title'   => $title,
 			'tagline' => html_entity_decode( (string) get_option( 'blogdescription' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
@@ -888,26 +992,26 @@ final class Exporter {
 	}
 
 	/**
-	 * Files already in the folder that an export writes: content files,
-	 * images, media.yaml and brand/tokens.json.
+	 * Files already in the folder that an export writes: the sitemap,
+	 * content and product files, images, media.yaml and brand/tokens.json.
 	 *
 	 * @return list<string>
 	 */
 	private function package_files(): array {
 		$found = array();
-		foreach ( array( 'media.yaml', 'brand/tokens.json' ) as $path ) {
+		foreach ( array( 'sitemap.yaml', 'media.yaml', 'brand/tokens.json' ) as $path ) {
 			if ( is_file( "$this->dir/$path" ) ) {
 				$found[] = $path;
 			}
 		}
-		foreach ( array( 'content', 'media' ) as $dir ) {
+		foreach ( array( 'content', 'products', 'media' ) as $dir ) {
 			if ( ! is_dir( "$this->dir/$dir" ) ) {
 				continue;
 			}
 			$iterator = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( "$this->dir/$dir", \FilesystemIterator::SKIP_DOTS ) );
 			foreach ( $iterator as $file ) {
 				$path = substr( str_replace( '\\', '/', (string) $file ), strlen( $this->dir ) + 1 );
-				if ( 'content' === $dir ? str_ends_with( $path, '.md' ) : in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), array_merge( Package::IMAGE_TYPES, Package::FILE_TYPES ), true ) ) {
+				if ( 'media' !== $dir ? str_ends_with( $path, '.md' ) : in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), array_merge( Package::IMAGE_TYPES, Package::FILE_TYPES ), true ) ) {
 					$found[] = $path;
 				}
 			}

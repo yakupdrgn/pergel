@@ -24,7 +24,7 @@ verir. Format hakkında bir şeyden emin değilsen o belgeye bak, tahmin etme.
 1. **Brief'i oku.** Paketteki `brief.md` ve `research/` serbest notlardır (okuyucu yok sayar).
    Eksikse sor: firma adı ve kısa adı (paket `name`), dil (`tr_TR` gibi), sayfalar, hedef
    kitle ve ton, iletişim bilgileri, elindeki görseller.
-2. **`package.yaml`:** `format: 1`, `name` (küçük harf, rakam, tire), `title`, `tagline`,
+2. **`package.yaml`:** `format: 1` (ürün dosyası varsa `format: 2`), `name` (küçük harf, rakam, tire), `title`, `tagline`,
    `locale`. `settings` ayar ekranının gruplarıdır; anahtarları
    `wp pergel settings get` gösterir. Yalnızca varsayılandan farklı olanları yaz.
 3. **`sitemap.yaml`:** Sayfa ağacı. Ön sayfa `slug: ""`. Adreslerde Türkçe karakter yok
@@ -57,6 +57,12 @@ verir. Format hakkında bir şeyden emin değilsen o belgeye bak, tahmin etme.
    - `seo.title` en çok 60, `seo.description` 120–155 karakter; ikisi de sayfaya özgü.
    - Gövde Markdown'ında başlıklar `##` ile başlar (`#` sayfa başlığıdır ve reddedilir).
    - Site içi bağlantılar köke göre (`/iletisim/`); sitemap'teki adreslerle aynı olmalı.
+   **Ürünler (`products/<SKU>.md`, format 2):** Paket ürün yapmaz; mağazada o SKU'lu ürün
+   olmalı. Yalnız değişecek alanları yaz (`title`, `excerpt`, `template`, `price`, `seo`,
+   `sections` ve gövde); yazılmayan alan mağazadaki gibi kalır. Fiyatı kullanıcı açıkça
+   istemedikçe yazma. Bölümlü ürün sayfası için `template: single-product-sections` ve
+   "Ürün" kategorisindeki pattern'ler (`wp pergel pattern list --category=pergel-product`).
+   Yalnız ürün içeren pakette `sitemap.yaml` gerekmez.
 6. **`media/` ve `media.yaml`:** Her görsel için `alt` (görselde ne var, bağlamıyla), `source`,
    `license`, varsa `author`. Süs görseli `alt: ""`. Dosya adları küçük harf ve tireli.
 7. **Marka:** Renk, font veya köşe yuvarlaklığı değişecekse `brand/tokens.json` için

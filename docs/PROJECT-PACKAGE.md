@@ -1,6 +1,6 @@
 # Proje paketi formatı (K12)
 
-> Durum: format 1. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
+> Durum: format 2 (v1.1.0: `products/*.md`); ürünsüz paket format 1 kalır. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
 > F5b'de (`wp pergel import`), dışa aktarma F5c'de (`wp pergel export`) tamamlandı. Paketi
 > Claude Code ile hazırlamak için depoda iki skill var (F5e): `pergel-package` ve
 > `pergel-brand` (`.claude/skills/`). Örnek paket `examples/ornek-mimarlik/` CI'da her
@@ -13,8 +13,9 @@ WordPress'ten çıkışın temelidir.
 ```
 proje/
 ├─ package.yaml           # zorunlu: format, ad, site başlığı, dil, Pergel ayarları
-├─ sitemap.yaml           # zorunlu: sayfa ağacı, şablon ve sayfa türü, menü
+├─ sitemap.yaml           # sayfa ağacı, şablon ve sayfa türü, menü (yalnız ürün paketinde isteğe bağlı)
 ├─ content/*.md           # sayfa başına: frontmatter'da SEO ve bölümler, gövdede Markdown
+├─ products/<SKU>.md      # format 2: mağazadaki ürünün başlığı, kısa açıklaması, şablonu, fiyatı, içeriği
 ├─ media/                 # paketteki görseller (jpg, jpeg, png, webp, avif, gif) ve PDF'ler
 ├─ media.yaml             # görsel başına alt metin, açıklama, kaynak, lisans, yazar
 ├─ brand/tokens.json      # W3C Design Tokens; temanın tokens/default.json'unun üzerine yazılır
@@ -22,9 +23,10 @@ proje/
 └─ research/              # serbest: rakip analizi, anahtar kelimeler (okuyucu yok sayar)
 ```
 
-Format 1'de henüz olmayanlar: ürünler (`products/`), logo ve font dosyaları, birden çok dil.
-Bunlar formatın sonraki sürümleriyle eklenir; `format` numarası artar ve eski numarayı okuyan
-motor yeni paketi reddeder.
+Format 2 ürünleri (`products/`) ekler. Henüz olmayanlar: logo ve font dosyaları, birden çok
+dil. Bunlar formatın sonraki sürümleriyle eklenir; `format` numarası artar. Motor kendi
+numarasına kadar her formatı okur, daha yenisini reddeder. Dışa aktarma ürünsüz paketi format
+1 yazar, böylece ürünsüz paket eski motorlarda da okunur.
 
 ## Denetim
 
@@ -51,7 +53,7 @@ Denetim siteyi değiştirmez; pattern'leri ve ayarları etkin temaya göre doldu
 ## `package.yaml`
 
 ```yaml
-format: 1
+format: 1                  # ürün dosyası olan paket: 2
 name: ornek-firma          # küçük harf, rakam ve tire
 title: Örnek Firma         # site başlığı
 tagline: Topraktan sofraya # isteğe bağlı
@@ -198,6 +200,44 @@ YAML 1.2'deki gibidir: `yes`, `no`, `on`, `off` metindir. Satır numarasıyla re
 girintide sekme, anchor ve alias, tag, birden çok belge, bir sonraki satıra taşan değer,
 tekrarlanan anahtar, yerinde olmayan girinti.
 
+## `products/<SKU>.md` (format 2)
+
+```markdown
+---
+title: Hassas terazi AB-100
+excerpt: 0,1 mg okunabilirlik, **iç kalibrasyon**.
+template: single-product-sections
+price: { regular: 4500, sale: null }
+seo:
+  title: AB-100 hassas terazi | Örnek Firma
+  description: 0,1 mg okunabilirlikli analitik terazi.
+sections:
+  - pattern: faq-accordion
+    heading: Sık sorulanlar
+    items:
+      - summary: Kalibrasyon sertifikası var mı?
+        text: Evet, her cihazla birlikte.
+  - markdown: true
+---
+
+## Teknik özellikler
+```
+
+Paket ürün **yapmaz**, mağazadaki ürünü doldurur: dosya adı ürünün SKU'sudur (harf, rakam,
+`.`, `_`, `-`; büyük-küçük harf farkı aynı SKU sayılır). Mağazada o SKU yoksa içe aktarma
+başlamaz. Ürün türü, stok, kategori, görseller, varyasyonlar paketin dışındadır; mağazada
+yönetilir.
+
+- **Yalnız yazılan alanlar.** `title`, `excerpt` (kısa açıklama, satır içi Markdown),
+  `template` (temanın ürün şablonu; `""` varsayılan şablon), `price` ve `seo` yazılmazsa
+  mağazadaki değer olduğu gibi kalır. Gövde ve `sections` yoksa ürün açıklamasına dokunulmaz;
+  varsa açıklama sayfalardaki gibi bloklardan üretilir.
+- **Fiyat.** `regular` ve `sale` ondalık sayıdır (`99.90`); `null` fiyatı boşaltır. `price`
+  yazılmazsa fiyata dokunulmaz. Fiyat yalnız basit ve harici ürünlerde yazılabilir; değişken
+  veya gruplu ürüne fiyat yazmak sorundur.
+- **Sitemap.** Yalnız ürün dosyası olan pakette `sitemap.yaml` isteğe bağlıdır; yazılmazsa
+  sayfalar, okuma ayarları ve menü olduğu gibi kalır.
+
 ## Görseller ve `media.yaml`
 
 Görseller yalnızca paketin içinden gelir: `media/hero.jpg` gibi, paket köküne göre bir yol.
@@ -245,7 +285,7 @@ kaydedilmez. `--strict` paketin ve sitenin notlarını (yüklü olmayan dil) da 
 sayar; içe aktarmanın kendi notlarında (panelde düzenlenmiş sayfa, başka adres alan sayfa) ise
 sıfırdan farklı kodla biter. Ardından site başlığı, slogan ve dil; kullanılan
 görseller; Pergel ayarları; sayfalar; okuma ayarları (ön sayfa, yazılar sayfası, WooCommerce
-sayfaları); menü (`wp_navigation`); son olarak `brand/tokens.json` için alt tema. Her adım bir
+sayfaları); menü (`wp_navigation`); ürünler (`products/`); son olarak `brand/tokens.json` için alt tema. Her adım bir
 satır bildirir: `create`, `update`, `keep`, `set`, `adopt`, `skip`, `stale`, `remove`.
 
 **Paketin yaptığını tanıma.** İçe aktarmanın yaptığı her sayfa, görsel ve menü
@@ -261,9 +301,15 @@ panel değişikliği ezilmez; `--force` ezer. Görseller dosya özetiyle (sha1) 
 aynı dosya `keep` (alt metin, açıklama veya kaynak değiştiyse `update`), başka dosya
 `update` (eski ek silinir, yenisi yüklenir).
 
-**Paketten çıkanlar.** Önceki içe aktarmanın yapıp paketin artık içermediği sayfa, görsel ve
-menü `stale` olarak listelenir ve yerinde kalır. `--prune` sayfaları ve menüyü çöpe taşır,
-görselleri siler.
+**Ürünler.** Ürün SKU ile bulunur ve ilk içe aktarmada pakete alınır (`adopt`); sonra
+`_pergel_package_key` (`products/<SKU>.md`) ile tanınır. Kaydedilen özet yalnız paketin yazdığı
+alanları kapsar, böylece mağazada stok veya başka alan değişince ürün düzenlenmiş sayılmaz;
+paketin yazdığı alan panelde değiştiyse `skip`.
+
+**Paketten çıkanlar.** Önceki içe aktarmanın yapıp paketin artık içermediği sayfa, görsel,
+ürün ve menü `stale` olarak listelenir ve yerinde kalır. `--prune` sayfaları ve menüyü çöpe
+taşır, görselleri siler; ürünleri bırakır (`release`): paket meta'sı silinir, ürün mağazada
+olduğu gibi kalır.
 
 **Ön kontrol.** Paketin bir adresinde paketin yapmadığı bir sayfa varsa içe aktarma başlamaz
 (`/blog/ is page 7, which this package did not make; move or delete it first`); siteyi ezen
@@ -288,13 +334,14 @@ yeniden etkinleşir.
 
 ```sh
 wp pergel export ./proje --dry-run         # ne yazılacağını gösterir, hiçbir şey yazmaz
-wp pergel export ./proje                   # paketin yaptığı sayfaları pakete yazar
+wp pergel export ./proje                   # paketin yaptığı sayfaları ve doldurduğu ürünleri yazar
 wp pergel export ./proje --strict          # not varsa hata verir
 wp pergel export ./site --all --name=site  # paketle kurulmamış bir sitenin tüm sayfaları
 ```
 
 İçe aktarmanın tersidir: site başlığı, slogan ve dil, varsayılandan farklı Pergel ayarları,
-sayfalar ve SEO alanları, menü, kullanılan görseller ve etkin alt temanın token'ları. Paket adı
+sayfalar ve SEO alanları, menü, paketin doldurduğu ürünler, kullanılan görseller ve etkin alt
+temanın token'ları. Paket adı
 verilmezse sayfaları yapan paketin adı kullanılır (birden çok paket varsa `--name` gerekir);
 `--all` ile ve paket yoksa site başlığından türetilir.
 
@@ -303,6 +350,10 @@ yayımlanmış sayfalar yazılır. Ön sayfa `slug: ""` ve `content/home.md` olu
 WooCommerce sayfaları türleriyle yazılır, içerikleri yazılmaz. Paketin tutamayacağı yapılar not
 olur: ön sayfanın alt sayfaları ve üst sayfası dışa aktarılmayan sayfalar en üste taşınır,
 pakete uymayan adres (`ürünler`) dönüştürülür (`urunler`).
+
+**Ürünler.** Paketin doldurduğu her ürün `products/<SKU>.md` olur, yalnız paketin yazdığı
+alanlarla (fiyatı yazmadıysa `price` yok). Geçersiz veya çakışan SKU'lu ürün not olur ve
+dışarıda kalır. Ürün varsa `package.yaml` format 2, sayfa yoksa `sitemap.yaml` yazılmaz.
 
 **İçerik.** Kök bloğu `metadata.patternName` taşıyan (blok ekleyicinin, içe aktarmanın ve
 starter'ların eklediği) bir bölüm, pattern adı ve alanlarıyla `sections` altına yazılır; diğer

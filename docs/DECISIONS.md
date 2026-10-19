@@ -1327,6 +1327,15 @@ verisini paket dosyalarına çeviren bir eşleyici olur.
   dokunulmaz. `validate`, `import` ve `export` ürünleri de kapsar.
 - **Sıra (dört PR, sonra v1.1.0):** 1) alan türleri, ürün pattern'leri, bölümlü şablon
   2) şema 3) paket formatı 2 4) sürüm.
+- **Format 2 ayrıntıları (PR3).** Dosya adı SKU'dur (büyük-küçük harf duyarsız tekil). Yalnız
+  dosyanın yazdığı alanlar kaydedilir; `_pergel_package_saved` özeti de yalnız bu alanları
+  kapsar (`alanlar:özet`), yoksa stok veya satış sayısı değişince ürün "panelde düzenlenmiş"
+  sayılırdı. Fiyat yalnız basit ve harici üründe, WooCommerce'in kendi setter'larıyla yazılır
+  (fiyat önbelleği ve arama tablosu güncel kalsın). `--prune` ürünü çöpe atmaz, bırakır
+  (`release`): ürün siparişlerle bağlı ticari kayıttır, paket onu yapmadı. Yalnız ürün içeren
+  pakette `sitemap.yaml` isteğe bağlıdır ve yoksa sayfalara, okuma ayarlarına, menüye
+  dokunulmaz. Motor 1'den kendi numarasına kadar her formatı okur; dışa aktarma ürünsüz paketi
+  format 1 yazar ki eski motorlar okuyabilsin.
 
 ## Aşamalar ve bitti tanımları
 
