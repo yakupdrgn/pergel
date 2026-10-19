@@ -321,7 +321,11 @@ to take it over`); siteyi ezen bir varsayılan yoktur. Var olan bir siteyi paket
 sayfaya `adopt: true` yazılır: içe aktarma o adresteki sayfayı (boş slug'da ön sayfayı) pakete alır
 (`adopt`), kimliği, yorumları ve bağlantıları korunur. `content` varsa içerik ve SEO paketten
 gelir; yoksa içerik ve SEO olduğu gibi kalır, yalnız başlık, adres, sıra ve şablon paketten
-gelir. Başka bir paketin sayfası alınamaz, aynı sayfa iki kez alınamaz. İstisna WooCommerce sayfalarıdır: `type: cart` gibi bir sayfanın adresinde
+gelir. Başka bir paketin sayfası alınamaz, aynı sayfa iki kez alınamaz. Adreste bir görsel eki
+varsa (WordPress sayfalara ve eklere aynı adresleri verir) içe aktarma yine başlamaz: ekin
+slug'ı önce değiştirilir, yoksa sayfa `-2` adresini alırdı.
+
+İstisna WooCommerce sayfalarıdır: `type: cart` gibi bir sayfanın adresinde
 WooCommerce'in o türdeki sayfası varsa pakete alınır (`adopt`); içeriği ve bloğu korunur, başlık
 ve adres paketten gelir. WooCommerce sayfası hiç yoksa önce WooCommerce'in kendi kurulumuyla
 oluşturulur. Mağaza türlü sayfa WooCommerce etkin değilken sorundur.
