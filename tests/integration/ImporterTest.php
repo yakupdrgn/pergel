@@ -225,7 +225,81 @@ final class ImporterTest extends TestCase {
 		} finally {
 			wp_delete_post( (int) $id, true );
 		}
-		$this->assertSame( array( "sitemap.yaml: pages[2]: /pergel-test-hakkimizda/ is page $id, which this package did not make; move or delete it first" ), $problems );
+		$this->assertSame( array( "sitemap.yaml: pages[2]: /pergel-test-hakkimizda/ is page $id, which this package did not make; move or delete it first, or set adopt: true to take it over" ), $problems );
+	}
+
+	public function test_adopt_takes_over_the_page_at_the_address_and_prune_only_releases_it(): void {
+		$about = $this->hand_made( 'pergel-test-hakkimizda', 'Elle yazılmış metin' );
+		$refs  = $this->hand_made( 'pergel-test-referanslar', 'Eski referans metni' );
+		update_post_meta( $refs, Meta::TITLE, 'Eski SEO başlığı' );
+		$about_page = "  - slug: pergel-test-hakkimizda\n    title: Hakkımızda\n    content: content/about.md\n";
+		$refs_page  = "  - slug: pergel-test-referanslar\n    title: Referanslar\n    adopt: true\n";
+		$sitemap    = str_replace( $about_page, $about_page . "    adopt: true\n", self::SITEMAP );
+		$this->write( 'sitemap.yaml', str_replace( "  - slug: pergel-test-blog\n", $refs_page . "  - slug: pergel-test-blog\n", $sitemap ) );
+
+		try {
+			$rows = $this->import();
+			$made = $this->made();
+			$this->assertSame( 'adopt', self::row( $rows, '/pergel-test-hakkimizda' )['action'] );
+			$this->assertSame( 'adopt', self::row( $rows, '/pergel-test-referanslar' )['action'] );
+			$this->assertSame( $about, $made['/pergel-test-hakkimizda'] );
+			$this->assertSame( $refs, $made['/pergel-test-referanslar'] );
+			$this->assertSame( $about, get_post( $made['/pergel-test-hakkimizda/ekip'] )?->post_parent );
+
+			// With a content file the package's content replaces the page's.
+			$this->assertStringNotContainsString( 'Elle yazılmış metin', (string) get_post_field( 'post_content', $about ) );
+			// Without one the page keeps its content and SEO fields.
+			$this->assertSame( 'Eski referans metni', get_post_field( 'post_content', $refs ) );
+			$this->assertSame( 'Referanslar', get_the_title( $refs ) );
+			$this->assertSame( 'Eski SEO başlığı', get_post_meta( $refs, Meta::TITLE, true ) );
+
+			$again = $this->import();
+			$this->assertSame( array( 'keep' ), array_values( array_unique( array_column( $again, 'action' ) ) ), (string) wp_json_encode( $again ) );
+
+			$this->write( 'sitemap.yaml', $sitemap );
+			$rows = $this->import( prune: true );
+			$this->assertSame( 'release', self::row( $rows, '/pergel-test-referanslar' )['action'] );
+			$this->assertSame( 'publish', get_post_status( $refs ) );
+			$this->assertSame( '', get_post_meta( $refs, Importer::META, true ) );
+			$this->assertSame( '', get_post_meta( $refs, Importer::ADOPTED, true ) );
+		} finally {
+			wp_delete_post( $refs, true );
+		}
+	}
+
+	public function test_a_page_another_package_owns_is_not_adopted(): void {
+		$id = $this->hand_made( 'pergel-test-hakkimizda', 'Başka paketin metni' );
+		update_post_meta( $id, Importer::META, 'baska-paket' );
+		$about_page = "  - slug: pergel-test-hakkimizda\n    title: Hakkımızda\n    content: content/about.md\n";
+		$this->write( 'sitemap.yaml', str_replace( $about_page, $about_page . "    adopt: true\n", self::SITEMAP ) );
+		try {
+			$problems = $this->importer()->preflight();
+		} finally {
+			wp_delete_post( $id, true );
+		}
+		$this->assertSame( array( "sitemap.yaml: pages[2]: adopt: page $id belongs to the package baska-paket" ), $problems );
+	}
+
+	public function test_an_attachment_at_the_address_of_a_page_stops_the_import(): void {
+		$id = wp_insert_attachment(
+			array(
+				'post_title'     => 'Ek',
+				'post_name'      => 'pergel-test-hakkimizda',
+				'post_mime_type' => 'image/png',
+			)
+		);
+		$about_page = "  - slug: pergel-test-hakkimizda
+    title: Hakkımızda
+    content: content/about.md
+";
+		$this->write( 'sitemap.yaml', str_replace( $about_page, $about_page . "    adopt: true
+", self::SITEMAP ) );
+		try {
+			$problems = $this->importer()->preflight();
+		} finally {
+			wp_delete_attachment( $id, true );
+		}
+		$this->assertSame( array( "sitemap.yaml: pages[2]: /pergel-test-hakkimizda/ is the address of the attachment $id; give the attachment another slug first" ), $problems );
 	}
 
 	public function test_a_language_that_is_not_installed_is_a_note_before_anything_is_saved(): void {
@@ -521,6 +595,25 @@ final class ImporterTest extends TestCase {
 			}
 		}
 		self::fail( "No row for $key" );
+	}
+
+	/**
+	 * A published page made in the panel, not by the package.
+	 *
+	 * @param string $slug    Slug.
+	 * @param string $content Content.
+	 * @return int Page ID.
+	 */
+	private function hand_made( string $slug, string $content ): int {
+		return (int) wp_insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Elle yapılmış',
+				'post_name'    => $slug,
+				'post_content' => $content,
+			)
+		);
 	}
 
 	/**

@@ -189,6 +189,7 @@ final class PackageTest extends TestCase {
 				    template: wide
 				  - slug: hakkimizda
 				    title: Yine
+				    adopt: "yes"
 				  - slug: Ürünler
 				    title: Ürünler
 				    type: store
@@ -236,6 +237,7 @@ final class PackageTest extends TestCase {
 			'media.yaml: media/tarla.png: "credit" is not known here; known: alt, caption, source, license, author',
 			'media.yaml: "https://x.test/a.jpg": only images in the package can be used',
 			'sitemap.yaml: pages[3]: slug: "hakkimizda" is used twice at this level',
+			'sitemap.yaml: pages[3]: adopt: true or false is expected',
 			'sitemap.yaml: pages[4]: slug: "Ürünler" is not a slug; use lowercase letters, digits and hyphens',
 			'sitemap.yaml: pages[4]: type: one of page, posts, shop, cart, checkout, account is expected',
 			'sitemap.yaml: pages[6]: title: required',

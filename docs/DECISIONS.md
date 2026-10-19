@@ -1364,6 +1364,22 @@ mesaj kutusunda toplanmadığı için kullanılmıyor.
 - **Ek alanlar teklif sağlayıcısına (QuoteRequest) gitmez.** Sağlayıcı arayüzü 1.1'deki gibi
   kalır. İhtiyaç çıkarsa `pergel/forms/received`'deki `$values` kullanılır.
 
+## v1.2: sayfa sahiplenme (19 Ekim 2026, kullanıcı kararı)
+
+İhtiyaç F7'den geldi. ariumlab.com'un mevcut sayfaları (ana sayfa, OEM, hakkımızda, iletişim...)
+paketin adreslerinde duruyor; ön kontrol bunları ezmemek için içe aktarmayı durduruyordu.
+Sayfaları silip yeniden yapmak kimliklerini, yorumlarını ve iç bağlantılarını koparırdı.
+
+- **Sahiplenme açık bir karardır.** Sayfada `adopt: true` yazılmadıkça ön kontrol eskisi gibi
+  durur; siteyi ezen bir varsayılan hâlâ yok. Başka paketin sayfası ve iki kez alınan sayfa sorundur.
+- **İçerik dosyası yoksa içerik korunur.** Böylece sayfalar önce menü ve adresler için pakete
+  alınır, metinler sonra yazılır. SEO da yalnız içerikle birlikte paketten gelir.
+- **`--prune` alınmış sayfayı silmez, bırakır** (`release`), ürünlerde olduğu gibi: paket yapmadığı
+  bir sayfayı çöpe taşımamalı. Kayıt `_pergel_package_adopted` meta'sıyla tanınır.
+- **Hata düzeltmesi:** var olan kayıt `wp_insert_post` yerine `wp_update_post` ile kaydedilir.
+  `wp_insert_post` kimlikle çağrılıp içerik verilmezse içeriği boşaltıyordu; içeriği korunması
+  gereken WooCommerce sayfaları da bundan etkileniyordu.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

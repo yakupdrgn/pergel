@@ -31,7 +31,7 @@ use Pergel\Tokens\Invalid;
  * read() needs only PHP. check() fills patterns and checks settings, so it
  * runs inside WordPress.
  *
- * @phpstan-type Page array{path: string, parent: string|null, slug: string, title: string, content: string|null, template: string, type: string, menu: bool, where: string}
+ * @phpstan-type Page array{path: string, parent: string|null, slug: string, title: string, content: string|null, template: string, type: string, menu: bool, adopt: bool, where: string}
  * @phpstan-type Content array{seo: array<string, mixed>, sections: list<array<string, mixed>>, body: string, offset: int}
  * @phpstan-type Product array{sku: string, file: string, title: string|null, excerpt: string|null, template: string|null, price: array<string, string>|null, content: bool}
  */
@@ -641,7 +641,7 @@ final class Package {
 				$this->problems[] = $where . 'a page is a map like { slug: ..., title: ... }';
 				continue;
 			}
-			$this->keys( $page, array( 'slug', 'title', 'content', 'template', 'type', 'menu', 'children' ), $where );
+			$this->keys( $page, array( 'slug', 'title', 'content', 'template', 'type', 'menu', 'adopt', 'children' ), $where );
 
 			$slug = $page['slug'] ?? null;
 			if ( ! is_string( $slug ) ) {
@@ -696,6 +696,12 @@ final class Package {
 				$menu             = true;
 			}
 
+			$adopt = $page['adopt'] ?? false;
+			if ( ! is_bool( $adopt ) ) {
+				$this->problems[] = $where . 'adopt: true or false is expected';
+				$adopt            = false;
+			}
+
 			$this->pages[] = array(
 				'path'     => $path,
 				'parent'   => $under,
@@ -705,6 +711,7 @@ final class Package {
 				'template' => $template,
 				'type'     => $type,
 				'menu'     => $menu,
+				'adopt'    => $adopt,
 				'where'    => $here,
 			);
 
