@@ -291,6 +291,12 @@ final class Submit {
 		}
 		$value = (string) $check[0];
 		if ( $required && '' === $value ) {
+			$label = rtrim( $label, ': ' );
+			// A label that is a question ends the sentence itself.
+			if ( 1 === preg_match( '/[?!.…]$/u', $label ) ) {
+				/* translators: %s: field label that ends with its own punctuation, like "What do you need?". */
+				return array( '', sprintf( __( 'Please answer: %s', 'pergel-engine' ), $label ) );
+			}
 			/* translators: %s: field label. */
 			return array( '', sprintf( __( 'Fill in %s.', 'pergel-engine' ), $label ) );
 		}
