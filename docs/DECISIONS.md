@@ -1404,6 +1404,16 @@ F7 metinleri yazılırken üç sayfa paketle ifade edilemedi; üçü tek değiş
   `MarkdownWriter::address()` yapar. Pattern'lerdeki düz `/x/` adresleri artık yeniden
   yazıldığında site adresini alır; kök alandaki sitede davranış değişmez.
 
+## v1.2.0 sürümü (19 Ekim 2026, kullanıcı kararı)
+
+- **"v1.2" ve "v1.3" diye ayrılan işler tek sürümde çıkar.** Bunlar PR #37–#43: form ek
+  alanları, sayfa sahiplenme, kök göreli bağlantılar, `form` paket alanı, başlık çapaları,
+  isteğe bağlı mesaj alanı ve uzun kelimelerin satır kırması. Hepsi geriye uyumlu eklemeler,
+  bu yüzden numara 1.2.0 oldu. 1.3.0 olarak ayrı bir sürüm çıkarılmadı.
+- **Neden şimdi:** ariumlab.com canlı geçişi bu kodu istiyor. ariumlab-site reposundaki
+  `docs/DECISIONS.md`, "Canlı geçiş kontrol listesi", adım 3.
+- "Tested up to" 7.1 olarak kalır. Etiket ve taslak sürüm kullanıcı onayıyla oluşturulur.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

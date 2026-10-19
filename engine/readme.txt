@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,12 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.2.0 =
+* Form block: up to ten extra fields of your own (short text, long text, phone, list), sent with the message under their labels. The message field can be made optional, for a quote form whose own fields already say what is needed.
+* Project packages: `adopt: true` takes over a page that already sits at a package address, keeping its ID, comments and links; without content the page keeps its own. A `form` field sets the form block from the package, and Markdown headings take anchors (`## Warranty {#warranty}`).
+* Root-relative links in menus, Markdown and buttons use the site address, so a package works on a site in a subdirectory.
+* Fixed: importing over an existing page or shop page no longer empties its content, and an attachment at a page address is reported instead of moving the page to a new address. A required question no longer gets a second full stop in its error message.
 
 = 1.1.0 =
 * Product pages built from sections: an FAQ section adds FAQPage schema and a specifications table adds the product's additionalProperty values, both joined to the SEO plugin's graph when one is active.
