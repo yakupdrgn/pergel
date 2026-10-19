@@ -336,6 +336,63 @@ final class Package {
 	}
 
 	/**
+	 * Width of a pattern's root block: "wide", "full" or "none" (the
+	 * content width).
+	 *
+	 * @param list<array<string, mixed>> $blocks Parsed blocks.
+	 */
+	public static function width( array $blocks ): string {
+		foreach ( $blocks as $block ) {
+			if ( null !== $block['blockName'] ) {
+				$align = $block['attrs']['align'] ?? '';
+				return in_array( $align, array( 'wide', 'full' ), true ) ? $align : 'none';
+			}
+		}
+		return 'none';
+	}
+
+	/**
+	 * Blocks with the root block's width set, in its attributes and in the
+	 * class of its opening tag, the way the editor's width control does.
+	 *
+	 * @param list<array<string, mixed>> $blocks Parsed blocks.
+	 * @param string                     $align  "wide", "full" or "none".
+	 * @return list<array<string, mixed>>
+	 */
+	public static function widened( array $blocks, string $align ): array {
+		if ( self::width( $blocks ) === $align ) {
+			return $blocks;
+		}
+		foreach ( $blocks as $i => $block ) {
+			if ( null === $block['blockName'] ) {
+				continue;
+			}
+			unset( $block['attrs']['align'] );
+			if ( 'none' !== $align ) {
+				$block['attrs']['align'] = $align;
+			}
+			$opening = static function ( string $html ) use ( $align ): string {
+				$tags = new \WP_HTML_Tag_Processor( $html );
+				if ( $tags->next_tag() ) {
+					$tags->remove_class( 'alignwide' );
+					$tags->remove_class( 'alignfull' );
+					if ( 'none' !== $align ) {
+						$tags->add_class( 'align' . $align );
+					}
+				}
+				return $tags->get_updated_html();
+			};
+			if ( isset( $block['innerContent'][0] ) && is_string( $block['innerContent'][0] ) ) {
+				$block['innerContent'][0] = $opening( $block['innerContent'][0] );
+			}
+			$block['innerHTML'] = $opening( (string) $block['innerHTML'] );
+			$blocks[ $i ]       = $block;
+			break;
+		}
+		return $blocks;
+	}
+
+	/**
 	 * Block markup of a content file: its sections, then its Markdown body
 	 * (or the body where a `markdown: true` section stands). Problems are
 	 * added to $this->problems; the markup leaves out what has a problem.
@@ -364,7 +421,10 @@ final class Package {
 				$this->problems[] = "$where: pattern: \"$name\" is not a Pergel pattern; wp pergel pattern list shows them";
 				continue;
 			}
-			unset( $section['pattern'] );
+			if ( isset( $section['align'] ) ) {
+				$blocks = self::widened( $blocks, $section['align'] );
+			}
+			unset( $section['pattern'], $section['align'] );
 			$image = function ( string $src, ?string $alt, string $kind = 'image' ) use ( $media, $where ): array {
 				$path = 'file' === $kind ? $this->file( $src ) : $this->image( $src );
 				if ( 'file' === $kind ) {
@@ -996,6 +1056,9 @@ final class Package {
 				}
 			} elseif ( ! isset( $section['pattern'] ) || ! is_string( $section['pattern'] ) || '' === $section['pattern'] ) {
 				$this->problems[] = $here . 'pattern: required, like pattern: hero-split';
+				continue;
+			} elseif ( array_key_exists( 'align', $section ) && ! in_array( $section['align'], array( 'wide', 'full', 'none' ), true ) ) {
+				$this->problems[] = $here . 'align: wide, full or none (the content width)';
 				continue;
 			}
 			$read[] = $section;

@@ -12,6 +12,7 @@ sections:
     image: media/tarla.png
   - markdown: true
   - pattern: pergel/faq-accordion
+    align: wide
     eyebrow: SSS
     heading: Sık sorulanlar
     items:

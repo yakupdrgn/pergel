@@ -1414,6 +1414,22 @@ F7 metinleri yazılırken üç sayfa paketle ifade edilemedi; üçü tek değiş
   `docs/DECISIONS.md`, "Canlı geçiş kontrol listesi", adım 3.
 - "Tested up to" 7.1 olarak kalır. Etiket ve taslak sürüm kullanıcı onayıyla oluşturulur.
 
+## Bölüm genişliği: paketteki `align` (19 Ekim 2026, kullanıcı kararı)
+
+- **Sorun:** ariumlab.com'da Ariumbot-S sayfasındaki `product-specs` bölümü içerik
+  genişliğinde (720 px) kalıyor. Diğer bölümler 1240 px; hizası bozuk görünüyor. Paket
+  bir bölümün genişliğini değiştiremiyordu. Pattern'in genişliği neyse o oluyordu.
+- **Karar:** her bölüme isteğe bağlı `align` yazılabilir: `wide`, `full` veya `none`.
+  Editördeki genişlik düğmesinin yaptığını yapar: kök bloğun `align` özniteliğini ve
+  `alignwide`/`alignfull` sınıfını değiştirir (`Package::widened()`). Yazılmazsa pattern'in
+  genişliği kalır. Başka bir değer bölümü durdurur ve sorun olarak raporlanır.
+- **Dışa aktarma:** genişliği pattern'inkinden farklı olan bölüme `align` yazılır. Geri
+  doldurma kontrolü de bu genişlikle yapılır. Böylece genişliği değişmiş bölüm "alanlarının
+  dışında değişti" notu vermez.
+- **Neden `full` değil `wide`:** `product-specs`'in içi `default` (akış) düzeninde. `full`
+  olsa tablo kenardan kenara uzardı. `wide` diğer bölümlerin içeriğiyle aynı hizaya gelir.
+- Geriye uyumlu bir ekleme; 1.2.1 sürümüyle çıkar.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

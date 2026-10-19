@@ -564,16 +564,18 @@ final class Exporter {
 				$this->notes[] = "$where: $note";
 			}
 		}
-		$kept = array();
+		$align = Package::width( array( $block ) );
+		$width = Package::width( $pattern ) === $align ? array() : array( 'align' => $align );
+		$kept  = array();
 		try {
-			$back = serialize_blocks( Fields::fill( $pattern, $values, $this->field_media(), $kept ) );
+			$back = serialize_blocks( Fields::fill( Package::widened( $pattern, $align ), $values, $this->field_media(), $kept ) );
 		} catch ( InvalidArgumentException $e ) {
 			$back = '';
 		}
 		if ( array() === $notes && ! self::same( serialize_block( $block ), $back ) ) {
 			$this->notes[] = "$where was changed beyond its fields (a block added, a style or a setting); an import gives back the pattern with these fields";
 		}
-		return array( 'pattern' => str_starts_with( $name, 'pergel/' ) ? substr( $name, 7 ) : $name ) + $values;
+		return array( 'pattern' => str_starts_with( $name, 'pergel/' ) ? substr( $name, 7 ) : $name ) + $width + $values;
 	}
 
 	/**
