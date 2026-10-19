@@ -173,7 +173,7 @@ kullanılabilir. `wp pergel pattern fields <ad>` alanları örnek değerleriyle 
 | `file` | dosya (veri sayfası, kılavuz) | yol veya `{ src, label }`; `label` bağlantı metni |
 | `summary` | açılır (details) bloğun başlığı | metin |
 | `quote`, `cite` | alıntı paragrafları ve kaynağı | metin |
-| `form` | Pergel formu | `{ kind, phone, company, consent, submit_label, success_message, about_post, fields }` |
+| `form` | Pergel formu | `{ kind, phone, company, consent, message_required, submit_label, success_message, about_post, fields }` |
 | `items` | aynı türden, alanları eşleşen kardeş bloklar | alan haritaları listesi |
 
 - Aynı kapsamda ikinci bir alan `text_2`, `heading_2` diye adlandırılır.
@@ -185,11 +185,12 @@ kullanılabilir. `wp pergel pattern fields <ad>` alanları örnek değerleriyle 
 - `/` ile başlayan (kök göreli) bağlantı ve düğme adresi sitenin adresiyle yazılır (`home_url`),
   böylece alt dizindeki bir sitede de çalışır; dışa aktarma adresi yine `/` ile yazar.
 - `form` ayarları: `kind` `contact` veya `quote`; `phone`, `company`, `consent` (onay kutusu),
-  `about_post` (formu bulunduğu yazı veya ürün hakkında sorar) `true`/`false`; `submit_label` ve
-  `success_message` metin (boş: varsayılan). `fields` en çok 10 ek alan:
-  `{ label, type, required, options }`; `type` `text` (varsayılan), `textarea`, `tel` veya
-  `select`; `options` yalnızca `select` için ve zorunlu (en çok 30 seçenek). Yazılmayan ayar
-  pattern'in ayarını korur.
+  `about_post` (formu bulunduğu yazı veya ürün hakkında sorar) `true`/`false`;
+  `message_required: false` mesaj alanını isteğe bağlı yapar (varsayılan `true`; ek alanlar ne
+  istendiğini zaten soruyorsa); `submit_label` ve `success_message` metin (boş: varsayılan).
+  `fields` en çok 10 ek alan: `{ label, type, required, options }`; `type` `text` (varsayılan),
+  `textarea`, `tel` veya `select`; `options` yalnızca `select` için ve zorunlu (en çok 30
+  seçenek). Yazılmayan ayar pattern'in ayarını korur.
 - Tablo hücresi, pattern'deki aynı sütunun hücre etiketini (hizalama, satır başlığı) korur; alt
   satır (tfoot), stil ve tablo açıklaması kalır.
 - `file` alanı yalnızca `media/` altındaki bir PDF'i (ya da görseli) alır; dosya ortam

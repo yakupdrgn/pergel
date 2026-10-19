@@ -168,6 +168,12 @@
 						toggle( props, 'company', __( 'Company field', 'pergel-engine' ) ),
 						toggle(
 							props,
+							'messageRequired',
+							__( 'Message is required', 'pergel-engine' ),
+							__( 'Turn off when your own fields already say what is needed.', 'pergel-engine' )
+						),
+						toggle(
+							props,
 							'consent',
 							__( 'Ask for consent', 'pergel-engine' ),
 							__( 'A required checkbox that links to the privacy policy page (Settings → Privacy).', 'pergel-engine' )

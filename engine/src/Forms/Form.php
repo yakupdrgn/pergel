@@ -28,8 +28,11 @@ use Pergel\Core\Plugin;
  * in the token too and come before the message field, named extra_1,
  * extra_2 and so on in their order; the labels are kept with the message.
  *
+ * The message field is required unless messageRequired is off, as on a
+ * quote form whose own fields already say what is needed.
+ *
  * @phpstan-type Extra array{key: string, label: string, type: string, required: bool, options: list<string>}
- * @phpstan-type Spec array{kind: string, optional: list<string>, consent: bool, time: int, post: int, subject: int, id: string, extra: list<Extra>}
+ * @phpstan-type Spec array{kind: string, optional: list<string>, consent: bool, message: bool, time: int, post: int, subject: int, id: string, extra: list<Extra>}
  */
 final class Form {
 
@@ -80,6 +83,7 @@ final class Form {
 		$kind     = in_array( $attributes['kind'] ?? null, self::KINDS, true ) ? $attributes['kind'] : 'contact';
 		$optional = array_values( array_filter( self::OPTIONAL, static fn ( string $field ): bool => true === ( $attributes[ $field ] ?? false ) ) );
 		$consent  = true === ( $attributes['consent'] ?? false );
+		$required = false !== ( $attributes['messageRequired'] ?? true );
 		$post_id  = $block instanceof \WP_Block && is_int( $block->context['postId'] ?? null ) ? $block->context['postId'] : (int) get_the_ID();
 		$subject  = true === ( $attributes['aboutPost'] ?? false ) ? $post_id : 0;
 		$extra    = self::extra( $attributes['fields'] ?? array() );
@@ -89,6 +93,7 @@ final class Form {
 				'kind'     => $kind,
 				'optional' => $optional,
 				'consent'  => $consent,
+				'message'  => $required,
 				'time'     => time(),
 				'post'     => $post_id,
 				'subject'  => $subject,
@@ -113,7 +118,7 @@ final class Form {
 
 		$labels = self::labels( $kind );
 		$fields = '';
-		foreach ( self::fields( $kind, $optional ) as $name => $field ) {
+		foreach ( self::fields( $kind, $optional, $required ) as $name => $field ) {
 			if ( 'message' === $name ) {
 				$fields .= $subject > 0 ? self::subject_fields( $subject, $id ) : '';
 				foreach ( $extra as $own ) {
@@ -165,9 +170,10 @@ final class Form {
 	 *
 	 * @param string   $kind     contact or quote.
 	 * @param string[] $optional Optional fields switched on.
+	 * @param bool     $message  Whether the message is required.
 	 * @return array<string, array{type: string, max: int, required: bool, autocomplete: string}>
 	 */
-	public static function fields( string $kind, array $optional ): array {
+	public static function fields( string $kind, array $optional, bool $message = true ): array {
 		$fields = array(
 			'name'    => array(
 				'type'         => 'text',
@@ -196,7 +202,7 @@ final class Form {
 			'message' => array(
 				'type'         => 'textarea',
 				'max'          => 5000,
-				'required'     => true,
+				'required'     => $message,
 				'autocomplete' => 'off',
 			),
 		);
@@ -365,6 +371,7 @@ final class Form {
 			|| ! is_array( $spec['optional'] ?? null )
 			|| array() !== array_diff( $spec['optional'], self::OPTIONAL )
 			|| ! is_bool( $spec['consent'] ?? null )
+			|| ! is_bool( $spec['message'] ?? true )
 			|| ! is_int( $spec['time'] ?? null )
 			|| ! is_int( $spec['post'] ?? null )
 			|| ! is_int( $spec['subject'] ?? null )
@@ -377,6 +384,8 @@ final class Form {
 			'kind'     => $spec['kind'],
 			'optional' => array_values( $spec['optional'] ),
 			'consent'  => $spec['consent'],
+			// Older tokens have no message setting; their message is required.
+			'message'  => $spec['message'] ?? true,
 			'time'     => $spec['time'],
 			'post'     => $spec['post'],
 			'subject'  => $spec['subject'],

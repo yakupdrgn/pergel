@@ -298,6 +298,11 @@ return array (
         'type' => 'boolean',
         'default' => false,
       ),
+      'messageRequired' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
       'submitLabel' => 
       array (
         'type' => 'string',
