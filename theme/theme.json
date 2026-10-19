@@ -203,6 +203,7 @@
 		}
 	},
 	"styles": {
+		"css": "body { overflow-wrap: break-word; }",
 		"color": {
 			"background": "var(--wp--preset--color--base)",
 			"text": "var(--wp--preset--color--contrast)"
