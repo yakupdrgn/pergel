@@ -1426,6 +1426,9 @@ F7 metinleri yazılırken üç sayfa paketle ifade edilemedi; üçü tek değiş
 - **`!important` gerekiyor:** dolgu, blok ayarı olarak satır içi stilde yazılı. Kural yalnız
   `post-content` içindeki doğrudan bölümleri kapsar. Editörde bir bölüme elle verilen üst
   dolgu da bu durumda sıfırlanır; bunu kabul ettik.
+- **Mağaza ana sayfası bütçesi: istek sınırı 35 → 42.** Bölümler yukarı kayınca ilk ekrana
+  dört küçük ürün görseli daha giriyor. İstek sayısı 34'ten 38'e, toplam boyut 304'ten
+  309 KB'a çıktı. Yeni sınır, ölçülen değerin yaklaşık %10 üstünde (bütçe dosyasının kuralı).
 
 ## Aşamalar ve bitti tanımları
 
