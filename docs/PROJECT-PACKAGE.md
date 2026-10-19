@@ -91,6 +91,9 @@ pages:
     title: SSS
     content: content/sss.md
     menu: false              # varsayılan menüde gösterme
+  - slug: iletisim
+    title: İletişim
+    adopt: true              # bu adresteki elle yapılmış sayfayı pakete al
 menu:                        # isteğe bağlı
   - hakkimizda
   - { page: hakkimizda/ekip, label: Ekip }
@@ -98,12 +101,13 @@ menu:                        # isteğe bağlı
 ```
 
 - Sayfa anahtarları: `slug`, `title` (zorunlu), `content`, `template`, `type`, `menu`,
-  `children`. Bir düzeyde aynı slug iki kez kullanılamaz.
+  `adopt`, `children`. Bir düzeyde aynı slug iki kez kullanılamaz.
 - `template`: temanın sayfa şablonlarından biri (`theme.json` → `customTemplates`, bugün
   `page-landing`). Yazılmazsa varsayılan sayfa şablonu.
 - `type`: `page` (varsayılan), `posts`, `shop`, `cart`, `checkout`, `account`; `page`
   dışındakiler birer kez kullanılır.
 - `content` yoksa sayfa boş açılır (`posts`, `shop` gibi sayfalar içeriğini kendisi gösterir).
+- `adopt: true`: adreste paketin yapmadığı bir sayfa varsa onu pakete alır (bkz. Ön kontrol).
 - **Menü:** `menu` listesi yazılmazsa sayfa ağacından üretilir; ön sayfa, sepet, ödeme ve hesap
   sayfaları ile `menu: false` olanlar dışarıda kalır. Liste yazılırsa yalnızca o liste kullanılır.
   Öge bir sayfa yolu (`hakkimizda/ekip`), `{ page, label, children }` veya `{ label, url }`
@@ -308,12 +312,16 @@ paketin yazdığı alan panelde değiştiyse `skip`.
 
 **Paketten çıkanlar.** Önceki içe aktarmanın yapıp paketin artık içermediği sayfa, görsel,
 ürün ve menü `stale` olarak listelenir ve yerinde kalır. `--prune` sayfaları ve menüyü çöpe
-taşır, görselleri siler; ürünleri bırakır (`release`): paket meta'sı silinir, ürün mağazada
-olduğu gibi kalır.
+taşır, görselleri siler; ürünleri ve `adopt` ile alınmış sayfaları bırakır (`release`): paket
+meta'sı silinir, kayıt sitede olduğu gibi kalır.
 
 **Ön kontrol.** Paketin bir adresinde paketin yapmadığı bir sayfa varsa içe aktarma başlamaz
-(`/blog/ is page 7, which this package did not make; move or delete it first`); siteyi ezen
-bir varsayılan yoktur. İstisna WooCommerce sayfalarıdır: `type: cart` gibi bir sayfanın adresinde
+(`/blog/ is page 7, which this package did not make; move or delete it first, or set adopt: true
+to take it over`); siteyi ezen bir varsayılan yoktur. Var olan bir siteyi pakete geçirmek için
+sayfaya `adopt: true` yazılır: içe aktarma o adresteki sayfayı (boş slug'da ön sayfayı) pakete alır
+(`adopt`), kimliği, yorumları ve bağlantıları korunur. `content` varsa içerik ve SEO paketten
+gelir; yoksa içerik ve SEO olduğu gibi kalır, yalnız başlık, adres, sıra ve şablon paketten
+gelir. Başka bir paketin sayfası alınamaz, aynı sayfa iki kez alınamaz. İstisna WooCommerce sayfalarıdır: `type: cart` gibi bir sayfanın adresinde
 WooCommerce'in o türdeki sayfası varsa pakete alınır (`adopt`); içeriği ve bloğu korunur, başlık
 ve adres paketten gelir. WooCommerce sayfası hiç yoksa önce WooCommerce'in kendi kurulumuyla
 oluşturulur. Mağaza türlü sayfa WooCommerce etkin değilken sorundur.

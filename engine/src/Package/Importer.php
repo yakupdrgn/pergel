@@ -36,6 +36,11 @@ use WP_Post;
  * compared, so a stock or price change in the shop is not an edit unless
  * the package sets that field too.
  *
+ * A page with adopt: true takes over the page already at its address (the
+ * front page for slug ""), as WooCommerce's pages are taken over by type:
+ * its ID stays, and without a content file it keeps its content. A taken
+ * over page is only released when the package drops it, never trashed.
+ *
  * @phpstan-import-type Page from Package
  * @phpstan-type Row array{action: string, type: string, key: string, id: string, title: string}
  */
@@ -46,6 +51,7 @@ final class Importer {
 	public const SOURCE  = '_pergel_package_source';
 	public const SAVED   = '_pergel_package_saved';
 	public const FILE    = '_pergel_package_file';
+	public const ADOPTED = '_pergel_package_adopted';
 	public const CREDITS = array(
 		'source'  => '_pergel_media_source',
 		'license' => '_pergel_media_license',
@@ -145,24 +151,43 @@ final class Importer {
 	/**
 	 * What stops the import on this site, checked before anything is saved:
 	 * shop pages or products without WooCommerce, pages at the package's
-	 * addresses that the package did not make, a product SKU the shop does
-	 * not have or whose price cannot be set, and a theme folder or active
-	 * child theme the package cannot use.
+	 * addresses that the package did not make (unless it adopts them), a
+	 * page to adopt that another package owns or that two pages adopt, a
+	 * product SKU the shop does not have or whose price cannot be set, and a
+	 * theme folder or active child theme the package cannot use.
 	 *
 	 * @return list<string>
 	 */
 	public function preflight(): array {
 		$problems = array();
+		$adopted  = array();
 		foreach ( $this->package->pages as $page ) {
 			if ( isset( self::SHOP_OPTIONS[ $page['type'] ] ) && ! Woo::active() ) {
 				$problems[] = sprintf( 'sitemap.yaml: %s: type: a %s page needs WooCommerce; install and activate it first', $page['where'], $page['type'] );
 			}
-			if ( '' === $page['path'] || isset( $this->owned[ '/' . $page['path'] ] ) ) {
+			if ( isset( $this->owned[ '/' . $page['path'] ] ) ) {
+				continue;
+			}
+			if ( $page['adopt'] ) {
+				$found = $this->adoptable( $page );
+				if ( null === $found ) {
+					continue;
+				}
+				$owner = (string) get_post_meta( $found->ID, self::META, true );
+				if ( '' !== $owner && $owner !== $this->package->site['name'] ) {
+					$problems[] = sprintf( 'sitemap.yaml: %s: adopt: page %d belongs to the package %s', $page['where'], $found->ID, $owner );
+				} elseif ( isset( $adopted[ $found->ID ] ) ) {
+					$problems[] = sprintf( 'sitemap.yaml: %s: adopt: page %d is adopted by %s too', $page['where'], $found->ID, $adopted[ $found->ID ] );
+				}
+				$adopted[ $found->ID ] = $page['where'];
+				continue;
+			}
+			if ( '' === $page['path'] ) {
 				continue;
 			}
 			$taken = get_page_by_path( $page['path'] );
 			if ( $taken instanceof WP_Post && $taken->ID !== $this->shop_page( $page['type'] ) ) {
-				$problems[] = sprintf( 'sitemap.yaml: %s: /%s/ is page %d, which this package did not make; move or delete it first', $page['where'], $page['path'], $taken->ID );
+				$problems[] = sprintf( 'sitemap.yaml: %s: /%s/ is page %d, which this package did not make; move or delete it first, or set adopt: true to take it over', $page['where'], $page['path'], $taken->ID );
 			}
 		}
 
@@ -332,11 +357,14 @@ final class Importer {
 				'post_parent'   => null === $page['parent'] ? 0 : $this->ids[ $page['parent'] ],
 				'menu_order'    => $i,
 				'page_template' => '' === $page['template'] ? 'default' : $page['template'],
-				'meta_input'    => $this->seo( $page['content'] ),
 			);
+			if ( null !== $page['content'] || ! $page['adopt'] ) {
+				// An adopted page without a content file keeps its SEO fields too.
+				$postarr['meta_input'] = $this->seo( $page['content'] );
+			}
 			if ( null !== $page['content'] ) {
 				$postarr['post_content'] = $this->package->page_content( $page['content'], Closure::fromCallable( array( Package::class, 'pattern' ) ), $this->media() );
-			} elseif ( ! isset( self::SHOP_OPTIONS[ $page['type'] ] ) ) {
+			} elseif ( ! isset( self::SHOP_OPTIONS[ $page['type'] ] ) && ! $page['adopt'] ) {
 				$postarr['post_content'] = '';
 			}
 
@@ -346,9 +374,16 @@ final class Importer {
 				// WooCommerce's page keeps its blocks unless the package gives content.
 				$shop     = get_post( $this->shop_page( $page['type'] ) );
 				$existing = $shop instanceof WP_Post && 'page' === $shop->post_type ? $shop : null;
-				$action   = null === $existing ? null : 'adopt';
+			} elseif ( null === $existing && $page['adopt'] ) {
+				$existing = $this->adoptable( $page );
 			}
-			$id                         = $this->save( $key, $postarr, $existing, 'page', $action );
+			if ( null !== $existing && ! isset( $this->owned[ $key ] ) ) {
+				$action = 'adopt';
+			}
+			$id = $this->save( $key, $postarr, $existing, 'page', $action );
+			if ( 'adopt' === $action && ! $this->dry_run ) {
+				update_post_meta( $id, self::ADOPTED, '1' );
+			}
 			$this->ids[ $page['path'] ] = $id;
 
 			if ( ! $this->dry_run && $id > 0 ) {
@@ -574,9 +609,9 @@ final class Importer {
 
 	/**
 	 * Lists, and with $prune removes, what the package made and no longer has.
-	 * Pages and the menu go to the trash; images are deleted. A product is
-	 * only released: it stays in the shop as it is, no longer the package's.
-	 * Without a sitemap the package leaves pages and the menu alone.
+	 * Pages and the menu go to the trash; images are deleted. A product or an
+	 * adopted page is only released: it stays as it is, no longer the
+	 * package's. Without a sitemap the package leaves pages and the menu alone.
 	 */
 	private function stale(): void {
 		$stale = array();
@@ -590,13 +625,13 @@ final class Importer {
 				'attachment'    => 'image',
 				'wp_navigation' => 'menu',
 			)[ $post->post_type ] ?? $post->post_type;
-			$product      = 'product' === $post->post_type;
-			$this->rows[] = Starter::row( $this->prune ? ( $product ? 'release' : 'remove' ) : 'stale', $type, $key, $post->ID, $post->post_title );
+			$release      = 'product' === $post->post_type || '' !== (string) get_post_meta( $post->ID, self::ADOPTED, true );
+			$this->rows[] = Starter::row( $this->prune ? ( $release ? 'release' : 'remove' ) : 'stale', $type, $key, $post->ID, $post->post_title );
 			if ( ! $this->prune || $this->dry_run ) {
 				continue;
 			}
-			if ( $product ) {
-				foreach ( array( self::META, self::KEY, self::SOURCE, self::SAVED ) as $meta_key ) {
+			if ( $release ) {
+				foreach ( array( self::META, self::KEY, self::SOURCE, self::SAVED, self::ADOPTED ) as $meta_key ) {
 					delete_post_meta( $post->ID, $meta_key );
 				}
 			} else {
@@ -604,7 +639,7 @@ final class Importer {
 			}
 		}
 		if ( ! $this->prune && array() !== $stale ) {
-			$this->notes[] = 'Items marked stale were made by an earlier import and are no longer in the package; --prune removes them (a product is only released and stays in the shop as it is)';
+			$this->notes[] = 'Items marked stale were made by an earlier import and are no longer in the package; --prune removes them (a product or an adopted page is only released and stays as it is)';
 		}
 	}
 
@@ -669,8 +704,9 @@ final class Importer {
 		// without the unfiltered_html capability gets (WP-CLI has no user).
 		$filtered = false !== has_filter( 'content_save_pre', 'wp_filter_post_kses' );
 		kses_remove_filters();
-		// A product keeps every field the package does not write.
-		$id = null !== $fields ? wp_update_post( wp_slash( $postarr ), true ) : wp_insert_post( wp_slash( $postarr ), true );
+		// A post saved before keeps every field the package does not write
+		// (wp_insert_post() would empty the content of an adopted page).
+		$id = null !== $existing ? wp_update_post( wp_slash( $postarr ), true ) : wp_insert_post( wp_slash( $postarr ), true );
 		if ( ! is_wp_error( $id ) && array() !== $prices ) {
 			self::set_prices( $id, $prices );
 		}
@@ -841,6 +877,22 @@ final class Importer {
 		if ( ! $same && ! $this->dry_run ) {
 			update_option( $option, $value );
 		}
+	}
+
+	/**
+	 * The page an adopt: true page takes over: the front page for slug "",
+	 * else the page at its address; null when there is none.
+	 *
+	 * @param array<string, mixed> $page Page from the sitemap.
+	 * @phpstan-param Page $page
+	 */
+	private function adoptable( array $page ): ?WP_Post {
+		if ( '' === $page['path'] ) {
+			$found = 'page' === get_option( 'show_on_front' ) ? get_post( (int) get_option( 'page_on_front' ) ) : null;
+		} else {
+			$found = get_page_by_path( $page['path'] );
+		}
+		return $found instanceof WP_Post && 'page' === $found->post_type && 'trash' !== $found->post_status ? $found : null;
 	}
 
 	/**
