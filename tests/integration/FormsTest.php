@@ -460,6 +460,11 @@ final class FormsTest extends TestCase {
 		$this->assertSame( sprintf( __( 'Fill in %s.', 'pergel-engine' ), 'Country' ), $wrong['errors']['extra_1'] );
 		$this->assertSame( array(), $this->mails );
 
+		// A label that is a question is not followed by a full stop.
+		$quote = Submit::handle( array( 'token' => Form::sign( array( 'kind' => 'quote' ) + self::spec( false ) ) ) + array( 'message' => '' ) + self::fields(), $this->ip );
+		/* translators: %s: field label that ends with its own punctuation, like "What do you need?". */
+		$this->assertSame( sprintf( __( 'Please answer: %s', 'pergel-engine' ), __( 'What do you need?', 'pergel-engine' ) ), $quote['errors']['message'] );
+
 		$result = Submit::handle(
 			array(
 				'token'   => Form::sign( $spec ),
