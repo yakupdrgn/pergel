@@ -359,6 +359,17 @@ bloğunun mesajlarını alır.
   `pergel/forms/subject_values` (`values` + `errors`; formun kendi alanlarının adları
   kullanılamaz, değerler mesajdan önce saklanır ve e-postaya girer). Saklanan ve gönderilen her
   mesajdan sonra `pergel/forms/received` (`$entry, $spec, $values, $input`) çalışır.
+- **Editörün ek alanları** (`fields` niteliği, v1.2): editör en çok 10 alan ekler. Her alanın
+  etiketi, türü (`text`, `textarea`, `tel`, `select`), zorunlu olup olmadığı ve listede en çok
+  30 seçeneği vardır. Etiketsiz alan ve seçeneksiz liste atlanır.
+  - **Adlar ve sıra:** Alanlar sırayla `extra_1`, `extra_2` … adını alır. Konunun alanlarından
+    sonra, mesajdan önce gelirler.
+  - **Doğrulama:** Temizlenmiş tanımlar belirteçle imzalanır. Sunucu, değeri o tanıma göre
+    doğrular; liste yalnızca kendi seçeneklerinden birini kabul eder. Konunun alanları bu adları
+    kullanamaz.
+  - **Etiketler:** Etiketler mesajla birlikte `_pergel_labels` meta'sında saklanır. E-posta,
+    yönetim ekranı ve kişisel veri dışa aktarımı onları kullanır. Ek alanlar
+    `pergel/forms/received`'deki `$values` içinde gelir, `QuoteRequest`'e girmez.
 - **Analytics:** başarılı her gönderim `generate_lead` olayı verir (`gtag`, yoksa
   `dataLayer`; `lead_source`: `contact_form` / `quote_form`). Site etiketi yoksa olay hiçbir
   yere gitmez.

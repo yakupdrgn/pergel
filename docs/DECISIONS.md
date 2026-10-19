@@ -1343,6 +1343,27 @@ verisini paket dosyalarına çeviren bir eşleyici olur.
 - **v1.1.0 (19 Ekim 2026):** dört PR (#32–#34, #35) birleşti; "Tested up to" 7.1 kalır (7.2
   beta'sı yok). Etiket ve taslak sürüm kullanıcı onayıyla.
 
+## v1.2: form ek alanları (19 Ekim 2026, kullanıcı kararı)
+
+İhtiyaç F7'den geldi. ariumlab'ın FormCraft formlarında Pergel formunun sabit alanlarında
+olmayan bilgiler soruluyor: ülke, talep türü ve ürün listeleri, VAT, fatura ve teslimat
+adresi, zorunlu telefon. FormCraft ön yüze jQuery istediği için ve formlar bloğun kendi
+mesaj kutusunda toplanmadığı için kullanılmıyor.
+
+- **Ek alanlar blok ayarıdır.** Ayrı bir form oluşturucu ya da form yazı türü yok. Editör
+  alanları blokta tanımlar: etiket, tür, zorunlu mu, liste seçenekleri. Bir form tek yerde
+  durur, kalıp (pattern) ve şablon içinde de çalışır.
+- **Tanımlar imzalı belirteçte taşınır.** Mevcut tasarımla aynı: sunucu mesajı gösterilen forma
+  göre doğrular, sayfayı yeniden ayrıştırmaz, önbellekli sayfada da çalışır. Sınırlar belirteci
+  küçük tutar: 10 alan, listede 30 seçenek, etiket ve seçenekte 100 karakter.
+- **Dört tür:** kısa metin, uzun metin, telefon, liste. E-posta, tarih, dosya ve çoklu seçim
+  şimdilik yok. Zorunlu telefon için yerleşik telefon kapatılır, yerine zorunlu bir telefon
+  ek alanı konur.
+- **Adlar sıradan gelir (`extra_N`), etiketler mesajla saklanır.** Editör sonradan alanların
+  sırasını değiştirse de eski mesajlar kendi etiketleriyle okunur.
+- **Ek alanlar teklif sağlayıcısına (QuoteRequest) gitmez.** Sağlayıcı arayüzü 1.1'deki gibi
+  kalır. İhtiyaç çıkarsa `pergel/forms/received`'deki `$values` kullanılır.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
