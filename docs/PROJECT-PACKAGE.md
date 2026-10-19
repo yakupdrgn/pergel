@@ -111,7 +111,9 @@ menu:                        # isteğe bağlı
 - **Menü:** `menu` listesi yazılmazsa sayfa ağacından üretilir; ön sayfa, sepet, ödeme ve hesap
   sayfaları ile `menu: false` olanlar dışarıda kalır. Liste yazılırsa yalnızca o liste kullanılır.
   Öge bir sayfa yolu (`hakkimizda/ekip`), `{ page, label, children }` veya `{ label, url }`
-  olabilir. Adreslerde yalnızca `http`, `https`, `mailto` ve `tel` geçer.
+  olabilir. Adreslerde yalnızca `http`, `https`, `mailto` ve `tel` geçer. `/` ile başlayan adres
+  sitenin kendi adresidir: site bir alt dizindeyse dizin eklenir (`/urunler/` →
+  `https://ornek.com/site/urunler/`); dışa aktarma onu yine `/urunler/` yazar.
 
 ## `content/*.md`
 

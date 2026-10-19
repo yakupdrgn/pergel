@@ -1379,6 +1379,10 @@ Sayfaları silip yeniden yapmak kimliklerini, yorumlarını ve iç bağlantılar
 - **Hata düzeltmesi:** var olan kayıt `wp_insert_post` yerine `wp_update_post` ile kaydedilir.
   `wp_insert_post` kimlikle çağrılıp içerik verilmezse içeriği boşaltıyordu; içeriği korunması
   gereken WooCommerce sayfaları da bundan etkileniyordu.
+- **Menüde kök göreli adres sitenin adresiyle çözülür** (`home_url`). Sayfa bağlantıları zaten
+  tam adresle yazılıyordu; `/product-category/...` gibi bir adres alt dizindeki bir sitede (yerel
+  prova) kök alana gidiyordu. Dışa aktarma site adresini zaten siliyordu, gidiş-dönüş değişmez.
+  İçerikteki (Markdown) bağlantılar şimdilik olduğu gibi yazılır.
 
 ## Aşamalar ve bitti tanımları
 
