@@ -169,6 +169,19 @@ final class PackageTest extends TestCase {
 		$this->assertStringContainsString( 'class="wp-image-9"', $html );
 		$this->assertSame( serialize_blocks( parse_blocks( $html ) ), $html );
 
+		// align: wide replaces the pattern's full width.
+		$faq = substr( $html, (int) strpos( $html, '<!-- wp:group {"tagName":"section","className":"pergel-faq"' ) );
+		$this->assertSame( 'wide', parse_blocks( $faq )[0]['attrs']['align'] );
+		$this->assertStringContainsString( 'class="wp-block-group pergel-faq alignwide', $faq );
+		$this->assertStringNotContainsString( 'alignfull', (string) strstr( $faq, '>', true ) );
+		$this->assertSame( 'wide', Package::width( parse_blocks( $faq ) ) );
+
+		// none is the content width: no align at all.
+		$narrow = Package::widened( (array) Package::pattern( 'pergel/faq-accordion' ), 'none' );
+		$this->assertSame( 'none', Package::width( $narrow ) );
+		$this->assertStringNotContainsString( 'alignfull', serialize_blocks( $narrow ) );
+		$this->assertSame( 'pergel/faq-accordion', $narrow[0]['attrs']['metadata']['patternName'] );
+
 		// Without a markdown section the body comes last.
 		$about = $package->page_content( 'content/about.md', Package::pattern( ... ), $media );
 		$this->assertStringStartsWith( '<!-- wp:heading -->', $about );
@@ -216,6 +229,8 @@ final class PackageTest extends TestCase {
 				    subtitle: x
 				  - markdown: true
 				    heading: x
+				  - pattern: faq-accordion
+				    align: center
 				---
 
 				# Bir başlık
@@ -250,9 +265,10 @@ final class PackageTest extends TestCase {
 			'content/home.md: "title" is set in sitemap.yaml, not in the content file',
 			'content/home.md: seo.noindex: true or false is expected',
 			'content/home.md: sections[3]: a { markdown: true } section, which places the Markdown body, has nothing else',
+			'content/home.md: sections[4]: align: wide, full or none',
 			'content/home.md: sections[1]: pattern: "hero-splitt" is not a Pergel pattern',
 			'content/home.md: sections[2] (hero-split): "subtitle" is not a field here; fields: eyebrow, heading, text, buttons, image',
-			'content/home.md: line 13: ',
+			'content/home.md: line 15: ',
 			'brand/tokens.json: ',
 		);
 		foreach ( $expected as $start ) {

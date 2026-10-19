@@ -152,6 +152,13 @@ sections:
 - `sections` sırayla sayfayı kurar. `pattern` Pergel pattern adıdır (`hero-split` veya
   `pergel/hero-split`). `{ markdown: true }` gövdenin yerini belirler; yoksa gövde en sona
   eklenir. Frontmatter'ı olmayan dosya yalnızca gövdedir.
+- `align` bölümün genişliğini pattern'inkinden farklı yapar: `wide` (geniş, `wideSize`),
+  `full` (tam genişlik) veya `none` (içerik genişliği). Editördeki genişlik düğmesinin
+  yaptığını yapar: kök bloğun `align` özniteliğini ve `alignwide`/`alignfull` sınıfını
+  değiştirir. Yazılmazsa pattern'in genişliği kalır. İçi `constrained` olmayan bir
+  bölüm `full` ile kenardan kenara uzar; yan yana bölümlerle aynı hizaya gelmesi için
+  çoğu zaman doğru değer `wide`'dır. Dışa aktarma genişliği pattern'den farklı olan
+  bölüme `align` yazar.
 - Bilinmeyen pattern veya alan içe aktarmayı durdurur; sessizce atlanmaz.
 
 ### Alan modeli
