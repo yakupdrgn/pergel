@@ -1487,6 +1487,15 @@ eksik çıktı. Üçü de Pergel'de genel olarak çözülür:
   belirleniyor.
 - Geriye uyumlu; 1.2.2 sürümüyle çıkar. ariumlab-site paketi format 3'e geçer.
 
+## v1.2.2 sürümü (20 Ekim 2026, kullanıcı kararı)
+
+- PR #48 (marka alt teması, site logosu, `brand.logo_has_name`) çıkar. Geriye uyumlu; eski
+  paketler aynen okunur. Bu yüzden numara yama sürümü: 1.2.2.
+- **Neden şimdi:** ariumlab.com paketi format 3'e geçti (Lab Precision token'ları ve SVG logo).
+  Eski sürüm format 3'ü reddeder. ariumlab-site reposundaki `docs/DECISIONS.md`, "Canlı geçiş
+  kontrol listesi", adım 3.
+- Etiket ve taslak sürüm kullanıcı onayıyla oluşturulur.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
