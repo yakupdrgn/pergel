@@ -341,6 +341,40 @@ final class CompilerTest extends TestCase {
 		rmdir( $root );
 	}
 
+	public function test_child_theme_style_rules_go_to_its_theme_json(): void {
+		$root = sys_get_temp_dir() . '/pergel-child-' . bin2hex( random_bytes( 4 ) );
+		mkdir( "$root/parent/tokens", 0777, true );
+		mkdir( "$root/child/tokens", 0777, true );
+		file_put_contents( "$root/parent/tokens/default.json", (string) json_encode( self::minimal() ) );
+		file_put_contents( "$root/child/tokens/default.json", '{"$extensions":{"com.ariumlab.pergel":{"styles":{"elements":{"button":{"typography":{"textTransform":"uppercase"}}}}}}}' );
+		file_put_contents( "$root/child/theme.json", '{"version":3,"styles":{"color":{"text":"red"}}}' );
+
+		// A hand-written theme.json keeps its own rules; a fresh build has only the tokens'.
+		$kept = json_decode( Compiler::build( "$root/child", "$root/parent" )['theme.json'], true );
+		$this->assertSame( 'uppercase', $kept['styles']['elements']['button']['typography']['textTransform'] );
+		$this->assertSame( 'red', $kept['styles']['color']['text'] );
+		$fresh = json_decode( Compiler::build( "$root/child", "$root/parent", true )['theme.json'], true );
+		$this->assertSame( 'uppercase', $fresh['styles']['elements']['button']['typography']['textTransform'] );
+		$this->assertArrayNotHasKey( 'color', $fresh['styles'] );
+
+		file_put_contents( "$root/child/tokens/default.json", '{"$extensions":{"com.ariumlab.pergel":{"styles":["uppercase"]}}}' );
+		try {
+			Compiler::build( "$root/child", "$root/parent" );
+			$this->fail( 'A list of styles was accepted' );
+		} catch ( Invalid $e ) {
+			$this->assertSame( array( 'tokens/default.json: $extensions."com.ariumlab.pergel".styles must be a theme.json styles object' ), $e->problems );
+		}
+
+		unlink( "$root/parent/tokens/default.json" );
+		unlink( "$root/child/tokens/default.json" );
+		unlink( "$root/child/theme.json" );
+		rmdir( "$root/parent/tokens" );
+		rmdir( "$root/child/tokens" );
+		rmdir( "$root/parent" );
+		rmdir( "$root/child" );
+		rmdir( $root );
+	}
+
 	public function test_repository_theme_is_in_sync_with_its_tokens(): void {
 		$dir = dirname( __DIR__, 3 ) . '/theme';
 		$this->assertSame( array(), Compiler::sync( $dir, Compiler::build( $dir ), true ), 'run php tools/tokens.php' );

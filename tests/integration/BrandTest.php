@@ -307,6 +307,23 @@ final class BrandTest extends TestCase {
 		);
 	}
 
+	public function test_a_logo_with_the_name_leaves_out_the_title_next_to_it(): void {
+		$header = '<!-- wp:group --><div class="wp-block-group"><!-- wp:site-logo /-->' . "\n\n" . '<!-- wp:site-title {"level":0} /--></div><!-- /wp:group -->';
+		$footer = '<!-- wp:site-title {"level":0} /-->';
+		update_option( 'site_logo', $this->attachment( 'pergel-test-wordmark.png' ) );
+		$this->assertStringContainsString( 'wp-block-site-title', do_blocks( $header ) );
+
+		Settings::update( array( 'brand' => array( 'logo_has_name' => true ) ) );
+		$html = do_blocks( $header );
+		$this->assertStringContainsString( 'wp-block-site-logo', $html );
+		$this->assertStringNotContainsString( 'wp-block-site-title', $html );
+		$this->assertStringContainsString( 'wp-block-site-title', do_blocks( $footer ) );
+
+		// Without a logo the title is the only name in the header.
+		delete_option( 'site_logo' );
+		$this->assertStringContainsString( 'wp-block-site-title', do_blocks( $header ) );
+	}
+
 	public function test_editor_data_lists_fields_and_values(): void {
 		Settings::update(
 			array(

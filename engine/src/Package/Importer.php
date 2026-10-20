@@ -290,7 +290,8 @@ final class Importer {
 	}
 
 	/**
-	 * Site title, tagline and language.
+	 * Site title, tagline, language and logo. A package without a logo
+	 * leaves the site's logo as it is.
 	 */
 	private function site_options(): void {
 		$site    = $this->package->site;
@@ -304,6 +305,11 @@ final class Importer {
 		$this->notes = array_merge( $this->notes, $this->site_notes() );
 		foreach ( $options as $option => $value ) {
 			$this->option( $option, $value );
+		}
+		if ( null !== $site['logo'] ) {
+			$logo = $this->media()( $site['logo'] )['id'];
+			// The Site Logo block and get_custom_logo() both read this option.
+			$this->option( 'site_logo', $logo, 0 === $logo, '(new image)' );
 		}
 	}
 
@@ -599,8 +605,9 @@ final class Importer {
 			$changed = Compiler::sync( $dir, $files, true );
 		} else {
 			$changed = Compiler::sync( $dir, $files, false );
-			// Built against the parent's tokens, like `wp pergel tokens build` builds a child theme.
-			$changed = array_merge( $changed, Compiler::sync( $dir, Compiler::build( $dir, get_template_directory() ), false ) );
+			// Built against the parent's tokens, like `wp pergel tokens build` builds a child theme. The
+			// package owns theme.json too, so style rules taken out of brand/tokens.json leave it as well.
+			$changed = array_merge( $changed, Compiler::sync( $dir, Compiler::build( $dir, get_template_directory(), true ), false ) );
 		}
 		$this->rows[] = Starter::row( $exists ? ( array() === $changed ? 'keep' : 'update' ) : 'create', 'theme', $slug, 0, array() === $changed ? '' : implode( ', ', $changed ) );
 
@@ -875,11 +882,12 @@ final class Importer {
 	 *
 	 * @param string     $option  Option name.
 	 * @param string|int $value   New value.
-	 * @param bool       $pending A page ID that a dry run does not have yet.
+	 * @param bool       $pending A page or image ID that a dry run does not have yet.
+	 * @param string     $label   What the pending value is.
 	 */
-	private function option( string $option, string|int $value, bool $pending = false ): void {
+	private function option( string $option, string|int $value, bool $pending = false, string $label = '(new page)' ): void {
 		$same         = ! $pending && (string) get_option( $option ) === (string) $value;
-		$this->rows[] = Starter::row( $same ? 'keep' : 'set', 'option', $option, 0, $pending ? '(new page)' : (string) $value );
+		$this->rows[] = Starter::row( $same ? 'keep' : 'set', 'option', $option, 0, $pending ? $label : (string) $value );
 		if ( ! $same && ! $this->dry_run ) {
 			update_option( $option, $value );
 		}

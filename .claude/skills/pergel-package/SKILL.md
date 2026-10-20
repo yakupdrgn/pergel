@@ -24,8 +24,8 @@ verir. Format hakkında bir şeyden emin değilsen o belgeye bak, tahmin etme.
 1. **Brief'i oku.** Paketteki `brief.md` ve `research/` serbest notlardır (okuyucu yok sayar).
    Eksikse sor: firma adı ve kısa adı (paket `name`), dil (`tr_TR` gibi), sayfalar, hedef
    kitle ve ton, iletişim bilgileri, elindeki görseller.
-2. **`package.yaml`:** `format: 1` (ürün dosyası varsa `format: 2`), `name` (küçük harf, rakam, tire), `title`, `tagline`,
-   `locale`. `settings` ayar ekranının gruplarıdır; anahtarları
+2. **`package.yaml`:** `format: 1` (ürün dosyası varsa `format: 2`, logo varsa `format: 3`), `name` (küçük harf, rakam, tire), `title`, `tagline`,
+   `locale`, `logo` (site logosu). `settings` ayar ekranının gruplarıdır; anahtarları
    `wp pergel settings get` gösterir. Yalnızca varsayılandan farklı olanları yaz.
 3. **`sitemap.yaml`:** Sayfa ağacı. Ön sayfa `slug: ""`. Adreslerde Türkçe karakter yok
    (`hakkimizda`, `iletisim`). Blog için `type: posts`, mağaza için `shop`, `cart`, `checkout`,
