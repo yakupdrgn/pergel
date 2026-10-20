@@ -361,24 +361,37 @@ final class PackageTest extends TestCase {
 		$package = $this->package( array( 'package.yaml' => $yaml . "logo: media/tarla.png\n" ) );
 		$this->assertSame( array(), $package->problems );
 		$this->assertSame( 'media/tarla.png', $package->site['logo'] );
-		$this->assertFalse( $package->has_svg() );
+		$this->assertSame( array(), $package->svg_images() );
 
-		// An SVG logo needs a site that takes SVG uploads.
+		// An SVG logo needs a site that takes SVG uploads from this user.
 		$svg   = array(
 			'package.yaml'   => $yaml . "logo: media/logo.svg\n",
 			'media/logo.svg' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10"/></svg>',
 		);
 		$allow = static fn( array $mimes ): array => $mimes + array( 'svg' => 'image/svg+xml' );
+		$user  = get_current_user_id();
 		self::remove( $this->copy );
+		wp_set_current_user( 0 );
 		$package = $this->package( $svg );
-		$this->assertTrue( $package->has_svg() );
-		$this->assertStringContainsString( 'an SVG logo needs SVG uploads on this site', implode( "\n", $package->problems ) );
+		$this->assertSame( array( 'media/logo.svg' ), $package->svg_images() );
+		$this->assertSame( array( 'media/logo.svg: WordPress does not take SVG files on this site; activate the Safe SVG plugin, which also cleans them, and run WP-CLI as an administrator (--user=<login>)' ), $package->problems );
 		self::remove( $this->copy );
+		// Without Safe SVG the filter allows the type; with it, the administrator may upload.
 		add_filter( 'upload_mimes', $allow );
+		wp_set_current_user(
+			(int) get_users(
+				array(
+					'role'   => 'administrator',
+					'number' => 1,
+					'fields' => 'ID',
+				)
+			)[0]
+		);
 		try {
 			$this->assertSame( array(), $this->package( $svg )->problems );
 		} finally {
 			remove_filter( 'upload_mimes', $allow );
+			wp_set_current_user( $user );
 		}
 
 		// A share image is never SVG.

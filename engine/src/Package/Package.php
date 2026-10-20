@@ -297,8 +297,10 @@ final class Package {
 				}
 			}
 		}
-		if ( $this->has_svg() && ! Svg::uploads() ) {
-			$this->problems[] = 'package.yaml: an SVG logo needs SVG uploads on this site: activate the Safe SVG plugin, which also cleans the file, and run WP-CLI as an administrator (--user=<login>)';
+		foreach ( $this->svg_images() as $path ) {
+			if ( is_file( "$this->dir/$path" ) && ! Svg::sideloads( "$this->dir/$path" ) ) {
+				$this->problems[] = "$path: WordPress does not take SVG files on this site; activate the Safe SVG plugin, which also cleans them, and run WP-CLI as an administrator (--user=<login>)";
+			}
 		}
 		// The package's child theme has no font files of its own; they come from the parent.
 		$this->check( Closure::fromCallable( array( self::class, 'pattern' ) ), $templates, $tokens, array( get_template_directory() ) );
@@ -521,10 +523,11 @@ final class Package {
 	}
 
 	/**
-	 * Whether the package brings an svg image (a logo), which the site must
-	 * allow to be uploaded.
+	 * The svg images (logos) the package brings, which the site must take.
+	 *
+	 * @return list<string> Package paths.
 	 */
-	public function has_svg(): bool {
+	public function svg_images(): array {
 		$paths  = array( (string) $this->site['logo'] );
 		$groups = Schema::groups();
 		foreach ( $this->settings as $group => $values ) {
@@ -534,12 +537,7 @@ final class Package {
 				}
 			}
 		}
-		foreach ( $paths as $path ) {
-			if ( in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), self::SVG_TYPES, true ) ) {
-				return true;
-			}
-		}
-		return false;
+		return array_values( array_unique( array_filter( $paths, static fn( string $path ): bool => in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), self::SVG_TYPES, true ) ) ) );
 	}
 
 	/**
