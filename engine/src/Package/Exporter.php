@@ -875,8 +875,15 @@ final class Exporter {
 			$title         = $this->name;
 			$this->notes[] = "package.yaml: the site has no title; the package uses its name, $title";
 		}
-		$logo = (int) get_option( 'site_logo' );
-		$logo = $logo > 0 ? $this->image( '', $logo, false, true ) : null;
+		// Like pages, the logo goes only when the package made it, or with --all.
+		$logo_id = (int) get_option( 'site_logo' );
+		$logo    = null;
+		if ( $logo_id > 0 && ( $this->all || get_post_meta( $logo_id, Importer::META, true ) === $this->name ) ) {
+			$logo = $this->image( '', $logo_id, false, true );
+			if ( null === $logo ) {
+				$this->notes[] = 'package.yaml: logo: the Site Logo is not an image file in the media library and is left out';
+			}
+		}
 		$site = array(
 			'format'  => null !== $logo ? Package::LOGO_FORMAT : ( $products ? Package::PRODUCTS_FORMAT : Package::PAGES_FORMAT ),
 			'name'    => $this->name,
@@ -886,8 +893,6 @@ final class Exporter {
 		);
 		if ( null !== $logo ) {
 			$site['logo'] = $logo;
-		} elseif ( (int) get_option( 'site_logo' ) > 0 ) {
-			$this->notes[] = 'package.yaml: logo: the Site Logo is not an image file in the media library and is left out';
 		}
 		$settings = $this->settings();
 		if ( array() !== $settings ) {

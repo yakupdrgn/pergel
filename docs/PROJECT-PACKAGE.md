@@ -394,7 +394,8 @@ wp pergel export ./proje --strict          # not varsa hata verir
 wp pergel export ./site --all --name=site  # paketle kurulmamış bir sitenin tüm sayfaları
 ```
 
-İçe aktarmanın tersidir: site başlığı, slogan, dil ve logo, varsayılandan farklı Pergel ayarları,
+İçe aktarmanın tersidir: site başlığı, slogan, dil, logo (paket yaptıysa; `--all` ile her logo),
+varsayılandan farklı Pergel ayarları,
 sayfalar ve SEO alanları, menü, paketin doldurduğu ürünler, kullanılan görseller ve etkin alt
 temanın token'ları. Paket adı
 verilmezse sayfaları yapan paketin adı kullanılır (birden çok paket varsa `--name` gerekir);

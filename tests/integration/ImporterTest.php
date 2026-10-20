@@ -369,6 +369,27 @@ final class ImporterTest extends TestCase {
 				self::remove( $out );
 			}
 		}
+
+		// A logo the package did not make stays out, as hand-made pages do.
+		$foreign = (int) wp_insert_attachment(
+			array(
+				'post_mime_type' => 'image/png',
+				'post_title'     => 'Elle yüklenmiş logo',
+				'post_status'    => 'inherit',
+			)
+		);
+		update_option( 'site_logo', $foreign );
+		try {
+			( new Exporter( $out, self::NAME ) )->run();
+			$exported = (string) file_get_contents( "$out/package.yaml" );
+			$this->assertStringContainsString( "format: 1\n", $exported );
+			$this->assertStringNotContainsString( "\nlogo:", $exported );
+		} finally {
+			wp_delete_attachment( $foreign, true );
+			if ( is_dir( $out ) ) {
+				self::remove( $out );
+			}
+		}
 	}
 
 	public function test_an_export_imports_back_unchanged(): void {
