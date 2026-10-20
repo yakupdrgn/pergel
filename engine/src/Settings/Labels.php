@@ -86,7 +86,7 @@ final class Labels {
 				),
 				'logos'   => array(
 					'title'  => __( 'Logos', 'pergel-engine' ),
-					'fields' => array( 'logo_inverse' ),
+					'fields' => array( 'logo_inverse', 'logo_has_name' ),
 				),
 			),
 			'seo'         => array(
@@ -192,33 +192,37 @@ final class Labels {
 				),
 			),
 			'brand'       => array(
-				'name'         => array(
+				'name'          => array(
 					'label' => __( 'Brand name', 'pergel-engine' ),
 					'help'  => __( 'The name customers know. Leave empty to use the site title.', 'pergel-engine' ),
 				),
-				'legal_name'   => array( 'label' => __( 'Legal name', 'pergel-engine' ) ),
-				'vat_id'       => array( 'label' => __( 'Tax number', 'pergel-engine' ) ),
-				'email'        => array( 'label' => __( 'Email', 'pergel-engine' ) ),
-				'phone'        => array(
+				'legal_name'    => array( 'label' => __( 'Legal name', 'pergel-engine' ) ),
+				'vat_id'        => array( 'label' => __( 'Tax number', 'pergel-engine' ) ),
+				'email'         => array( 'label' => __( 'Email', 'pergel-engine' ) ),
+				'phone'         => array(
 					'label' => __( 'Phone', 'pergel-engine' ),
 					'help'  => __( 'With the country code, e.g. +90 212 000 00 00.', 'pergel-engine' ),
 				),
-				'street'       => array( 'label' => __( 'Street address', 'pergel-engine' ) ),
-				'locality'     => array( 'label' => __( 'City or district', 'pergel-engine' ) ),
-				'region'       => array( 'label' => __( 'Region or province', 'pergel-engine' ) ),
-				'postal_code'  => array( 'label' => __( 'Postal code', 'pergel-engine' ) ),
-				'country'      => array(
+				'street'        => array( 'label' => __( 'Street address', 'pergel-engine' ) ),
+				'locality'      => array( 'label' => __( 'City or district', 'pergel-engine' ) ),
+				'region'        => array( 'label' => __( 'Region or province', 'pergel-engine' ) ),
+				'postal_code'   => array( 'label' => __( 'Postal code', 'pergel-engine' ) ),
+				'country'       => array(
 					'label' => __( 'Country code', 'pergel-engine' ),
 					'help'  => __( 'Two letters (ISO 3166-1), e.g. TR.', 'pergel-engine' ),
 				),
-				'social'       => array(
+				'social'        => array(
 					'label' => __( 'Profile links', 'pergel-engine' ),
 					'help'  => __( 'One full address per line (LinkedIn, Instagram, YouTube, ...). Up to 10.', 'pergel-engine' ),
 				),
-				'logo_inverse' => array(
+				'logo_inverse'  => array(
 					'label' => __( 'Logo for dark backgrounds', 'pergel-engine' ),
 					'help'  => __( 'The main logo is the Site Logo in the Site Editor.', 'pergel-engine' ),
 					'svg'   => __( 'SVG uploads are off on this site. The free Safe SVG plugin turns them on and cleans every SVG file.', 'pergel-engine' ),
+				),
+				'logo_has_name' => array(
+					'label' => __( 'The logo shows the name', 'pergel-engine' ),
+					'help'  => __( 'Hides the site title next to the Site Logo in the header. Leave it off for a logo that is only a mark.', 'pergel-engine' ),
 				),
 			),
 			'seo'         => array(

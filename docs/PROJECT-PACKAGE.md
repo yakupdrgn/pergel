@@ -23,10 +23,11 @@ proje/
 └─ research/              # serbest: rakip analizi, anahtar kelimeler (okuyucu yok sayar)
 ```
 
-Format 2 ürünleri (`products/`) ekler. Henüz olmayanlar: logo ve font dosyaları, birden çok
-dil. Bunlar formatın sonraki sürümleriyle eklenir; `format` numarası artar. Motor kendi
-numarasına kadar her formatı okur, daha yenisini reddeder. Dışa aktarma ürünsüz paketi format
-1 yazar, böylece ürünsüz paket eski motorlarda da okunur.
+Format 2 ürünleri (`products/`), format 3 site logosunu (`logo`) ekler. Henüz olmayanlar: font
+dosyaları, birden çok dil. Bunlar formatın sonraki sürümleriyle eklenir; `format` numarası
+artar. Motor kendi numarasına kadar her formatı okur, daha yenisini reddeder. Dışa aktarma
+paketi onu tutan en eski formatta yazar (ürünsüz ve logosuz paket 1, logosuz paket 2), böylece
+paket eski motorlarda da okunur.
 
 ## Denetim
 
@@ -58,6 +59,7 @@ name: ornek-firma          # küçük harf, rakam ve tire
 title: Örnek Firma         # site başlığı
 tagline: Topraktan sofraya # isteğe bağlı
 locale: tr_TR              # isteğe bağlı; tr_TR, en_US gibi
+logo: media/logo.svg       # isteğe bağlı, format 3; site logosu (Site Logo)
 settings:                  # isteğe bağlı; Pergel ayar ekranının alanları
   brand:
     name: Örnek Firma A.Ş.
@@ -69,6 +71,16 @@ settings:                  # isteğe bağlı; Pergel ayar ekranının alanları
 
 `settings` grupları ve anahtarları ayar ekranıyla aynıdır (`wp pergel settings get`); değerler
 ayar ekranının kurallarıyla denetlenir. Görsel alanları paketteki bir dosyanın yolunu alır.
+
+**Logo.** `logo` site logosudur: Site Logo bloğu ve Organization şeması onu kullanır. Paketteki
+bir görselin yoludur; alt metni `media.yaml`'dan gelir. Logosu olmayan paket sitenin logosuna
+dokunmaz. Logo adı da içeriyorsa (yazı logo) `settings.brand.logo_has_name: true` başlıktaki
+site adını gizler; o zaman alt metin markanın adı olmalıdır.
+
+**SVG.** Yalnızca logolar (`logo` ve `settings.brand.logo_inverse`) SVG olabilir. WordPress
+SVG'yi yalnızca site izin verirse alır: Safe SVG eklentisi etkin olmalı (dosyayı da temizler) ve
+WP-CLI bir yönetici olarak çalışmalı (`--user=<kullanıcı>`). Değilse denetim bunu sorun olarak
+bildirir.
 
 ## `sitemap.yaml`
 
@@ -291,6 +303,16 @@ kurallarla derlenir: çözülmeyen başvuru veya düşük kontrastlı renk çift
 { "radius": { "card": { "$value": "{radius.large}" } } }
 ```
 
+Token'la anlatılamayan stil kuralları (büyük harfli düğme ve menü gibi) style variation'larda
+olduğu gibi `$extensions."com.ariumlab.pergel".styles` altında, theme.json `styles` biçiminde
+yazılır; alt temanın theme.json'una aynen geçer:
+
+```json
+{ "$extensions": { "com.ariumlab.pergel": { "styles": {
+	"elements": { "button": { "typography": { "textTransform": "uppercase" } } }
+} } } }
+```
+
 Paket font dosyası taşımaz; `font-family` token'ının `fontFace` dosyaları ana temadan gelir
 (Figtree, Geist, Lexend Exa, Manrope, Space Grotesk). Ana temada olmayan dosya denetimde sorun
 olur; içe aktarma yarıda kalmaz.
@@ -307,7 +329,7 @@ wp pergel import ./proje --prune     # paketten çıkan sayfaları çöpe, görs
 Sıra: önce paket denetlenir (`package validate` ile aynı), sonra site. Sorun varsa hiçbir şey
 kaydedilmez. `--strict` paketin ve sitenin notlarını (yüklü olmayan dil) da kayıttan önce sorun
 sayar; içe aktarmanın kendi notlarında (panelde düzenlenmiş sayfa, başka adres alan sayfa) ise
-sıfırdan farklı kodla biter. Ardından site başlığı, slogan ve dil; kullanılan
+sıfırdan farklı kodla biter. Ardından site başlığı, slogan, dil ve logo; kullanılan
 görseller; Pergel ayarları; sayfalar; okuma ayarları (ön sayfa, yazılar sayfası, WooCommerce
 sayfaları); menü (`wp_navigation`); ürünler (`products/`); son olarak `brand/tokens.json` için alt tema. Her adım bir
 satır bildirir: `create`, `update`, `keep`, `set`, `adopt`, `skip`, `stale`, `remove`.
@@ -357,8 +379,9 @@ olmayan metinleri (form etiketleri, yedek adres) ve bölümlerin metadata'sında
 ilk içe aktarmada da paketin dilinde yazılır, ikinci içe aktarma onları değişmiş saymaz.
 
 **Alt tema.** `brand/tokens.json` varsa tema dizinine paket adıyla bir alt tema yazılır
-(`style.css` başlığında `Pergel package: <ad>`; `tokens/default.json` birleşik token'lar;
-`theme.json` derlenir) ve etkinleştirilir. Bu imza olmayan aynı adlı bir dizin veya paketin
+(`style.css` başlığında `Pergel package: <ad>`; `tokens/default.json` paketin token'ları;
+`theme.json` her içe aktarmada baştan derlenir, elle yapılan değişiklik kalmaz) ve
+etkinleştirilir. Bu imza olmayan aynı adlı bir dizin veya paketin
 yazmadığı etkin bir alt tema sorundur. Paketten `brand/tokens.json` çıkarılırsa ana tema
 yeniden etkinleşir.
 
@@ -371,7 +394,7 @@ wp pergel export ./proje --strict          # not varsa hata verir
 wp pergel export ./site --all --name=site  # paketle kurulmamış bir sitenin tüm sayfaları
 ```
 
-İçe aktarmanın tersidir: site başlığı, slogan ve dil, varsayılandan farklı Pergel ayarları,
+İçe aktarmanın tersidir: site başlığı, slogan, dil ve logo, varsayılandan farklı Pergel ayarları,
 sayfalar ve SEO alanları, menü, paketin doldurduğu ürünler, kullanılan görseller ve etkin alt
 temanın token'ları. Paket adı
 verilmezse sayfaları yapan paketin adı kullanılır (birden çok paket varsa `--name` gerekir);
@@ -385,7 +408,8 @@ pakete uymayan adres (`ürünler`) dönüştürülür (`urunler`).
 
 **Ürünler.** Paketin doldurduğu her ürün `products/<SKU>.md` olur, yalnız paketin yazdığı
 alanlarla (fiyatı yazmadıysa `price` yok). Geçersiz veya çakışan SKU'lu ürün not olur ve
-dışarıda kalır. Ürün varsa `package.yaml` format 2, sayfa yoksa `sitemap.yaml` yazılmaz.
+dışarıda kalır. Ürün varsa `package.yaml` format 2 (logo da varsa 3), sayfa yoksa `sitemap.yaml`
+yazılmaz.
 
 **İçerik.** Kök bloğu `metadata.patternName` taşıyan (blok ekleyicinin, içe aktarmanın ve
 starter'ların eklediği) bir bölüm, pattern adı ve alanlarıyla `sections` altına yazılır; diğer

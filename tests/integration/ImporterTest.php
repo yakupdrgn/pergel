@@ -25,7 +25,7 @@ use WP_Post;
 final class ImporterTest extends TestCase {
 
 	private const NAME    = 'pergel-test-paket';
-	private const OPTIONS = array( 'blogname', 'blogdescription', 'WPLANG', 'show_on_front', 'page_on_front', 'page_for_posts', 'theme_switched', Settings::OPTION );
+	private const OPTIONS = array( 'blogname', 'blogdescription', 'WPLANG', 'show_on_front', 'page_on_front', 'page_for_posts', 'theme_switched', 'site_logo', Settings::OPTION );
 
 	private const SITEMAP = <<<'YAML'
 	pages:
@@ -335,6 +335,40 @@ final class ImporterTest extends TestCase {
 		unlink( "$this->dir/brand/tokens.json" );
 		$this->import();
 		$this->assertSame( get_template(), get_stylesheet() );
+	}
+
+	public function test_brand_style_rules_reach_the_child_theme_and_leave_with_it(): void {
+		$this->write( 'brand/tokens.json', '{"$extensions":{"com.ariumlab.pergel":{"styles":{"elements":{"button":{"typography":{"textTransform":"uppercase"}}}}}}}' );
+		$this->import();
+		$theme = get_theme_root() . '/' . self::NAME . '/theme.json';
+		$this->assertStringContainsString( 'uppercase', (string) file_get_contents( $theme ) );
+		$this->assertSame( 'keep', self::row( $this->import(), self::NAME )['action'] );
+
+		$this->write( 'brand/tokens.json', '{ "radius": { "card": { "$value": "{radius.large}" } } }' );
+		$this->assertSame( 'update', self::row( $this->import(), self::NAME )['action'] );
+		$this->assertStringNotContainsString( 'uppercase', (string) file_get_contents( $theme ) );
+	}
+
+	public function test_the_logo_becomes_the_site_logo_and_exports_back(): void {
+		$yaml = (string) file_get_contents( "$this->dir/package.yaml" );
+		$this->write( 'package.yaml', str_replace( 'format: 1', 'format: 3', $yaml ) . "logo: media/tarla.png\n" );
+		$this->assertSame( '(new image)', self::row( $this->import( true ), 'site_logo' )['title'] );
+
+		$this->import();
+		$this->assertSame( $this->made()['media/tarla.png'], (int) get_option( 'site_logo' ) );
+		$this->assertSame( 'keep', self::row( $this->import(), 'site_logo' )['action'] );
+
+		$out = sys_get_temp_dir() . '/pergel-export-' . bin2hex( random_bytes( 4 ) );
+		try {
+			( new Exporter( $out, self::NAME ) )->run();
+			$exported = (string) file_get_contents( "$out/package.yaml" );
+			$this->assertStringContainsString( "format: 3\n", $exported );
+			$this->assertStringContainsString( "logo: media/tarla.png\n", $exported );
+		} finally {
+			if ( is_dir( $out ) ) {
+				self::remove( $out );
+			}
+		}
 	}
 
 	public function test_an_export_imports_back_unchanged(): void {

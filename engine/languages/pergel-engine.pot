@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-19T20:13:56+03:00\n"
+"POT-Creation-Date: 2026-10-20T12:22:45+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -577,6 +577,12 @@ msgid "The main logo is the Site Logo in the Site Editor."
 msgstr ""
 
 msgid "SVG uploads are off on this site. The free Safe SVG plugin turns them on and cleans every SVG file."
+msgstr ""
+
+msgid "The logo shows the name"
+msgstr ""
+
+msgid "Hides the site title next to the Site Logo in the header. Leave it off for a logo that is only a mark."
 msgstr ""
 
 msgid "Default share image"

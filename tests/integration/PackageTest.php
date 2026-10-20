@@ -99,6 +99,7 @@ final class PackageTest extends TestCase {
 				'title'   => 'Örnek Firma',
 				'tagline' => 'Topraktan sofraya',
 				'locale'  => 'tr_TR',
+				'logo'    => null,
 			),
 			$package->site
 		);
@@ -191,7 +192,7 @@ final class PackageTest extends TestCase {
 	public function test_names_every_problem_with_its_file_and_place(): void {
 		$package = $this->package(
 			array(
-				'package.yaml'      => "format: 3\nname: Örnek\ntitle: \"\"\nlocale: turkish\ncolor: red\nsettings:\n  brand:\n    email: not-an-email\n    logo: media/logo.png\n  shop: {}\n",
+				'package.yaml'      => "format: 4\nname: Örnek\ntitle: \"\"\nlocale: turkish\ncolor: red\nsettings:\n  brand:\n    email: not-an-email\n    logo: media/logo.png\n  shop: {}\n",
 				'sitemap.yaml'      => <<<'YAML'
 				pages:
 				  - slug: ""
@@ -241,8 +242,8 @@ final class PackageTest extends TestCase {
 		);
 
 		$expected = array(
-			'package.yaml: "color" is not known here; known: format, name, title, tagline, locale, settings',
-			'package.yaml: format: this engine reads formats 1 to 2',
+			'package.yaml: "color" is not known here; known: format, name, title, tagline, locale, logo, settings',
+			'package.yaml: format: this engine reads formats 1 to 3',
 			'package.yaml: name: required, in lowercase letters, digits and hyphens (like a-sirketi)',
 			'package.yaml: title: required; it is the site title',
 			'package.yaml: locale: "turkish" is not a locale like tr_TR or en_US',
@@ -343,11 +344,47 @@ final class PackageTest extends TestCase {
 
 	public function test_products_need_format_2_and_pages_need_a_sitemap(): void {
 		$package = $this->package( array( 'products/AB-100.md' => "---\ntitle: x\n---\n" ) );
-		$this->assertSame( array( 'package.yaml: format: a package with products/ is format 2' ), $package->problems );
+		$this->assertSame( array( 'package.yaml: format: a package with products/ is format 2 or newer' ), $package->problems );
 		$this->assertTrue( $package->sitemap );
 
 		$package = $this->package( array( 'sitemap.yaml' => null ) );
 		$this->assertStringStartsWith( 'sitemap.yaml: ', implode( "\n", $package->problems ) );
+	}
+
+	public function test_a_logo_needs_format_3_and_only_a_logo_may_be_svg(): void {
+		$yaml    = (string) file_get_contents( self::FIXTURE . '/package.yaml' );
+		$package = $this->package( array( 'package.yaml' => $yaml . "logo: media/tarla.png\n" ) );
+		$this->assertSame( array( 'package.yaml: format: a package with a logo is format 3' ), $package->problems );
+
+		$yaml = str_replace( 'format: 1', 'format: 3', $yaml );
+		self::remove( $this->copy );
+		$package = $this->package( array( 'package.yaml' => $yaml . "logo: media/tarla.png\n" ) );
+		$this->assertSame( array(), $package->problems );
+		$this->assertSame( 'media/tarla.png', $package->site['logo'] );
+		$this->assertFalse( $package->has_svg() );
+
+		// An SVG logo needs a site that takes SVG uploads.
+		$svg   = array(
+			'package.yaml'   => $yaml . "logo: media/logo.svg\n",
+			'media/logo.svg' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10"/></svg>',
+		);
+		$allow = static fn( array $mimes ): array => $mimes + array( 'svg' => 'image/svg+xml' );
+		self::remove( $this->copy );
+		$package = $this->package( $svg );
+		$this->assertTrue( $package->has_svg() );
+		$this->assertStringContainsString( 'an SVG logo needs SVG uploads on this site', implode( "\n", $package->problems ) );
+		self::remove( $this->copy );
+		add_filter( 'upload_mimes', $allow );
+		try {
+			$this->assertSame( array(), $this->package( $svg )->problems );
+		} finally {
+			remove_filter( 'upload_mimes', $allow );
+		}
+
+		// A share image is never SVG.
+		self::remove( $this->copy );
+		$package = $this->package( array( 'package.yaml' => $yaml . "  seo:\n    og_image: media/logo.svg\n" ) + $svg );
+		$this->assertStringContainsString( 'package.yaml: settings.seo.og_image: "media/logo.svg": an image is a jpg', implode( "\n", $package->problems ) );
 	}
 
 	public function test_notes_do_not_stop_a_package(): void {

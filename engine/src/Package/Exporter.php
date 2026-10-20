@@ -585,8 +585,9 @@ final class Exporter {
 	 * @param string $url  URL as the block has it.
 	 * @param int    $id   Attachment ID the block names, 0 when none.
 	 * @param bool   $file Whether a file field's file (a pdf too) is read.
+	 * @param bool   $svg  Whether an svg file is read (a logo).
 	 */
-	private function image( string $url, int $id, bool $file = false ): ?string {
+	private function image( string $url, int $id, bool $file = false, bool $svg = false ): ?string {
 		if ( $id <= 0 || 'attachment' !== get_post_type( $id ) ) {
 			$id = attachment_url_to_postid( $url );
 			if ( 0 === $id ) {
@@ -600,8 +601,9 @@ final class Exporter {
 		if ( isset( $this->paths[ $id ] ) ) {
 			return $this->paths[ $id ];
 		}
-		$file = wp_get_original_image_path( $id );
-		$file = is_string( $file ) && is_file( $file ) ? $file : (string) get_attached_file( $id );
+		$types = array_merge( Package::IMAGE_TYPES, $file ? Package::FILE_TYPES : array(), $svg ? Package::SVG_TYPES : array() );
+		$file  = wp_get_original_image_path( $id );
+		$file  = is_string( $file ) && is_file( $file ) ? $file : (string) get_attached_file( $id );
 		if ( ! is_file( $file ) ) {
 			return null;
 		}
@@ -614,7 +616,7 @@ final class Exporter {
 				$path = 'media/' . pathinfo( $base, PATHINFO_FILENAME ) . "-$n." . pathinfo( $base, PATHINFO_EXTENSION );
 			}
 		}
-		if ( ! in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), $file ? array_merge( Package::IMAGE_TYPES, Package::FILE_TYPES ) : Package::IMAGE_TYPES, true ) ) {
+		if ( ! in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), $types, true ) ) {
 			return null;
 		}
 
@@ -860,9 +862,10 @@ final class Exporter {
 	}
 
 	/**
-	 * The package.yaml text: the site title, tagline, language and the
-	 * Pergel settings that are not their defaults. A package without
-	 * products stays format 1, which engines from before products read.
+	 * The package.yaml text: the site title, tagline, language, logo and the
+	 * Pergel settings that are not their defaults. A package stays at the
+	 * oldest format that holds it (1 without products, 2 without a logo),
+	 * so that older engines still read it.
 	 *
 	 * @param bool $products Whether the package has products.
 	 */
@@ -872,13 +875,20 @@ final class Exporter {
 			$title         = $this->name;
 			$this->notes[] = "package.yaml: the site has no title; the package uses its name, $title";
 		}
-		$site     = array(
-			'format'  => $products ? Package::FORMAT : Package::PAGES_FORMAT,
+		$logo = (int) get_option( 'site_logo' );
+		$logo = $logo > 0 ? $this->image( '', $logo, false, true ) : null;
+		$site = array(
+			'format'  => null !== $logo ? Package::LOGO_FORMAT : ( $products ? Package::PRODUCTS_FORMAT : Package::PAGES_FORMAT ),
 			'name'    => $this->name,
 			'title'   => $title,
 			'tagline' => html_entity_decode( (string) get_option( 'blogdescription' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
 			'locale'  => '' === (string) get_option( 'WPLANG' ) ? 'en_US' : (string) get_option( 'WPLANG' ),
 		);
+		if ( null !== $logo ) {
+			$site['logo'] = $logo;
+		} elseif ( (int) get_option( 'site_logo' ) > 0 ) {
+			$this->notes[] = 'package.yaml: logo: the Site Logo is not an image file in the media library and is left out';
+		}
 		$settings = $this->settings();
 		if ( array() !== $settings ) {
 			$site['settings'] = $settings;
@@ -901,7 +911,7 @@ final class Exporter {
 					continue;
 				}
 				if ( 'image' === $groups[ $group ][ $key ]['type'] ) {
-					$value = $this->image( '', (int) $value );
+					$value = $this->image( '', (int) $value, false, $groups[ $group ][ $key ]['svg'] ?? true );
 					if ( null === $value ) {
 						$this->notes[] = "package.yaml: settings.$group.$key: its image is not in the media library and is left out";
 						continue;

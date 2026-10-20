@@ -35,6 +35,12 @@ Format: `docs/TOKENS.md`; paketteki yeri: `docs/PROJECT-PACKAGE.md` → `brand/t
   | Manrope | `theme/tokens/clinical-air.json` |
   | Figtree, Lexend Exa | `theme/tokens/lab-precision.json` |
 
+- Token'la anlatılamayan kurallar (büyük harfli düğme, menü yazısı) `$extensions."com.ariumlab.pergel".styles`
+  altında theme.json `styles` biçiminde yazılır; style variation'lardaki gibi. Bir style
+  variation'ı markaya çevirirken onları da taşı.
+- **Logo** token değildir: `package.yaml`'da `logo:` (format 3, SVG olabilir; Safe SVG ve
+  `--user` gerekir). Logo adı da içeriyorsa `settings.brand.logo_has_name: true` başlıktaki site
+  adını gizler.
 - Köşe yuvarlaklığı `radius` grubundadır: `small`, `medium`, `large` ölçek; `button` ve
   `card` ölçeğe başvurur (`"{radius.large}"`). Keskin köşeli marka için ölçeği küçült,
   başvuruları değiştir.

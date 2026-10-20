@@ -14,6 +14,7 @@ namespace Pergel\Package;
 
 use Closure;
 use InvalidArgumentException;
+use Pergel\Core\Svg;
 use Pergel\Settings\Schema;
 use Pergel\Tokens\Compiler;
 use Pergel\Tokens\Invalid;
@@ -39,9 +40,19 @@ final class Package {
 
 	/**
 	 * Newest package format this engine reads; it reads every format up to it.
-	 * Format 2 adds products/*.md.
+	 * Format 2 adds products/*.md, format 3 the site logo (logo).
 	 */
-	public const FORMAT = 2;
+	public const FORMAT = 3;
+
+	/**
+	 * Format of a package with products and no logo.
+	 */
+	public const PRODUCTS_FORMAT = 2;
+
+	/**
+	 * Format of a package with a site logo.
+	 */
+	public const LOGO_FORMAT = 3;
 
 	/**
 	 * Format of a package without products, which the exporter keeps writing
@@ -53,6 +64,12 @@ final class Package {
 	 * Image file types a package may hold.
 	 */
 	public const IMAGE_TYPES = array( 'jpg', 'jpeg', 'png', 'webp', 'avif', 'gif' );
+
+	/**
+	 * Image file types a logo may also be: an SVG file. WordPress takes it
+	 * only when the site allows SVG uploads (the Safe SVG plugin cleans it).
+	 */
+	public const SVG_TYPES = array( 'svg' );
 
 	/**
 	 * Other file types a package may hold, for file fields (a data sheet).
@@ -82,13 +99,14 @@ final class Package {
 	/**
 	 * Site details from package.yaml.
 	 *
-	 * @var array{name: string, title: string, tagline: string|null, locale: string|null}
+	 * @var array{name: string, title: string, tagline: string|null, locale: string|null, logo: string|null}
 	 */
 	public array $site = array(
 		'name'    => '',
 		'title'   => '',
 		'tagline' => null,
 		'locale'  => null,
+		'logo'    => null,
 	);
 
 	/**
@@ -241,6 +259,7 @@ final class Package {
 
 		if ( null !== $this->tokens ) {
 			try {
+				Compiler::styles( $this->tokens, 'brand/tokens.json' );
 				$settings = Compiler::compile( Compiler::merge( $tokens, $this->tokens ), 'brand/tokens.json' );
 				if ( array() !== $fonts ) {
 					Compiler::check_font_files( $settings, 'brand/tokens.json', $fonts );
@@ -277,6 +296,9 @@ final class Package {
 					$templates[ $type ][] = (string) $name;
 				}
 			}
+		}
+		if ( $this->has_svg() && ! Svg::uploads() ) {
+			$this->problems[] = 'package.yaml: an SVG logo needs SVG uploads on this site: activate the Safe SVG plugin, which also cleans the file, and run WP-CLI as an administrator (--user=<login>)';
 		}
 		// The package's child theme has no font files of its own; they come from the parent.
 		$this->check( Closure::fromCallable( array( self::class, 'pattern' ) ), $templates, $tokens, array( get_template_directory() ) );
@@ -467,7 +489,7 @@ final class Package {
 			foreach ( $values as $key => $value ) {
 				if ( 'image' === $groups[ $group ][ $key ]['type'] ) {
 					try {
-						$value = $media( $this->image( is_string( $value ) ? $value : '' ) )['id'];
+						$value = $media( $this->image( is_string( $value ) ? $value : '', $groups[ $group ][ $key ]['svg'] ?? true ) )['id'];
 					} catch ( InvalidArgumentException $e ) {
 						$problems[] = "package.yaml: settings.$group.$key: " . $e->getMessage();
 						continue;
@@ -486,14 +508,38 @@ final class Package {
 	}
 
 	/**
-	 * Checks an image path: a jpg, jpeg, png, webp, avif or gif file in the package.
+	 * Checks an image path: a jpg, jpeg, png, webp, avif or gif file in the
+	 * package; for a logo also an svg file.
 	 *
 	 * @param string $src Path as written.
+	 * @param bool   $svg Whether an svg file is accepted.
 	 * @return string The path.
 	 * @throws InvalidArgumentException When the path cannot be used.
 	 */
-	public function image( string $src ): string {
-		return $this->path( $src, self::IMAGE_TYPES, 'image' );
+	public function image( string $src, bool $svg = false ): string {
+		return $this->path( $src, $svg ? array_merge( self::IMAGE_TYPES, self::SVG_TYPES ) : self::IMAGE_TYPES, 'image' );
+	}
+
+	/**
+	 * Whether the package brings an svg image (a logo), which the site must
+	 * allow to be uploaded.
+	 */
+	public function has_svg(): bool {
+		$paths  = array( (string) $this->site['logo'] );
+		$groups = Schema::groups();
+		foreach ( $this->settings as $group => $values ) {
+			foreach ( $values as $key => $value ) {
+				if ( 'image' === $groups[ $group ][ $key ]['type'] && is_string( $value ) ) {
+					$paths[] = $value;
+				}
+			}
+		}
+		foreach ( $paths as $path ) {
+			if ( in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), self::SVG_TYPES, true ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -555,11 +601,11 @@ final class Package {
 			return;
 		}
 		$where = 'package.yaml: ';
-		$this->keys( $data, array( 'format', 'name', 'title', 'tagline', 'locale', 'settings' ), $where );
+		$this->keys( $data, array( 'format', 'name', 'title', 'tagline', 'locale', 'logo', 'settings' ), $where );
 
 		$format = $data['format'] ?? null;
 		if ( null === $format ) {
-			$this->problems[] = $where . 'format: required; write format: ' . self::PAGES_FORMAT . ', or ' . self::FORMAT . ' for a package with products';
+			$this->problems[] = $where . 'format: required; write format: ' . self::PAGES_FORMAT . ', ' . self::PRODUCTS_FORMAT . ' for a package with products, or ' . self::LOGO_FORMAT . ' for one with a logo';
 		} elseif ( ! is_int( $format ) || $format < 1 || $format > self::FORMAT ) {
 			$this->problems[] = $where . 'format: this engine reads formats 1 to ' . self::FORMAT;
 		} else {
@@ -593,6 +639,17 @@ final class Package {
 				continue;
 			}
 			$this->site[ $key ] = $data[ $key ];
+		}
+
+		if ( array_key_exists( 'logo', $data ) ) {
+			try {
+				$this->site['logo'] = $this->image( is_string( $data['logo'] ) ? $data['logo'] : '', true );
+			} catch ( InvalidArgumentException $e ) {
+				$this->problems[] = $where . 'logo: ' . $e->getMessage();
+			}
+			if ( $this->format < self::LOGO_FORMAT ) {
+				$this->problems[] = $where . 'format: a package with a logo is format ' . self::LOGO_FORMAT;
+			}
 		}
 
 		if ( array_key_exists( 'settings', $data ) ) {
@@ -637,7 +694,7 @@ final class Package {
 				if ( in_array( strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) ), self::FILE_TYPES, true ) ) {
 					$this->file( (string) $path );
 				} else {
-					$this->image( (string) $path );
+					$this->image( (string) $path, true );
 				}
 			} catch ( InvalidArgumentException $e ) {
 				$this->problems[] = 'media.yaml: ' . $e->getMessage();
@@ -901,8 +958,8 @@ final class Package {
 	 */
 	private function read_products(): void {
 		$files = $this->files( 'products', '.md' );
-		if ( array() !== $files && $this->format < 2 ) {
-			$this->problems[] = 'package.yaml: format: a package with products/ is format 2';
+		if ( array() !== $files && $this->format < self::PRODUCTS_FORMAT ) {
+			$this->problems[] = 'package.yaml: format: a package with products/ is format ' . self::PRODUCTS_FORMAT . ' or newer';
 		}
 		$skus = array();
 		foreach ( $files as $file ) {

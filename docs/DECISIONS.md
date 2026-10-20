@@ -1455,6 +1455,38 @@ F7 metinleri yazılırken üç sayfa paketle ifade edilemedi; üçü tek değiş
   "Canlı geçiş kontrol listesi", adım 3.
 - Etiket ve taslak sürüm kullanıcı onayıyla oluşturulur.
 
+## Marka alt teması ve site logosu (20 Ekim 2026, kullanıcı kararları)
+
+ariumlab.com'un sapma denetiminde Lab Precision tasarımının hiçbir kopyaya uygulanmadığı görüldü:
+paketin `brand/tokens.json` dosyası yoktu. Dosya eklenince (Lab Precision'ın token'ları) iki
+eksik çıktı. Üçü de Pergel'de genel olarak çözülür:
+
+- **Alt temada stil kuralları.** Lab Precision'ın büyük harfli düğme ve menü kuralları
+  `$extensions."com.ariumlab.pergel".styles` içinde. Derleyici bunu yalnızca style
+  variation'lara kopyalıyordu. Artık temanın kendi `tokens/default.json`'undaki kurallar da
+  theme.json `styles`'a geçer. Paketin yazdığı alt temada theme.json her içe aktarmada baştan
+  derlenir (`Compiler::build( ..., $fresh )`); paketten çıkarılan kural temadan da çıkar. Elle
+  yazılmış bir theme.json'da (`wp pergel tokens build`) kendi kuralları kalır.
+- **Site logosu pakette: `logo`, format 3.** Paket ana logoyu taşımıyordu, sitede logo yerine
+  site adı görünüyordu. `package.yaml`'a `logo` eklendi; `site_logo` seçeneğine yazılır (Site
+  Logo bloğu, `get_custom_logo()` ve Organization şeması bunu okur). Ayar ekranında ayrı bir ana
+  logo alanı yine yok. Logo yeni bir paket özelliği olduğu için format 3 oldu; dışa
+  aktarma paketi onu tutan en eski formatta yazar (1, 2 veya 3). Eski motor format 3'ü açıkça
+  reddeder.
+- **SVG yalnızca logolarda.** Ariumlab'ın logosu SVG. Paket görselleri SVG kabul etmiyordu.
+  Kullanıcı seçimi: yalnızca `logo` ve `settings.brand.logo_inverse` SVG olabilir; içerik ve
+  paylaşım görselleri olamaz. Dosyayı WordPress'e Safe SVG temizleyerek alır; site SVG
+  yüklemeye izin vermiyorsa (eklenti yok ya da WP-CLI `--user` olmadan çalışıyor) denetim bunu
+  sorun olarak bildirir.
+- **`brand.logo_has_name`.** Başlık pattern'leri logonun yanına site adını da koyuyor; yazı logoda
+  ad iki kez görünür. Yeni ayar (varsayılan kapalı), logo varken logo ile aynı grupta duran site
+  başlığını `render_block_data`'da çıkarır. Yalnızca simge olan logo için kapalı kalır; footer'daki
+  tek başına site başlığı etkilenmez.
+- **Yan düzeltme.** Dışa aktarıcının `image()` yönteminde `$file` parametresi dosya yoluyla
+  eziliyordu; görsel alanları pdf'yi de kabul ediyordu. Tür listesi artık yol okunmadan önce
+  belirleniyor.
+- Geriye uyumlu; 1.2.2 sürümüyle çıkar. ariumlab-site paketi format 3'e geçer.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

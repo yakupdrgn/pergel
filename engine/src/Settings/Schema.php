@@ -86,33 +86,37 @@ final class Schema {
 			),
 			// Company details: block bindings and Organization schema.
 			'brand'       => array(
-				'name'         => array(
+				'name'          => array(
 					'type' => 'text',
 					'max'  => 120,
 				),
-				'legal_name'   => array( 'type' => 'text' ),
-				'email'        => array( 'type' => 'email' ),
-				'phone'        => array( 'type' => 'tel' ),
-				'street'       => array( 'type' => 'text' ),
-				'locality'     => array(
+				'legal_name'    => array( 'type' => 'text' ),
+				'email'         => array( 'type' => 'email' ),
+				'phone'         => array( 'type' => 'tel' ),
+				'street'        => array( 'type' => 'text' ),
+				'locality'      => array(
 					'type' => 'text',
 					'max'  => 100,
 				),
-				'region'       => array(
+				'region'        => array(
 					'type' => 'text',
 					'max'  => 100,
 				),
-				'postal_code'  => array(
+				'postal_code'   => array(
 					'type' => 'text',
 					'max'  => 20,
 				),
-				'country'      => array( 'type' => 'country' ),
-				'vat_id'       => array(
+				'country'       => array( 'type' => 'country' ),
+				'vat_id'        => array(
 					'type' => 'text',
 					'max'  => 40,
 				),
-				'logo_inverse' => array( 'type' => 'image' ),
-				'social'       => array( 'type' => 'urls' ),
+				'logo_inverse'  => array( 'type' => 'image' ),
+				'logo_has_name' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'social'        => array( 'type' => 'urls' ),
 			),
 			// Used only when no SEO plugin is active.
 			'seo'         => array(

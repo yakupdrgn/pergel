@@ -181,7 +181,7 @@ final class Brand {
 	private static function text_keys(): array {
 		$keys = array();
 		foreach ( Schema::groups()['brand'] as $key => $field ) {
-			if ( ! in_array( $field['type'], array( 'image', 'urls' ), true ) ) {
+			if ( ! in_array( $field['type'], array( 'image', 'urls', 'bool' ), true ) ) {
 				$keys[] = $key;
 			}
 		}

@@ -77,10 +77,12 @@ final class Compiler {
 	 *
 	 * @param string      $theme_dir  Theme directory containing tokens/default.json.
 	 * @param string|null $parent_dir Parent theme directory for child themes.
+	 * @param bool        $fresh      Start theme.json anew instead of from the file on disk: for a theme
+	 *                                whose theme.json only this build writes.
 	 * @return array<string, string> Relative path => file contents.
 	 * @throws Invalid When a token file has problems.
 	 */
-	public static function build( string $theme_dir, ?string $parent_dir = null ): array {
+	public static function build( string $theme_dir, ?string $parent_dir = null, bool $fresh = false ): array {
 		$theme_dir = rtrim( $theme_dir, '/\\' );
 		$own       = $theme_dir . '/tokens/default.json';
 		$inherited = null !== $parent_dir ? rtrim( $parent_dir, '/\\' ) . '/tokens/default.json' : null;
@@ -91,12 +93,16 @@ final class Compiler {
 			$base = self::read_json( $own );
 		}
 
-		$theme_json = is_file( $theme_dir . '/theme.json' )
+		$theme_json = ! $fresh && is_file( $theme_dir . '/theme.json' )
 			? self::read_json( $theme_dir . '/theme.json' )
 			: array(
 				'$schema' => self::SCHEMA,
 				'version' => 3,
 			);
+		$styles     = is_file( $own ) ? self::styles( self::read_json( $own ), 'tokens/default.json' ) : null;
+		if ( null !== $styles ) {
+			$theme_json['styles'] = array_replace_recursive( (array) ( $theme_json['styles'] ?? array() ), $styles );
+		}
 
 		$dirs = null !== $parent_dir ? array( $theme_dir, rtrim( $parent_dir, '/\\' ) ) : array( $theme_dir );
 
@@ -122,12 +128,8 @@ final class Compiler {
 				'version' => 3,
 				'title'   => $title,
 			);
-			// Style rules a token cannot express (e.g. uppercase buttons) are copied as written.
-			$styles = $raw['$extensions'][ self::EXT ]['styles'] ?? null;
+			$styles    = self::styles( $raw, "tokens/$slug.json" );
 			if ( null !== $styles ) {
-				if ( ! is_array( $styles ) || array_is_list( $styles ) ) {
-					throw new Invalid( array( "tokens/$slug.json: \$extensions.\"" . self::EXT . '".styles must be a theme.json styles object' ) );
-				}
 				$variation['styles'] = $styles;
 			}
 
@@ -137,6 +139,23 @@ final class Compiler {
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Style rules a token file carries for what a token cannot express (e.g.
+	 * uppercase buttons); they are copied into theme.json as written.
+	 *
+	 * @param array<string, mixed> $raw   Token file contents.
+	 * @param string               $label File name for messages.
+	 * @return array<string, mixed>|null Null when the file has none.
+	 * @throws Invalid When they are not a theme.json styles object.
+	 */
+	public static function styles( array $raw, string $label ): ?array {
+		$styles = $raw['$extensions'][ self::EXT ]['styles'] ?? null;
+		if ( null !== $styles && ( ! is_array( $styles ) || array_is_list( $styles ) ) ) {
+			throw new Invalid( array( "$label: \$extensions.\"" . self::EXT . '".styles must be a theme.json styles object' ) );
+		}
+		return $styles;
 	}
 
 	/**
