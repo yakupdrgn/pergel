@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,11 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.2.2 =
+* Project packages: `logo` sets the Site Logo (package format 3). A logo may be an SVG file when the site takes SVG uploads (the Safe SVG plugin cleans it; run WP-CLI as an administrator). An export writes the logo back when the package made it.
+* A package child theme takes the style rules of its brand tokens (such as uppercase buttons), as style variations do.
+* New brand setting "The logo shows the name": hides the site title next to the Site Logo in the header.
 
 = 1.2.1 =
 * Project packages: a section can set its width with `align: wide`, `full` or `none`, as the editor's width control does. An export writes it back for a section whose width differs from its pattern.
