@@ -149,6 +149,60 @@ final class PackageTest extends TestCase {
 		$this->assertSame( 'info@ornek.test', $settings['changes']['brand']['email'] );
 	}
 
+	public function test_the_child_theme_patterns_are_sections_and_others_are_not(): void {
+		$registry = \WP_Block_Patterns_Registry::get_instance();
+		$theme    = get_stylesheet();
+		$switched = get_option( 'theme_switched' );
+		$child    = get_theme_root() . '/pergel-test-child';
+		$markup   = '<!-- wp:group {"tagName":"section","align":"full","layout":{"type":"constrained"}} --><section class="wp-block-group alignfull"><!-- wp:heading --><h2 class="wp-block-heading">Child title</h2><!-- /wp:heading --></section><!-- /wp:group -->';
+		mkdir( "$child/patterns", 0777, true );
+		file_put_contents( "$child/style.css", "/*\nTheme Name: Pergel test child\nTemplate: " . get_template() . "\n*/\n" );
+		file_put_contents( "$child/patterns/band.php", "<?php\n/**\n * Title: Child band\n * Slug: pergel-test-child/band\n */\n?>\n$markup\n" );
+		$registry->register(
+			'pergel-test-child/band',
+			array(
+				'title'    => 'Child band',
+				'filePath' => "$child/patterns/band.php",
+			)
+		);
+		$registry->register(
+			'other-plugin/band',
+			array(
+				'title'   => 'Plugin band',
+				'content' => $markup,
+			)
+		);
+		try {
+			// With the parent theme active, the folder is nobody's: not a section.
+			$this->assertNull( Package::pattern( 'pergel-test-child/band' ) );
+
+			switch_theme( 'pergel-test-child' );
+			$blocks = Package::pattern( 'pergel-test-child/band' );
+			$this->assertIsArray( $blocks );
+			// The registry has read the file by now and dropped its path; still a section.
+			$this->assertSame( $blocks, Package::pattern( 'pergel-test-child/band' ) );
+			$this->assertSame( 'pergel-test-child/band', $blocks[0]['attrs']['metadata']['patternName'] );
+			$this->assertSame( 'Child title', trim( wp_strip_all_tags( serialize_blocks( $blocks ) ) ) );
+			$this->assertArrayHasKey( 'pergel-test-child/band', Package::section_patterns() );
+			$this->assertArrayHasKey( 'pergel/hero-split', Package::section_patterns() );
+
+			// A plugin's pattern stays out, child theme or not.
+			$this->assertNull( Package::pattern( 'other-plugin/band' ) );
+			$this->assertArrayNotHasKey( 'other-plugin/band', Package::section_patterns() );
+
+			// Content files write Pergel's patterns short and the child theme's in full.
+			$this->assertSame( 'hero-split', Package::section_name( 'pergel/hero-split' ) );
+			$this->assertSame( 'pergel-test-child/band', Package::section_name( 'pergel-test-child/band' ) );
+		} finally {
+			$registry->unregister( 'pergel-test-child/band' );
+			$registry->unregister( 'other-plugin/band' );
+			switch_theme( $theme );
+			delete_option( 'theme_mods_pergel-test-child' );
+			false === $switched ? delete_option( 'theme_switched' ) : update_option( 'theme_switched', $switched );
+			self::remove( $child );
+		}
+	}
+
 	public function test_page_content_puts_the_body_where_the_markdown_section_is(): void {
 		$package = Package::read( self::FIXTURE );
 		$media   = static fn( string $path ): array => array(
@@ -267,7 +321,7 @@ final class PackageTest extends TestCase {
 			'content/home.md: seo.noindex: true or false is expected',
 			'content/home.md: sections[3]: a { markdown: true } section, which places the Markdown body, has nothing else',
 			'content/home.md: sections[4]: align: wide, full or none',
-			'content/home.md: sections[1]: pattern: "hero-splitt" is not a Pergel pattern',
+			'content/home.md: sections[1]: pattern: "hero-splitt" is not a pattern a package can use',
 			'content/home.md: sections[2] (hero-split): "subtitle" is not a field here; fields: eyebrow, heading, text, buttons, image',
 			'content/home.md: line 15: ',
 			'brand/tokens.json: ',

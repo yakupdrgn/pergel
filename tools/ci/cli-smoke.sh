@@ -171,7 +171,7 @@ expect 0 'hero-split' wp pergel pattern list
 expect 0 'faq-accordion' wp pergel pattern list --category=pergel-faq --format=csv
 expect 0 '- pattern: hero-split' wp pergel pattern fields hero-split
 expect 0 '"type": "items"' wp pergel pattern fields pergel/faq-accordion --format=json
-expect 1 '"pergel/nope" is not a Pergel pattern' wp pergel pattern fields nope
+expect 1 '"pergel/nope" is not a pattern a package can use' wp pergel pattern fields nope
 echo "::endgroup::"
 
 echo "::group::wp pergel import"
