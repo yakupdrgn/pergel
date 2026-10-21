@@ -161,6 +161,13 @@ sections:
 
 - Frontmatter'da yalnızca `seo` (`title`, `description`, `noindex`) ve `sections` olur. Sayfa
   başlığı `sitemap.yaml`'dadır.
+- `seo` Pergel'in kendi alanlarına yazılır. Bir SEO eklentisi etkinse (Rank Math, Yoast,
+  All in One SEO, SEOPress, The SEO Framework) Pergel geri çekilir ve sayfada eklentinin
+  alanları görünür; bu yüzden içe aktarma dolu `title` ve `description` değerlerini eklentinin
+  kendi alanlarına da yazar. Boş ya da yazılmamış alan eklentideki değeri korur. Eklentinin
+  alanı panelde elle değiştirilmişse sayfa "panelde düzenlendi" sayılır ve `--force` olmadan
+  üzerine yazılmaz. `noindex` eklentiye yazılmaz (eklentilerin robots ayarı site geneliyle
+  birleşir); dışa aktarma Pergel'in alanlarını okur.
 - `sections` sırayla sayfayı kurar. `pattern` bir Pergel pattern adıdır (`hero-split` veya
   `pergel/hero-split`) ya da etkin child temanın `patterns/` klasöründeki bir pattern'in
   tam adıdır (ör. `ariumlab/hero`). Projenin kendi tasarımı child temada durur; paket bu

@@ -12,6 +12,7 @@ namespace Pergel\Package;
 use Closure;
 use InvalidArgumentException;
 use Pergel\Seo\Meta;
+use Pergel\Seo\PluginFields;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 use Pergel\Starters\Starter;
@@ -369,7 +370,7 @@ final class Importer {
 			);
 			if ( null !== $page['content'] || ! $page['adopt'] ) {
 				// An adopted page without a content file keeps its SEO fields too.
-				$postarr['meta_input'] = $this->seo( $page['content'] );
+				$postarr['meta_input'] = $this->seo( $page['content'] ) + $this->plugin_seo( $page['content'] );
 			}
 			if ( null !== $page['content'] ) {
 				$postarr['post_content'] = $this->package->page_content( $page['content'], Closure::fromCallable( array( Package::class, 'pattern' ) ), $this->media() );
@@ -512,7 +513,7 @@ final class Importer {
 			if ( null !== $product['template'] ) {
 				$postarr['page_template'] = '' === $product['template'] ? 'default' : $product['template'];
 			}
-			$seo = array_intersect_key( $this->seo( $key ), self::seo_keys( $this->package->content[ $key ]['seo'] ) );
+			$seo = array_intersect_key( $this->seo( $key ), self::seo_keys( $this->package->content[ $key ]['seo'] ) ) + $this->plugin_seo( $key );
 			if ( array() !== $seo ) {
 				$postarr['meta_input'] = $seo;
 			}
@@ -671,8 +672,9 @@ final class Importer {
 		$this->seen[ $key ] = true;
 		$title              = (string) ( $postarr['post_title'] ?? $existing->post_title ?? '' );
 		$source             = self::hash( $postarr );
-		// A product's state covers only the fields the package writes.
-		$fields = 'product' === $postarr['post_type'] ? self::fields( $postarr ) : null;
+		// A product's state covers only the fields the package writes; a
+		// page's also covers the SEO plugin's fields when it writes them.
+		$fields = 'product' === $postarr['post_type'] ? self::fields( $postarr ) : self::page_fields( $postarr );
 		if ( null !== $existing ) {
 			$owned = isset( $this->owned[ $key ] );
 			if ( $owned && self::matches( $existing, $postarr ) ) {
@@ -729,6 +731,14 @@ final class Importer {
 		if ( is_wp_error( $id ) ) {
 			throw new InvalidArgumentException( esc_html( "$key: " . $id->get_error_message() ) );
 		}
+		$meta = (array) $postarr['meta_input'];
+		PluginFields::save_table(
+			$id,
+			array(
+				'title'       => (string) ( $meta[ Meta::TITLE ] ?? '' ),
+				'description' => (string) ( $meta[ Meta::DESCRIPTION ] ?? '' ),
+			)
+		);
 		clean_post_cache( $id );
 		$saved = get_post( $id );
 		if ( $saved instanceof WP_Post ) {
@@ -858,6 +868,23 @@ final class Importer {
 	}
 
 	/**
+	 * The active SEO plugin's title and description fields for the seo map
+	 * of a content file (empty ones are left out, see PluginFields::meta()).
+	 *
+	 * @param string|null $file Content file.
+	 * @return array<string, string>
+	 */
+	private function plugin_seo( ?string $file ): array {
+		$seo = null === $file ? array() : $this->package->content[ $file ]['seo'];
+		return PluginFields::meta(
+			array(
+				'title'       => (string) ( $seo['title'] ?? '' ),
+				'description' => (string) ( $seo['description'] ?? '' ),
+			)
+		);
+	}
+
+	/**
 	 * The SEO meta keys of the seo fields a content file writes.
 	 *
 	 * @param array<string, mixed> $seo The seo map as written.
@@ -974,7 +1001,7 @@ final class Importer {
 			foreach ( $fields as $field ) {
 				if ( 'page_template' === $field ) {
 					$state[] = get_page_template_slug( $post );
-				} elseif ( str_starts_with( $field, 'post_' ) ) {
+				} elseif ( str_starts_with( $field, 'post_' ) || 'menu_order' === $field ) {
 					$state[] = (string) $post->$field;
 				} else {
 					$state[] = (string) get_post_meta( $post->ID, $field, true );
@@ -1020,6 +1047,22 @@ final class Importer {
 			array_keys( (array) ( $postarr['meta_input'] ?? array() ) ),
 			array_keys( (array) ( $postarr['price'] ?? array() ) )
 		);
+	}
+
+	/**
+	 * The fields of a page's state when the package also writes an SEO
+	 * plugin's fields: every field a page has, and those. Null without them,
+	 * so a page saved before keeps the state it was saved with.
+	 *
+	 * @param array<string, mixed> $postarr What save() was given.
+	 * @return list<string>|null
+	 */
+	private static function page_fields( array $postarr ): ?array {
+		$plugin = array_values( array_intersect( array_keys( (array) ( $postarr['meta_input'] ?? array() ) ), array_merge( ...array_map( 'array_values', array_values( PluginFields::KEYS ) ) ) ) );
+		if ( array() === $plugin ) {
+			return null;
+		}
+		return array_merge( array( 'post_title', 'post_content', 'post_name', 'post_parent', 'menu_order', 'post_status', 'page_template', Meta::TITLE, Meta::DESCRIPTION, Meta::NOINDEX ), $plugin );
 	}
 
 	/**

@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Closure;
 use Pergel\Package\Exporter;
 use Pergel\Package\Importer;
 use Pergel\Package\Package;
@@ -122,6 +123,80 @@ final class ImporterTest extends TestCase {
 			self::remove( $child );
 		}
 		self::remove( $this->dir );
+	}
+
+	public function test_writes_the_seo_plugin_fields_and_keeps_an_edit_made_there(): void {
+		$plugin = static fn(): string => 'rank-math';
+		add_filter( 'pergel/seo/plugin', $plugin );
+		try {
+			$this->import();
+			$made = $this->made();
+			$home = $made['/'];
+			$this->assertSame( 'Örnek Firma | Organik ürünler', get_post_meta( $home, 'rank_math_title', true ) );
+			$this->assertSame( 'Sertifikalı organik ürünler, üreticiden kapınıza.', get_post_meta( $home, 'rank_math_description', true ) );
+			// Pergel's own fields are written as before.
+			$this->assertSame( 'Sertifikalı organik ürünler, üreticiden kapınıza.', get_post_meta( $home, Meta::DESCRIPTION, true ) );
+
+			// A page without SEO fields leaves the plugin's own alone.
+			$about = $made['/pergel-test-hakkimizda'];
+			update_post_meta( $about, 'rank_math_description', 'The plugin has this one' );
+
+			// Importing again changes nothing.
+			$rows = $this->import();
+			$this->assertSame( array( 'keep' ), array_values( array_unique( array_column( array_filter( $rows, static fn( array $row ): bool => 'page' === $row['type'] && '/' === $row['key'] ), 'action' ) ) ) );
+			$this->assertSame( 'The plugin has this one', get_post_meta( $about, 'rank_math_description', true ) );
+
+			// An edit in the plugin's field is an edit in the panel: kept.
+			update_post_meta( $home, 'rank_math_description', 'Written in Rank Math' );
+			$this->write( 'content/home.md', str_replace( 'üreticiden kapınıza.', 'doğrudan kapınıza.', (string) file_get_contents( "$this->dir/content/home.md" ) ) );
+			$rows = $this->import();
+			$this->assertSame( array( 'skip' ), array_values( array_unique( array_column( array_filter( $rows, static fn( array $row ): bool => 'page' === $row['type'] && '/' === $row['key'] ), 'action' ) ) ) );
+			$this->assertSame( 'Written in Rank Math', get_post_meta( $home, 'rank_math_description', true ) );
+		} finally {
+			remove_filter( 'pergel/seo/plugin', $plugin );
+		}
+	}
+
+	public function test_writes_all_in_one_seo_fields_through_its_model(): void {
+		$model  = new class() {
+			/**
+			 * Title column.
+			 *
+			 * @var string
+			 */
+			public $title = '';
+			/**
+			 * Description column.
+			 *
+			 * @var string
+			 */
+			public $description = '';
+			/**
+			 * Times saved.
+			 *
+			 * @var int
+			 */
+			public $saves = 0;
+
+			public function save(): void {
+				++$this->saves;
+			}
+		};
+		$plugin = static fn(): string => 'aioseo';
+		$loader = static fn(): Closure => static fn(): object => $model;
+		add_filter( 'pergel/seo/plugin', $plugin );
+		add_filter( 'pergel/seo/aioseo_post', $loader );
+		try {
+			$this->import();
+			$this->assertSame( 'Örnek Firma | Organik ürünler', $model->title );
+			$this->assertSame( 'Sertifikalı organik ürünler, üreticiden kapınıza.', $model->description );
+			$this->assertGreaterThan( 0, $model->saves );
+			// No post meta of another plugin.
+			$this->assertSame( '', get_post_meta( $this->made()['/'], 'rank_math_title', true ) );
+		} finally {
+			remove_filter( 'pergel/seo/plugin', $plugin );
+			remove_filter( 'pergel/seo/aioseo_post', $loader );
+		}
 	}
 
 	public function test_imports_once_and_keeps_everything_the_second_time(): void {
