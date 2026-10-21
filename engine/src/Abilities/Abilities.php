@@ -264,7 +264,8 @@ final class Abilities {
 	}
 
 	/**
-	 * Pergel's patterns.
+	 * The patterns a package can use: Pergel's (named without pergel/) and the
+	 * child theme's (with their full name).
 	 *
 	 * @param mixed $input { category?: string }.
 	 * @return list<array{name: string, title: string, categories: list<string>, fields: string}>
@@ -272,16 +273,13 @@ final class Abilities {
 	public static function list_patterns( mixed $input = null ): array {
 		$category = is_array( $input ) && is_string( $input['category'] ?? null ) && '' !== $input['category'] ? $input['category'] : null;
 		$rows     = array();
-		foreach ( WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
-			if ( ! str_starts_with( $pattern['name'], 'pergel/' ) ) {
-				continue;
-			}
+		foreach ( Package::section_patterns() as $pattern ) {
 			$categories = array_values( array_map( 'strval', (array) ( $pattern['categories'] ?? array() ) ) );
 			if ( null !== $category && ! in_array( $category, $categories, true ) ) {
 				continue;
 			}
 			$rows[] = array(
-				'name'       => substr( $pattern['name'], strlen( 'pergel/' ) ),
+				'name'       => Package::section_name( (string) $pattern['name'] ),
 				'title'      => (string) $pattern['title'],
 				'categories' => $categories,
 				'fields'     => Fields::summary( Fields::schema( (array) Package::pattern( $pattern['name'] ) ) ),
@@ -299,13 +297,14 @@ final class Abilities {
 	 */
 	public static function pattern_fields( mixed $input = null ): array|WP_Error {
 		$name   = is_array( $input ) && is_string( $input['name'] ?? null ) ? $input['name'] : '';
-		$name   = str_starts_with( $name, 'pergel/' ) ? substr( $name, strlen( 'pergel/' ) ) : $name;
-		$blocks = '' === $name ? null : Package::pattern( "pergel/$name" );
+		$full   = str_contains( $name, '/' ) ? $name : "pergel/$name";
+		$name   = Package::section_name( $full );
+		$blocks = '' === $name ? null : Package::pattern( $full );
 		if ( null === $blocks ) {
 			/* translators: %s: pattern name. */
-			return new WP_Error( 'pergel_unknown_pattern', sprintf( __( '"%s" is not a Pergel pattern; pergel/list-patterns lists them.', 'pergel-engine' ), $name ), array( 'status' => 404 ) );
+			return new WP_Error( 'pergel_unknown_pattern', sprintf( __( '"%s" is not a pattern a package can use; pergel/list-patterns lists them.', 'pergel-engine' ), $name ), array( 'status' => 404 ) );
 		}
-		$pattern = WP_Block_Patterns_Registry::get_instance()->get_registered( "pergel/$name" );
+		$pattern = WP_Block_Patterns_Registry::get_instance()->get_registered( $full );
 		$schema  = Fields::schema( $blocks );
 		return array(
 			'name'    => $name,

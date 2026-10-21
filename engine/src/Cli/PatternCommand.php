@@ -13,16 +13,17 @@ use InvalidArgumentException;
 use Pergel\Package\Fields;
 use Pergel\Package\Package;
 use Pergel\Package\Yaml;
-use WP_Block_Patterns_Registry;
 use WP_CLI;
 
 /**
- * Shows Pergel's patterns and the fields a project package fills in them.
+ * Shows the patterns a project package can use (Pergel's and the child
+ * theme's) and the fields a package fills in them.
  */
 final class PatternCommand {
 
 	/**
-	 * Lists Pergel's patterns with their fields.
+	 * Lists the patterns a package can use, with their fields: Pergel's own
+	 * (named without pergel/) and the child theme's (with their full name).
 	 *
 	 * ## OPTIONS
 	 *
@@ -53,16 +54,13 @@ final class PatternCommand {
 		unset( $args );
 		$category = $assoc_args['category'] ?? null;
 		$rows     = array();
-		foreach ( WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
-			if ( ! str_starts_with( $pattern['name'], 'pergel/' ) ) {
-				continue;
-			}
+		foreach ( Package::section_patterns() as $pattern ) {
 			$categories = (array) ( $pattern['categories'] ?? array() );
 			if ( null !== $category && ! in_array( $category, $categories, true ) ) {
 				continue;
 			}
 			$rows[] = array(
-				'name'       => substr( $pattern['name'], strlen( 'pergel/' ) ),
+				'name'       => Package::section_name( $pattern['name'] ),
 				'title'      => $pattern['title'],
 				'categories' => implode( ', ', $categories ),
 				'fields'     => Fields::summary( Fields::schema( (array) Package::pattern( $pattern['name'] ) ) ),
@@ -83,7 +81,7 @@ final class PatternCommand {
 	 * ## OPTIONS
 	 *
 	 * <name>
-	 * : Pattern name, like hero-split (or pergel/hero-split).
+	 * : Pattern name, like hero-split (or pergel/hero-split), or a child theme's, like ariumlab/hero.
 	 *
 	 * [--format=<format>]
 	 * : Output format: a YAML section, or the field schema as JSON.
@@ -107,7 +105,7 @@ final class PatternCommand {
 		$name   = str_contains( $name, '/' ) ? $name : "pergel/$name";
 		$blocks = Package::pattern( $name );
 		if ( null === $blocks ) {
-			WP_CLI::error( "\"$name\" is not a Pergel pattern; wp pergel pattern list shows them." );
+			WP_CLI::error( "\"$name\" is not a pattern a package can use (Pergel's own or the child theme's); wp pergel pattern list shows them." );
 		}
 		try {
 			$schema = Fields::schema( $blocks );
@@ -118,7 +116,7 @@ final class PatternCommand {
 			WP_CLI::line( (string) wp_json_encode( $schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 			return;
 		}
-		$section = array( 'pattern' => substr( $name, strlen( 'pergel/' ) ) ) + Fields::example( $schema );
+		$section = array( 'pattern' => Package::section_name( $name ) ) + Fields::example( $schema );
 		WP_CLI::line( rtrim( Yaml::dump( array( $section ) ), "\n" ) );
 	}
 }

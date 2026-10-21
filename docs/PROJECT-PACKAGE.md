@@ -161,9 +161,13 @@ sections:
 
 - Frontmatter'da yalnızca `seo` (`title`, `description`, `noindex`) ve `sections` olur. Sayfa
   başlığı `sitemap.yaml`'dadır.
-- `sections` sırayla sayfayı kurar. `pattern` Pergel pattern adıdır (`hero-split` veya
-  `pergel/hero-split`). `{ markdown: true }` gövdenin yerini belirler; yoksa gövde en sona
-  eklenir. Frontmatter'ı olmayan dosya yalnızca gövdedir.
+- `sections` sırayla sayfayı kurar. `pattern` bir Pergel pattern adıdır (`hero-split` veya
+  `pergel/hero-split`) ya da etkin child temanın `patterns/` klasöründeki bir pattern'in
+  tam adıdır (ör. `ariumlab/hero`). Projenin kendi tasarımı child temada durur; paket bu
+  pattern'leri Pergel'inkiler gibi doldurur, dışa aktarma da tam adlarıyla geri yazar.
+  Başka eklentilerin ve çekirdeğin pattern'leri kullanılamaz. `wp pergel pattern list`
+  ikisini birlikte listeler. `{ markdown: true }` gövdenin yerini belirler; yoksa gövde en
+  sona eklenir. Frontmatter'ı olmayan dosya yalnızca gövdedir.
 - `align` bölümün genişliğini pattern'inkinden farklı yapar: `wide` (geniş, `wideSize`),
   `full` (tam genişlik) veya `none` (içerik genişliği). Editördeki genişlik düğmesinin
   yaptığını yapar: kök bloğun `align` özniteliğini ve `alignwide`/`alignfull` sınıfını

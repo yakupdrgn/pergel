@@ -556,11 +556,11 @@ final class Exporter {
 	private function section( array $pattern, array $block, string $name, string $where ): array {
 		$notes  = array();
 		$values = Fields::values( $pattern, array( $block ), $this->field_reader(), $notes );
-		$theme  = get_template_directory_uri() . '/';
+		$themes = array_unique( array( get_template_directory_uri() . '/', get_stylesheet_directory_uri() . '/' ) );
 		foreach ( $notes as $note ) {
-			// The pattern's own placeholder image stays as it is; checking
-			// the package says so for the field anyway.
-			if ( ! str_contains( $note, ": $theme" ) ) {
+			// The pattern's own placeholder image (in the parent or the child
+			// theme) stays as it is; checking the package says so for the field anyway.
+			if ( array() === array_filter( $themes, static fn( string $theme ): bool => str_contains( $note, ": $theme" ) ) ) {
 				$this->notes[] = "$where: $note";
 			}
 		}
@@ -575,7 +575,7 @@ final class Exporter {
 		if ( array() === $notes && ! self::same( serialize_block( $block ), $back ) ) {
 			$this->notes[] = "$where was changed beyond its fields (a block added, a style or a setting); an import gives back the pattern with these fields";
 		}
-		return array( 'pattern' => str_starts_with( $name, 'pergel/' ) ? substr( $name, 7 ) : $name ) + $width + $values;
+		return array( 'pattern' => Package::section_name( $name ) ) + $width + $values;
 	}
 
 	/**

@@ -307,14 +307,79 @@ final class Package {
 	}
 
 	/**
-	 * Parsed blocks of a registered Pergel pattern.
+	 * Parsed blocks of a pattern a package can use as a section.
 	 *
-	 * @param string $name Pattern name, like pergel/hero-split.
+	 * @param string $name Pattern name, like pergel/hero-split or ariumlab/hero.
 	 * @return list<array<string, mixed>>|null Null when there is no such pattern.
 	 */
 	public static function pattern( string $name ): ?array {
-		$pattern = str_starts_with( $name, 'pergel/' ) ? \WP_Block_Patterns_Registry::get_instance()->get_registered( $name ) : null;
-		return is_array( $pattern ) ? self::mark( array_values( parse_blocks( $pattern['content'] ) ), $name, $pattern ) : null;
+		$pattern = \WP_Block_Patterns_Registry::get_instance()->get_registered( $name );
+		return is_array( $pattern ) && self::section_pattern( $pattern ) ? self::mark( array_values( parse_blocks( $pattern['content'] ) ), $name, $pattern ) : null;
+	}
+
+	/**
+	 * Whether a registered pattern can be a package section: Pergel's own
+	 * patterns, and those the active child theme registers from its
+	 * patterns/ folder, where a project keeps its own design. Patterns of
+	 * other plugins or of core stay out, so a package names only what the
+	 * project ships.
+	 *
+	 * The child theme's patterns are known by their slugs in the theme's own
+	 * pattern list: the registry drops a pattern's file path once it has read
+	 * the content, so the path cannot tell.
+	 *
+	 * @param array<string, mixed> $pattern Registered pattern.
+	 */
+	public static function section_pattern( array $pattern ): bool {
+		$name = (string) ( $pattern['name'] ?? '' );
+		if ( str_starts_with( $name, 'pergel/' ) ) {
+			return true;
+		}
+		return '' !== $name && in_array( $name, self::child_pattern_slugs(), true );
+	}
+
+	/**
+	 * Slugs of the patterns in the active child theme's patterns/ folder
+	 * (none when the active theme is not a child theme).
+	 *
+	 * @return list<string>
+	 */
+	private static function child_pattern_slugs(): array {
+		if ( ! is_child_theme() ) {
+			return array();
+		}
+		$slugs = array();
+		foreach ( wp_get_theme()->get_block_patterns() as $meta ) {
+			if ( is_array( $meta ) && is_string( $meta['slug'] ?? null ) && '' !== $meta['slug'] ) {
+				$slugs[] = $meta['slug'];
+			}
+		}
+		return $slugs;
+	}
+
+	/**
+	 * Name of a section pattern as a package writes it: Pergel's own without
+	 * the pergel/ prefix, a child theme's with its full name.
+	 *
+	 * @param string $name Pattern name.
+	 */
+	public static function section_name( string $name ): string {
+		return str_starts_with( $name, 'pergel/' ) ? substr( $name, strlen( 'pergel/' ) ) : $name;
+	}
+
+	/**
+	 * Registered patterns a package can use, by name.
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
+	public static function section_patterns(): array {
+		$patterns = array();
+		foreach ( \WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
+			if ( self::section_pattern( $pattern ) ) {
+				$patterns[ (string) $pattern['name'] ] = $pattern;
+			}
+		}
+		return $patterns;
 	}
 
 	/**
@@ -442,7 +507,7 @@ final class Package {
 			$name   = (string) $section['pattern'];
 			$blocks = $pattern( str_contains( $name, '/' ) ? $name : "pergel/$name" );
 			if ( null === $blocks ) {
-				$this->problems[] = "$where: pattern: \"$name\" is not a Pergel pattern; wp pergel pattern list shows them";
+				$this->problems[] = "$where: pattern: \"$name\" is not a pattern a package can use (Pergel's own or the child theme's); wp pergel pattern list shows them";
 				continue;
 			}
 			if ( isset( $section['align'] ) ) {
