@@ -8,7 +8,8 @@
  * WooCommerce shows these as a column on wide screens and behind a
  * "Filter products" button on narrow ones. An attribute filter needs the
  * attribute's ID, so one is added for each of the first three attributes
- * the store has; the Site Editor can change them.
+ * the store has; the Site Editor can change them. The engine may ask for
+ * the brand and rating filters too (filter pergel/shop/filters).
  *
  * @package Pergel
  */
@@ -18,6 +19,7 @@ declare( strict_types=1 );
 defined( 'ABSPATH' ) || exit;
 
 $pergel_attributes = function_exists( 'wc_get_attribute_taxonomies' ) ? array_slice( array_values( wc_get_attribute_taxonomies() ), 0, 3 ) : array();
+$pergel_extra      = (array) apply_filters( 'pergel/shop/filters', array() );
 ?>
 <!-- wp:woocommerce/product-filters -->
 <div class="wp-block-woocommerce-product-filters wc-block-product-filters"><!-- wp:heading {"className":"pergel-filters__title"} -->
@@ -57,6 +59,18 @@ $pergel_attributes = function_exists( 'wc_get_attribute_taxonomies' ) ? array_sl
 <div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div>
 <!-- /wp:woocommerce/product-filter-checkbox-list --></div>
 <!-- /wp:woocommerce/product-filter-taxonomy -->
+<?php if ( in_array( 'brand', $pergel_extra, true ) && taxonomy_exists( 'product_brand' ) ) : ?>
+
+<!-- wp:woocommerce/product-filter-taxonomy {"taxonomy":"product_brand","showCounts":true} -->
+<div class="wp-block-woocommerce-product-filter-taxonomy"><!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading"><?php echo esc_html_x( 'Brand', 'product filters', 'pergel' ); ?></h3>
+<!-- /wp:heading -->
+
+<!-- wp:woocommerce/product-filter-checkbox-list -->
+<div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div>
+<!-- /wp:woocommerce/product-filter-checkbox-list --></div>
+<!-- /wp:woocommerce/product-filter-taxonomy -->
+<?php endif; ?>
 
 <!-- wp:woocommerce/product-filter-status {"showCounts":true} -->
 <div class="wp-block-woocommerce-product-filter-status"><!-- wp:heading {"level":3} -->
@@ -78,5 +92,17 @@ $pergel_attributes = function_exists( 'wc_get_attribute_taxonomies' ) ? array_sl
 <div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div>
 <!-- /wp:woocommerce/product-filter-checkbox-list --></div>
 <!-- /wp:woocommerce/product-filter-attribute -->
-<?php endforeach; ?></div>
+<?php endforeach; ?>
+<?php if ( in_array( 'rating', $pergel_extra, true ) ) : ?>
+
+<!-- wp:woocommerce/product-filter-rating {"showCounts":true} -->
+<div class="wp-block-woocommerce-product-filter-rating"><!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading"><?php echo esc_html_x( 'Rating', 'product filters', 'pergel' ); ?></h3>
+<!-- /wp:heading -->
+
+<!-- wp:woocommerce/product-filter-checkbox-list -->
+<div class="wp-block-woocommerce-product-filter-checkbox-list wc-block-product-filter-checkbox-list"></div>
+<!-- /wp:woocommerce/product-filter-checkbox-list --></div>
+<!-- /wp:woocommerce/product-filter-rating -->
+<?php endif; ?></div>
 <!-- /wp:woocommerce/product-filters -->

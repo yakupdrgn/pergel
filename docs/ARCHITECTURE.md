@@ -590,8 +590,7 @@ görünmez (`Settings\Screen::shown`).
   sayfalarındaki ana ürün ızgarasına (sorguyu sayfadan alan `inherit:true` Product Collection)
   uygulanır: geniş ekranda sütun (`render_block_context` ile Product Template bağlamına, çünkü
   WordPress alt blokları üst bloğun ayrıştırılmış haliyle kurar), tablet/telefon sütunu (ızgarada
-  `pergel-columns-tablet|phone` sınıfı ve `--pergel-columns-*` değişkeni, CSS temanın
-  `woocommerce-product-template.css` dosyasında), sayfa başına ürün (`loop_shop_per_page`), tam
+  `pergel-columns-tablet|phone` sınıfı ve `--pergel-columns-*` değişkeni), sayfa başına ürün (`loop_shop_per_page`), tam
   genişlik (`pergel-shop-full` gövde sınıfı). Varsayılanlar (`template`, `auto`, `wide`, 0) şablona
   dokunmaz; Site Editor'da değiştirilmiş ya da alt temanın kendi şablonu seçilene kadar aynen
   kalır. Şemada `levels: ['category']` taşıyan alanları bir ürün kategorisi kendisi seçebilir
@@ -599,6 +598,19 @@ görünmez (`Settings\Screen::shown`).
   yakın seçen kategori, yoksa site ayarı geçerlidir, alt kategoriler üsttekini izler. Ayarın
   ulaşamadığı (ızgarası silinmiş) özel şablonlar ayar ekranında uyarıyla listelenir. Görsel
   seçimler (`Labels` `cards`) radyo düğmeli kartlar olarak çizilir (`Settings\Pictures`).
+  Düzen CSS'i temada değil motorda (`engine/assets/shop-layout.css`, `Layout::STYLE`): yalnızca bir
+  ayar sınıf eklediğinde kuyruğa girer; varsayılan mağaza sayfası hiçbir ek dosya almaz.
+- **Filtre alanı (`Woo\Filters`):** `shop.filters` filtre sütununu sola/sağa alır
+  (`pergel-filters-left|right`), WooCommerce Product Filters bloğunun kendi panelini her ekranda
+  açar (`overlayMode: always`, `render_block_data`; bloğun alt bağlamı olmadığı için öznitelik
+  render öncesi değişebilir) ya da filtre sütununu hiç çizmez. `shop.drawer_side` panelin yönü
+  (telefonda da). `shop.filters_sticky` sütunu ekranda tutar ya da kendi içinde kaydırır (783px
+  üstü). `shop.filters_fold` grup başlığını sunucu tarafında `<button aria-expanded>` yapar,
+  böylece WooCommerce filtreleri her seçimde yeniden çizdiğinde düğme kalır; açık/kapalı durumunu
+  ve liste içi aramayı (`shop.filters_search`, sekizden uzun listeler; aramadan önce
+  WooCommerce'in "daha fazla göster"ini açar) `assets/shop-filters.js` tutar ve her yeniden
+  çizimde geri koyar. `shop.filter_brand|filter_rating` temanın filtre pattern'ine
+  `pergel/shop/filters` süzgeciyle marka (`product_brand`) ve puan filtresini ekletir.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir
