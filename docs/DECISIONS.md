@@ -1526,6 +1526,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   sabit, ayrı bir ayar yok. Düzen CSS'i temanın blok CSS dosyalarına eklenince satır içi CSS
   sınırını aşıp her mağaza sayfasına ayrı bir istek ekliyordu; bu yüzden motora taşındı ve
   yalnızca bir ayar seçildiğinde yüklenir.
+- **S2b kararları:** araç çubuğu, bant ve şerit ayrı blok değil, var olan blokların çıktısına
+  eklenir (sıralama menüsü, terim açıklaması); şablon düzenlenmeden çalışır, bu bloklar
+  şablondan silinirse onlar da görünmez. "Daha fazla yükle" sayfanın HTML'ini elle eklemek yerine
+  router ile `per_page`'i büyütür: elle eklenen kartlarda Interactivity düğmeleri (sepete ekle)
+  çalışmaz. Bunun için kartlardaki `pergel/product-actions` bloğu `clientNavigation` desteği
+  bildirdi; öncesinde WooCommerce mağaza sayfalarında istemci gezinmesini tümüyle kapatıyordu
+  (filtreler ve sayfa numaraları da tam sayfa yeniliyordu). Ziyaretçinin seçtiği `per_page`
+  sayfaları `noindex`; tek sayı sınırı 96.
 
 ## Aşamalar ve bitti tanımları
 

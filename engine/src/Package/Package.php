@@ -554,6 +554,10 @@ final class Package {
 		$problems = array();
 		foreach ( $this->settings as $group => $values ) {
 			foreach ( $values as $key => $value ) {
+				if ( 'pattern' === $groups[ $group ][ $key ]['type'] ) {
+					$problems[] = "package.yaml: settings.$group.$key: a synced pattern is chosen on the site, not in a package";
+					continue;
+				}
 				if ( 'image' === $groups[ $group ][ $key ]['type'] ) {
 					try {
 						$value = $media( $this->image( is_string( $value ) ? $value : '', $groups[ $group ][ $key ]['svg'] ?? true ) )['id'];

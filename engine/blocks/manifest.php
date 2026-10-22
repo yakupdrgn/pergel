@@ -610,6 +610,10 @@ return array (
     'supports' => 
     array (
       'html' => false,
+      'interactivity' => 
+      array (
+        'clientNavigation' => true,
+      ),
       'spacing' => 
       array (
         'margin' => true,

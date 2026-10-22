@@ -11,6 +11,7 @@ namespace Pergel\Woo;
 
 use Pergel\Settings\Labels;
 use Pergel\Settings\Schema;
+use Pergel\Settings\Screen;
 
 /**
  * The settings a product category may choose for itself (schema fields with
@@ -166,7 +167,9 @@ final class LayoutFields {
 			);
 		}
 		$choices = array( '' => Labels::inherit( 'category' ) );
-		if ( 'bool' === $field['type'] ) {
+		if ( 'pattern' === $field['type'] ) {
+			$choices += Screen::patterns( null === $value ? 0 : (int) $value );
+		} elseif ( 'bool' === $field['type'] ) {
 			$choices += array(
 				'1' => __( 'On', 'pergel-engine' ),
 				'0' => __( 'Off', 'pergel-engine' ),

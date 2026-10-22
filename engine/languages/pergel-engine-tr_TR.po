@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-22 13:25+0000\n"
-"PO-Revision-Date: 2026-10-22 13:25+0000\n"
+"POT-Creation-Date: 2026-10-22 13:59+0000\n"
+"PO-Revision-Date: 2026-10-22 13:59+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -499,6 +499,12 @@ msgstr "Ürün ızgarası"
 msgid "Filters"
 msgstr "Filtreler"
 
+msgid "View and paging"
+msgstr "Görünüm ve sayfalar"
+
+msgid "Above the products"
+msgstr "Ürünlerin üstünde"
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr "Bloklarda (Block Bindings) ve yapılandırılmış veride marka bilgileri."
 
@@ -892,6 +898,66 @@ msgstr "Puan filtresi"
 msgid "Filters by the average customer rating. Shown only while rated products exist."
 msgstr "Ortalama müşteri puanına göre filtreler. Yalnızca puanlanmış ürünler varken gösterilir."
 
+msgid "Products are shown as"
+msgstr "Ürünlerin gösterimi"
+
+msgid "The list shows each product in a row, with its picture beside the name, price and short description."
+msgstr "Liste her ürünü bir satırda gösterir: resmi yanında adı, fiyatı ve kısa açıklaması."
+
+msgid "Grid"
+msgstr "Izgara"
+
+msgid "List"
+msgstr "Liste"
+
+msgid "Grid and list buttons"
+msgstr "Izgara ve liste düğmeleri"
+
+msgid "Visitors can switch between the grid and the list next to the sorting menu. Their choice is kept in their browser."
+msgstr "Ziyaretçiler sıralama menüsünün yanında ızgara ile liste arasında geçiş yapabilir. Seçimleri kendi tarayıcılarında saklanır."
+
+msgid "Products per page menu"
+msgstr "Sayfa başına ürün menüsü"
+
+msgid "Numbers visitors can choose from next to the sorting menu, separated by commas, e.g. 12, 24, 48. Up to six numbers from 1 to 96. Leave empty for no menu."
+msgstr "Ziyaretçilerin sıralama menüsünün yanında seçebileceği sayılar, virgülle ayrılmış, ör. 12, 24, 48. 1 ile 96 arasında en çok altı sayı. Menü istemiyorsanız boş bırakın."
+
+msgid "More products"
+msgstr "Sonraki ürünler"
+
+msgid "\"Load more\" adds the next products under the ones on screen. \"Load while scrolling\" does it on its own when the visitor nears the end, and keeps the button for keyboard users. The page numbers stay in the page for search engines and without JavaScript."
+msgstr "\"Daha fazla yükle\" sonraki ürünleri ekrandakilerin altına ekler. \"Kaydırdıkça yükle\" bunu ziyaretçi sona yaklaşınca kendiliğinden yapar; klavye kullananlar için düğme de kalır. Sayfa numaraları arama motorları ve JavaScript olmadan kullanım için sayfada kalır."
+
+msgid "Page numbers"
+msgstr "Sayfa numaraları"
+
+msgid "Load more button"
+msgstr "Daha fazla yükle düğmesi"
+
+msgid "Load while scrolling"
+msgstr "Kaydırdıkça yükle"
+
+msgid "Banner"
+msgstr "Kampanya bandı"
+
+msgid "A pattern shown above the products, e.g. a campaign. Make it under Appearance → Editor → Patterns."
+msgstr "Ürünlerin üstünde gösterilen bir desen, ör. bir kampanya. Görünüm → Düzenleyici → Desenler altında hazırlayın."
+
+msgid "Category strip"
+msgstr "Kategori şeridi"
+
+msgid "A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image."
+msgstr "Ürünlerin üstünde bir sıra kategori bağlantısı: mağazada ana kategoriler, bir kategoride alt kategoriler. Resimler kategori görselinden gelir."
+
+msgid "None"
+msgstr "Yok"
+
+msgid "With pictures"
+msgstr "Resimli"
+
+msgid "Names only"
+msgstr "Yalnızca adlar"
+
 msgid "Same as its category or the shop"
 msgstr "Kategorisi veya mağazayla aynı"
 
@@ -969,6 +1035,10 @@ msgstr "Bu görseli kullan"
 
 msgid "Choose image"
 msgstr "Görsel seç"
+
+#. translators: %d: pattern id.
+msgid "Pattern #%d (not found)"
+msgstr "Desen #%d (bulunamadı)"
 
 msgid "Back in stock"
 msgstr "Yeniden stokta"
@@ -1098,6 +1168,18 @@ msgstr "Açık"
 msgid "Off"
 msgstr "Kapalı"
 
+msgid "Show"
+msgstr "Göster"
+
+msgid "Apply"
+msgstr "Uygula"
+
+msgid "Loading products…"
+msgstr "Ürünler yükleniyor…"
+
+msgid "Load more products"
+msgstr "Daha fazla ürün yükle"
+
 msgid "Added to the wishlist."
 msgstr "İstek listesine eklendi."
 
@@ -1202,6 +1284,12 @@ msgstr "1 ile %s arasında bir tam sayı girin."
 msgid "SKU: %s"
 msgstr "Stok kodu: %s"
 
+msgid "Product categories"
+msgstr "Ürün kategorileri"
+
+msgid "Subcategories"
+msgstr "Alt kategoriler"
+
 msgid "Shown on product pages that have a size guide: a button that opens the guide."
 msgstr "Beden rehberi olan ürün sayfalarında gösterilir: rehberi açan bir düğme."
 
@@ -1223,9 +1311,6 @@ msgstr "Sepete ekle düğmesinin üstündeki bir düğmeyle pencerede açılan e
 
 msgid "A synced pattern (Appearance → Editor → Patterns) for the products of this category and its subcategories, unless a subcategory or a product chooses its own."
 msgstr "Bu kategorinin ve alt kategorilerinin ürünleri için eşitlenmiş desen (Görünüm → Düzenleyici → Desenler); bir alt kategori ya da ürün kendi rehberini seçmişse o kullanılır."
-
-msgid "None"
-msgstr "Yok"
 
 msgid "Shown on product pages: a bar with the add-to-cart button while the form is out of view."
 msgstr "Ürün sayfalarında gösterilir: form görünmezken sepete ekle düğmesini taşıyan bir çubuk."
@@ -1500,9 +1585,6 @@ msgstr "Kısa metin"
 msgid "Long text"
 msgstr "Uzun metin"
 
-msgid "List"
-msgstr "Liste"
-
 msgid "Choices"
 msgstr "Seçenekler"
 
@@ -1640,9 +1722,6 @@ msgstr "Satıştaki ürünlerde de bağlantıları göster"
 
 msgid "Otherwise the block shows only where a product has no price or cart."
 msgstr "Aksi halde blok yalnızca fiyatı veya sepeti olmayan ürünlerde görünür."
-
-msgid "Show"
-msgstr "Göster"
 
 msgid "Visitors see the products they chose to compare here, side by side."
 msgstr "Ziyaretçiler karşılaştırmak için seçtikleri ürünleri burada yan yana görür."

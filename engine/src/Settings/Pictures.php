@@ -33,6 +33,9 @@ final class Pictures {
 			'shop.width' => self::width( $option ),
 			'shop.filters', 'shop.drawer_side' => self::filters( $option ),
 			'shop.filters_sticky' => self::sticky( $option ),
+			'shop.view' => self::view( $option ),
+			'shop.paging' => self::paging( $option ),
+			'shop.category_strip' => self::strip( $option ),
 			default      => '',
 		};
 		if ( '' === $shapes ) {
@@ -130,5 +133,60 @@ final class Pictures {
 			'scroll' => '<rect x="5.5" y="5.5" width="14" height="29" rx="1.5" fill="none" stroke="currentColor"/><rect x="16" y="9" width="2" height="9" rx="1" fill="currentColor"/>',
 			default  => '<rect x="5.5" y="12.5" width="14" height="22" rx="1.5" fill="none" stroke="currentColor"/><path d="M12.5 4v6" stroke="currentColor"/>',
 		};
+	}
+
+	/**
+	 * Tiles in a row, or rows with a picture beside lines of text.
+	 *
+	 * @param string $option "grid" or "list".
+	 */
+	private static function view( string $option ): string {
+		if ( 'list' !== $option ) {
+			return self::grid( '3' );
+		}
+		$rows = '';
+		foreach ( array( 6, 22 ) as $y ) {
+			$rows .= sprintf(
+				'<rect x="6" y="%1$d" width="14" height="12" rx="1.5" fill="currentColor"/><rect x="24" y="%2$d" width="30" height="3" rx="1" fill="currentColor"/><rect x="24" y="%3$d" width="22" height="3" rx="1" fill="currentColor" opacity="0.6"/>',
+				$y,
+				$y + 2,
+				$y + 7
+			);
+		}
+		return $rows;
+	}
+
+	/**
+	 * What follows the product tiles: page numbers, a button, or more tiles.
+	 *
+	 * @param string $option "template", "more" or "scroll".
+	 */
+	private static function paging( string $option ): string {
+		$tiles = '<rect x="6" y="5" width="16" height="12" rx="1.5" fill="currentColor"/><rect x="24" y="5" width="16" height="12" rx="1.5" fill="currentColor"/><rect x="42" y="5" width="16" height="12" rx="1.5" fill="currentColor"/>';
+		return $tiles . match ( $option ) {
+			'more'   => '<rect x="20.5" y="24.5" width="23" height="8" rx="4" fill="none" stroke="currentColor"/>',
+			'scroll' => '<g opacity="0.45"><rect x="6" y="21" width="16" height="12" rx="1.5" fill="currentColor"/><rect x="24" y="21" width="16" height="12" rx="1.5" fill="currentColor"/><rect x="42" y="21" width="16" height="12" rx="1.5" fill="currentColor"/></g>',
+			default  => '<rect x="19" y="26" width="6" height="6" rx="1" fill="currentColor"/><rect x="29.5" y="26.5" width="5" height="5" rx="1" fill="none" stroke="currentColor"/><rect x="39.5" y="26.5" width="5" height="5" rx="1" fill="none" stroke="currentColor"/>',
+		};
+	}
+
+	/**
+	 * A row of category links above the products.
+	 *
+	 * @param string $option "none", "images" or "names".
+	 */
+	private static function strip( string $option ): string {
+		$products = '<rect x="6" y="24" width="52" height="10" rx="1.5" fill="currentColor" opacity="0.35"/>';
+		if ( 'none' === $option ) {
+			return $products;
+		}
+		$row = '';
+		for ( $i = 0; $i < 4; $i++ ) {
+			$x    = 6 + $i * 14;
+			$row .= 'images' === $option
+				? sprintf( '<circle cx="%1$d" cy="10" r="5" fill="currentColor"/><rect x="%2$d" y="17" width="10" height="2" rx="1" fill="currentColor" opacity="0.6"/>', $x + 5, $x )
+				: sprintf( '<rect x="%d.5" y="9.5" width="11" height="6" rx="3" fill="none" stroke="currentColor"/>', $x );
+		}
+		return $row . $products;
 	}
 }

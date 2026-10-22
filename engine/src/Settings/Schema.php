@@ -47,7 +47,7 @@ final class Schema {
 	 * alpha-2), enum (options), int (min, max), image (attachment id, 0 =
 	 * none), urls (list of URLs, max = item count), time ("HH:MM", 24-hour),
 	 * dates (list of "YYYY-MM-DD" days or "YYYY-MM-DD/YYYY-MM-DD" ranges,
-	 * max = item count).
+	 * max = item count), pattern (synced pattern id, 0 = none).
 	 *
 	 * levels: where else the field can be set ("category", "product"); the
 	 * most specific value wins, see level_values() and Pergel\Woo\Layout.
@@ -336,6 +336,38 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// Toolbar, list view and paging; see Pergel\Woo\Toolbar.
+				'view'           => array(
+					'type'    => 'enum',
+					'options' => array( 'grid', 'list' ),
+					'default' => 'grid',
+					'levels'  => array( 'category' ),
+				),
+				'view_switch'    => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'per_page_menu'  => array(
+					'type' => 'text',
+					'max'  => 40,
+				),
+				'paging'         => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'more', 'scroll' ),
+					'default' => 'template',
+					'levels'  => array( 'category' ),
+				),
+				// Above the products; see Pergel\Woo\ShopHeader.
+				'banner'         => array(
+					'type'   => 'pattern',
+					'levels' => array( 'category' ),
+				),
+				'category_strip' => array(
+					'type'    => 'enum',
+					'options' => array( 'none', 'images', 'names' ),
+					'default' => 'none',
+					'levels'  => array( 'category' ),
+				),
 			),
 		);
 	}
@@ -399,7 +431,7 @@ final class Schema {
 		}
 		return match ( $field['type'] ) {
 			'bool'          => false,
-			'int', 'image'  => 0,
+			'int', 'image', 'pattern' => 0,
 			'urls', 'dates' => array(),
 			default         => '',
 		};
@@ -507,12 +539,14 @@ final class Schema {
 
 			case 'int':
 			case 'image':
+			case 'pattern':
 				$int = is_int( $raw ) ? $raw : filter_var( $raw, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE );
 				if ( null === $int ) {
 					return 'invalid_type';
 				}
-				$min = 'image' === $type ? 0 : ( $field['min'] ?? PHP_INT_MIN );
-				$top = 'image' === $type ? PHP_INT_MAX : ( $field['max'] ?? PHP_INT_MAX );
+				$id  = 'int' !== $type;
+				$min = $id ? 0 : ( $field['min'] ?? PHP_INT_MIN );
+				$top = $id ? PHP_INT_MAX : ( $field['max'] ?? PHP_INT_MAX );
 				return $int < $min || $int > $top ? 'out_of_range' : array( $int );
 
 			case 'enum':
@@ -732,7 +766,7 @@ final class Schema {
 				),
 				static fn ( $v ): bool => null !== $v
 			),
-			'image'   => array(
+			'image', 'pattern' => array(
 				'type'    => 'integer',
 				'minimum' => 0,
 			),

@@ -17,7 +17,9 @@ use Pergel\Settings\Settings;
 use Pergel\Woo\Filters;
 use Pergel\Woo\Layout;
 use Pergel\Woo\LayoutFields;
+use Pergel\Woo\Listing;
 use Pergel\Woo\Module as Woo;
+use Pergel\Woo\ShopHeader;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,6 +32,14 @@ final class ShopLayoutTest extends TestCase {
 	 */
 	private const GRID = '<!-- wp:woocommerce/product-collection {"queryId":0,"query":{"inherit":true,"isProductCollectionBlock":true,"perPage":12,"postType":"product"},"tagName":"div","displayLayout":{"type":"flex","columns":3,"shrinkColumns":true}} -->'
 		. '<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template --><!-- wp:post-title /--><!-- /wp:woocommerce/product-template --></div>'
+		. '<!-- /wp:woocommerce/product-collection -->';
+
+	/**
+	 * The main grid with a price and page numbers.
+	 */
+	private const FULL_GRID = '<!-- wp:woocommerce/product-collection {"queryId":0,"query":{"inherit":true,"isProductCollectionBlock":true,"perPage":12,"postType":"product"},"tagName":"div","displayLayout":{"type":"flex","columns":3,"shrinkColumns":true}} -->'
+		. '<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template --><!-- wp:post-title /--><!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /--><!-- /wp:woocommerce/product-template -->'
+		. '<!-- wp:query-pagination --><!-- wp:query-pagination-next /--><!-- /wp:query-pagination --></div>'
 		. '<!-- /wp:woocommerce/product-collection -->';
 
 	/**
@@ -64,6 +74,13 @@ final class ShopLayoutTest extends TestCase {
 	 */
 	private int $product = 0;
 
+	/**
+	 * Other posts made by the test.
+	 *
+	 * @var list<int>
+	 */
+	private array $posts = array();
+
 	protected function setUp(): void {
 		// Saved first: tearDown() runs after a skip too.
 		$this->saved = get_option( Settings::OPTION, false );
@@ -87,8 +104,10 @@ final class ShopLayoutTest extends TestCase {
 			add_filter( 'sanitize_option_' . Settings::OPTION, array( \Pergel\Settings\Module::class, 'sanitize' ) );
 		}
 		Settings::flush();
-		if ( $this->product > 0 ) {
-			wp_delete_post( $this->product, true );
+		foreach ( array_merge( array( $this->product ), $this->posts ) as $post_id ) {
+			if ( $post_id > 0 ) {
+				wp_delete_post( $post_id, true );
+			}
 		}
 		foreach ( $this->terms as $term_id ) {
 			wp_delete_term( $term_id, 'product_cat' );
@@ -96,7 +115,8 @@ final class ShopLayoutTest extends TestCase {
 		Layout::flush();
 		wp_dequeue_style( Layout::STYLE );
 		wp_dequeue_script_module( Filters::SCRIPT );
-		unset( $_POST['pergel_shop'] );
+		wp_dequeue_script_module( Listing::SCRIPT );
+		unset( $_POST['pergel_shop'], $_GET[ Listing::ARG ] );
 		wp_set_current_user( 0 );
 		if ( null !== $this->query ) {
 			$GLOBALS['wp_the_query'] = $this->query; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Puts back the query go_to() replaced.
@@ -301,5 +321,116 @@ final class ShopLayoutTest extends TestCase {
 		$html = do_blocks( self::COLUMNS );
 		$this->assertStringNotContainsString( 'pergel-shop-layout__filters', $html );
 		$this->assertStringContainsString( 'pergel-shop-layout__products', $html );
+	}
+
+	public function test_view_and_paging_defaults_change_nothing(): void {
+		$this->go_to(
+			array(
+				'post_type'      => 'product',
+				'posts_per_page' => 1,
+			)
+		);
+		$_GET[ Listing::ARG ] = '48';
+
+		$html = do_blocks( self::FULL_GRID );
+
+		$this->assertStringNotContainsString( 'pergel-shop-grid', $html );
+		$this->assertStringNotContainsString( 'pergel-list-summary', $html );
+		$this->assertStringNotContainsString( 'data-pergel-more', $html );
+		$this->assertSame( '<form>sort</form>', Listing::toolbar( '<form>sort</form>' ) );
+		$this->assertSame( 16, Layout::per_page( 16 ), 'A number the menu does not offer is ignored.' );
+		$this->assertSame( '', ShopHeader::render( '' ) );
+	}
+
+	public function test_list_view_menu_and_load_more(): void {
+		Settings::update(
+			array(
+				'shop' => array(
+					'view'          => 'list',
+					'view_switch'   => true,
+					'per_page_menu' => '48, 12, x, 200, 12',
+					'paging'        => 'more',
+				),
+			)
+		);
+		$this->assertSame( array( 12, 48 ), Listing::menu() );
+
+		$second = new \WC_Product_Simple();
+		$second->set_name( 'Layout test product 2' );
+		$second->set_status( 'publish' );
+		$second->set_regular_price( '12' );
+		$second->set_short_description( 'Short words about the product.' );
+		$this->posts[] = $second->save();
+		$this->go_to(
+			array(
+				'post_type'      => 'product',
+				'posts_per_page' => 1,
+			)
+		);
+
+		$_GET[ Listing::ARG ] = '48';
+		$this->assertSame( 48, Layout::per_page( 16 ) );
+		$_GET[ Listing::ARG ] = '30';
+		$this->assertSame( 30, Layout::per_page( 16 ), '"Load more" asks for any number up to 96.' );
+		$this->assertTrue( Listing::robots( array() )['noindex'] ?? false );
+		$_GET[ Listing::ARG ] = '500';
+		$this->assertSame( 16, Layout::per_page( 16 ) );
+		unset( $_GET[ Listing::ARG ] );
+
+		$html = do_blocks( self::FULL_GRID );
+		$this->assertStringContainsString( 'pergel-shop-grid', $html );
+		$this->assertStringContainsString( 'pergel-view-list', $html );
+		$this->assertStringContainsString( 'pergel-list-summary', $html );
+		$this->assertMatchesRegularExpression( '/<a class="pergel-load-more__button[^"]*" href="[^"]+" data-pergel-more="more" data-pergel-step="16"/', $html );
+		$this->assertTrue( wp_style_is( Layout::STYLE ) );
+
+		$toolbar = Listing::toolbar( '<form>sort</form>' );
+		$this->assertStringStartsWith( '<div class="pergel-shop-toolbar"><form>sort</form>', $toolbar );
+		$this->assertStringContainsString( '<option value="12">12</option><option value="48">48</option>', $toolbar );
+		$this->assertStringContainsString( 'data-pergel-view="list" aria-pressed="true"', $toolbar );
+	}
+
+	public function test_banner_and_category_strip(): void {
+		$banner        = wp_insert_post(
+			array(
+				'post_type'    => 'wp_block',
+				'post_status'  => 'publish',
+				'post_title'   => 'Layout banner',
+				'post_content' => '<!-- wp:paragraph --><p>Spring sale</p><!-- /wp:paragraph -->',
+			)
+		);
+		$this->posts[] = $banner;
+		$draft         = wp_insert_post(
+			array(
+				'post_type'    => 'wp_block',
+				'post_status'  => 'draft',
+				'post_title'   => 'Layout draft banner',
+				'post_content' => '<!-- wp:paragraph --><p>Not yet</p><!-- /wp:paragraph -->',
+			)
+		);
+		$this->posts[] = $draft;
+		$parent        = $this->category( 'Strip parent' );
+		$child         = $this->category( 'Strip child', $parent->term_id );
+		wp_set_object_terms( $this->product, array( $parent->term_id, $child->term_id ), 'product_cat' );
+		Settings::update(
+			array(
+				'shop' => array(
+					'banner'         => $banner,
+					'category_strip' => 'names',
+				),
+			)
+		);
+
+		$this->go_to( array( 'post_type' => 'product' ) );
+		$html = ShopHeader::render( '' );
+		$this->assertMatchesRegularExpression( '#^<div class="pergel-shop-banner alignwide"><p[^>]*>Spring sale</p></div>#', $html );
+		$this->assertStringContainsString( esc_html( $parent->name ), $html );
+		$this->assertStringNotContainsString( esc_html( $child->name ), $html, 'The shop lists the main categories.' );
+
+		update_term_meta( $parent->term_id, Layout::TERM_META, array( 'shop.banner' => $draft ) );
+		$this->go_to( array( 'product_cat' => $parent->slug ) );
+		$html = ShopHeader::render( '<p>About</p>' );
+		$this->assertStringStartsWith( '<p>About</p><nav class="pergel-category-strip is-names', $html, 'An unpublished banner shows nothing.' );
+		$this->assertStringContainsString( esc_html( $child->name ), $html );
 	}
 }

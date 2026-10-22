@@ -611,6 +611,33 @@ görünmez (`Settings\Screen::shown`).
   WooCommerce'in "daha fazla göster"ini açar) `assets/shop-filters.js` tutar ve her yeniden
   çizimde geri koyar. `shop.filter_brand|filter_rating` temanın filtre pattern'ine
   `pergel/shop/filters` süzgeciyle marka (`product_brand`) ve puan filtresini ekletir.
+- **Görünüm ve sayfalar (`Woo\Listing`):** `shop.view` ana ızgaraya `pergel-shop-grid
+  pergel-view-list` sınıfı koyar; liste mümkünse (`view` liste ya da `view_switch` açık) fiyattan
+  sonra `woocommerce/product-summary` (30 kelime) çizilir, ızgarada CSS ile gizlenir.
+  `shop.view_switch` sıralama menüsünün yanına (`render_block_woocommerce/catalog-sorting`,
+  `.pergel-shop-toolbar`) betik açana kadar gizli ızgara/liste düğmeleri koyar; ziyaretçinin seçimi
+  `localStorage['pergel-shop-view']` → `<html data-pergel-view>`, head'deki küçük satır içi betik
+  sayfa çizilmeden uygular. `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
+  sorgu argümanları gizli alanlarla) ekler; `Layout::per_page` → `Listing::per_page` ziyaretçinin
+  sayısını menüde varsa ya da "daha fazla yükle" açıksa (1–96) kabul eder; `per_page` içeren
+  sayfalar `noindex, follow`. `shop.paging` more/scroll sayfa numaralarından sonra sonraki sayfaya
+  giden gerçek bir bağlantı ekler; `assets/shop-listing.js` bunu Interactivity router'ın
+  `navigate()`'iyle aynı sayfayı daha büyük `per_page` ile istemeye çevirir (sepet düğmeleri
+  çalışır kalır), ilk yeni ürüne odaklanır; kaydırma modu IntersectionObserver kullanır ve
+  sayfadan kendiliğinden çıkmaz. Yalnızca ilk sayfa büyür, 96'dan sonra bağlantı izlenir.
+  `navigate()`'in sözü directive dışında çağrılınca tamamlanmadığı için betik yeni ürünleri
+  MutationObserver ile bekler. WooCommerce ürün koleksiyonunda `clientNavigation` desteği
+  bildirmeyen bir blok varsa istemci gezinmesini sayfa için kapatır; bu yüzden
+  `pergel/product-actions` desteği bildirir ve `shop-lists.js` sonradan çizilen düğmeleri gösterir.
+  Kancaları `Layout` sınıfı yüklemeyen dizi çağrılarıyla kurar, ürün kancalarını
+  (`Listing::prepare`) ana ızgara başlarken ekler; ürün sayfaları bu iki sınıfı yüklemez (mağaza
+  bütçesinde `pergel_files` sınırı).
+- **Ürünlerin üstü (`Woo\ShopHeader`):** mağaza ve ürün kategorisi sayfalarında
+  `core/term-description`'dan sonra (mağaza sayfasında bu blok boş çizilir) `shop.banner` seçilen
+  senkron deseni (`wp_block`, yalnızca yayımlanmış; kendini yeniden çizmeye karşı korumalı) ve
+  `shop.category_strip` mağazada ana, kategoride alt kategorileri (boş olanlar ve varsayılan
+  kategori hariç, en çok 24) resimli ya da yalnızca ad olarak bir `<nav>` içinde gösterir.
+  `pattern` türündeki ayarlar site içi kimlik taşıdığı için proje paketine yazılmaz.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

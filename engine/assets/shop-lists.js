@@ -233,6 +233,17 @@ if ( config && Array.isArray( config.kinds ) ) {
 		}
 	} );
 
+	// Products drawn later (WooCommerce's filters and pages, "Load more")
+	// bring their buttons hidden, like the page did.
+	const fresh = ( node ) =>
+		node instanceof Element &&
+		( node.matches( '[data-pergel-list]' ) || null !== node.querySelector( '[data-pergel-list]' ) );
+	new MutationObserver( ( records ) => {
+		if ( records.some( ( record ) => [ ...record.addedNodes ].some( fresh ) ) ) {
+			show();
+		}
+	} ).observe( document.body, { childList: true, subtree: true } );
+
 	window.addEventListener( 'storage', ( event ) => {
 		const kind = kinds.find( ( item ) => key( item ) === event.key );
 		if ( ! kind || ( account && 'wishlist' === kind ) ) {

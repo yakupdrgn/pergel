@@ -389,6 +389,14 @@ final class Screen {
 				echo '</select>';
 				return;
 
+			case 'pattern':
+				echo '<select ' . $attrs . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
+				foreach ( self::patterns( (int) $value ) as $id => $title ) {
+					printf( '<option value="%1$d"%2$s>%3$s</option>', (int) $id, selected( (int) $value, $id, false ), esc_html( $title ) );
+				}
+				echo '</select>';
+				return;
+
 			case 'int':
 				printf(
 					'<input type="number" %1$s class="small-text" value="%2$d"%3$s%4$s>',
@@ -440,6 +448,36 @@ final class Screen {
 			esc_attr( (string) $value ),
 			$max > 0 ? ' maxlength="' . (int) $max . '"' : ''
 		);
+	}
+
+	/**
+	 * Choices of a pattern field: none, then the site's patterns (Appearance
+	 * → Editor → Patterns) by title. A chosen pattern that is gone is listed
+	 * as such, so saving the form does not change the value unnoticed.
+	 *
+	 * @param int $current Chosen pattern id.
+	 * @return array<int, string>
+	 */
+	public static function patterns( int $current ): array {
+		$choices = array( 0 => __( 'None', 'pergel-engine' ) );
+		$posts   = get_posts(
+			array(
+				'post_type'      => 'wp_block',
+				'post_status'    => 'publish',
+				'posts_per_page' => 100,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+				'no_found_rows'  => true,
+			)
+		);
+		foreach ( $posts as $post ) {
+			$choices[ $post->ID ] = '' !== $post->post_title ? $post->post_title : sprintf( '#%d', $post->ID );
+		}
+		if ( $current > 0 && ! isset( $choices[ $current ] ) ) {
+			/* translators: %d: pattern id. */
+			$choices[ $current ] = sprintf( __( 'Pattern #%d (not found)', 'pergel-engine' ), $current );
+		}
+		return $choices;
 	}
 
 	/**
