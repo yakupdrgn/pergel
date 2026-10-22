@@ -171,6 +171,68 @@ return array (
     'editorScript' => 'file:./index.js',
     'render' => 'file:./render.php',
   ),
+  'category-cards' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/category-cards',
+    'title' => 'Category cards',
+    'category' => 'pergel',
+    'icon' => 'category',
+    'description' => 'Links to product categories as round pictures, boxes, boxes with subcategories or names. Shows the main categories, or the subcategories of the category you choose; empty categories are left out.',
+    'keywords' => 
+    array (
+      0 => 'categories',
+      1 => 'product categories',
+      2 => 'shop',
+      3 => 'cards',
+    ),
+    'textdomain' => 'pergel-engine',
+    'attributes' => 
+    array (
+      'cardStyle' => 
+      array (
+        'type' => 'string',
+        'enum' => 
+        array (
+          0 => 'images',
+          1 => 'boxes',
+          2 => 'list',
+          3 => 'names',
+        ),
+        'default' => 'boxes',
+      ),
+      'parent' => 
+      array (
+        'type' => 'integer',
+        'default' => 0,
+      ),
+      'number' => 
+      array (
+        'type' => 'integer',
+        'default' => 8,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'interactivity' => 
+      array (
+        'clientNavigation' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'counter' => 
   array (
     'apiVersion' => 3,

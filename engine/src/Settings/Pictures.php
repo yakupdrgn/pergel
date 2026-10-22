@@ -185,9 +185,12 @@ final class Pictures {
 		$row = '';
 		for ( $i = 0; $i < 4; $i++ ) {
 			$x    = 6 + $i * 14;
-			$row .= 'images' === $option
-				? sprintf( '<circle cx="%1$d" cy="10" r="5" fill="currentColor"/><rect x="%2$d" y="17" width="10" height="2" rx="1" fill="currentColor" opacity="0.6"/>', $x + 5, $x )
-				: sprintf( '<rect x="%d.5" y="9.5" width="11" height="6" rx="3" fill="none" stroke="currentColor"/>', $x );
+			$row .= match ( $option ) {
+				'images' => sprintf( '<circle cx="%1$d" cy="10" r="5" fill="currentColor"/><rect x="%2$d" y="17" width="10" height="2" rx="1" fill="currentColor" opacity="0.6"/>', $x + 5, $x ),
+				'boxes'  => sprintf( '<rect x="%1$d.5" y="4.5" width="11" height="15" rx="2" fill="none" stroke="currentColor"/><rect x="%2$d" y="7" width="7" height="6" rx="1" fill="currentColor"/>', $x, $x + 2 ),
+				'list'   => sprintf( '<rect x="%1$d.5" y="4.5" width="11" height="15" rx="2" fill="none" stroke="currentColor"/><rect x="%2$d" y="7" width="7" height="1.5" rx="0.75" fill="currentColor"/><rect x="%2$d" y="10.5" width="5" height="1.5" rx="0.75" fill="currentColor" opacity="0.6"/><rect x="%2$d" y="13.5" width="6" height="1.5" rx="0.75" fill="currentColor" opacity="0.6"/>', $x, $x + 2 ),
+				default  => sprintf( '<rect x="%d.5" y="9.5" width="11" height="6" rx="3" fill="none" stroke="currentColor"/>', $x ),
+			};
 		}
 		return $row . $products;
 	}

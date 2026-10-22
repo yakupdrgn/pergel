@@ -24,11 +24,6 @@ namespace Pergel\Woo;
 final class ShopHeader {
 
 	/**
-	 * Most categories in the strip.
-	 */
-	private const MOST = 24;
-
-	/**
 	 * Whether the banner is being drawn; a pattern that holds the shop
 	 * template must not draw itself again.
 	 *
@@ -109,78 +104,26 @@ final class ShopHeader {
 	}
 
 	/**
-	 * The category links: pictures with names, or names only.
+	 * The category cards: the main categories in the shop, the
+	 * subcategories in a category.
 	 */
 	public static function strip(): string {
 		$style = Layout::get( 'shop.category_strip' );
-		if ( 'images' !== $style && 'names' !== $style ) {
+		// "none" first: the default does not load CategoryCards.
+		if ( ! is_string( $style ) || 'none' === $style || ! in_array( $style, CategoryCards::STYLES, true ) ) {
 			return '';
 		}
 		$parent = is_product_category() ? get_queried_object_id() : 0;
-		$terms  = get_terms(
-			array(
-				'taxonomy'   => 'product_cat',
-				'parent'     => $parent,
-				'hide_empty' => true,
-				'menu_order' => 'ASC',
-				'number'     => self::MOST + 1,
-			)
-		);
-		if ( ! is_array( $terms ) || ! $terms ) {
-			return '';
-		}
-		$items   = '';
-		$default = (int) get_option( 'default_product_cat', 0 );
-		$shown   = 0;
-		foreach ( $terms as $term ) {
-			// "Uncategorized" stays out of the strip.
-			if ( ! $term instanceof \WP_Term || $term->term_id === $default || $shown >= self::MOST ) {
-				continue;
-			}
-			++$shown;
-			$link = get_term_link( $term );
-			if ( ! is_string( $link ) ) {
-				continue;
-			}
-			$items .= sprintf(
-				'<li><a class="pergel-category-strip__link" href="%1$s">%2$s<span class="pergel-category-strip__name">%3$s</span></a></li>',
-				esc_url( $link ),
-				'images' === $style ? self::picture( $term ) : '',
-				esc_html( $term->name )
-			);
-		}
+		$items  = CategoryCards::items( CategoryCards::terms( $parent, CategoryCards::MOST ), $style );
 		if ( '' === $items ) {
 			return '';
 		}
+		wp_enqueue_style( CategoryCards::STYLE_HANDLE );
 		return sprintf(
-			'<nav class="pergel-category-strip is-%1$s alignwide" aria-label="%2$s"><ul>%3$s</ul></nav>',
+			'<nav class="pergel-category-strip pergel-category-cards is-%1$s alignwide" aria-label="%2$s"><ul>%3$s</ul></nav>',
 			esc_attr( $style ),
 			esc_attr( 0 === $parent ? __( 'Product categories', 'pergel-engine' ) : __( 'Subcategories', 'pergel-engine' ) ),
 			$items
 		);
-	}
-
-	/**
-	 * The category image, or its first letter on a plain circle.
-	 *
-	 * @param \WP_Term $term Category.
-	 */
-	private static function picture( \WP_Term $term ): string {
-		$image = (int) get_term_meta( $term->term_id, 'thumbnail_id', true );
-		$html  = $image > 0 ? wp_get_attachment_image(
-			$image,
-			'woocommerce_thumbnail',
-			false,
-			array(
-				'class'   => 'pergel-category-strip__image',
-				'alt'     => '',
-				'loading' => 'lazy',
-				'sizes'   => '6rem',
-			)
-		) : '';
-		if ( '' !== $html ) {
-			return $html;
-		}
-		return sprintf( '<span class="pergel-category-strip__image is-empty" aria-hidden="true">%s</span>', esc_html( mb_substr( $term->name, 0, 1 ) ) );
 	}
 }

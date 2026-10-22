@@ -178,7 +178,7 @@ final class Labels {
 				),
 				'cards'   => array(
 					'title'  => __( 'Product cards', 'pergel-engine' ),
-					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover' ),
+					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view' ),
 				),
 				'badges'  => array(
 					'title'  => __( 'Badges', 'pergel-engine' ),
@@ -574,6 +574,18 @@ final class Labels {
 					'label' => __( 'Second picture', 'pergel-engine' ),
 					'help'  => __( 'The first gallery picture shows while the pointer is over the card. Not on touch screens.', 'pergel-engine' ),
 				),
+				'card_countdown' => array(
+					'label' => __( 'Sale countdown', 'pergel-engine' ),
+					'help'  => __( 'Days, hours, minutes and seconds left on the picture, for products whose sale has an end date (Product data → General → Schedule).', 'pergel-engine' ),
+				),
+				'card_stock_bar' => array(
+					'label' => __( 'Stock bar', 'pergel-engine' ),
+					'help'  => __( 'A bar with how many were sold and how many are left, for products whose stock is counted.', 'pergel-engine' ),
+				),
+				'quick_view'     => array(
+					'label' => __( 'Quick view', 'pergel-engine' ),
+					'help'  => __( 'A button on the picture opens the product in a window: pictures, price, short description and, for simple products, the add to cart button.', 'pergel-engine' ),
+				),
 				'badge_sale'     => array(
 					'label'   => __( 'Sale badge', 'pergel-engine' ),
 					'cards'   => true,
@@ -597,11 +609,13 @@ final class Labels {
 				),
 				'category_strip' => array(
 					'label'   => __( 'Category strip', 'pergel-engine' ),
-					'help'    => __( 'A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image.', 'pergel-engine' ),
+					'help'    => __( 'A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image. The same cards can go on any page with the Category cards block.', 'pergel-engine' ),
 					'cards'   => true,
 					'choices' => array(
 						'none'   => __( 'None', 'pergel-engine' ),
-						'images' => __( 'With pictures', 'pergel-engine' ),
+						'images' => __( 'Round pictures', 'pergel-engine' ),
+						'boxes'  => __( 'Boxes', 'pergel-engine' ),
+						'list'   => __( 'Boxes with subcategories', 'pergel-engine' ),
 						'names'  => __( 'Names only', 'pergel-engine' ),
 					),
 				),

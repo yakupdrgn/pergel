@@ -636,7 +636,10 @@ görünmez (`Settings\Screen::shown`).
   `core/term-description`'dan sonra (mağaza sayfasında bu blok boş çizilir) `shop.banner` seçilen
   senkron deseni (`wp_block`, yalnızca yayımlanmış; kendini yeniden çizmeye karşı korumalı) ve
   `shop.category_strip` mağazada ana, kategoride alt kategorileri (boş olanlar ve varsayılan
-  kategori hariç, en çok 24) resimli ya da yalnızca ad olarak bir `<nav>` içinde gösterir.
+  kategori hariç, en çok 24) yuvarlak resim, kutu, alt kategorili kutu ya da ad olarak bir `<nav>`
+  içinde, tek sıra halinde gösterir. Kartları `Woo\CategoryCards` çizer; aynı kartlar
+  `pergel/category-cards` bloğuyla (stil, üst kategori, sayı) her sayfaya konabilir ve CSS'leri
+  bloğun stil dosyasındadır (`pergel-category-cards-style`).
   `pattern` türündeki ayarlar site içi kimlik taşıdığı için proje paketine yazılmaz.
 - **Ürün kartları (`Woo\Cards`, `Woo\BadgeField`):** her Product Collection ızgarasındaki kartlar
   (mağaza, kategori ve başka sayfalardaki ızgaralar). `shop.card_style` (kategori düzeyinde de)
@@ -652,7 +655,17 @@ görünmez (`Settings\Screen::shown`).
   bağlamını ister (`core/post-title` de yalnızca `queryId` aldığı için ürün tespiti `query` ya da
   `queryId` + `postType: product` ile yapılır). `Layout::cards` (`wp` kancası) `Cards`'ı yalnızca
   listeleme sayfalarında ve bir kart/rozet ayarı seçilmişse yükler; varsayılanlarla ürün sayfalarının
-  dosya sayısı değişmez.
+  dosya sayısı değişmez. Ayarlar ürün nesnesi istenmeden önce bakılır: varsayılanlarla listeleme
+  sayfalarının sorgu sayısı da değişmez (ölçek bütçesi).
+  İndirim geri sayımı (`shop.card_countdown`) bitiş tarihi olan indirimde resmin altına gün/saat/
+  dakika/saniye kutuları koyar, ekran okuyucuya bitiş tarihini söyler; stok çubuğu
+  (`shop.card_stock_bar`) stoğu sayılan ve en az bir satılmış üründe satılan/kalan oranını gösterir.
+  Hızlı bakış (`shop.quick_view`) resmin köşesine bir düğme koyar; `assets/shop-cards.js`
+  (script module `pergel/shop-cards`, yalnızca düğme ya da geri sayım çizildiğinde yüklenir) yerel
+  `<dialog>` açar ve içeriği `GET /pergel/v1/quick-view?id=` (`Woo\QuickView`, yalnızca ayar
+  açıkken ve yalnızca REST isteklerinde yüklenir) ile getirir: resimler, fiyat, kısa açıklama, stok
+  kodu, stok ve basit ürünlerde ürün sayfasındakiyle aynı düz sepete ekle formu. Yayımlanmamış,
+  gizli ya da parolalı ürün 404. Fiyat ve düğme satış modlarına uyar.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

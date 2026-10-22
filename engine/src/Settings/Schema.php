@@ -364,7 +364,7 @@ final class Schema {
 				),
 				'category_strip' => array(
 					'type'    => 'enum',
-					'options' => array( 'none', 'images', 'names' ),
+					'options' => array( 'none', 'images', 'boxes', 'list', 'names' ),
 					'default' => 'none',
 					'levels'  => array( 'category' ),
 				),
@@ -396,6 +396,18 @@ final class Schema {
 					'default' => false,
 				),
 				'card_hover'     => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'card_countdown' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'card_stock_bar' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'quick_view'     => array(
 					'type'    => 'bool',
 					'default' => false,
 				),

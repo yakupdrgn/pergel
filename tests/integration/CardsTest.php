@@ -16,8 +16,10 @@ use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 use Pergel\Woo\BadgeField;
 use Pergel\Woo\Cards;
+use Pergel\Woo\CategoryCards;
 use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
+use Pergel\Woo\QuickView;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -95,6 +97,7 @@ final class CardsTest extends TestCase {
 			wp_delete_post( $this->product, true );
 		}
 		wp_dequeue_style( Layout::CARD_STYLE );
+		wp_dequeue_script_module( Layout::CARDS_SCRIPT );
 		unset( $_POST[ Cards::BADGE_META ] );
 		if ( null !== $this->query ) {
 			$GLOBALS['wp_the_query'] = $this->query; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Puts back the query go_to() replaced.
@@ -189,6 +192,88 @@ final class CardsTest extends TestCase {
 		Settings::update( array( 'shop' => array( 'card_rating' => true ) ) );
 		Layout::cards();
 		$this->assertNotFalse( has_filter( 'render_block_core/post-title', array( Cards::class, 'title' ) ) );
+	}
+
+	public function test_countdown_stock_bar_and_quick_view_button(): void {
+		Settings::update(
+			array(
+				'shop' => array(
+					'card_countdown' => true,
+					'card_stock_bar' => true,
+					'quick_view'     => true,
+				),
+			)
+		);
+		$product = wc_get_product( $this->product );
+		$this->assertInstanceOf( \WC_Product::class, $product );
+		$end = time() + 2 * DAY_IN_SECONDS + 3 * HOUR_IN_SECONDS + 60;
+		$product->set_date_on_sale_to( (string) $end );
+		$product->set_total_sales( 9 );
+		$product->save();
+
+		$html = do_blocks( self::GRID );
+
+		$this->assertMatchesRegularExpression( '#<span class="pergel-countdown" data-pergel-until="\d+"><span class="pergel-countdown__parts" aria-hidden="true"><span class="pergel-countdown__part"><b data-pergel-part="d">02</b>#', $html );
+		$this->assertStringContainsString( '<b data-pergel-part="h">03</b>', $html );
+		// 9 sold, 3 left: three quarters.
+		$this->assertStringContainsString( 'style="width:75%"', $html );
+		$this->assertMatchesRegularExpression( '#pergel-stock-bar__text"><span>[^<]*9</span><span>[^<]*3</span>#', $html );
+		$this->assertMatchesRegularExpression( '#<div class="pergel-card-actions"><button type="button" class="pergel-card-button pergel-quick-button" data-pergel-quick="' . $this->product . '" aria-haspopup="dialog">#', $html );
+		$this->assertTrue( wp_style_is( Layout::CARD_STYLE ) );
+		$this->assertArrayHasKey( 'quick', Cards::data( null ) );
+
+		// No end date, or nothing sold: neither is drawn.
+		$product->set_date_on_sale_to( null );
+		$product->set_total_sales( 0 );
+		$product->save();
+		$html = do_blocks( self::GRID );
+		$this->assertStringNotContainsString( 'pergel-countdown', $html );
+		$this->assertStringNotContainsString( 'pergel-stock-bar', $html );
+	}
+
+	public function test_quick_view_route(): void {
+		$server = rest_get_server();
+		$this->assertArrayNotHasKey( '/pergel/v1/quick-view', $server->get_routes( 'pergel/v1' ), 'Off by default.' );
+
+		Settings::update( array( 'shop' => array( 'quick_view' => true ) ) );
+		QuickView::routes();
+		$request = new \WP_REST_Request( 'GET', '/pergel/v1/quick-view' );
+		$request->set_param( 'id', $this->product );
+		$response = rest_do_request( $request );
+		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+		$this->assertIsArray( $data );
+		$this->assertSame( 'Card test product', $data['title'] );
+		$this->assertStringContainsString( 'id="pergel-quick-title"', $data['html'] );
+		$this->assertStringContainsString( 'name="add-to-cart" value="' . $this->product . '"', $data['html'] );
+		$this->assertStringContainsString( 'max="3"', $data['html'], 'At most what is in stock.' );
+
+		wp_update_post(
+			array(
+				'ID'          => $this->product,
+				'post_status' => 'draft',
+			)
+		);
+		$this->assertSame( 404, rest_do_request( $request )->get_status(), 'A draft is not shown.' );
+	}
+
+	public function test_category_cards_block(): void {
+		$parent = wp_insert_term( 'Cards parent ' . wp_generate_password( 6, false ), 'product_cat' );
+		$this->assertIsArray( $parent );
+		$child = wp_insert_term( 'Cards child ' . wp_generate_password( 6, false ), 'product_cat', array( 'parent' => (int) $parent['term_id'] ) );
+		$this->assertIsArray( $child );
+		wp_set_object_terms( $this->product, array( (int) $parent['term_id'], (int) $child['term_id'] ), 'product_cat' );
+
+		$html = do_blocks( '<!-- wp:pergel/category-cards {"cardStyle":"list","parent":' . (int) $parent['term_id'] . '} /-->' );
+		$list = do_blocks( '<!-- wp:pergel/category-cards {"cardStyle":"names","parent":0,"number":24} /-->' );
+		wp_delete_term( (int) $child['term_id'], 'product_cat' );
+		wp_delete_term( (int) $parent['term_id'], 'product_cat' );
+
+		$this->assertMatchesRegularExpression( '#<nav [^>]*class="[^"]*pergel-category-cards is-list#', $html );
+		$this->assertStringContainsString( 'Cards child', $html );
+		$this->assertStringNotContainsString( 'Cards parent', $html, 'Only the subcategories of the chosen one.' );
+		$this->assertStringNotContainsString( 'Cards child', $list, 'Main categories only.' );
+		$this->assertTrue( wp_style_is( CategoryCards::STYLE_HANDLE ) );
 	}
 
 	public function test_badge_text_is_cleaned(): void {

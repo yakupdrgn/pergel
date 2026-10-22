@@ -1542,6 +1542,12 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   seçebilir. Ürün düzeyindeki ilk ayar ürünün kendi rozet metni (en çok 24 karakter). Rozet ve hap
   renkleri tema renklerinden gelir (vurgu, kontrast, soluk); Unimart'ın renkli SALE/NEW/HOT
   rozetleri kopyalanmadı.
+- **S3b kararları:** hızlı bakış ayrı bir sepet akışı kurmaz: penceredeki form ürün sayfasına
+  gönderilen düz bir formdur (WooCommerce'in kendi sepete ekleme yolu, bildirimleriyle); seçenekli
+  ürünlerde form yok, "Tüm ayrıntıları gör" bağlantısı var (varyasyon seçimi S4'te). Pencere
+  kütüphane yerine tarayıcının `<dialog>` öğesi (odak tuzağı, Escape, kapanınca düğmeye dönüş).
+  Stok çubuğu sahte sayı göstermez: satış yoksa çizilmez. Kategori şeridi stilleri ve
+  "Kategori kartları" bloğu aynı kodu paylaşır; ayrı bir "kategori sayfası" şablonu yok.
 
 ## Aşamalar ve bitti tanımları
 

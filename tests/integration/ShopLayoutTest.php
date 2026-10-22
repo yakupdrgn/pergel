@@ -430,7 +430,7 @@ final class ShopLayoutTest extends TestCase {
 		update_term_meta( $parent->term_id, Layout::TERM_META, array( 'shop.banner' => $draft ) );
 		$this->go_to( array( 'product_cat' => $parent->slug ) );
 		$html = ShopHeader::render( '<p>About</p>' );
-		$this->assertStringStartsWith( '<p>About</p><nav class="pergel-category-strip is-names', $html, 'An unpublished banner shows nothing.' );
+		$this->assertStringStartsWith( '<p>About</p><nav class="pergel-category-strip pergel-category-cards is-names', $html, 'An unpublished banner shows nothing.' );
 		$this->assertStringContainsString( esc_html( $child->name ), $html );
 
 		// A template with the description under the products: they go
@@ -448,7 +448,7 @@ final class ShopLayoutTest extends TestCase {
 		);
 		$this->go_to( array( 'product_cat' => $top->slug ) );
 		$html = do_blocks( self::COLUMNS . '<!-- wp:term-description /-->' );
-		$this->assertStringStartsWith( '<nav class="pergel-category-strip is-images', $html );
+		$this->assertStringStartsWith( '<nav class="pergel-category-strip pergel-category-cards is-images', $html );
 		$this->assertSame( 1, substr_count( $html, '<nav class="pergel-category-strip' ) );
 	}
 }

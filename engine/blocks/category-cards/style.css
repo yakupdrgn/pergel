@@ -1,0 +1,195 @@
+/*
+ * Category cards: the Category cards block, and the category strip above
+ * the products (Pergel\Woo\ShopHeader). The block lays the cards out in a
+ * grid; the strip in one row that scrolls sideways.
+ */
+.pergel-category-cards {
+	margin-block: var(--wp--preset--spacing--40);
+}
+
+.pergel-category-cards > ul {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(var(--pergel-category-card, 10rem), 1fr));
+	gap: var(--wp--preset--spacing--30);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pergel-category-cards.is-images {
+	--pergel-category-card: 7rem;
+}
+
+.pergel-category-cards.is-list {
+	--pergel-category-card: 16rem;
+}
+
+.pergel-category-cards.is-names > ul {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+/* The strip: one row. */
+.pergel-category-strip > ul {
+	display: flex;
+	overflow-x: auto;
+	padding-block-end: var(--wp--preset--spacing--20);
+	scrollbar-width: thin;
+}
+
+.pergel-category-strip .pergel-category-card {
+	flex: none;
+}
+
+.pergel-category-strip.is-boxes .pergel-category-card {
+	width: 10rem;
+}
+
+.pergel-category-strip.is-list .pergel-category-card {
+	width: 16rem;
+}
+
+.pergel-category-card__link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--wp--preset--spacing--20);
+	color: inherit;
+	font-size: var(--wp--preset--font-size--small);
+	text-align: center;
+	text-decoration: none;
+}
+
+.pergel-category-card__link:hover .pergel-category-card__name {
+	text-decoration: underline;
+}
+
+.pergel-category-card__link:focus-visible,
+.pergel-category-card__children a:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+.pergel-category-card__image {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	background: var(--wp--preset--color--surface);
+	object-fit: cover;
+	font-size: 1.75rem;
+	transition: transform 0.2s;
+}
+
+.pergel-category-card__link:hover .pergel-category-card__image {
+	transform: scale(1.04);
+}
+
+/* Round pictures. */
+.is-images .pergel-category-card__link {
+	width: 6.5rem;
+	margin-inline: auto;
+}
+
+.is-images .pergel-category-card__image {
+	width: 5.5rem;
+	height: 5.5rem;
+	border-radius: 50%;
+}
+
+/* Boxes: picture, name and number of products in a box. */
+.is-boxes .pergel-category-card__link {
+	height: 100%;
+	box-sizing: border-box;
+	padding: var(--wp--preset--spacing--30);
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--card);
+	background: var(--wp--preset--color--base);
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.is-boxes .pergel-category-card__link:hover {
+	border-color: var(--wp--preset--color--muted);
+	box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.08);
+}
+
+.is-boxes .pergel-category-card__image {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1;
+	border-radius: var(--wp--custom--radius--small);
+}
+
+.is-boxes .pergel-category-card__name {
+	font-weight: 600;
+}
+
+.pergel-category-card__count {
+	color: var(--wp--preset--color--muted);
+	font-size: 0.8125rem;
+}
+
+/* Boxes with subcategories: the text beside the picture. */
+.is-list .pergel-category-card {
+	display: flex;
+	gap: var(--wp--preset--spacing--30);
+	align-items: flex-start;
+	justify-content: space-between;
+	height: 100%;
+	box-sizing: border-box;
+	padding: var(--wp--preset--spacing--30);
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--card);
+	background: var(--wp--preset--color--base);
+}
+
+.is-list .pergel-category-card__link {
+	align-items: flex-start;
+	font-size: inherit;
+	font-weight: 600;
+	text-align: start;
+}
+
+.is-list .pergel-category-card__image {
+	flex: none;
+	width: 4.5rem;
+	height: 4.5rem;
+	border-radius: var(--wp--custom--radius--small);
+}
+
+.pergel-category-card__children {
+	margin: var(--wp--preset--spacing--20) 0 0;
+	padding: 0;
+	list-style: none;
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.8;
+}
+
+.pergel-category-card__children a {
+	color: var(--wp--preset--color--muted);
+	text-decoration: none;
+}
+
+.pergel-category-card__children a:hover {
+	color: inherit;
+	text-decoration: underline;
+}
+
+/* Names only: pills. */
+.is-names .pergel-category-card__link {
+	padding: 0.4em 1em;
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: 999px;
+	white-space: nowrap;
+}
+
+.is-names .pergel-category-card__link:hover {
+	border-color: currentcolor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pergel-category-card__image,
+	.is-boxes .pergel-category-card__link {
+		transition: none;
+	}
+}
