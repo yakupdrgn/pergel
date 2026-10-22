@@ -168,6 +168,14 @@ final class Labels {
 					'title'  => __( 'Filters', 'pergel-engine' ),
 					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filters_fold', 'filters_search', 'filter_brand', 'filter_rating' ),
 				),
+				'toolbar' => array(
+					'title'  => __( 'View and paging', 'pergel-engine' ),
+					'fields' => array( 'view', 'view_switch', 'per_page_menu', 'paging' ),
+				),
+				'header'  => array(
+					'title'  => __( 'Above the products', 'pergel-engine' ),
+					'fields' => array( 'banner', 'category_strip' ),
+				),
 			),
 		);
 	}
@@ -490,6 +498,47 @@ final class Labels {
 				'filter_rating'  => array(
 					'label' => __( 'Rating filter', 'pergel-engine' ),
 					'help'  => __( 'Filters by the average customer rating. Shown only while rated products exist.', 'pergel-engine' ),
+				),
+				'view'           => array(
+					'label'   => __( 'Products are shown as', 'pergel-engine' ),
+					'help'    => __( 'The list shows each product in a row, with its picture beside the name, price and short description.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'grid' => __( 'Grid', 'pergel-engine' ),
+						'list' => __( 'List', 'pergel-engine' ),
+					),
+				),
+				'view_switch'    => array(
+					'label' => __( 'Grid and list buttons', 'pergel-engine' ),
+					'help'  => __( 'Visitors can switch between the grid and the list next to the sorting menu. Their choice is kept in their browser.', 'pergel-engine' ),
+				),
+				'per_page_menu'  => array(
+					'label' => __( 'Products per page menu', 'pergel-engine' ),
+					'help'  => __( 'Numbers visitors can choose from next to the sorting menu, separated by commas, e.g. 12, 24, 48. Up to six numbers from 1 to 96. Leave empty for no menu.', 'pergel-engine' ),
+				),
+				'paging'         => array(
+					'label'   => __( 'More products', 'pergel-engine' ),
+					'help'    => __( '"Load more" adds the next products under the ones on screen. "Load while scrolling" does it on its own when the visitor nears the end, and keeps the button for keyboard users. The page numbers stay in the page for search engines and without JavaScript.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'Page numbers', 'pergel-engine' ),
+						'more'     => __( 'Load more button', 'pergel-engine' ),
+						'scroll'   => __( 'Load while scrolling', 'pergel-engine' ),
+					),
+				),
+				'banner'         => array(
+					'label' => __( 'Banner', 'pergel-engine' ),
+					'help'  => __( 'A pattern shown above the products, e.g. a campaign. Make it under Appearance → Editor → Patterns.', 'pergel-engine' ),
+				),
+				'category_strip' => array(
+					'label'   => __( 'Category strip', 'pergel-engine' ),
+					'help'    => __( 'A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'none'   => __( 'None', 'pergel-engine' ),
+						'images' => __( 'With pictures', 'pergel-engine' ),
+						'names'  => __( 'Names only', 'pergel-engine' ),
+					),
 				),
 			),
 		);

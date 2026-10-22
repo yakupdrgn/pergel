@@ -276,7 +276,7 @@ final class SchemaTest extends TestCase {
 				$max                     = $field['max'] ?? null;
 				$value[ $group ][ $key ] = match ( $field['type'] ) {
 					'bool'          => false,
-					'int', 'image'  => PHP_INT_MAX,
+					'int', 'image', 'pattern' => PHP_INT_MAX,
 					'enum'          => array_reduce( $field['options'] ?? array(), static fn ( string $a, string $b ): string => strlen( $b ) > strlen( $a ) ? $b : $a, '' ),
 					'urls'          => array_fill( 0, $max ?? 10, 'https://' . str_repeat( 'a', 492 ) ),
 					'dates'         => array_fill( 0, $max ?? 10, '2026-01-01/2026-12-31' ),

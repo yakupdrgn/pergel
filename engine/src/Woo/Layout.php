@@ -60,6 +60,8 @@ final class Layout {
 			return;
 		}
 		Filters::register();
+		Listing::register();
+		ShopHeader::register();
 		add_action( 'init', array( self::class, 'register_style' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
@@ -86,7 +88,8 @@ final class Layout {
 	}
 
 	/**
-	 * Registers the layout CSS; WordPress inlines it, as it is small.
+	 * Registers the layout CSS; WordPress inlines it while its inline budget
+	 * allows.
 	 */
 	public static function register_style(): void {
 		wp_register_style( self::STYLE, plugins_url( 'assets/shop-layout.css', FILE ), array(), VERSION );
@@ -164,14 +167,18 @@ final class Layout {
 	}
 
 	/**
-	 * Products per page. WooCommerce reads it while it prepares the main
-	 * query, when the queried category is already known.
+	 * Products per page, then a visitor's choice (Listing). WooCommerce
+	 * reads it while it prepares the main query, when the queried category
+	 * is already known.
 	 *
 	 * @param mixed $per_page WooCommerce's number.
 	 */
 	public static function per_page( mixed $per_page ): mixed {
 		$chosen = self::get( 'shop.per_page' );
-		return is_int( $chosen ) && $chosen > 0 ? $chosen : $per_page;
+		if ( is_int( $chosen ) && $chosen > 0 ) {
+			$per_page = $chosen;
+		}
+		return is_int( $per_page ) && $per_page > 0 ? Listing::per_page( $per_page ) : $per_page;
 	}
 
 	/**
@@ -215,7 +222,7 @@ final class Layout {
 
 	/**
 	 * Columns on tablets and phones, as classes and custom properties on the
-	 * grid; shop-layout.css reads them.
+	 * grid; shop-layout.css reads them. Listing adds the view classes.
 	 *
 	 * @param string               $html  Rendered block.
 	 * @param array<string, mixed> $block Parsed block.
@@ -240,19 +247,22 @@ final class Layout {
 				$styles[]  = "--pergel-columns-$screen:$columns";
 			}
 		}
-		if ( ! $classes ) {
-			return $html;
-		}
 		$tags = new \WP_HTML_Tag_Processor( $html );
 		if ( ! $tags->next_tag() ) {
+			return $html;
+		}
+		$view = Listing::grid( $tags );
+		if ( ! $classes && ! $view ) {
 			return $html;
 		}
 		self::style();
 		foreach ( $classes as $class ) {
 			$tags->add_class( $class );
 		}
-		$style = trim( (string) $tags->get_attribute( 'style' ) );
-		$tags->set_attribute( 'style', ( '' === $style ? '' : rtrim( $style, ';' ) . ';' ) . implode( ';', $styles ) );
+		if ( $styles ) {
+			$style = trim( (string) $tags->get_attribute( 'style' ) );
+			$tags->set_attribute( 'style', ( '' === $style ? '' : rtrim( $style, ';' ) . ';' ) . implode( ';', $styles ) );
+		}
 		return $tags->get_updated_html();
 	}
 

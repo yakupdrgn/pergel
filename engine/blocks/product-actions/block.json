@@ -17,6 +17,9 @@
 	},
 	"supports": {
 		"html": false,
+		"interactivity": {
+			"clientNavigation": true
+		},
 		"spacing": {
 			"margin": true
 		}

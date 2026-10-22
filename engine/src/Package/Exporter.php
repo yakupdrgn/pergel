@@ -915,6 +915,11 @@ final class Exporter {
 				if ( ! isset( $groups[ $group ][ $key ] ) || $value === $defaults[ $group ][ $key ] ) {
 					continue;
 				}
+				// A synced pattern id means nothing on another site.
+				if ( 'pattern' === $groups[ $group ][ $key ]['type'] ) {
+					$this->notes[] = "package.yaml: settings.$group.$key: a synced pattern of this site, left out; choose it again after the import";
+					continue;
+				}
 				if ( 'image' === $groups[ $group ][ $key ]['type'] ) {
 					$value = $this->image( '', (int) $value, false, $groups[ $group ][ $key ]['svg'] ?? true );
 					if ( null === $value ) {

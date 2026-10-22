@@ -1,7 +1,7 @@
 /*
- * Shop layout settings (Pergel → Settings → Shop layout): Pergel\Woo\Layout
- * and Pergel\Woo\Filters add the classes below, and load this file, only
- * on listing pages where a setting was chosen. Small enough to be inlined.
+ * Shop layout settings (Pergel → Settings → Shop layout): Pergel\Woo\Layout,
+ * Filters, Listing and ShopHeader add the classes below, and load this file, only
+ * on listing pages where a setting was chosen.
  * Breakpoints follow theme.json settings.viewport; the filter rules start
  * where WooCommerce's own phone panel ends (783px).
  */
@@ -134,8 +134,221 @@
 	display: none !important;
 }
 
+/* Toolbar beside the sorting menu: products per page, grid and list. */
+.pergel-shop-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--wp--preset--spacing--30);
+}
+
+.pergel-shop-toolbar > * {
+	margin: 0;
+}
+
+.pergel-per-page {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+}
+
+.pergel-per-page select {
+	font: inherit;
+}
+
+.pergel-view-switch {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.pergel-view-switch[hidden] {
+	display: none;
+}
+
+.pergel-view-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--small);
+	background: none;
+	color: var(--wp--preset--color--muted);
+	cursor: pointer;
+}
+
+.pergel-view-button[aria-pressed="true"] {
+	border-color: currentcolor;
+	color: var(--wp--preset--color--contrast);
+}
+
+.pergel-view-button:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+/* List view: one product per row, the picture beside the text. The
+ * server's view applies until the visitor picks one with the buttons. */
+.pergel-shop-grid .pergel-list-summary {
+	display: none;
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template,
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template {
+	grid-template-columns: minmax(0, 1fr);
+	row-gap: var(--wp--preset--spacing--50);
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li,
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li {
+	display: grid;
+	grid-template-columns: clamp(6rem, 28%, 13rem) minmax(0, 1fr);
+	align-content: start;
+	column-gap: var(--wp--preset--spacing--40);
+	width: 100%;
+	text-align: start;
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li > *,
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li > * {
+	grid-column: 2;
+	margin-inline: 0;
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li > .wc-block-components-product-image,
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li > .wc-block-components-product-image {
+	grid-column: 1;
+	grid-row: 1 / span 6;
+	align-self: start;
+	margin: 0;
+}
+
+html:not([data-pergel-view]) .pergel-view-list .pergel-list-summary,
+html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
+	display: block;
+	color: var(--wp--preset--color--muted);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+/* Load more: the button replaces the page numbers on the first page. */
+.pergel-load-more {
+	display: flex;
+	justify-content: center;
+	margin-top: var(--wp--preset--spacing--50);
+}
+
+.wp-block-woocommerce-product-collection:has([data-pergel-step]:not([data-pergel-step="0"])) .wp-block-query-pagination {
+	display: none;
+}
+
+.pergel-more-busy .pergel-load-more__button {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.pergel-more-busy .pergel-load-more__button::after {
+	content: "";
+	display: inline-block;
+	width: 0.9em;
+	height: 0.9em;
+	margin-inline-start: 0.5em;
+	border: 2px solid currentcolor;
+	border-right-color: transparent;
+	border-radius: 50%;
+	vertical-align: -0.1em;
+	animation: pergel-spin 0.8s linear infinite;
+}
+
+@keyframes pergel-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Above the products: banner and category strip. */
+.pergel-shop-banner {
+	margin-block: var(--wp--preset--spacing--40);
+}
+
+.pergel-category-strip {
+	margin-block: var(--wp--preset--spacing--40);
+}
+
+.pergel-category-strip ul {
+	display: flex;
+	gap: var(--wp--preset--spacing--30);
+	margin: 0;
+	padding: 0 0 var(--wp--preset--spacing--20);
+	overflow-x: auto;
+	list-style: none;
+	scrollbar-width: thin;
+}
+
+.pergel-category-strip li {
+	flex: none;
+}
+
+.pergel-category-strip__link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--wp--preset--spacing--20);
+	color: inherit;
+	font-size: var(--wp--preset--font-size--small);
+	text-decoration: none;
+}
+
+.is-images .pergel-category-strip__link {
+	width: 6.5rem;
+	text-align: center;
+}
+
+.pergel-category-strip__image {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 5.5rem;
+	height: 5.5rem;
+	border-radius: 50%;
+	background: var(--wp--preset--color--surface);
+	object-fit: cover;
+	font-size: 1.75rem;
+	transition: transform 0.2s;
+}
+
+.pergel-category-strip__link:hover .pergel-category-strip__image {
+	transform: scale(1.04);
+}
+
+.is-names .pergel-category-strip__link {
+	padding: 0.4em 1em;
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: 999px;
+	white-space: nowrap;
+}
+
+.is-names .pergel-category-strip__link:hover {
+	border-color: currentcolor;
+}
+
+.pergel-category-strip__link:hover .pergel-category-strip__name {
+	text-decoration: underline;
+}
+
+.pergel-category-strip__link:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
-	.wc-block-product-filters .pergel-filter-toggle::after {
+	.wc-block-product-filters .pergel-filter-toggle::after,
+	.pergel-category-strip__image {
 		transition: none;
+	}
+
+	.pergel-more-busy .pergel-load-more__button::after {
+		animation-duration: 2.4s;
 	}
 }
