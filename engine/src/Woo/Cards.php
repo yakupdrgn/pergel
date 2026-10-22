@@ -60,22 +60,30 @@ final class Cards {
 	}
 
 	/**
-	 * The product a block in a product grid stands for, or null outside
-	 * one.
+	 * The id of the product a block in a product grid stands for, or 0
+	 * outside one.
 	 *
 	 * @param \WP_Block $instance Block instance.
 	 */
-	private static function product( \WP_Block $instance ): ?\WC_Product {
+	private static function product_id( \WP_Block $instance ): int {
 		$context = $instance->context;
 		$query   = $context['query'] ?? null;
 		// The post title asks only for the query id, not the query.
 		$in_grid = is_array( $query )
 			? true === ( $query['isProductCollectionBlock'] ?? null )
 			: isset( $context['queryId'] ) && 'product' === ( $context['postType'] ?? '' );
-		if ( ! $in_grid ) {
-			return null;
-		}
-		$id      = (int) ( $context['postId'] ?? 0 );
+		return $in_grid ? max( 0, (int) ( $context['postId'] ?? 0 ) ) : 0;
+	}
+
+	/**
+	 * The product a block in a product grid stands for, or null outside
+	 * one. Loaded only when a setting needs it: listing pages run these
+	 * hooks with the defaults too, and the budget counts their queries.
+	 *
+	 * @param \WP_Block $instance Block instance.
+	 */
+	private static function product( \WP_Block $instance ): ?\WC_Product {
+		$id      = self::product_id( $instance );
 		$product = $id > 0 ? wc_get_product( $id ) : null;
 		return $product instanceof \WC_Product ? $product : null;
 	}
@@ -110,21 +118,25 @@ final class Cards {
 	 * @phpstan-param array<string, mixed> $block
 	 */
 	public static function title( string $html, array $block, \WP_Block $instance ): string {
-		$product = self::product( $instance );
-		if ( null === $product ) {
+		$brand    = true === Settings::get( 'shop.card_brand' );
+		$category = true === Settings::get( 'shop.card_category' );
+		$rating   = true === Settings::get( 'shop.card_rating' );
+		$id       = $brand || $category || $rating ? self::product_id( $instance ) : 0;
+		if ( 0 === $id ) {
 			return $html;
 		}
 		$meta = array();
-		if ( true === Settings::get( 'shop.card_brand' ) ) {
-			$meta[] = self::term( $product, 'product_brand', false );
+		if ( $brand ) {
+			$meta[] = self::term( $id, 'product_brand', false );
 		}
-		if ( true === Settings::get( 'shop.card_category' ) ) {
-			$meta[] = self::term( $product, 'product_cat', true );
+		if ( $category ) {
+			$meta[] = self::term( $id, 'product_cat', true );
 		}
-		$meta   = array_filter( $meta );
-		$before = $meta ? '<div class="pergel-card-meta">' . implode( '', $meta ) . '</div>' : '';
-		$after  = '';
-		if ( true === Settings::get( 'shop.card_rating' ) && $product->get_review_count() > 0 ) {
+		$meta    = array_filter( $meta );
+		$before  = $meta ? '<div class="pergel-card-meta">' . implode( '', $meta ) . '</div>' : '';
+		$after   = '';
+		$product = $rating ? self::product( $instance ) : null;
+		if ( null !== $product && $product->get_review_count() > 0 ) {
 			$after = ( new \WP_Block(
 				array(
 					'blockName'    => 'woocommerce/product-rating',
@@ -150,15 +162,15 @@ final class Cards {
 	 * The first term of a product, as a link or as text. The default
 	 * category is left out.
 	 *
-	 * @param \WC_Product $product  Product.
-	 * @param string      $taxonomy Taxonomy.
-	 * @param bool        $link     Whether to link to the term.
+	 * @param int    $id       Product id.
+	 * @param string $taxonomy Taxonomy.
+	 * @param bool   $link     Whether to link to the term.
 	 */
-	private static function term( \WC_Product $product, string $taxonomy, bool $link ): string {
+	private static function term( int $id, string $taxonomy, bool $link ): string {
 		if ( ! taxonomy_exists( $taxonomy ) ) {
 			return '';
 		}
-		$terms   = get_the_terms( $product->get_id(), $taxonomy );
+		$terms   = get_the_terms( $id, $taxonomy );
 		$default = 'product_cat' === $taxonomy ? (int) get_option( 'default_product_cat', 0 ) : 0;
 		foreach ( is_array( $terms ) ? $terms : array() as $term ) {
 			if ( $term->term_id === $default ) {
@@ -181,6 +193,9 @@ final class Cards {
 	 * @phpstan-param array<string, mixed> $block
 	 */
 	public static function price( string $html, array $block, \WP_Block $instance ): string {
+		if ( true !== Settings::get( 'shop.card_discount' ) && true !== Settings::get( 'shop.card_stock' ) ) {
+			return $html;
+		}
 		$product = self::product( $instance );
 		if ( null === $product || '' === trim( $html ) ) {
 			return $html;
@@ -265,20 +280,29 @@ final class Cards {
 	 * @phpstan-param array<string, mixed> $block
 	 */
 	public static function image( string $html, array $block, \WP_Block $instance ): string {
-		$product = self::product( $instance );
-		if ( null === $product || '' === $html ) {
+		$id = '' === $html ? 0 : self::product_id( $instance );
+		if ( 0 === $id ) {
 			return $html;
 		}
+		$days    = Settings::get( 'shop.badge_new' );
+		$needed  = 'template' !== Settings::get( 'shop.badge_sale' )
+			|| ( is_int( $days ) && $days > 0 )
+			|| true === Settings::get( 'shop.badge_featured' )
+			|| true === Settings::get( 'shop.badge_sold_out' )
+			|| true === Settings::get( 'shop.card_hover' );
+		$product = $needed ? self::product( $instance ) : null;
 		// The picture draws its own sale badge when it has no sale badge
 		// block, so the setting applies here as well as in sale_badge().
-		$html    = self::sale_text( $html, $product );
+		if ( null !== $product ) {
+			$html = self::sale_text( $html, $product );
+		}
 		$changed = false;
-		$badges  = self::badges( $product );
+		$badges  = self::badges( $id, $product );
 		if ( '' !== $badges ) {
 			$html    = self::after_opening( $html, 'wc-block-components-product-image__inner-container', $badges );
 			$changed = true;
 		}
-		if ( true === Settings::get( 'shop.card_hover' ) ) {
+		if ( null !== $product && true === Settings::get( 'shop.card_hover' ) ) {
 			$second = self::second_picture( $product );
 			if ( '' !== $second ) {
 				$html    = (string) preg_replace( '#(<img\b[^>]*>)#', '$1' . str_replace( array( '\\', '$' ), array( '\\\\', '\\$' ), $second ), $html, 1 );
@@ -337,15 +361,21 @@ final class Cards {
 	}
 
 	/**
-	 * The badges of a product, newest rule last.
+	 * The badges of a product: its own one (from the meta the main query
+	 * has already loaded), then the ones the settings turn on, which need
+	 * the product.
 	 *
-	 * @param \WC_Product $product Product.
+	 * @param int              $id      Product id.
+	 * @param \WC_Product|null $product Product, when a setting needs it.
 	 */
-	public static function badges( \WC_Product $product ): string {
+	public static function badges( int $id, ?\WC_Product $product ): string {
 		$badges = array();
-		$own    = trim( (string) $product->get_meta( self::BADGE_META ) );
+		$own    = trim( (string) get_post_meta( $id, self::BADGE_META, true ) );
 		if ( '' !== $own ) {
 			$badges['own'] = $own;
+		}
+		if ( null === $product ) {
+			return self::badge_list( $badges );
 		}
 		$days = Settings::get( 'shop.badge_new' );
 		if ( is_int( $days ) && $days > 0 ) {
@@ -360,6 +390,15 @@ final class Cards {
 		if ( true === Settings::get( 'shop.badge_sold_out' ) && ! $product->is_in_stock() ) {
 			$badges['sold-out'] = __( 'Sold out', 'pergel-engine' );
 		}
+		return self::badge_list( $badges );
+	}
+
+	/**
+	 * Badge markup.
+	 *
+	 * @param array<string, string> $badges Text by kind.
+	 */
+	private static function badge_list( array $badges ): string {
 		if ( ! $badges ) {
 			return '';
 		}
@@ -405,6 +444,9 @@ final class Cards {
 	 * @phpstan-param array<string, mixed> $block
 	 */
 	public static function sale_badge( string $html, array $block, \WP_Block $instance ): string {
+		if ( 'template' === Settings::get( 'shop.badge_sale' ) ) {
+			return $html;
+		}
 		$product = self::product( $instance );
 		return null === $product ? $html : self::sale_text( $html, $product );
 	}
@@ -446,7 +488,7 @@ final class Cards {
 	 * @phpstan-param array<string, mixed> $block
 	 */
 	public static function actions( string $html, array $block, \WP_Block $instance ): string {
-		if ( empty( $block['attrs']['pergelOnPicture'] ) && 'overlay' === self::style() && null !== self::product( $instance ) ) {
+		if ( empty( $block['attrs']['pergelOnPicture'] ) && 'overlay' === self::style() && 0 !== self::product_id( $instance ) ) {
 			return '';
 		}
 		return $html;

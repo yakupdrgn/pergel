@@ -58,7 +58,13 @@ final class CardsTest extends TestCase {
 		if ( ! Woo::active() ) {
 			$this->markTestSkipped( 'WooCommerce is not active on this site.' );
 		}
-		Settings::update( array( 'shop' => Schema::defaults()['shop'] ) );
+		Settings::update(
+			array(
+				'shop' => Schema::defaults()['shop'],
+				// The wishlist button draws the product-actions block.
+				'woo'  => array( 'wishlist' => true ),
+			)
+		);
 		$product = new \WC_Product_Simple();
 		$product->set_name( 'Card test product' );
 		$product->set_status( 'publish' );
