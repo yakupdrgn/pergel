@@ -36,6 +36,12 @@ final class Layout {
 	public const CARD_STYLE = 'pergel-shop-cards';
 
 	/**
+	 * Script module of the cards (quick view, countdown); named here, like
+	 * LISTING_SCRIPT.
+	 */
+	public const CARDS_SCRIPT = 'pergel/shop-cards';
+
+	/**
 	 * Script module of Listing; named here so registering it does not load
 	 * that class on every page.
 	 */
@@ -76,6 +82,7 @@ final class Layout {
 		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
 		add_filter( 'wp_robots', array( self::class, 'robots' ) );
 		add_action( 'wp', array( self::class, 'cards' ) );
+		add_action( 'rest_api_init', array( QuickView::class, 'routes' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
@@ -108,6 +115,7 @@ final class Layout {
 		wp_register_style( self::STYLE, plugins_url( 'assets/shop-layout.css', FILE ), array(), VERSION );
 		wp_style_add_data( self::STYLE, 'path', dirname( FILE ) . '/assets/shop-layout.css' );
 		wp_register_style( self::CARD_STYLE, plugins_url( 'assets/shop-cards.css', FILE ), array(), VERSION );
+		wp_register_script_module( self::CARDS_SCRIPT, plugins_url( 'assets/shop-cards.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
 		wp_style_add_data( self::CARD_STYLE, 'path', dirname( FILE ) . '/assets/shop-cards.css' );
 		wp_register_script_module(
 			self::LISTING_SCRIPT,
@@ -191,7 +199,7 @@ final class Layout {
 	 */
 	private static function cards_chosen(): bool {
 		foreach ( Schema::defaults()['shop'] ?? array() as $key => $default ) {
-			if ( ( str_starts_with( $key, 'card_' ) || str_starts_with( $key, 'badge_' ) ) && Settings::get( "shop.$key" ) !== $default ) {
+			if ( ( str_starts_with( $key, 'card_' ) || str_starts_with( $key, 'badge_' ) || 'quick_view' === $key ) && Settings::get( "shop.$key" ) !== $default ) {
 				return true;
 			}
 		}

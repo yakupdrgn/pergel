@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-22T18:33:50+03:00\n"
+"POT-Creation-Date: 2026-10-22T19:29:09+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1023,6 +1023,24 @@ msgstr ""
 msgid "The first gallery picture shows while the pointer is over the card. Not on touch screens."
 msgstr ""
 
+msgid "Sale countdown"
+msgstr ""
+
+msgid "Days, hours, minutes and seconds left on the picture, for products whose sale has an end date (Product data → General → Schedule)."
+msgstr ""
+
+msgid "Stock bar"
+msgstr ""
+
+msgid "A bar with how many were sold and how many are left, for products whose stock is counted."
+msgstr ""
+
+msgid "Quick view"
+msgstr ""
+
+msgid "A button on the picture opens the product in a window: pictures, price, short description and, for simple products, the add to cart button."
+msgstr ""
+
 msgid "Sale badge"
 msgstr ""
 
@@ -1053,10 +1071,16 @@ msgstr ""
 msgid "Category strip"
 msgstr ""
 
-msgid "A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image."
+msgid "A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image. The same cards can go on any page with the Category cards block."
 msgstr ""
 
-msgid "With pictures"
+msgid "Round pictures"
+msgstr ""
+
+msgid "Boxes"
+msgstr ""
+
+msgid "Boxes with subcategories"
 msgstr ""
 
 msgid "Names only"
@@ -1223,6 +1247,15 @@ msgid_plural "%d products added to your cart."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Close"
+msgstr ""
+
+msgid "Loading…"
+msgstr ""
+
+msgid "The product could not be loaded. Open its page instead."
+msgstr ""
+
 #. translators: %d: discount in per cent.
 #, php-format
 msgid "-%d%%"
@@ -1241,6 +1274,42 @@ msgid_plural "%s in stock"
 msgstr[0] ""
 msgstr[1] ""
 
+#. translators: %s: number sold.
+#, php-format
+msgid "Sold: %s"
+msgstr ""
+
+#. translators: %s: number left.
+#, php-format
+msgid "Available: %s"
+msgstr ""
+
+#. translators: %s: product name.
+#, php-format
+msgid "Quick view: %s"
+msgstr ""
+
+msgctxt "days, short"
+msgid "d"
+msgstr ""
+
+msgctxt "hours, short"
+msgid "h"
+msgstr ""
+
+msgctxt "minutes, short"
+msgid "m"
+msgstr ""
+
+msgctxt "seconds, short"
+msgid "s"
+msgstr ""
+
+#. translators: %s: date the sale ends.
+#, php-format
+msgid "Sale ends %s"
+msgstr ""
+
 msgid "New"
 msgstr ""
 
@@ -1248,6 +1317,19 @@ msgid "Popular"
 msgstr ""
 
 msgid "Sold out"
+msgstr ""
+
+#. translators: %s: number of products.
+#, php-format
+msgid "%s product"
+msgid_plural "%s products"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Product categories"
+msgstr ""
+
+msgid "Subcategories"
 msgstr ""
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
@@ -1421,6 +1503,20 @@ msgstr ""
 msgid "View product"
 msgstr ""
 
+msgid "This product cannot be shown."
+msgstr ""
+
+msgid "SKU:"
+msgstr ""
+
+msgid "View full details"
+msgstr ""
+
+#. translators: %d: picture number.
+#, php-format
+msgid "Picture %d"
+msgstr ""
+
 msgid "Choose an option"
 msgstr ""
 
@@ -1437,16 +1533,7 @@ msgstr ""
 msgid "SKU: %s"
 msgstr ""
 
-msgid "Product categories"
-msgstr ""
-
-msgid "Subcategories"
-msgstr ""
-
 msgid "Shown on product pages that have a size guide: a button that opens the guide."
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 #. translators: %d: pattern id.
@@ -1710,6 +1797,21 @@ msgid "On phones a single slide is in view, with the edge of the next one."
 msgstr ""
 
 msgid "Show dots"
+msgstr ""
+
+msgid "Main categories"
+msgstr ""
+
+msgid "Cards"
+msgstr ""
+
+msgid "Style"
+msgstr ""
+
+msgid "The main categories, or the subcategories of one category."
+msgstr ""
+
+msgid "How many"
 msgstr ""
 
 msgid "Number, e.g. 250+"
@@ -2020,6 +2122,26 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "cards"
+msgstr ""
+
+msgctxt "block title"
+msgid "Category cards"
+msgstr ""
+
+msgctxt "block description"
+msgid "Links to product categories as round pictures, boxes, boxes with subcategories or names. Shows the main categories, or the subcategories of the category you choose; empty categories are left out."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "categories"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "product categories"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "shop"
 msgstr ""
 
 msgctxt "block title"

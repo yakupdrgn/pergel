@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-22 15:34+0000\n"
-"PO-Revision-Date: 2026-10-22 15:34+0000\n"
+"POT-Creation-Date: 2026-10-22 16:29+0000\n"
+"PO-Revision-Date: 2026-10-22 16:29+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1003,6 +1003,24 @@ msgstr "İkinci resim"
 msgid "The first gallery picture shows while the pointer is over the card. Not on touch screens."
 msgstr "İmleç kartın üstündeyken galerideki ilk resim görünür. Dokunmatik ekranlarda görünmez."
 
+msgid "Sale countdown"
+msgstr "İndirim geri sayımı"
+
+msgid "Days, hours, minutes and seconds left on the picture, for products whose sale has an end date (Product data → General → Schedule)."
+msgstr "İndiriminin bitiş tarihi olan ürünlerde resmin üstünde kalan gün, saat, dakika ve saniye (Ürün verileri → Genel → Zamanla)."
+
+msgid "Stock bar"
+msgstr "Stok çubuğu"
+
+msgid "A bar with how many were sold and how many are left, for products whose stock is counted."
+msgstr "Stoğu sayılan ürünlerde kaç tane satıldığını ve kaç tane kaldığını gösteren bir çubuk."
+
+msgid "Quick view"
+msgstr "Hızlı bakış"
+
+msgid "A button on the picture opens the product in a window: pictures, price, short description and, for simple products, the add to cart button."
+msgstr "Resmin üstündeki bir düğme ürünü bir pencerede açar: resimler, fiyat, kısa açıklama ve basit ürünlerde sepete ekle düğmesi."
+
 msgid "Sale badge"
 msgstr "İndirim rozeti"
 
@@ -1033,11 +1051,17 @@ msgstr "Stokta olmayan ürünlerde. Bir ürün kendi rozetini de gösterebilir: 
 msgid "Category strip"
 msgstr "Kategori şeridi"
 
-msgid "A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image."
-msgstr "Ürünlerin üstünde bir sıra kategori bağlantısı: mağazada ana kategoriler, bir kategoride alt kategoriler. Resimler kategori görselinden gelir."
+msgid "A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image. The same cards can go on any page with the Category cards block."
+msgstr "Ürünlerin üstünde bir sıra kategori bağlantısı: mağazada ana kategoriler, bir kategoride alt kategoriler. Resimler kategori görselinden gelir. Aynı kartlar Kategori kartları bloğuyla herhangi bir sayfaya da konabilir."
 
-msgid "With pictures"
-msgstr "Resimli"
+msgid "Round pictures"
+msgstr "Yuvarlak resimler"
+
+msgid "Boxes"
+msgstr "Kutular"
+
+msgid "Boxes with subcategories"
+msgstr "Alt kategorili kutular"
 
 msgid "Names only"
 msgstr "Yalnızca adlar"
@@ -1195,6 +1219,15 @@ msgid_plural "%d products added to your cart."
 msgstr[0] "%d ürün sepetinize eklendi."
 msgstr[1] "%d ürün sepetinize eklendi."
 
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Loading…"
+msgstr "Yükleniyor…"
+
+msgid "The product could not be loaded. Open its page instead."
+msgstr "Ürün yüklenemedi. Bunun yerine sayfasını açın."
+
 #. translators: %d: discount in per cent.
 msgid "-%d%%"
 msgstr "-%%%d"
@@ -1211,6 +1244,38 @@ msgid_plural "%s in stock"
 msgstr[0] "Stokta %s adet"
 msgstr[1] "Stokta %s adet"
 
+#. translators: %s: number sold.
+msgid "Sold: %s"
+msgstr "Satılan: %s"
+
+#. translators: %s: number left.
+msgid "Available: %s"
+msgstr "Kalan: %s"
+
+#. translators: %s: product name.
+msgid "Quick view: %s"
+msgstr "Hızlı bakış: %s"
+
+msgctxt "days, short"
+msgid "d"
+msgstr "g"
+
+msgctxt "hours, short"
+msgid "h"
+msgstr "sa"
+
+msgctxt "minutes, short"
+msgid "m"
+msgstr "dk"
+
+msgctxt "seconds, short"
+msgid "s"
+msgstr "sn"
+
+#. translators: %s: date the sale ends.
+msgid "Sale ends %s"
+msgstr "İndirim %s tarihinde bitiyor"
+
 msgid "New"
 msgstr "Yeni"
 
@@ -1219,6 +1284,18 @@ msgstr "Popüler"
 
 msgid "Sold out"
 msgstr "Tükendi"
+
+#. translators: %s: number of products.
+msgid "%s product"
+msgid_plural "%s products"
+msgstr[0] "%s ürün"
+msgstr[1] "%s ürün"
+
+msgid "Product categories"
+msgstr "Ürün kategorileri"
+
+msgid "Subcategories"
+msgstr "Alt kategoriler"
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
 msgstr "Ürün sayfalarında gösterilir: Bir ürün ziyaretçiye satışa sunulmadığında ziyaretçinin yapabilecekleri."
@@ -1385,6 +1462,19 @@ msgstr "Sepete ekle"
 msgid "View product"
 msgstr "Ürünü gör"
 
+msgid "This product cannot be shown."
+msgstr "Bu ürün gösterilemiyor."
+
+msgid "SKU:"
+msgstr "Stok kodu:"
+
+msgid "View full details"
+msgstr "Tüm ayrıntıları gör"
+
+#. translators: %d: picture number.
+msgid "Picture %d"
+msgstr "Resim %d"
+
 msgid "Choose an option"
 msgstr "Bir seçenek belirleyin"
 
@@ -1399,17 +1489,8 @@ msgstr "1 ile %s arasında bir tam sayı girin."
 msgid "SKU: %s"
 msgstr "Stok kodu: %s"
 
-msgid "Product categories"
-msgstr "Ürün kategorileri"
-
-msgid "Subcategories"
-msgstr "Alt kategoriler"
-
 msgid "Shown on product pages that have a size guide: a button that opens the guide."
 msgstr "Beden rehberi olan ürün sayfalarında gösterilir: rehberi açan bir düğme."
-
-msgid "Close"
-msgstr "Kapat"
 
 #. translators: %d: pattern id.
 msgid "Pattern %d"
@@ -1666,6 +1747,21 @@ msgstr "Telefonlarda tek bir slayt ve bir sonrakinin kenarı görünür."
 
 msgid "Show dots"
 msgstr "Noktaları göster"
+
+msgid "Main categories"
+msgstr "Ana kategoriler"
+
+msgid "Cards"
+msgstr "Kartlar"
+
+msgid "Style"
+msgstr "Stil"
+
+msgid "The main categories, or the subcategories of one category."
+msgstr "Ana kategoriler ya da bir kategorinin alt kategorileri."
+
+msgid "How many"
+msgstr "Kaç tane"
 
 msgid "Number, e.g. 250+"
 msgstr "Sayı, ör. 250+"
@@ -1976,6 +2072,26 @@ msgstr "müşteri yorumları"
 msgctxt "block keyword"
 msgid "cards"
 msgstr "kartlar"
+
+msgctxt "block title"
+msgid "Category cards"
+msgstr "Kategori kartları"
+
+msgctxt "block description"
+msgid "Links to product categories as round pictures, boxes, boxes with subcategories or names. Shows the main categories, or the subcategories of the category you choose; empty categories are left out."
+msgstr "Ürün kategorilerine yuvarlak resim, kutu, alt kategorili kutu ya da ad olarak bağlantılar. Ana kategorileri ya da seçtiğiniz kategorinin alt kategorilerini gösterir; boş kategoriler gösterilmez."
+
+msgctxt "block keyword"
+msgid "categories"
+msgstr "kategoriler"
+
+msgctxt "block keyword"
+msgid "product categories"
+msgstr "ürün kategorileri"
+
+msgctxt "block keyword"
+msgid "shop"
+msgstr "mağaza"
 
 msgctxt "block title"
 msgid "Counter"

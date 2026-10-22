@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/category-cards",
+	"title": "Category cards",
+	"category": "pergel",
+	"icon": "category",
+	"description": "Links to product categories as round pictures, boxes, boxes with subcategories or names. Shows the main categories, or the subcategories of the category you choose; empty categories are left out.",
+	"keywords": [ "categories", "product categories", "shop", "cards" ],
+	"textdomain": "pergel-engine",
+	"attributes": {
+		"cardStyle": {
+			"type": "string",
+			"enum": [ "images", "boxes", "list", "names" ],
+			"default": "boxes"
+		},
+		"parent": {
+			"type": "integer",
+			"default": 0
+		},
+		"number": {
+			"type": "integer",
+			"default": 8
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"interactivity": {
+			"clientNavigation": true
+		},
+		"spacing": {
+			"margin": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

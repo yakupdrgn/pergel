@@ -267,84 +267,14 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 	}
 }
 
-/* Above the products: banner and category strip. */
+/* Above the products: the banner; the strip is the Category cards block's
+ * style. */
 .pergel-shop-banner {
 	margin-block: var(--wp--preset--spacing--40);
 }
 
-.pergel-category-strip {
-	margin-block: var(--wp--preset--spacing--40);
-}
-
-.pergel-category-strip ul {
-	display: flex;
-	gap: var(--wp--preset--spacing--30);
-	margin: 0;
-	padding: 0 0 var(--wp--preset--spacing--20);
-	overflow-x: auto;
-	list-style: none;
-	scrollbar-width: thin;
-}
-
-.pergel-category-strip li {
-	flex: none;
-}
-
-.pergel-category-strip__link {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: var(--wp--preset--spacing--20);
-	color: inherit;
-	font-size: var(--wp--preset--font-size--small);
-	text-decoration: none;
-}
-
-.is-images .pergel-category-strip__link {
-	width: 6.5rem;
-	text-align: center;
-}
-
-.pergel-category-strip__image {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 5.5rem;
-	height: 5.5rem;
-	border-radius: 50%;
-	background: var(--wp--preset--color--surface);
-	object-fit: cover;
-	font-size: 1.75rem;
-	transition: transform 0.2s;
-}
-
-.pergel-category-strip__link:hover .pergel-category-strip__image {
-	transform: scale(1.04);
-}
-
-.is-names .pergel-category-strip__link {
-	padding: 0.4em 1em;
-	border: 1px solid var(--wp--preset--color--line);
-	border-radius: 999px;
-	white-space: nowrap;
-}
-
-.is-names .pergel-category-strip__link:hover {
-	border-color: currentcolor;
-}
-
-.pergel-category-strip__link:hover .pergel-category-strip__name {
-	text-decoration: underline;
-}
-
-.pergel-category-strip__link:focus-visible {
-	outline: 2px solid var(--wp--preset--color--accent);
-	outline-offset: 2px;
-}
-
 @media (prefers-reduced-motion: reduce) {
-	.wc-block-product-filters .pergel-filter-toggle::after,
-	.pergel-category-strip__image {
+	.wc-block-product-filters .pergel-filter-toggle::after {
 		transition: none;
 	}
 
