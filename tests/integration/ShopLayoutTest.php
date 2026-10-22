@@ -36,7 +36,7 @@ final class ShopLayoutTest extends TestCase {
 	 *
 	 * @var mixed
 	 */
-	private mixed $saved;
+	private mixed $saved = false;
 
 	/**
 	 * The main query before go_to() replaced it.
@@ -50,12 +50,23 @@ final class ShopLayoutTest extends TestCase {
 	 */
 	private array $terms = array();
 
+	/**
+	 * The product made for the test: a grid with no products renders nothing.
+	 */
+	private int $product = 0;
+
 	protected function setUp(): void {
+		// Saved first: tearDown() runs after a skip too.
+		$this->saved = get_option( Settings::OPTION, false );
 		if ( ! Woo::active() ) {
 			$this->markTestSkipped( 'WooCommerce is not active on this site.' );
 		}
-		$this->saved = get_option( Settings::OPTION, false );
 		Settings::update( array( 'shop' => Schema::defaults()['shop'] ) );
+		$product = new \WC_Product_Simple();
+		$product->set_name( 'Layout test product' );
+		$product->set_status( 'publish' );
+		$product->set_regular_price( '10' );
+		$this->product = $product->save();
 	}
 
 	protected function tearDown(): void {
@@ -67,6 +78,9 @@ final class ShopLayoutTest extends TestCase {
 			add_filter( 'sanitize_option_' . Settings::OPTION, array( \Pergel\Settings\Module::class, 'sanitize' ) );
 		}
 		Settings::flush();
+		if ( $this->product > 0 ) {
+			wp_delete_post( $this->product, true );
+		}
 		foreach ( $this->terms as $term_id ) {
 			wp_delete_term( $term_id, 'product_cat' );
 		}
@@ -168,14 +182,7 @@ final class ShopLayoutTest extends TestCase {
 		);
 
 		// An empty category renders no grid.
-		$products = wc_get_products(
-			array(
-				'limit'  => 1,
-				'return' => 'ids',
-			)
-		);
-		$this->assertNotEmpty( $products );
-		wp_set_object_terms( (int) $products[0], array( $child->term_id, $other->term_id ), 'product_cat', true );
+		wp_set_object_terms( $this->product, array( $child->term_id, $other->term_id ), 'product_cat' );
 
 		$this->go_to( array( 'product_cat' => $child->slug ) );
 		$this->assertSame( '2', Layout::get( 'shop.columns' ) );
