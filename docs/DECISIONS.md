@@ -1534,6 +1534,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   bildirdi; öncesinde WooCommerce mağaza sayfalarında istemci gezinmesini tümüyle kapatıyordu
   (filtreler ve sayfa numaraları da tam sayfa yeniliyordu). Ziyaretçinin seçtiği `per_page`
   sayfaları `noindex`; tek sayı sınırı 96.
+- **S3 ikiye bölündü (kullanıcı kararı):** S3a kart stili, kart öğeleri, rozetler, ikinci resim;
+  S3b indirim geri sayımı, stok çubuğu, hızlı bakış, kategori kart stilleri. Karttaki varyasyon
+  küçük resimleri S4'e (ürün sayfası varyasyon örnekleriyle birlikte).
+- **S3a kararları:** kart ayarları yalnızca mağaza ızgarasına değil bütün Product Collection
+  ızgaralarına uygulanır (Unimart'ta kart stili site genelidir); kategori yalnızca kart stilini
+  seçebilir. Ürün düzeyindeki ilk ayar ürünün kendi rozet metni (en çok 24 karakter). Rozet ve hap
+  renkleri tema renklerinden gelir (vurgu, kontrast, soluk); Unimart'ın renkli SALE/NEW/HOT
+  rozetleri kopyalanmadı.
 
 ## Aşamalar ve bitti tanımları
 

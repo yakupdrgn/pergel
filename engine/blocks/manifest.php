@@ -598,6 +598,7 @@ return array (
     array (
       0 => 'postId',
       1 => 'postType',
+      2 => 'queryId',
     ),
     'attributes' => 
     array (

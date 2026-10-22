@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-22T16:59:00+03:00\n"
+"POT-Creation-Date: 2026-10-22T18:33:50+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -525,6 +525,12 @@ msgstr ""
 msgid "Above the products"
 msgstr ""
 
+msgid "Product cards"
+msgstr ""
+
+msgid "Badges"
+msgstr ""
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr ""
 
@@ -963,13 +969,91 @@ msgstr ""
 msgid "A pattern shown above the products, e.g. a campaign. Make it under Appearance → Editor → Patterns."
 msgstr ""
 
+msgid "Card style"
+msgstr ""
+
+msgid "For the products in every product grid: the shop, categories, and grids on other pages such as \"New arrivals\". \"Buttons on the picture\" puts the wishlist and compare buttons on the product picture; they show when the pointer is over the card, and always on touch screens."
+msgstr ""
+
+msgid "Standard"
+msgstr ""
+
+msgid "Boxed"
+msgstr ""
+
+msgid "Buttons on the picture"
+msgstr ""
+
+msgid "Plain, centred"
+msgstr ""
+
+msgid "Category on cards"
+msgstr ""
+
+msgid "The product's category above its name, as a link."
+msgstr ""
+
+msgid "Brand on cards"
+msgstr ""
+
+msgid "The product's brand (Products → Brands) above its name."
+msgstr ""
+
+msgid "Rating on cards"
+msgstr ""
+
+msgid "Stars and the number of reviews under the name, for products with reviews."
+msgstr ""
+
+msgid "Discount on cards"
+msgstr ""
+
+msgid "The discount in per cent beside the price, e.g. -15%. For products with options, the largest one."
+msgstr ""
+
+msgid "Stock on cards"
+msgstr ""
+
+msgid "How many are left, for products whose stock is counted, or \"Out of stock\", beside the price."
+msgstr ""
+
+msgid "Second picture"
+msgstr ""
+
+msgid "The first gallery picture shows while the pointer is over the card. Not on touch screens."
+msgstr ""
+
+msgid "Sale badge"
+msgstr ""
+
+msgid "Discount in per cent"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "\"New\" badge, days"
+msgstr ""
+
+msgid "Products published in the last this many days are marked new. 0 turns the badge off."
+msgstr ""
+
+msgid "\"Popular\" badge"
+msgstr ""
+
+msgid "On featured products (the star in Products → All products)."
+msgstr ""
+
+msgid "\"Sold out\" badge"
+msgstr ""
+
+msgid "On products that are out of stock. A product can also show its own badge: Product data → General → Badge."
+msgstr ""
+
 msgid "Category strip"
 msgstr ""
 
 msgid "A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image."
-msgstr ""
-
-msgid "None"
 msgstr ""
 
 msgid "With pictures"
@@ -1087,6 +1171,15 @@ msgstr ""
 msgid "Delete it now"
 msgstr ""
 
+msgid "Badge"
+msgstr ""
+
+msgid "e.g. Limited"
+msgstr ""
+
+msgid "A short label on the product picture in product grids. Leave empty for none."
+msgstr ""
+
 msgid "Shown on product pages with cross-sells: the product and up to three of them, added to the cart with one button."
 msgstr ""
 
@@ -1129,6 +1222,33 @@ msgid "%d product added to your cart."
 msgid_plural "%d products added to your cart."
 msgstr[0] ""
 msgstr[1] ""
+
+#. translators: %d: discount in per cent.
+#, php-format
+msgid "-%d%%"
+msgstr ""
+
+msgid "discount"
+msgstr ""
+
+msgid "Out of stock"
+msgstr ""
+
+#. translators: %s: number of products left.
+#, php-format
+msgid "%s in stock"
+msgid_plural "%s in stock"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "New"
+msgstr ""
+
+msgid "Popular"
+msgstr ""
+
+msgid "Sold out"
+msgstr ""
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
 msgstr ""
@@ -1293,9 +1413,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "In stock"
-msgstr ""
-
-msgid "Out of stock"
 msgstr ""
 
 msgid "Add to cart"

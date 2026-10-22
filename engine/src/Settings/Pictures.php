@@ -36,6 +36,8 @@ final class Pictures {
 			'shop.view' => self::view( $option ),
 			'shop.paging' => self::paging( $option ),
 			'shop.category_strip' => self::strip( $option ),
+			'shop.card_style' => self::card( $option ),
+			'shop.badge_sale' => self::sale( $option ),
 			default      => '',
 		};
 		if ( '' === $shapes ) {
@@ -188,5 +190,46 @@ final class Pictures {
 				: sprintf( '<rect x="%d.5" y="9.5" width="11" height="6" rx="3" fill="none" stroke="currentColor"/>', $x );
 		}
 		return $row . $products;
+	}
+
+	/**
+	 * One product card in each style.
+	 *
+	 * @param string $option Card style.
+	 */
+	private static function card( string $option ): string {
+		// A name line and a shorter price line; centred on the plain card.
+		$lines = static function ( int $x, int $width ) use ( $option ): string {
+			$short = (int) round( $width * 0.6 );
+			return sprintf(
+				'<rect x="%1$d" y="25" width="%2$d" height="2.5" rx="1" fill="currentColor"/><rect x="%3$d" y="30" width="%4$d" height="2.5" rx="1" fill="currentColor" opacity="0.6"/>',
+				$x,
+				$width,
+				'plain' === $option ? $x + intdiv( $width - $short, 2 ) : $x,
+				$short
+			);
+		};
+		return match ( $option ) {
+			'template' => '<g fill="none" stroke="currentColor" stroke-dasharray="3 2"><rect x="21.5" y="5.5" width="21" height="16" rx="2"/><rect x="21.5" y="24.5" width="21" height="9" rx="1"/></g>',
+			'standard' => '<rect x="20" y="5" width="24" height="17" rx="2" fill="currentColor" opacity="0.35"/><rect x="20" y="25" width="10" height="2" rx="1" fill="currentColor" opacity="0.8"/><rect x="20" y="29" width="22" height="2.5" rx="1" fill="currentColor"/><rect x="20" y="33.5" width="13" height="2.5" rx="1" fill="currentColor" opacity="0.6"/>',
+			'boxed'    => '<rect x="18.5" y="3.5" width="27" height="33" rx="2.5" fill="none" stroke="currentColor"/><rect x="21" y="6" width="22" height="15" rx="1.5" fill="currentColor" opacity="0.35"/>' . $lines( 21, 22 ),
+			'overlay'  => '<rect x="20" y="5" width="24" height="17" rx="2" fill="currentColor" opacity="0.35"/><circle cx="40" cy="9" r="2.5" fill="currentColor"/><circle cx="40" cy="15.5" r="2.5" fill="currentColor"/>' . $lines( 20, 24 ),
+			'plain'    => '<rect x="20" y="5" width="24" height="17" rx="2" fill="currentColor" opacity="0.35"/>' . $lines( 20, 24 ),
+			default    => '',
+		};
+	}
+
+	/**
+	 * The sale badge on a product picture.
+	 *
+	 * @param string $option "template", "percent" or "none".
+	 */
+	private static function sale( string $option ): string {
+		$picture = '<rect x="14" y="5" width="36" height="30" rx="2" fill="currentColor" opacity="0.35"/>';
+		return $picture . match ( $option ) {
+			'template' => '<rect x="17" y="8" width="13" height="6" rx="1.5" fill="currentColor"/>',
+			'percent'  => '<rect x="17" y="8" width="13" height="6" rx="1.5" fill="currentColor"/><text x="23.5" y="12.8" font-size="5" font-family="sans-serif" text-anchor="middle" fill="#fff">-15%</text>',
+			default    => '',
+		};
 	}
 }

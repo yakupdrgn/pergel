@@ -638,6 +638,21 @@ görünmez (`Settings\Screen::shown`).
   `shop.category_strip` mağazada ana, kategoride alt kategorileri (boş olanlar ve varsayılan
   kategori hariç, en çok 24) resimli ya da yalnızca ad olarak bir `<nav>` içinde gösterir.
   `pattern` türündeki ayarlar site içi kimlik taşıdığı için proje paketine yazılmaz.
+- **Ürün kartları (`Woo\Cards`, `Woo\BadgeField`):** her Product Collection ızgarasındaki kartlar
+  (mağaza, kategori ve başka sayfalardaki ızgaralar). `shop.card_style` (kategori düzeyinde de)
+  ızgaraya `pergel-cards pergel-card-standard|boxed|overlay|plain` koyar, CSS
+  `assets/shop-cards.css`. Kategori/marka satırı `core/post-title`'dan önce, puan
+  (`woocommerce/product-rating`, yalnızca yorumlu ürünlerde) sonra; indirim yüzdesi ve stok hapı
+  fiyattan sonra; rozetler (ürünün kendi rozeti `_pergel_badge`, "Yeni" N gün, "Popüler" öne
+  çıkan, "Tükendi") resmin iç kabına; ikinci resim (galerinin ilki) ilk `<img>`'den sonra, yalnızca
+  `hover: hover` ekranlarda. İndirim rozeti yüzde ya da hiç: hem rozet bloğunda hem resim bloğunun
+  çıktısında işlenir, çünkü resim bloğu rozet bloğu yoksa kendi rozetini çizer. "Resim üstünde
+  düğmeler" stilinde `pergel/product-actions` resmin içinde (bağlantının dışında) yeniden çizilir ve
+  karttaki asıl kopyası boş döner; ızgaradakini ürün sayfasındakinden ayırmak için blok `queryId`
+  bağlamını ister (`core/post-title` de yalnızca `queryId` aldığı için ürün tespiti `query` ya da
+  `queryId` + `postType: product` ile yapılır). `Layout::cards` (`wp` kancası) `Cards`'ı yalnızca
+  listeleme sayfalarında ve bir kart/rozet ayarı seçilmişse yükler; varsayılanlarla ürün sayfalarının
+  dosya sayısı değişmez.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir
