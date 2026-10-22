@@ -1496,6 +1496,29 @@ eksik çıktı. Üçü de Pergel'de genel olarak çözülür:
   kontrol listesi", adım 3.
 - Etiket ve taslak sürüm kullanıcı onayıyla oluşturulur.
 
+## Mağaza özellikleri S1–S7: Unimart referansı (22 Ekim 2026, kullanıcı kararları)
+
+Kullanıcı getunimart.com/electronics mağaza temasındaki liste, kart ve ürün sayfası
+özelliklerinin Pergel'e gelmesini ve yönetim panelinden ayarlanmasını istedi. Clean-room (K1):
+yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
+
+- **Görünüm:** bütün seçenekler + tek tıkla Unimart'a yakın yerleşim veren bir "Unimart" hazır
+  ayarı (S6). Renk ve yazı tipi sitenin token'larından gelir; piksel kopyası yok.
+- **Ayar düzeyi:** site → kategori → ürün; en özel değer geçerlidir (satış modları gibi). Ürün
+  düzeyi ilk ürün alanıyla (S4) gelir.
+- **Varsayılanlar bugünkü görünümü verir:** her alanın varsayılanı şablona dokunmaz ("Şablondaki
+  gibi", "Otomatik"). Gerekçe: ariumlab alt teması kendi `archive-product` şablonunda 4 sütun
+  kullanıyor; varsayılan bir sayı onu ezerdi.
+- **Sıra (her biri ayrı PR):** S1 ayar altyapısı + ızgara (sütun, sayfa başına ürün, genişlik) →
+  S2 mağaza listesi (filtre alanı yerleşimleri, araç çubuğu, liste görünümü, daha fazla yükle /
+  kaydırınca yükle, kampanya bandı, kategori şeridi) → S3 kartlar (stiller, rozetler, stok çubuğu,
+  geri sayım, hızlı bakış, kategori kartları) → S4 ürün sayfası üstü (düzen şablonları, galeri,
+  Hemen Al, kuponlar) → S5 ürün sayfası altı (sekme/akordeon, son bakılanlar, karşılaştırma
+  tablosu, soru-cevap) → S6 mobil alt menü, ücretsiz kargo çubuğu, hazır ayar, sürüm → S7 flaş
+  indirim sayfaları.
+- **Kapsam dışı:** karttaki görüntülenme sayacı (her ziyarette veritabanına yazı), 360°/AR,
+  görselle arama, çok satıcılı mağaza, sadakat puanı.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

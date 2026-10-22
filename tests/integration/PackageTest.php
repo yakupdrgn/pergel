@@ -246,7 +246,7 @@ final class PackageTest extends TestCase {
 	public function test_names_every_problem_with_its_file_and_place(): void {
 		$package = $this->package(
 			array(
-				'package.yaml'      => "format: 4\nname: Örnek\ntitle: \"\"\nlocale: turkish\ncolor: red\nsettings:\n  brand:\n    email: not-an-email\n    logo: media/logo.png\n  shop: {}\n",
+				'package.yaml'      => "format: 4\nname: Örnek\ntitle: \"\"\nlocale: turkish\ncolor: red\nsettings:\n  brand:\n    email: not-an-email\n    logo: media/logo.png\n  store: {}\n",
 				'sitemap.yaml'      => <<<'YAML'
 				pages:
 				  - slug: ""
@@ -302,7 +302,7 @@ final class PackageTest extends TestCase {
 			'package.yaml: title: required; it is the site title',
 			'package.yaml: locale: "turkish" is not a locale like tr_TR or en_US',
 			'package.yaml: settings.brand: "logo" is not known here; known: ',
-			'package.yaml: settings: "shop" is not known here; known: ',
+			'package.yaml: settings: "store" is not known here; known: ',
 			'package.yaml: settings.brand.email: ',
 			'media.yaml: media/tarla.png: "credit" is not known here; known: alt, caption, source, license, author',
 			'media.yaml: "https://x.test/a.jpg": only images in the package can be used',

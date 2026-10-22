@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-21 21:48+0000\n"
-"PO-Revision-Date: 2026-10-21 21:48+0000\n"
+"POT-Creation-Date: 2026-10-22 13:06+0000\n"
+"PO-Revision-Date: 2026-10-22 13:06+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -439,6 +439,12 @@ msgstr "Mağaza"
 msgid "How Pergel works with WooCommerce. This tab is shown while WooCommerce is active."
 msgstr "Pergel'in WooCommerce ile nasıl çalışacağı. Bu sekme WooCommerce etkinken gösterilir."
 
+msgid "Shop layout"
+msgstr "Mağaza düzeni"
+
+msgid "How the shop, product category, product tag and product search pages list products. A product category can choose its own layout on its edit screen; its subcategories follow it. \"As in the template\" and \"Automatic\" keep the layout of the theme template."
+msgstr "Mağaza, ürün kategorisi, ürün etiketi ve ürün arama sayfalarında ürünlerin nasıl listeleneceği. Bir ürün kategorisi, düzenleme ekranında kendi düzenini seçebilir; alt kategorileri de onu izler. \"Şablondaki gibi\" ve \"Otomatik\", tema şablonunun kendi düzenini korur."
+
 msgid "Address"
 msgstr "Adres"
 
@@ -486,6 +492,9 @@ msgstr "Üst bilgi"
 
 msgid "Speed"
 msgstr "Hız"
+
+msgid "Product grid"
+msgstr "Ürün ızgarası"
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr "Bloklarda (Block Bindings) ve yapılandırılmış veride marka bilgileri."
@@ -778,6 +787,51 @@ msgstr "Tatil günleri"
 msgid "Public holidays and other days without shipping. One per line, as 2026-10-29, or a range as 2026-03-19/2026-03-22. Up to 40 lines."
 msgstr "Resmî tatiller ve kargo yapılmayan diğer günler. Her satıra bir tane, 2026-10-29 biçiminde ya da aralık olarak 2026-03-19/2026-03-22. En fazla 40 satır."
 
+msgid "Products per row"
+msgstr "Bir satırdaki ürün sayısı"
+
+msgid "On wide screens. Narrower screens show fewer products per row unless you choose a number below."
+msgstr "Geniş ekranlarda. Aşağıda bir sayı seçmezseniz daha dar ekranlarda bir satırda daha az ürün gösterilir."
+
+msgid "As in the template"
+msgstr "Şablondaki gibi"
+
+msgid "Products per row on tablets"
+msgstr "Tablette bir satırdaki ürün sayısı"
+
+msgid "Screens from 600 to 1023 pixels wide."
+msgstr "600 ile 1023 piksel genişliğindeki ekranlar."
+
+msgid "Automatic"
+msgstr "Otomatik"
+
+msgid "Products per row on phones"
+msgstr "Telefonda bir satırdaki ürün sayısı"
+
+msgid "Screens narrower than 600 pixels. Two per row shows more products; one shows larger pictures."
+msgstr "600 pikselden dar ekranlar. Satırda iki ürün daha çok ürün gösterir, tek ürün daha büyük görsel."
+
+msgid "Products per page"
+msgstr "Sayfa başına ürün"
+
+msgid "From 1 to 96. 0 uses the WooCommerce setting."
+msgstr "1 ile 96 arası. 0, WooCommerce ayarını kullanır."
+
+msgid "Page width"
+msgstr "Sayfa genişliği"
+
+msgid "Full width uses the whole screen, with a small margin at the sides."
+msgstr "Tam genişlik, kenarlarda küçük bir boşluk bırakarak bütün ekranı kullanır."
+
+msgid "Full width"
+msgstr "Tam genişlik"
+
+msgid "Same as its category or the shop"
+msgstr "Kategorisi veya mağazayla aynı"
+
+msgid "Same as the parent category or the shop"
+msgstr "Üst kategoriyle veya mağazayla aynı"
+
 msgid "The value is too long."
 msgstr "Değer çok uzun."
 
@@ -833,6 +887,10 @@ msgstr "Ayar bölümleri"
 #. translators: %s: SEO plugin name.
 msgid "%s is active, so these settings are not used now."
 msgstr "%s etkin olduğu için bu ayarlar şu anda kullanılmıyor."
+
+#. translators: %s: template names, comma separated.
+msgid "These templates were changed in the Site Editor and no longer hold the theme's product grid, so the settings below do not reach them: %s. Reset the template in the Site Editor to use them again."
+msgstr "Bu şablonlar Site düzenleyicide değiştirilmiş ve artık temanın ürün ızgarasını içermiyor, bu yüzden aşağıdaki ayarlar onlara ulaşmıyor: %s. Ayarları yeniden kullanmak için şablonu Site düzenleyicide sıfırlayın."
 
 msgid "Other"
 msgstr "Diğer"
@@ -962,8 +1020,14 @@ msgstr "Bu ürünün fiyatının gösterilip gösterilmeyeceği ve sepete ekleni
 msgid "Applies to the products of this category and its subcategories, unless a product chooses its own mode. A product in several categories takes the strictest mode."
 msgstr "Kendi modunu seçen ürünler dışında, bu kategorinin ve alt kategorilerinin ürünlerine uygulanır. Birden fazla kategoride bulunan bir ürün en kısıtlayıcı modu alır."
 
-msgid "Same as the parent category or the shop"
-msgstr "Üst kategoriyle veya mağazayla aynı"
+msgid "Inherit"
+msgstr "Üsttekiyle aynı"
+
+msgid "On"
+msgstr "Açık"
+
+msgid "Off"
+msgstr "Kapalı"
 
 msgid "Added to the wishlist."
 msgstr "İstek listesine eklendi."
@@ -1281,9 +1345,6 @@ msgstr "Sabit"
 
 msgid "Keeps the header at the top of the screen while the page scrolls."
 msgstr "Sayfa kaydırılırken üst bilgiyi ekranın üstünde tutar."
-
-msgid "Off"
-msgstr "Kapalı"
 
 msgid "Always"
 msgstr "Her zaman"

@@ -1,0 +1,258 @@
+<?php
+/**
+ * Shop listing layout from the settings.
+ *
+ * @package Pergel
+ */
+
+declare( strict_types=1 );
+
+namespace Pergel\Woo;
+
+use Pergel\Settings\Schema;
+use Pergel\Settings\Settings;
+
+/**
+ * Applies the "shop" settings to the product listing pages: the shop, product
+ * categories, product tags and product search. The templates stay plain
+ * block templates (K10); a setting reaches the main product grid (the
+ * Product Collection block that inherits the page's query) while it renders.
+ *
+ * Every default ("template", "auto", "wide", 0) leaves the page as the
+ * template draws it, so a template edited in the Site Editor, or a child
+ * theme's own template, keeps its look until someone picks a value. A
+ * product category may choose its own values (term meta, see
+ * LayoutFields); its subcategories follow it.
+ */
+final class Layout {
+
+	public const TERM_META = 'pergel_shop';
+
+	/**
+	 * Templates that hold the main product grid.
+	 */
+	private const TEMPLATES = array( 'archive-product', 'taxonomy-product_cat', 'taxonomy-product_tag', 'product-search-results' );
+
+	/**
+	 * A category's own values for this request, by term id.
+	 *
+	 * @var array<int, array<string, mixed>>
+	 */
+	private static array $own = array();
+
+	/**
+	 * Adds the hooks.
+	 */
+	public static function register(): void {
+		add_action( 'init', array( self::class, 'meta' ) );
+		add_action( 'updated_term_meta', array( self::class, 'flush' ) );
+		add_action( 'added_term_meta', array( self::class, 'flush' ) );
+		add_action( 'deleted_term_meta', array( self::class, 'flush' ) );
+		if ( is_admin() ) {
+			LayoutFields::register();
+			return;
+		}
+		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
+		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
+		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
+		add_filter( 'body_class', array( self::class, 'body_class' ) );
+	}
+
+	/**
+	 * Registers the category meta with its sanitize callback.
+	 */
+	public static function meta(): void {
+		register_term_meta(
+			'product_cat',
+			self::TERM_META,
+			array(
+				'type'              => 'object',
+				'single'            => true,
+				'default'           => array(),
+				'sanitize_callback' => static fn ( mixed $value ): array => Schema::level_values( $value, 'category' ),
+				'auth_callback'     => static fn (): bool => current_user_can( 'manage_product_terms' ),
+				'show_in_rest'      => false,
+			)
+		);
+	}
+
+	/**
+	 * Drops the request cache when a category's values change.
+	 */
+	public static function flush(): void {
+		self::$own = array();
+	}
+
+	/**
+	 * Whether this request shows a product listing.
+	 */
+	public static function listing(): bool {
+		if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
+			return true;
+		}
+		$type = get_query_var( 'post_type' );
+		return is_search() && ( 'product' === $type || array( 'product' ) === $type );
+	}
+
+	/**
+	 * The value of a level setting for this page: the nearest category that
+	 * chose one, else the site setting.
+	 *
+	 * @param string $path "group.key".
+	 */
+	public static function get( string $path ): mixed {
+		foreach ( self::chain() as $term_id ) {
+			$own = self::own( $term_id );
+			if ( array_key_exists( $path, $own ) ) {
+				return $own[ $path ];
+			}
+		}
+		return Settings::get( $path );
+	}
+
+	/**
+	 * The product category on screen and its ancestors, nearest first.
+	 *
+	 * @return list<int>
+	 */
+	private static function chain(): array {
+		$term = is_tax( 'product_cat' ) ? get_queried_object() : null;
+		if ( ! $term instanceof \WP_Term ) {
+			return array();
+		}
+		$ids = array_values( array_merge( array( $term->term_id ), array_map( 'intval', get_ancestors( $term->term_id, 'product_cat', 'taxonomy' ) ) ) );
+		update_termmeta_cache( $ids );
+		return $ids;
+	}
+
+	/**
+	 * A category's own values.
+	 *
+	 * @param int $term_id Category id.
+	 * @return array<string, mixed>
+	 */
+	public static function own( int $term_id ): array {
+		if ( ! isset( self::$own[ $term_id ] ) ) {
+			self::$own[ $term_id ] = Schema::level_values( get_term_meta( $term_id, self::TERM_META, true ), 'category' );
+		}
+		return self::$own[ $term_id ];
+	}
+
+	/**
+	 * Products per page. WooCommerce reads it while it prepares the main
+	 * query, when the queried category is already known.
+	 *
+	 * @param mixed $per_page WooCommerce's number.
+	 */
+	public static function per_page( mixed $per_page ): mixed {
+		$chosen = self::get( 'shop.per_page' );
+		return is_int( $chosen ) && $chosen > 0 ? $chosen : $per_page;
+	}
+
+	/**
+	 * Whether a parsed block is the main product grid.
+	 *
+	 * @param array<string, mixed> $block Parsed block.
+	 */
+	private static function main_grid( array $block ): bool {
+		return 'woocommerce/product-collection' === ( $block['blockName'] ?? '' )
+			&& true === ( $block['attrs']['query']['inherit'] ?? null );
+	}
+
+	/**
+	 * Columns on wide screens. WordPress builds a block's children with the
+	 * context of the block as parsed, so the number goes to the Product
+	 * Template's context, which draws the grid.
+	 *
+	 * @param array<string, mixed> $context      Context of the block about to render.
+	 * @param array<string, mixed> $block        Parsed block about to render.
+	 * @param \WP_Block|null       $parent_block Its parent.
+	 * @return array<string, mixed>
+	 */
+	public static function context( array $context, array $block, ?\WP_Block $parent_block = null ): array {
+		if ( 'woocommerce/product-template' !== ( $block['blockName'] ?? '' ) || null === $parent_block || ! self::main_grid( $parent_block->parsed_block ) || ! self::listing() ) {
+			return $context;
+		}
+		$columns = self::get( 'shop.columns' );
+		if ( is_string( $columns ) && ctype_digit( $columns ) ) {
+			$layout                   = is_array( $context['displayLayout'] ?? null ) ? $context['displayLayout'] : array();
+			$context['displayLayout'] = array_merge(
+				array(
+					'type'          => 'flex',
+					'shrinkColumns' => true,
+				),
+				$layout,
+				array( 'columns' => (int) $columns )
+			);
+		}
+		return $context;
+	}
+
+	/**
+	 * Columns on tablets and phones, as classes and custom properties on the
+	 * grid; the theme's Product Template style reads them.
+	 *
+	 * @param string               $html  Rendered block.
+	 * @param array<string, mixed> $block Parsed block.
+	 */
+	public static function grid( string $html, array $block ): string {
+		if ( ! self::main_grid( $block ) || ! self::listing() ) {
+			return $html;
+		}
+		$classes = array();
+		$styles  = array();
+		foreach ( array(
+			'tablet' => 'shop.columns_tablet',
+			'phone'  => 'shop.columns_phone',
+		) as $screen => $path ) {
+			$columns = self::get( $path );
+			if ( is_string( $columns ) && ctype_digit( $columns ) ) {
+				$classes[] = "pergel-columns-$screen";
+				$styles[]  = "--pergel-columns-$screen:$columns";
+			}
+		}
+		if ( ! $classes ) {
+			return $html;
+		}
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		if ( ! $tags->next_tag() ) {
+			return $html;
+		}
+		foreach ( $classes as $class ) {
+			$tags->add_class( $class );
+		}
+		$style = trim( (string) $tags->get_attribute( 'style' ) );
+		$tags->set_attribute( 'style', ( '' === $style ? '' : rtrim( $style, ';' ) . ';' ) . implode( ';', $styles ) );
+		return $tags->get_updated_html();
+	}
+
+	/**
+	 * Page width as a body class; the theme widens the page column with it.
+	 *
+	 * @param array<int, string> $classes Body classes.
+	 * @return array<int, string>
+	 */
+	public static function body_class( array $classes ): array {
+		if ( self::listing() && 'full' === self::get( 'shop.width' ) ) {
+			$classes[] = 'pergel-shop-full';
+		}
+		return $classes;
+	}
+
+	/**
+	 * Listing templates that were saved in the Site Editor without the main
+	 * product grid, so the settings cannot reach them.
+	 *
+	 * @return list<string> Template titles.
+	 */
+	public static function templates_without_grid(): array {
+		$lost = array();
+		foreach ( self::TEMPLATES as $slug ) {
+			$template = get_block_template( get_stylesheet() . '//' . $slug );
+			if ( $template && 'custom' === $template->source && ! preg_match( '/"inherit":\s*true/', (string) $template->content ) ) {
+				$lost[] = '' !== $template->title ? $template->title : $slug;
+			}
+		}
+		return $lost;
+	}
+}

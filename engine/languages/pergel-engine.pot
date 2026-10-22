@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-22T00:48:21+03:00\n"
+"POT-Creation-Date: 2026-10-22T16:05:35+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -459,6 +459,12 @@ msgstr ""
 msgid "How Pergel works with WooCommerce. This tab is shown while WooCommerce is active."
 msgstr ""
 
+msgid "Shop layout"
+msgstr ""
+
+msgid "How the shop, product category, product tag and product search pages list products. A product category can choose its own layout on its edit screen; its subcategories follow it. \"As in the template\" and \"Automatic\" keep the layout of the theme template."
+msgstr ""
+
 msgid "Address"
 msgstr ""
 
@@ -505,6 +511,9 @@ msgid "Header"
 msgstr ""
 
 msgid "Speed"
+msgstr ""
+
+msgid "Product grid"
 msgstr ""
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
@@ -798,6 +807,51 @@ msgstr ""
 msgid "Public holidays and other days without shipping. One per line, as 2026-10-29, or a range as 2026-03-19/2026-03-22. Up to 40 lines."
 msgstr ""
 
+msgid "Products per row"
+msgstr ""
+
+msgid "On wide screens. Narrower screens show fewer products per row unless you choose a number below."
+msgstr ""
+
+msgid "As in the template"
+msgstr ""
+
+msgid "Products per row on tablets"
+msgstr ""
+
+msgid "Screens from 600 to 1023 pixels wide."
+msgstr ""
+
+msgid "Automatic"
+msgstr ""
+
+msgid "Products per row on phones"
+msgstr ""
+
+msgid "Screens narrower than 600 pixels. Two per row shows more products; one shows larger pictures."
+msgstr ""
+
+msgid "Products per page"
+msgstr ""
+
+msgid "From 1 to 96. 0 uses the WooCommerce setting."
+msgstr ""
+
+msgid "Page width"
+msgstr ""
+
+msgid "Full width uses the whole screen, with a small margin at the sides."
+msgstr ""
+
+msgid "Full width"
+msgstr ""
+
+msgid "Same as its category or the shop"
+msgstr ""
+
+msgid "Same as the parent category or the shop"
+msgstr ""
+
 msgid "The value is too long."
 msgstr ""
 
@@ -854,6 +908,11 @@ msgstr ""
 #. translators: %s: SEO plugin name.
 #, php-format
 msgid "%s is active, so these settings are not used now."
+msgstr ""
+
+#. translators: %s: template names, comma separated.
+#, php-format
+msgid "These templates were changed in the Site Editor and no longer hold the theme's product grid, so the settings below do not reach them: %s. Reset the template in the Site Editor to use them again."
 msgstr ""
 
 msgid "Other"
@@ -991,7 +1050,13 @@ msgstr ""
 msgid "Applies to the products of this category and its subcategories, unless a product chooses its own mode. A product in several categories takes the strictest mode."
 msgstr ""
 
-msgid "Same as the parent category or the shop"
+msgid "Inherit"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "Off"
 msgstr ""
 
 msgid "Added to the wishlist."
@@ -1320,9 +1385,6 @@ msgid "Sticky"
 msgstr ""
 
 msgid "Keeps the header at the top of the screen while the page scrolls."
-msgstr ""
-
-msgid "Off"
 msgstr ""
 
 msgid "Always"

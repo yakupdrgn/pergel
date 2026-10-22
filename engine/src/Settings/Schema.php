@@ -17,7 +17,7 @@ namespace Pergel\Settings;
  * labels and error messages live in the settings screen; here a problem is
  * only a field path and an error code.
  *
- * @phpstan-type Field array{type: string, default?: mixed, max?: int, min?: int, options?: list<string>, svg?: bool}
+ * @phpstan-type Field array{type: string, default?: mixed, max?: int, min?: int, options?: list<string>, svg?: bool, levels?: list<string>}
  * @phpstan-type Problem array{field: string, code: string}
  */
 final class Schema {
@@ -48,6 +48,9 @@ final class Schema {
 	 * none), urls (list of URLs, max = item count), time ("HH:MM", 24-hour),
 	 * dates (list of "YYYY-MM-DD" days or "YYYY-MM-DD/YYYY-MM-DD" ranges,
 	 * max = item count).
+	 *
+	 * levels: where else the field can be set ("category", "product"); the
+	 * most specific value wins, see level_values() and Pergel\Woo\Layout.
 	 *
 	 * @return array<string, array<string, Field>>
 	 */
@@ -264,7 +267,90 @@ final class Schema {
 					'default' => false,
 				),
 			),
+			// Shop listing look; see Pergel\Woo\Layout. "template", "auto",
+			// "wide" and 0 keep the template's and WooCommerce's own layout,
+			// so the defaults change nothing.
+			'shop'        => array(
+				'columns'        => array(
+					'type'    => 'enum',
+					'options' => array( 'template', '2', '3', '4', '5', '6' ),
+					'default' => 'template',
+					'levels'  => array( 'category' ),
+				),
+				'columns_tablet' => array(
+					'type'    => 'enum',
+					'options' => array( 'auto', '1', '2', '3', '4' ),
+					'default' => 'auto',
+					'levels'  => array( 'category' ),
+				),
+				'columns_phone'  => array(
+					'type'    => 'enum',
+					'options' => array( 'auto', '1', '2' ),
+					'default' => 'auto',
+					'levels'  => array( 'category' ),
+				),
+				'per_page'       => array(
+					'type'    => 'int',
+					'min'     => 0,
+					'max'     => 96,
+					'default' => 0,
+					'levels'  => array( 'category' ),
+				),
+				'width'          => array(
+					'type'    => 'enum',
+					'options' => array( 'wide', 'full' ),
+					'default' => 'wide',
+					'levels'  => array( 'category' ),
+				),
+			),
 		);
+	}
+
+	/**
+	 * Fields a level (a product category, a product) may set for itself.
+	 *
+	 * @param string $level "category" or "product".
+	 * @return array<string, array<string, Field>> Group => key => field.
+	 */
+	public static function level_fields( string $level ): array {
+		$fields = array();
+		foreach ( self::groups() as $group => $group_fields ) {
+			foreach ( $group_fields as $key => $field ) {
+				if ( in_array( $level, $field['levels'] ?? array(), true ) ) {
+					$fields[ $group ][ $key ] = $field;
+				}
+			}
+		}
+		return $fields;
+	}
+
+	/**
+	 * Cleans the settings a category or product keeps for itself. Only the
+	 * level's fields survive; an empty or invalid value means "inherit" and
+	 * is dropped, so the stored array holds real choices only.
+	 *
+	 * @param mixed  $input Untrusted "group.key" => value map.
+	 * @param string $level "category" or "product".
+	 * @return array<string, mixed>
+	 */
+	public static function level_values( mixed $input, string $level ): array {
+		if ( ! is_array( $input ) ) {
+			return array();
+		}
+		$values = array();
+		foreach ( self::level_fields( $level ) as $group => $fields ) {
+			foreach ( $fields as $key => $field ) {
+				$raw = $input[ "$group.$key" ] ?? '';
+				if ( '' === $raw ) {
+					continue;
+				}
+				$result = self::field( $field, $raw );
+				if ( is_array( $result ) ) {
+					$values[ "$group.$key" ] = $result[0];
+				}
+			}
+		}
+		return $values;
 	}
 
 	/**

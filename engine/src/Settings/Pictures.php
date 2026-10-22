@@ -1,0 +1,95 @@
+<?php
+/**
+ * Small drawings for choices shown as cards.
+ *
+ * @package Pergel
+ */
+
+declare( strict_types=1 );
+
+namespace Pergel\Settings;
+
+/**
+ * One inline SVG per choice of a field shown as cards (Labels "cards"). A
+ * drawing is decoration: the card's text names the choice, so the SVG is
+ * hidden from screen readers. Drawn in currentColor, so it follows the
+ * admin colour scheme and the selected state.
+ */
+final class Pictures {
+
+	private const WIDTH  = 64;
+	private const HEIGHT = 40;
+
+	/**
+	 * The drawing of one choice; empty when the field has none.
+	 *
+	 * @param string $group  Schema group.
+	 * @param string $key    Field key.
+	 * @param string $option Choice.
+	 */
+	public static function get( string $group, string $key, string $option ): string {
+		$shapes = match ( "$group.$key" ) {
+			'shop.columns', 'shop.columns_tablet', 'shop.columns_phone' => self::grid( $option ),
+			'shop.width' => self::width( $option ),
+			default      => '',
+		};
+		if ( '' === $shapes ) {
+			return '';
+		}
+		return sprintf(
+			'<svg class="pergel-choice__picture" viewBox="0 0 %1$d %2$d" width="%1$d" height="%2$d" aria-hidden="true" focusable="false">'
+			. '<rect x="0.5" y="0.5" width="%3$d" height="%4$d" rx="3" fill="none" stroke="currentColor" opacity="0.4"/>%5$s</svg>',
+			self::WIDTH,
+			self::HEIGHT,
+			self::WIDTH - 1,
+			self::HEIGHT - 1,
+			$shapes
+		);
+	}
+
+	/**
+	 * Product tiles in one row; "auto" draws tiles that shrink to the right,
+	 * "template" dashed tiles.
+	 *
+	 * @param string $option Column count, "auto" or "template".
+	 */
+	private static function grid( string $option ): string {
+		if ( 'template' === $option ) {
+			return '<g fill="none" stroke="currentColor" stroke-dasharray="3 2">'
+				. '<rect x="6.5" y="9.5" width="15" height="21" rx="2"/><rect x="24.5" y="9.5" width="15" height="21" rx="2"/><rect x="42.5" y="9.5" width="15" height="21" rx="2"/></g>';
+		}
+		if ( 'auto' === $option ) {
+			return '<rect x="6" y="8" width="20" height="24" rx="2" fill="currentColor"/>'
+				. '<rect x="30" y="11" width="15" height="18" rx="2" fill="currentColor" opacity="0.6"/>'
+				. '<rect x="49" y="14" width="9" height="12" rx="2" fill="currentColor" opacity="0.3"/>';
+		}
+		$count = max( 1, (int) $option );
+		$gap   = 3;
+		$inner = self::WIDTH - 12;
+		$tile  = ( $inner - $gap * ( $count - 1 ) ) / $count;
+		$html  = '';
+		for ( $i = 0; $i < $count; $i++ ) {
+			$html .= sprintf(
+				'<rect x="%1$s" y="9" width="%2$s" height="22" rx="2" fill="currentColor"/>',
+				round( 6 + $i * ( $tile + $gap ), 2 ),
+				round( $tile, 2 )
+			);
+		}
+		return $html;
+	}
+
+	/**
+	 * The page column inside the screen.
+	 *
+	 * @param string $option "wide" or "full".
+	 */
+	private static function width( string $option ): string {
+		$side = 'full' === $option ? 4 : 14;
+		return sprintf(
+			'<rect x="%1$d" y="7" width="%2$d" height="5" rx="1" fill="currentColor" opacity="0.6"/>'
+			. '<rect x="%1$d" y="15" width="%2$d" height="18" rx="2" fill="currentColor"/>',
+			$side,
+			self::WIDTH - 2 * $side
+		);
+	}
+}

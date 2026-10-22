@@ -298,4 +298,43 @@ final class SchemaTest extends TestCase {
 		$bytes = strlen( serialize( $value ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize -- measures what wp_options stores.
 		$this->assertLessThanOrEqual( self::MAX_BYTES, $bytes, "Worst case is $bytes bytes." );
 	}
+
+	public function test_level_fields_list_only_fields_with_that_level(): void {
+		$category = Schema::level_fields( 'category' );
+		$this->assertSame( array( 'shop' ), array_keys( $category ) );
+		$this->assertArrayHasKey( 'columns', $category['shop'] );
+		$this->assertSame( array(), Schema::level_fields( 'nowhere' ) );
+	}
+
+	public function test_level_values_keep_only_valid_choices(): void {
+		$values = Schema::level_values(
+			array(
+				'shop.columns'       => '4',
+				'shop.columns_phone' => '',
+				'shop.per_page'      => '24',
+				'shop.width'         => 'huge',
+				'woo.sales_mode'     => 'quote',
+				'shop.unknown'       => '1',
+			),
+			'category'
+		);
+		$this->assertSame(
+			array(
+				'shop.columns'  => '4',
+				'shop.per_page' => 24,
+			),
+			$values
+		);
+		$this->assertSame( array(), Schema::level_values( 'shop.columns=4', 'category' ) );
+		$this->assertSame( array(), Schema::level_values( array( 'shop.columns' => '4' ), 'product' ) );
+	}
+
+	public function test_shop_defaults_leave_the_template_alone(): void {
+		$shop = Schema::defaults()['shop'];
+		$this->assertSame( 'template', $shop['columns'] );
+		$this->assertSame( 'auto', $shop['columns_tablet'] );
+		$this->assertSame( 'auto', $shop['columns_phone'] );
+		$this->assertSame( 0, $shop['per_page'] );
+		$this->assertSame( 'wide', $shop['width'] );
+	}
 }

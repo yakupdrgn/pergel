@@ -48,6 +48,7 @@ final class Module implements Core\Module {
 		add_action( 'before_woocommerce_init', array( self::class, 'declare_compatibility' ) );
 		Modes::register();
 		Fields::register();
+		Layout::register();
 		Selling::register();
 		Pages::register();
 		MiniCart::register();
