@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-22 13:59+0000\n"
-"PO-Revision-Date: 2026-10-22 13:59+0000\n"
+"POT-Creation-Date: 2026-10-22 15:34+0000\n"
+"PO-Revision-Date: 2026-10-22 15:34+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -505,6 +505,12 @@ msgstr "Görünüm ve sayfalar"
 msgid "Above the products"
 msgstr "Ürünlerin üstünde"
 
+msgid "Product cards"
+msgstr "Ürün kartları"
+
+msgid "Badges"
+msgstr "Rozetler"
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr "Bloklarda (Block Bindings) ve yapılandırılmış veride marka bilgileri."
 
@@ -943,14 +949,92 @@ msgstr "Kampanya bandı"
 msgid "A pattern shown above the products, e.g. a campaign. Make it under Appearance → Editor → Patterns."
 msgstr "Ürünlerin üstünde gösterilen bir desen, ör. bir kampanya. Görünüm → Düzenleyici → Desenler altında hazırlayın."
 
+msgid "Card style"
+msgstr "Kart stili"
+
+msgid "For the products in every product grid: the shop, categories, and grids on other pages such as \"New arrivals\". \"Buttons on the picture\" puts the wishlist and compare buttons on the product picture; they show when the pointer is over the card, and always on touch screens."
+msgstr "Bütün ürün ızgaralarındaki ürünler için: mağaza, kategoriler ve diğer sayfalardaki \"Yeni gelenler\" gibi ızgaralar. \"Resim üstünde düğmeler\" istek listesi ve karşılaştırma düğmelerini ürün resminin üstüne koyar; imleç kartın üstündeyken görünürler, dokunmatik ekranlarda her zaman."
+
+msgid "Standard"
+msgstr "Standart"
+
+msgid "Boxed"
+msgstr "Kutulu"
+
+msgid "Buttons on the picture"
+msgstr "Resim üstünde düğmeler"
+
+msgid "Plain, centred"
+msgstr "Sade, ortalı"
+
+msgid "Category on cards"
+msgstr "Kartta kategori"
+
+msgid "The product's category above its name, as a link."
+msgstr "Ürünün kategorisi, adının üstünde bağlantı olarak."
+
+msgid "Brand on cards"
+msgstr "Kartta marka"
+
+msgid "The product's brand (Products → Brands) above its name."
+msgstr "Ürünün markası (Ürünler → Markalar), adının üstünde."
+
+msgid "Rating on cards"
+msgstr "Kartta puan"
+
+msgid "Stars and the number of reviews under the name, for products with reviews."
+msgstr "Değerlendirmesi olan ürünlerde adın altında yıldızlar ve değerlendirme sayısı."
+
+msgid "Discount on cards"
+msgstr "Kartta indirim"
+
+msgid "The discount in per cent beside the price, e.g. -15%. For products with options, the largest one."
+msgstr "Fiyatın yanında yüzde olarak indirim, ör. -%15. Seçenekli ürünlerde en büyüğü."
+
+msgid "Stock on cards"
+msgstr "Kartta stok"
+
+msgid "How many are left, for products whose stock is counted, or \"Out of stock\", beside the price."
+msgstr "Fiyatın yanında, stoğu sayılan ürünlerde kaç tane kaldığı ya da \"Stokta yok\"."
+
+msgid "Second picture"
+msgstr "İkinci resim"
+
+msgid "The first gallery picture shows while the pointer is over the card. Not on touch screens."
+msgstr "İmleç kartın üstündeyken galerideki ilk resim görünür. Dokunmatik ekranlarda görünmez."
+
+msgid "Sale badge"
+msgstr "İndirim rozeti"
+
+msgid "Discount in per cent"
+msgstr "Yüzde olarak indirim"
+
+msgid "None"
+msgstr "Yok"
+
+msgid "\"New\" badge, days"
+msgstr "\"Yeni\" rozeti, gün"
+
+msgid "Products published in the last this many days are marked new. 0 turns the badge off."
+msgstr "Son bu kadar gün içinde yayımlanan ürünler yeni olarak işaretlenir. 0 rozeti kapatır."
+
+msgid "\"Popular\" badge"
+msgstr "\"Popüler\" rozeti"
+
+msgid "On featured products (the star in Products → All products)."
+msgstr "Öne çıkan ürünlerde (Ürünler → Tüm ürünler sayfasındaki yıldız)."
+
+msgid "\"Sold out\" badge"
+msgstr "\"Tükendi\" rozeti"
+
+msgid "On products that are out of stock. A product can also show its own badge: Product data → General → Badge."
+msgstr "Stokta olmayan ürünlerde. Bir ürün kendi rozetini de gösterebilir: Ürün verileri → Genel → Rozet."
+
 msgid "Category strip"
 msgstr "Kategori şeridi"
 
 msgid "A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image."
 msgstr "Ürünlerin üstünde bir sıra kategori bağlantısı: mağazada ana kategoriler, bir kategoride alt kategoriler. Resimler kategori görselinden gelir."
-
-msgid "None"
-msgstr "Yok"
 
 msgid "With pictures"
 msgstr "Resimli"
@@ -1062,6 +1146,15 @@ msgstr "Bu e-postayı istediğiniz için bir kez alıyorsunuz. Adresinizi bugün
 msgid "Delete it now"
 msgstr "Hemen sil"
 
+msgid "Badge"
+msgstr "Rozet"
+
+msgid "e.g. Limited"
+msgstr "ör. Sınırlı"
+
+msgid "A short label on the product picture in product grids. Leave empty for none."
+msgstr "Ürün ızgaralarında ürün resminin üstünde kısa bir etiket. İstemiyorsanız boş bırakın."
+
 msgid "Shown on product pages with cross-sells: the product and up to three of them, added to the cart with one button."
 msgstr "Çapraz satış ürünü olan ürün sayfalarında gösterilir: ürün ve en fazla üç çapraz satış ürünü, tek düğmeyle sepete eklenir."
 
@@ -1101,6 +1194,31 @@ msgid "%d product added to your cart."
 msgid_plural "%d products added to your cart."
 msgstr[0] "%d ürün sepetinize eklendi."
 msgstr[1] "%d ürün sepetinize eklendi."
+
+#. translators: %d: discount in per cent.
+msgid "-%d%%"
+msgstr "-%%%d"
+
+msgid "discount"
+msgstr "indirim"
+
+msgid "Out of stock"
+msgstr "Stokta yok"
+
+#. translators: %s: number of products left.
+msgid "%s in stock"
+msgid_plural "%s in stock"
+msgstr[0] "Stokta %s adet"
+msgstr[1] "Stokta %s adet"
+
+msgid "New"
+msgstr "Yeni"
+
+msgid "Popular"
+msgstr "Popüler"
+
+msgid "Sold out"
+msgstr "Tükendi"
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
 msgstr "Ürün sayfalarında gösterilir: Bir ürün ziyaretçiye satışa sunulmadığında ziyaretçinin yapabilecekleri."
@@ -1260,9 +1378,6 @@ msgstr[1] "5 üzerinden %1$s (%2$d değerlendirme)"
 
 msgid "In stock"
 msgstr "Stokta"
-
-msgid "Out of stock"
-msgstr "Stokta yok"
 
 msgid "Add to cart"
 msgstr "Sepete ekle"

@@ -8,7 +8,7 @@
 	"description": "Buttons that add the product to the wishlist or to compare. Turn the lists on under Pergel → Settings → Shop; the buttons then appear on product cards and product pages by themselves.",
 	"keywords": [ "wishlist", "compare", "favourites", "heart" ],
 	"textdomain": "pergel-engine",
-	"usesContext": [ "postId", "postType" ],
+	"usesContext": [ "postId", "postType", "queryId" ],
 	"attributes": {
 		"labels": {
 			"type": "boolean",

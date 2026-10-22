@@ -176,6 +176,14 @@ final class Labels {
 					'title'  => __( 'Above the products', 'pergel-engine' ),
 					'fields' => array( 'banner', 'category_strip' ),
 				),
+				'cards'   => array(
+					'title'  => __( 'Product cards', 'pergel-engine' ),
+					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover' ),
+				),
+				'badges'  => array(
+					'title'  => __( 'Badges', 'pergel-engine' ),
+					'fields' => array( 'badge_sale', 'badge_new', 'badge_featured', 'badge_sold_out' ),
+				),
 			),
 		);
 	}
@@ -529,6 +537,63 @@ final class Labels {
 				'banner'         => array(
 					'label' => __( 'Banner', 'pergel-engine' ),
 					'help'  => __( 'A pattern shown above the products, e.g. a campaign. Make it under Appearance → Editor → Patterns.', 'pergel-engine' ),
+				),
+				'card_style'     => array(
+					'label'   => __( 'Card style', 'pergel-engine' ),
+					'help'    => __( 'For the products in every product grid: the shop, categories, and grids on other pages such as "New arrivals". "Buttons on the picture" puts the wishlist and compare buttons on the product picture; they show when the pointer is over the card, and always on touch screens.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'standard' => __( 'Standard', 'pergel-engine' ),
+						'boxed'    => __( 'Boxed', 'pergel-engine' ),
+						'overlay'  => __( 'Buttons on the picture', 'pergel-engine' ),
+						'plain'    => __( 'Plain, centred', 'pergel-engine' ),
+					),
+				),
+				'card_category'  => array(
+					'label' => __( 'Category on cards', 'pergel-engine' ),
+					'help'  => __( "The product's category above its name, as a link.", 'pergel-engine' ),
+				),
+				'card_brand'     => array(
+					'label' => __( 'Brand on cards', 'pergel-engine' ),
+					'help'  => __( "The product's brand (Products → Brands) above its name.", 'pergel-engine' ),
+				),
+				'card_rating'    => array(
+					'label' => __( 'Rating on cards', 'pergel-engine' ),
+					'help'  => __( 'Stars and the number of reviews under the name, for products with reviews.', 'pergel-engine' ),
+				),
+				'card_discount'  => array(
+					'label' => __( 'Discount on cards', 'pergel-engine' ),
+					'help'  => __( 'The discount in per cent beside the price, e.g. -15%. For products with options, the largest one.', 'pergel-engine' ),
+				),
+				'card_stock'     => array(
+					'label' => __( 'Stock on cards', 'pergel-engine' ),
+					'help'  => __( 'How many are left, for products whose stock is counted, or "Out of stock", beside the price.', 'pergel-engine' ),
+				),
+				'card_hover'     => array(
+					'label' => __( 'Second picture', 'pergel-engine' ),
+					'help'  => __( 'The first gallery picture shows while the pointer is over the card. Not on touch screens.', 'pergel-engine' ),
+				),
+				'badge_sale'     => array(
+					'label'   => __( 'Sale badge', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'percent'  => __( 'Discount in per cent', 'pergel-engine' ),
+						'none'     => __( 'None', 'pergel-engine' ),
+					),
+				),
+				'badge_new'      => array(
+					'label' => __( '"New" badge, days', 'pergel-engine' ),
+					'help'  => __( 'Products published in the last this many days are marked new. 0 turns the badge off.', 'pergel-engine' ),
+				),
+				'badge_featured' => array(
+					'label' => __( '"Popular" badge', 'pergel-engine' ),
+					'help'  => __( 'On featured products (the star in Products → All products).', 'pergel-engine' ),
+				),
+				'badge_sold_out' => array(
+					'label' => __( '"Sold out" badge', 'pergel-engine' ),
+					'help'  => __( 'On products that are out of stock. A product can also show its own badge: Product data → General → Badge.', 'pergel-engine' ),
 				),
 				'category_strip' => array(
 					'label'   => __( 'Category strip', 'pergel-engine' ),

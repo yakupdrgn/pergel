@@ -368,6 +368,56 @@ final class Schema {
 					'default' => 'none',
 					'levels'  => array( 'category' ),
 				),
+				// Product cards in every product grid; see Pergel\Woo\Cards.
+				'card_style'     => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'standard', 'boxed', 'overlay', 'plain' ),
+					'default' => 'template',
+					'levels'  => array( 'category' ),
+				),
+				'card_category'  => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'card_brand'     => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'card_rating'    => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'card_discount'  => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'card_stock'     => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'card_hover'     => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'badge_sale'     => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'percent', 'none' ),
+					'default' => 'template',
+				),
+				'badge_new'      => array(
+					'type'    => 'int',
+					'min'     => 0,
+					'max'     => 90,
+					'default' => 0,
+				),
+				'badge_featured' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'badge_sold_out' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 		);
 	}

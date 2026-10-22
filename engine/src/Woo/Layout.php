@@ -33,6 +33,8 @@ final class Layout {
 
 	public const STYLE = 'pergel-shop-layout';
 
+	public const CARD_STYLE = 'pergel-shop-cards';
+
 	/**
 	 * Script module of Listing; named here so registering it does not load
 	 * that class on every page.
@@ -63,6 +65,7 @@ final class Layout {
 		add_filter( 'pergel/shop/filters', array( Filters::class, 'groups' ) );
 		if ( is_admin() ) {
 			LayoutFields::register();
+			BadgeField::register();
 			return;
 		}
 		Filters::register();
@@ -70,7 +73,9 @@ final class Layout {
 		// Listing and ShopHeader load only on the pages that use them.
 		add_filter( 'render_block_woocommerce/catalog-sorting', array( Listing::class, 'toolbar' ) );
 		add_filter( 'render_block_core/term-description', array( self::class, 'above' ) );
+		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
 		add_filter( 'wp_robots', array( self::class, 'robots' ) );
+		add_action( 'wp', array( self::class, 'cards' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
@@ -102,6 +107,8 @@ final class Layout {
 	public static function register_style(): void {
 		wp_register_style( self::STYLE, plugins_url( 'assets/shop-layout.css', FILE ), array(), VERSION );
 		wp_style_add_data( self::STYLE, 'path', dirname( FILE ) . '/assets/shop-layout.css' );
+		wp_register_style( self::CARD_STYLE, plugins_url( 'assets/shop-cards.css', FILE ), array(), VERSION );
+		wp_style_add_data( self::CARD_STYLE, 'path', dirname( FILE ) . '/assets/shop-cards.css' );
 		wp_register_script_module(
 			self::LISTING_SCRIPT,
 			plugins_url( 'assets/shop-listing.js', FILE ),
@@ -127,6 +134,21 @@ final class Layout {
 	}
 
 	/**
+	 * The banner and category strip before the shop layout columns, when
+	 * the template draws its term description only after the products.
+	 *
+	 * @param string               $html  Rendered columns.
+	 * @param array<string, mixed> $block Parsed block.
+	 */
+	public static function before_layout( string $html, array $block ): string {
+		$classes = $block['attrs']['className'] ?? '';
+		if ( ! is_string( $classes ) || ! in_array( 'pergel-shop-layout', explode( ' ', $classes ), true ) || ! self::listing() ) {
+			return $html;
+		}
+		return ShopHeader::before( $html );
+	}
+
+	/**
 	 * Robots directives for pages with a visitor's products per page.
 	 *
 	 * @param array<string, bool|string> $robots Robots directives.
@@ -143,6 +165,37 @@ final class Layout {
 	 */
 	public static function style(): void {
 		wp_enqueue_style( self::STYLE );
+	}
+
+	/**
+	 * Loads the card CSS on this page; Cards calls it.
+	 */
+	public static function card_style(): void {
+		wp_enqueue_style( self::CARD_STYLE );
+	}
+
+	/**
+	 * Adds the card hooks where they can change something: on listing pages
+	 * (a category may choose a card style) and wherever a card setting was
+	 * chosen. Other pages, product pages with the defaults among them, never
+	 * load Cards. Hooked on wp, when the page is known.
+	 */
+	public static function cards(): void {
+		if ( self::listing() || self::cards_chosen() ) {
+			Cards::register();
+		}
+	}
+
+	/**
+	 * Whether a site-wide card or badge setting differs from its default.
+	 */
+	private static function cards_chosen(): bool {
+		foreach ( Schema::defaults()['shop'] ?? array() as $key => $default ) {
+			if ( ( str_starts_with( $key, 'card_' ) || str_starts_with( $key, 'badge_' ) ) && Settings::get( "shop.$key" ) !== $default ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
