@@ -31,7 +31,7 @@ use const Pergel\VERSION;
  */
 final class Listing {
 
-	public const SCRIPT = 'pergel/shop-listing';
+	public const SCRIPT = Layout::LISTING_SCRIPT;
 
 	/**
 	 * Query argument of the products per page.
@@ -57,40 +57,15 @@ final class Listing {
 	private static int $step = 0;
 
 	/**
-	 * Whether the head needs the script that applies the visitor's view.
-	 *
-	 * @var bool
+	 * Hooks for the products of the main grid: the short description and
+	 * the "Load more" link. Layout calls it when the main grid of a listing
+	 * page starts, so other pages never load this class.
 	 */
-	private static bool $head = false;
-
-	/**
-	 * Adds the front-end hooks; Layout calls it.
-	 */
-	public static function register(): void {
-		add_action( 'init', array( self::class, 'register_assets' ) );
-		add_filter( 'render_block_woocommerce/catalog-sorting', array( self::class, 'toolbar' ) );
-		add_filter( 'render_block_woocommerce/product-price', array( self::class, 'summary' ), 10, 3 );
-		add_filter( 'render_block_core/query-pagination', array( self::class, 'more' ), 10, 3 );
-		add_action( 'wp_head', array( self::class, 'head' ), 1 );
-		add_filter( 'wp_robots', array( self::class, 'robots' ) );
-	}
-
-	/**
-	 * Registers the script module. Hooked on init.
-	 */
-	public static function register_assets(): void {
-		wp_register_script_module(
-			self::SCRIPT,
-			plugins_url( 'assets/shop-listing.js', FILE ),
-			array(
-				array(
-					'id'     => '@wordpress/interactivity-router',
-					'import' => 'dynamic',
-				),
-			),
-			VERSION,
-			array( 'fetchpriority' => 'low' )
-		);
+	public static function prepare(): void {
+		if ( ! has_filter( 'render_block_woocommerce/product-price', array( self::class, 'summary' ) ) ) {
+			add_filter( 'render_block_woocommerce/product-price', array( self::class, 'summary' ), 10, 3 );
+			add_filter( 'render_block_core/query-pagination', array( self::class, 'more' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -169,7 +144,10 @@ final class Listing {
 			$tags->add_class( 'pergel-view-list' );
 		}
 		if ( $switch ) {
-			self::$head = true;
+			// Block themes draw the template before the head.
+			if ( ! has_action( 'wp_head', array( self::class, 'head' ) ) ) {
+				add_action( 'wp_head', array( self::class, 'head' ), 1 );
+			}
 			wp_enqueue_script_module( self::SCRIPT );
 		}
 		return true;
@@ -341,9 +319,6 @@ final class Listing {
 	 * not jump. Only on pages with the buttons.
 	 */
 	public static function head(): void {
-		if ( ! self::$head ) {
-			return;
-		}
 		wp_print_inline_script_tag(
 			sprintf(
 				'try{var v=localStorage.getItem(%s);if(v==="grid"||v==="list"){document.documentElement.dataset.pergelView=v}}catch(e){}',

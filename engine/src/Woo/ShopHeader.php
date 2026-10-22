@@ -35,13 +35,6 @@ final class ShopHeader {
 	private static bool $drawing = false;
 
 	/**
-	 * Adds the front-end hooks; Layout calls it.
-	 */
-	public static function register(): void {
-		add_filter( 'render_block_core/term-description', array( self::class, 'render' ) );
-	}
-
-	/**
 	 * Adds the banner and the strip after the term description.
 	 *
 	 * @param string $html Rendered term description; empty on the shop page.
@@ -99,18 +92,21 @@ final class ShopHeader {
 				'parent'     => $parent,
 				'hide_empty' => true,
 				'menu_order' => 'ASC',
-				'number'     => self::MOST,
-				'exclude'    => array( (int) get_option( 'default_product_cat', 0 ) ),
+				'number'     => self::MOST + 1,
 			)
 		);
 		if ( ! is_array( $terms ) || ! $terms ) {
 			return '';
 		}
-		$items = '';
+		$items   = '';
+		$default = (int) get_option( 'default_product_cat', 0 );
+		$shown   = 0;
 		foreach ( $terms as $term ) {
-			if ( ! $term instanceof \WP_Term ) {
+			// "Uncategorized" stays out of the strip.
+			if ( ! $term instanceof \WP_Term || $term->term_id === $default || $shown >= self::MOST ) {
 				continue;
 			}
+			++$shown;
 			$link = get_term_link( $term );
 			if ( ! is_string( $link ) ) {
 				continue;

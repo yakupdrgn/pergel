@@ -629,6 +629,9 @@ görünmez (`Settings\Screen::shown`).
   MutationObserver ile bekler. WooCommerce ürün koleksiyonunda `clientNavigation` desteği
   bildirmeyen bir blok varsa istemci gezinmesini sayfa için kapatır; bu yüzden
   `pergel/product-actions` desteği bildirir ve `shop-lists.js` sonradan çizilen düğmeleri gösterir.
+  Kancaları `Layout` sınıfı yüklemeyen dizi çağrılarıyla kurar, ürün kancalarını
+  (`Listing::prepare`) ana ızgara başlarken ekler; ürün sayfaları bu iki sınıfı yüklemez (mağaza
+  bütçesinde `pergel_files` sınırı).
 - **Ürünlerin üstü (`Woo\ShopHeader`):** mağaza ve ürün kategorisi sayfalarında
   `core/term-description`'dan sonra (mağaza sayfasında bu blok boş çizilir) `shop.banner` seçilen
   senkron deseni (`wp_block`, yalnızca yayımlanmış; kendini yeniden çizmeye karşı korumalı) ve

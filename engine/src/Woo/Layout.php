@@ -34,6 +34,12 @@ final class Layout {
 	public const STYLE = 'pergel-shop-layout';
 
 	/**
+	 * Script module of Listing; named here so registering it does not load
+	 * that class on every page.
+	 */
+	public const LISTING_SCRIPT = 'pergel/shop-listing';
+
+	/**
 	 * Templates that hold the main product grid.
 	 */
 	private const TEMPLATES = array( 'archive-product', 'taxonomy-product_cat', 'taxonomy-product_tag', 'product-search-results' );
@@ -60,9 +66,11 @@ final class Layout {
 			return;
 		}
 		Filters::register();
-		Listing::register();
-		ShopHeader::register();
 		add_action( 'init', array( self::class, 'register_style' ) );
+		// Listing and ShopHeader load only on the pages that use them.
+		add_filter( 'render_block_woocommerce/catalog-sorting', array( Listing::class, 'toolbar' ) );
+		add_filter( 'render_block_core/term-description', array( self::class, 'above' ) );
+		add_filter( 'wp_robots', array( self::class, 'robots' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
@@ -94,6 +102,39 @@ final class Layout {
 	public static function register_style(): void {
 		wp_register_style( self::STYLE, plugins_url( 'assets/shop-layout.css', FILE ), array(), VERSION );
 		wp_style_add_data( self::STYLE, 'path', dirname( FILE ) . '/assets/shop-layout.css' );
+		wp_register_script_module(
+			self::LISTING_SCRIPT,
+			plugins_url( 'assets/shop-listing.js', FILE ),
+			array(
+				array(
+					'id'     => '@wordpress/interactivity-router',
+					'import' => 'dynamic',
+				),
+			),
+			VERSION,
+			array( 'fetchpriority' => 'low' )
+		);
+	}
+
+	/**
+	 * The banner and category strip after the term description, on listing
+	 * pages only (blog archives use the same block).
+	 *
+	 * @param string $html Rendered term description.
+	 */
+	public static function above( string $html ): string {
+		return self::listing() ? ShopHeader::render( $html ) : $html;
+	}
+
+	/**
+	 * Robots directives for pages with a visitor's products per page.
+	 *
+	 * @param array<string, bool|string> $robots Robots directives.
+	 * @return array<string, bool|string>
+	 */
+	public static function robots( array $robots ): array {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks that the argument is there.
+		return isset( $_GET['per_page'] ) && self::listing() ? Listing::robots( $robots ) : $robots;
 	}
 
 	/**
@@ -178,7 +219,7 @@ final class Layout {
 		if ( is_int( $chosen ) && $chosen > 0 ) {
 			$per_page = $chosen;
 		}
-		return is_int( $per_page ) && $per_page > 0 ? Listing::per_page( $per_page ) : $per_page;
+		return is_int( $per_page ) && $per_page > 0 && self::listing() ? Listing::per_page( $per_page ) : $per_page;
 	}
 
 	/**
@@ -205,6 +246,7 @@ final class Layout {
 		if ( 'woocommerce/product-template' !== ( $block['blockName'] ?? '' ) || null === $parent_block || ! self::main_grid( $parent_block->parsed_block ) || ! self::listing() ) {
 			return $context;
 		}
+		Listing::prepare();
 		$columns = self::get( 'shop.columns' );
 		if ( is_string( $columns ) && ctype_digit( $columns ) ) {
 			$layout                   = is_array( $context['displayLayout'] ?? null ) ? $context['displayLayout'] : array();
