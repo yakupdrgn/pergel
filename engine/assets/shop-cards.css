@@ -198,6 +198,64 @@
 	}
 }
 
+/* Colours of a product with options, under the name. */
+.wc-block-product .pergel-card-swatches {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.35rem;
+	margin-block: 0.35rem;
+}
+
+.wc-block-product .pergel-card-swatch {
+	display: inline-block;
+	box-sizing: border-box;
+	width: 1.5rem;
+	height: 1.5rem;
+	padding: 0;
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: 999px;
+	background-color: var(--wp--preset--color--surface);
+	background-position: center;
+	background-size: cover;
+	box-shadow: inset 0 0 0 2px var(--wp--preset--color--base);
+}
+
+.wc-block-product button.pergel-card-swatch {
+	position: relative;
+	cursor: pointer;
+}
+
+/* A bigger target than the dot: 44px tall, the row keeps its look. */
+.wc-block-product button.pergel-card-swatch::after {
+	content: "";
+	position: absolute;
+	inset: -0.65rem -0.15rem;
+}
+
+.wc-block-product .pergel-card-swatch[aria-pressed="true"] {
+	border-color: var(--wp--preset--color--contrast);
+	box-shadow: inset 0 0 0 2px var(--wp--preset--color--base), 0 0 0 1px var(--wp--preset--color--contrast);
+}
+
+.wc-block-product button.pergel-card-swatch:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+.wc-block-product .pergel-card-swatches__more {
+	color: var(--wp--preset--color--muted);
+	font-size: 0.75rem;
+}
+
+.wc-block-product .has-pergel-swatch .pergel-second-picture {
+	display: none;
+}
+
+.pergel-card-plain .wc-block-product .pergel-card-swatches {
+	justify-content: center;
+}
+
 /* Quick view button: round, like the wishlist and compare buttons. */
 .wc-block-product .pergel-card-button {
 	display: inline-flex;

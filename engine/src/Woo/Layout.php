@@ -43,6 +43,11 @@ final class Layout {
 	 */
 	public const PRODUCT_STYLE = 'pergel-product-page';
 
+	/**
+	 * Product page script module (Buy now, coupon codes, share).
+	 */
+	public const PRODUCT_SCRIPT = 'pergel/product-page';
+
 	public const STYLE = 'pergel-shop-layout';
 
 	public const CARD_STYLE = 'pergel-shop-cards';
@@ -91,6 +96,7 @@ final class Layout {
 		if ( is_admin() ) {
 			LayoutFields::register();
 			BadgeField::register();
+			CouponField::register();
 			return;
 		}
 		Filters::register();
@@ -151,6 +157,7 @@ final class Layout {
 		wp_style_add_data( self::CARD_STYLE, 'path', dirname( FILE ) . '/assets/shop-cards.css' );
 		wp_register_style( self::PRODUCT_STYLE, plugins_url( 'assets/product-page.css', FILE ), array(), VERSION );
 		wp_style_add_data( self::PRODUCT_STYLE, 'path', dirname( FILE ) . '/assets/product-page.css' );
+		wp_register_script_module( self::PRODUCT_SCRIPT, plugins_url( 'assets/product-page.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
 		wp_register_script_module(
 			self::LISTING_SCRIPT,
 			plugins_url( 'assets/shop-listing.js', FILE ),

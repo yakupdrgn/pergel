@@ -40,6 +40,11 @@ final class Cards {
 	public const BADGE_LENGTH = 24;
 
 	/**
+	 * Most colours shown on a card; the rest are counted.
+	 */
+	private const SWATCHES = 6;
+
+	/**
 	 * Adds the front-end hooks; Layout calls it.
 	 */
 	public static function register(): void {
@@ -142,7 +147,8 @@ final class Cards {
 		$brand    = true === Settings::get( 'shop.card_brand' );
 		$category = true === Settings::get( 'shop.card_category' );
 		$rating   = true === Settings::get( 'shop.card_rating' );
-		$id       = $brand || $category || $rating ? self::product_id( $instance ) : 0;
+		$swatches = true === Settings::get( 'shop.card_swatches' );
+		$id       = $brand || $category || $rating || $swatches ? self::product_id( $instance ) : 0;
 		if ( 0 === $id ) {
 			return $html;
 		}
@@ -156,8 +162,8 @@ final class Cards {
 		$meta    = array_filter( $meta );
 		$before  = $meta ? '<div class="pergel-card-meta">' . implode( '', $meta ) . '</div>' : '';
 		$after   = '';
-		$product = $rating ? self::product( $instance ) : null;
-		if ( null !== $product && $product->get_review_count() > 0 ) {
+		$product = $rating || $swatches ? self::product( $instance ) : null;
+		if ( $rating && null !== $product && $product->get_review_count() > 0 ) {
 			$after = ( new \WP_Block(
 				array(
 					'blockName'    => 'woocommerce/product-rating',
@@ -172,11 +178,105 @@ final class Cards {
 				$instance->context
 			) )->render();
 		}
+		if ( $swatches && $product instanceof \WC_Product_Variable ) {
+			$after .= self::swatches( $product );
+		}
 		if ( '' === $before && '' === $after ) {
 			return $html;
 		}
 		Layout::card_style();
 		return $before . $html . $after;
+	}
+
+	/**
+	 * The colours or pictures of the first "Color / image" attribute of a
+	 * product with options (WooCommerce's wc-visual attribute type, whose
+	 * terms keep a "color" or an "image" meta). An option with a picture
+	 * of its own is a button that shows that picture on the card; one
+	 * without is only drawn.
+	 *
+	 * @param \WC_Product_Variable $product Product.
+	 */
+	public static function swatches( \WC_Product_Variable $product ): string {
+		$visual = array();
+		foreach ( wc_get_attribute_taxonomies() as $attribute ) {
+			if ( 'wc-visual' === $attribute->attribute_type ) {
+				$visual[ wc_attribute_taxonomy_name( $attribute->attribute_name ) ] = true;
+			}
+		}
+		if ( ! $visual ) {
+			return '';
+		}
+		foreach ( $product->get_variation_attributes() as $taxonomy => $options ) {
+			if ( ! isset( $visual[ $taxonomy ] ) ) {
+				continue;
+			}
+			$terms = array_values(
+				array_filter(
+					wc_get_product_terms( $product->get_id(), $taxonomy, array( 'fields' => 'all' ) ),
+					static fn ( mixed $term ): bool => $term instanceof \WP_Term && in_array( $term->slug, (array) $options, true )
+				)
+			);
+			return self::swatch_list( $product, (string) $taxonomy, $terms );
+		}
+		return '';
+	}
+
+	/**
+	 * Swatch markup.
+	 *
+	 * @param \WC_Product_Variable $product  Product.
+	 * @param string               $taxonomy Attribute taxonomy.
+	 * @param array                $terms    Its options on this product.
+	 * @phpstan-param list<\WP_Term> $terms
+	 */
+	private static function swatch_list( \WC_Product_Variable $product, string $taxonomy, array $terms ): string {
+		if ( ! $terms ) {
+			return '';
+		}
+		$pictures = array();
+		foreach ( $product->get_children() as $child ) {
+			$variation = wc_get_product( $child );
+			if ( ! $variation instanceof \WC_Product_Variation || $variation->get_image_id() <= 0 ) {
+				continue;
+			}
+			$slug                = (string) ( $variation->get_attributes()[ $taxonomy ] ?? '' );
+			$pictures[ $slug ] ??= (int) $variation->get_image_id();
+		}
+		$html  = '';
+		$shown = array_slice( $terms, 0, self::SWATCHES );
+		foreach ( $shown as $term ) {
+			$image = absint( get_term_meta( $term->term_id, 'image', true ) );
+			$color = sanitize_hex_color( (string) get_term_meta( $term->term_id, 'color', true ) );
+			$url   = $image > 0 ? (string) wp_get_attachment_image_url( $image, 'thumbnail' ) : '';
+			$look  = '' !== $url ? "background-image:url('" . esc_url( $url ) . "')" : ( null !== $color && '' !== $color ? "background-color:$color" : '' );
+			$name  = '<span class="screen-reader-text">' . esc_html( $term->name ) . '</span>';
+			$own   = $pictures[ $term->slug ] ?? 0;
+			if ( $own > 0 ) {
+				$html .= sprintf(
+					'<button type="button" class="pergel-card-swatch" style="%1$s" title="%2$s" data-pergel-src="%3$s" data-pergel-srcset="%4$s" aria-pressed="false">%5$s</button>',
+					esc_attr( $look ),
+					esc_attr( $term->name ),
+					esc_url( (string) wp_get_attachment_image_url( $own, 'woocommerce_thumbnail' ) ),
+					esc_attr( (string) wp_get_attachment_image_srcset( $own, 'woocommerce_thumbnail' ) ),
+					$name
+				);
+			} else {
+				$html .= sprintf( '<span class="pergel-card-swatch" style="%1$s" title="%2$s">%3$s</span>', esc_attr( $look ), esc_attr( $term->name ), $name );
+			}
+		}
+		$more = count( $terms ) - count( $shown );
+		if ( $more > 0 ) {
+			$html .= sprintf(
+				'<span class="pergel-card-swatches__more">+%1$d<span class="screen-reader-text"> %2$s</span></span>',
+				$more,
+				esc_html( _n( 'more option', 'more options', $more, 'pergel-engine' ) )
+			);
+		}
+		if ( str_contains( $html, 'data-pergel-src' ) ) {
+			wp_enqueue_script_module( Layout::CARDS_SCRIPT );
+		}
+		return sprintf( '<div class="pergel-card-swatches" role="group" aria-label="%1$s">%2$s</div>', esc_attr( wc_attribute_label( $taxonomy, $product ) ), $html );
 	}
 
 	/**

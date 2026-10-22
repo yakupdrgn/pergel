@@ -96,7 +96,19 @@ final class StickyCart {
 			. '<p class="wp-block-pergel-sticky-add-to-cart__price">' . Price::html( $product->get_price_html() ) . '</p>'
 			. '</div>'
 			. '<button type="button" class="wp-block-pergel-sticky-add-to-cart__button wp-element-button">' . esc_html( '' !== $choose ? $choose : $product->single_add_to_cart_text() ) . '</button>'
+			. self::buy_now()
 			. '</div></div>';
+	}
+
+	/**
+	 * "Buy now" beside the bar's button, when the product page shows it.
+	 */
+	private static function buy_now(): string {
+		if ( true !== Layout::get( 'shop.product_buy_now' ) ) {
+			return '';
+		}
+		wp_enqueue_script_module( Layout::PRODUCT_SCRIPT );
+		return ProductPage::buy_now_button( 'wp-block-pergel-sticky-add-to-cart__buy' );
 	}
 
 	/**

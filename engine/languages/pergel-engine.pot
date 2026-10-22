@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-22T19:46:54+03:00\n"
+"POT-Creation-Date: 2026-10-22T20:23:53+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -532,6 +532,9 @@ msgid "Badges"
 msgstr ""
 
 msgid "Beside the pictures"
+msgstr ""
+
+msgid "Buying"
 msgstr ""
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
@@ -1167,6 +1170,30 @@ msgstr ""
 msgid "How many are left, for products whose stock is counted, or \"Out of stock\"."
 msgstr ""
 
+msgid "\"Buy now\" button"
+msgstr ""
+
+msgid "Beside \"Add to cart\", and in the bar at the bottom of the screen: adds the product to the cart and goes straight to the checkout."
+msgstr ""
+
+msgid "Coupons"
+msgstr ""
+
+msgid "Coupons that apply to the product, under the add to cart button, with a button that copies the code. Choose them in Marketing → Coupons → Show on product pages."
+msgstr ""
+
+msgid "Share links"
+msgstr ""
+
+msgid "Links that share the product on Facebook, X, LinkedIn, WhatsApp, Pinterest and by email, and a button that copies its address. Plain links: no scripts from those sites."
+msgstr ""
+
+msgid "Colours on cards"
+msgstr ""
+
+msgid "For products with options: the colours or pictures of the first attribute with the \"Color / image\" type, under the name. Choosing one shows that option's picture on the card."
+msgstr ""
+
 msgid "Same as its category or the shop"
 msgstr ""
 
@@ -1337,6 +1364,11 @@ msgstr ""
 msgid "The product could not be loaded. Open its page instead."
 msgstr ""
 
+msgid "more option"
+msgid_plural "more options"
+msgstr[0] ""
+msgstr[1] ""
+
 #. translators: %d: discount in per cent.
 #, php-format
 msgid "-%d%%"
@@ -1411,6 +1443,12 @@ msgid "Product categories"
 msgstr ""
 
 msgid "Subcategories"
+msgstr ""
+
+msgid "Show on product pages"
+msgstr ""
+
+msgid "List this coupon on the pages of the products it applies to, with a button that copies the code (Pergel → Settings → Shop → Coupons)."
 msgstr ""
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
@@ -1608,6 +1646,65 @@ msgstr ""
 #. translators: %s: category name.
 #, php-format
 msgid "Back to %s"
+msgstr ""
+
+msgid "Copied"
+msgstr ""
+
+msgid "Copy it by hand: select the text."
+msgstr ""
+
+msgid "Buy now"
+msgstr ""
+
+msgid "Offers"
+msgstr ""
+
+#. translators: %s: discount in per cent, a number such as 10.
+#, php-format
+msgid "%s%% off"
+msgstr ""
+
+#. translators: %s: amount, e.g. $5.
+#, php-format
+msgid "%s off this product"
+msgstr ""
+
+#. translators: %s: amount, e.g. $5.
+#, php-format
+msgid "%s off your order"
+msgstr ""
+
+msgid "Free shipping"
+msgstr ""
+
+#. translators: %s: amount.
+#, php-format
+msgid "Orders over %s"
+msgstr ""
+
+#. translators: %s: date.
+#, php-format
+msgid "Until %s"
+msgstr ""
+
+msgid "Copy code"
+msgstr ""
+
+#. translators: %s: site name, e.g. Facebook.
+#, php-format
+msgid "Share by %s"
+msgstr ""
+
+#. translators: %s: site name, e.g. Facebook.
+#, php-format
+msgid "Share on %s (opens in a new tab)"
+msgstr ""
+
+msgid "Copy the link"
+msgstr ""
+
+msgid "Share"
 msgstr ""
 
 msgid "This product cannot be shown."
