@@ -82,7 +82,7 @@ final class Layout {
 		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
 		add_filter( 'wp_robots', array( self::class, 'robots' ) );
 		add_action( 'wp', array( self::class, 'cards' ) );
-		add_action( 'rest_api_init', array( QuickView::class, 'routes' ) );
+		add_action( 'rest_api_init', array( self::class, 'quick_view' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
@@ -191,6 +191,17 @@ final class Layout {
 	public static function cards(): void {
 		if ( self::listing() || self::cards_chosen() ) {
 			Cards::register();
+		}
+	}
+
+	/**
+	 * Adds the quick view route while the setting is on. Product pages
+	 * preload Store API requests, which run rest_api_init; checking the
+	 * setting here keeps them from loading QuickView.
+	 */
+	public static function quick_view(): void {
+		if ( true === Settings::get( 'shop.quick_view' ) ) {
+			QuickView::routes();
 		}
 	}
 

@@ -9,8 +9,6 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
-use Pergel\Settings\Settings;
-
 /**
  * GET /pergel/v1/quick-view?id=N returns the markup the quick view window
  * shows (assets/shop-cards.js): pictures, name, price, short description,
@@ -19,8 +17,8 @@ use Pergel\Settings\Settings;
  * a link to the product page. Prices and buttons follow the sales modes,
  * as everywhere (Selling filters the price and whether it can be bought).
  *
- * The route exists only while the "Quick view" setting is on; Layout adds
- * the hook for REST requests, so other pages never load this class.
+ * The route exists only while the "Quick view" setting is on: Layout calls
+ * routes() on rest_api_init then, so other requests never load this class.
  */
 final class QuickView {
 
@@ -30,12 +28,9 @@ final class QuickView {
 	private const PICTURES = 6;
 
 	/**
-	 * Registers the route. Hooked on rest_api_init.
+	 * Registers the route; Layout::quick_view() calls it.
 	 */
 	public static function routes(): void {
-		if ( true !== Settings::get( 'shop.quick_view' ) ) {
-			return;
-		}
 		register_rest_route(
 			'pergel/v1',
 			'/quick-view',
