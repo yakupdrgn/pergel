@@ -666,6 +666,21 @@ görünmez (`Settings\Screen::shown`).
   açıkken ve yalnızca REST isteklerinde yüklenir) ile getirir: resimler, fiyat, kısa açıklama, stok
   kodu, stok ve basit ürünlerde ürün sayfasındakiyle aynı düz sepete ekle formu. Yayımlanmamış,
   gizli ya da parolalı ürün 404. Fiyat ve düğme satış modlarına uyar.
+- **Ürün sayfası (`Woo\ProductPage`):** "Ürün sayfası" ve "Resimlerin yanında" ayarları ürün
+  şablonuna, şablon çizilirken uygulanır (K10). Değer sırası: ürünün kendi değeri (post meta
+  `pergel_shop`, ürün düzenleme ekranındaki "Ürün sayfası yerleşimi" kutusu), sonra gezinti yolunun
+  gösterdiği kategori ve üstleri, sonra site (`Layout::get`). Yerleşim, galeriyi tutan
+  `core/columns`'a sınıf ekler (`is-pictures-left|right|three`, `is-sticky-details`); üç sütunda
+  önerilen ürünler (yukarı satış, yoksa benzer ürünler) üçüncü sütun olarak eklenir. Küçük
+  resimlerin yeri `render_block_data` ile galeri bloğunun `layout` özniteliği ve iç blok sırasıyla
+  değişir (her iç bloğun `innerContent`'te bir `null`'ı var, sırayla doldurulur); "Bütün resimler"
+  galeri yerine bir resim ızgarası çizer (varyasyon seçilince resim değişmez). Yakınlaştırma büyük
+  resim bloğunun bağlamından kapatılır: galeri bloğunun özniteliği değişse de WordPress iç bloklara
+  giden bağlamı önceden hesaplamış olur. Kategori, marka (resmiyle), indirim ve stok hapları,
+  kampanya deseni ve önceki/sonraki ürün okları `queryId` bağlamı olmayan ve `postId`'si ekrandaki
+  ürün olan bloklara eklenir; sayfadaki ürün ızgaraları etkilenmez. Rozet ve hap CSS'i kartlarla
+  ortaktır (`shop-cards.css`), yerleşim CSS'i `assets/product-page.css`. `Layout::product_page`
+  (`wp` kancası) `ProductPage`'i yalnızca bir ürün sayfası ayarı varsayılandan farklıysa yükler.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

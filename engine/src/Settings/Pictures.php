@@ -38,6 +38,8 @@ final class Pictures {
 			'shop.category_strip' => self::strip( $option ),
 			'shop.card_style' => self::card( $option ),
 			'shop.badge_sale' => self::sale( $option ),
+			'shop.product_layout' => self::product( $option ),
+			'shop.product_thumbs' => self::thumbs( $option ),
 			default      => '',
 		};
 		if ( '' === $shapes ) {
@@ -218,6 +220,52 @@ final class Pictures {
 			'boxed'    => '<rect x="18.5" y="3.5" width="27" height="33" rx="2.5" fill="none" stroke="currentColor"/><rect x="21" y="6" width="22" height="15" rx="1.5" fill="currentColor" opacity="0.35"/>' . $lines( 21, 22 ),
 			'overlay'  => '<rect x="20" y="5" width="24" height="17" rx="2" fill="currentColor" opacity="0.35"/><circle cx="40" cy="9" r="2.5" fill="currentColor"/><circle cx="40" cy="15.5" r="2.5" fill="currentColor"/>' . $lines( 20, 24 ),
 			'plain'    => '<rect x="20" y="5" width="24" height="17" rx="2" fill="currentColor" opacity="0.35"/>' . $lines( 20, 24 ),
+			default    => '',
+		};
+	}
+
+	/**
+	 * A product page: the picture, the text lines and, for three columns,
+	 * a column of small products.
+	 *
+	 * @param string $option Layout.
+	 */
+	private static function product( string $option ): string {
+		$text    = static fn ( int $x, int $width ): string => sprintf(
+			'<rect x="%1$d" y="8" width="%2$d" height="3" rx="1" fill="currentColor"/><rect x="%1$d" y="14" width="%3$d" height="2.5" rx="1" fill="currentColor" opacity="0.6"/><rect x="%1$d" y="20" width="%2$d" height="5" rx="1.5" fill="currentColor" opacity="0.8"/>',
+			$x,
+			$width,
+			(int) round( $width * 0.6 )
+		);
+		$picture = static fn ( int $x, int $width ): string => sprintf( '<rect x="%1$d" y="6" width="%2$d" height="28" rx="2" fill="currentColor" opacity="0.35"/>', $x, $width );
+		return match ( $option ) {
+			'template' => '<g fill="none" stroke="currentColor" stroke-dasharray="3 2"><rect x="6.5" y="6.5" width="26" height="27" rx="2"/><rect x="36.5" y="6.5" width="21" height="18" rx="1"/></g>',
+			'left'     => $picture( 6, 28 ) . $text( 38, 20 ),
+			'right'    => $text( 6, 20 ) . $picture( 30, 28 ),
+			'three'    => $picture( 5, 22 ) . $text( 30, 14 ) . '<g fill="currentColor" opacity="0.5"><rect x="48" y="6" width="11" height="7" rx="1"/><rect x="48" y="16" width="11" height="7" rx="1"/><rect x="48" y="26" width="11" height="7" rx="1"/></g>',
+			default    => '',
+		};
+	}
+
+	/**
+	 * The product pictures: one big picture and where the small ones go.
+	 *
+	 * @param string $option Small pictures.
+	 */
+	private static function thumbs( string $option ): string {
+		$small = static function ( array $boxes ): string {
+			$html = '';
+			foreach ( $boxes as [ $x, $y ] ) {
+				$html .= sprintf( '<rect x="%1$d" y="%2$d" width="7" height="7" rx="1" fill="currentColor" opacity="0.6"/>', $x, $y );
+			}
+			return $html;
+		};
+		return match ( $option ) {
+			'template' => '<g fill="none" stroke="currentColor" stroke-dasharray="3 2"><rect x="18.5" y="5.5" width="27" height="29" rx="2"/></g>',
+			'left'     => $small( array( array( 14, 6 ), array( 14, 15 ), array( 14, 24 ) ) ) . '<rect x="24" y="6" width="28" height="28" rx="2" fill="currentColor" opacity="0.35"/>',
+			'bottom'   => '<rect x="19" y="4" width="26" height="22" rx="2" fill="currentColor" opacity="0.35"/>' . $small( array( array( 19, 29 ), array( 28.5, 29 ), array( 38, 29 ) ) ),
+			'none'     => '<rect x="18" y="5" width="28" height="30" rx="2" fill="currentColor" opacity="0.35"/>',
+			'grid'     => '<g fill="currentColor" opacity="0.35"><rect x="19" y="3" width="26" height="16" rx="2"/><rect x="19" y="21" width="12.5" height="8" rx="1.5"/><rect x="32.5" y="21" width="12.5" height="8" rx="1.5"/><rect x="19" y="31" width="12.5" height="6" rx="1.5"/><rect x="32.5" y="31" width="12.5" height="6" rx="1.5"/></g>',
 			default    => '',
 		};
 	}

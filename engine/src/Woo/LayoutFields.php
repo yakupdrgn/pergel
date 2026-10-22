@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop layout fields on product categories.
+ * Shop layout fields on product categories and products.
  *
  * @package Pergel
  */
@@ -15,8 +15,10 @@ use Pergel\Settings\Screen;
 
 /**
  * The settings a product category may choose for itself (schema fields with
- * the "category" level), in the category forms. Each starts at "same as the
- * parent category or the shop"; only real choices are stored.
+ * the "category" level), in the category forms, and those a product may
+ * choose (the "product" level), in a box beside the product editor. Each
+ * starts at "same as the parent category or the shop"; only real choices
+ * are stored.
  *
  * @phpstan-import-type Field from Schema
  */
@@ -28,6 +30,11 @@ final class LayoutFields {
 	private const NAME = 'pergel_shop';
 
 	/**
+	 * Nonce action and field of the product box.
+	 */
+	private const NONCE = 'pergel_shop_product';
+
+	/**
 	 * Adds the admin hooks.
 	 */
 	public static function register(): void {
@@ -35,6 +42,57 @@ final class LayoutFields {
 		add_action( 'product_cat_edit_form_fields', array( self::class, 'category_edit' ), 20 );
 		add_action( 'created_product_cat', array( self::class, 'save_category' ) );
 		add_action( 'edited_product_cat', array( self::class, 'save_category' ) );
+		add_action( 'add_meta_boxes_product', array( self::class, 'product_box' ) );
+		add_action( 'save_post_product', array( self::class, 'save_product' ) );
+	}
+
+	/**
+	 * Adds the box beside the product editor.
+	 */
+	public static function product_box(): void {
+		if ( ! Schema::level_fields( 'product' ) ) {
+			return;
+		}
+		add_meta_box( 'pergel-shop-layout', __( 'Product page layout', 'pergel-engine' ), array( self::class, 'product_fields' ), 'product', 'side', 'low' );
+	}
+
+	/**
+	 * The fields in the product box.
+	 *
+	 * @param mixed $post Product being edited.
+	 */
+	public static function product_fields( mixed $post ): void {
+		$own = $post instanceof \WP_Post ? Schema::level_values( get_post_meta( $post->ID, Layout::PRODUCT_META, true ), 'product' ) : array();
+		wp_nonce_field( self::NONCE, self::NONCE );
+		foreach ( self::fields( 'product' ) as $path => $field ) {
+			printf(
+				'<p><label for="%1$s"><strong>%2$s</strong></label><br>%3$s</p>',
+				esc_attr( self::id( $path ) ),
+				esc_html( self::label( $path ) ),
+				self::control( $path, $field, $own[ $path ] ?? null, 'product' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in control().
+			);
+		}
+	}
+
+	/**
+	 * Saves a product's own values.
+	 *
+	 * @param int $post_id Product id.
+	 */
+	public static function save_product( int $post_id ): void {
+		if ( ! isset( $_POST[ self::NONCE ], $_POST[ self::NAME ] ) || ! is_array( $_POST[ self::NAME ] ) || wp_is_post_revision( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ self::NONCE ] ) ), self::NONCE ) ) {
+			return;
+		}
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Schema::level_values() checks every value against the schema.
+		$values = Schema::level_values( wp_unslash( $_POST[ self::NAME ] ), 'product' );
+		if ( $values ) {
+			update_post_meta( $post_id, Layout::PRODUCT_META, $values );
+		} else {
+			delete_post_meta( $post_id, Layout::PRODUCT_META );
+		}
 	}
 
 	/**
@@ -91,13 +149,14 @@ final class LayoutFields {
 	}
 
 	/**
-	 * The category level's fields by "group.key".
+	 * A level's fields by "group.key".
 	 *
+	 * @param string $level "category" or "product".
 	 * @return array<string, Field>
 	 */
-	private static function fields(): array {
+	private static function fields( string $level = 'category' ): array {
 		$fields = array();
-		foreach ( Schema::level_fields( 'category' ) as $group => $group_fields ) {
+		foreach ( Schema::level_fields( $level ) as $group => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
 				$fields[ "$group.$key" ] = $field;
 			}
@@ -152,9 +211,10 @@ final class LayoutFields {
 	 * @param string               $path  "group.key".
 	 * @param array<string, mixed> $field Field definition.
 	 * @param mixed                $value Own value; null inherits.
+	 * @param string               $level "category" or "product".
 	 * @phpstan-param Field $field
 	 */
-	private static function control( string $path, array $field, mixed $value ): string {
+	private static function control( string $path, array $field, mixed $value, string $level = 'category' ): string {
 		$attrs = sprintf( 'id="%1$s" name="%2$s"', esc_attr( self::id( $path ) ), esc_attr( self::NAME . "[$path]" ) );
 		if ( 'int' === $field['type'] ) {
 			return sprintf(
@@ -166,7 +226,7 @@ final class LayoutFields {
 				esc_attr__( 'Inherit', 'pergel-engine' )
 			);
 		}
-		$choices = array( '' => Labels::inherit( 'category' ) );
+		$choices = array( '' => Labels::inherit( $level ) );
 		if ( 'pattern' === $field['type'] ) {
 			$choices += Screen::patterns( null === $value ? 0 : (int) $value );
 		} elseif ( 'bool' === $field['type'] ) {
@@ -181,7 +241,7 @@ final class LayoutFields {
 				$choices[ $option ] = (string) ( $names[ $option ] ?? $option );
 			}
 		}
-		$html = '<select ' . $attrs . '>';
+		$html = '<select ' . $attrs . ( 'product' === $level ? ' class="widefat"' : '' ) . '>';
 		foreach ( $choices as $option => $label ) {
 			$html .= sprintf( '<option value="%1$s"%2$s>%3$s</option>', esc_attr( (string) $option ), selected( (string) $value, (string) $option, false ), esc_html( $label ) );
 		}

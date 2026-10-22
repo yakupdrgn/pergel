@@ -1,7 +1,8 @@
 /*
  * Product cards (Pergel → Settings → Shop layout → Product cards):
  * Pergel\Woo\Cards adds the classes below to product grids and loads this
- * file only where a card setting is used.
+ * file only where a card setting is used. The badges and the discount and
+ * stock pills also serve the product page (Pergel\Woo\ProductPage).
  */
 
 /* Picture: room for badges, the second picture and the buttons. */
@@ -11,7 +12,7 @@
 	position: relative;
 }
 
-.wc-block-product .pergel-badges {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-badges {
 	position: absolute;
 	inset-block-start: var(--wp--preset--spacing--20);
 	inset-inline-start: var(--wp--preset--spacing--20);
@@ -23,7 +24,7 @@
 	pointer-events: none;
 }
 
-.wc-block-product .pergel-badge {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-badge {
 	padding: 0.15em 0.5em;
 	border-radius: var(--wp--custom--radius--small);
 	background: var(--wp--preset--color--contrast);
@@ -34,13 +35,13 @@
 	white-space: nowrap;
 }
 
-.wc-block-product .pergel-badge.is-new,
-.wc-block-product .pergel-badge.is-own {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-badge.is-new,
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-badge.is-own {
 	background: var(--wp--preset--color--accent);
 	color: var(--wp--preset--color--on-accent);
 }
 
-.wc-block-product .pergel-badge.is-sold-out {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-badge.is-sold-out {
 	background: var(--wp--preset--color--muted);
 }
 
@@ -98,14 +99,14 @@
 	font-size: var(--wp--preset--font-size--small);
 }
 
-.wc-block-product .pergel-card-pills {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-card-pills {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.35rem;
 	margin-block: 0.35rem;
 }
 
-.wc-block-product .pergel-card-pill {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-card-pill {
 	padding: 0.1em 0.55em;
 	border: 1px solid currentcolor;
 	border-radius: 999px;
@@ -114,13 +115,13 @@
 	line-height: 1.5;
 }
 
-.wc-block-product .pergel-card-pill.is-discount {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-card-pill.is-discount {
 	border-color: transparent;
 	background: var(--wp--preset--color--contrast);
 	color: var(--wp--preset--color--base);
 }
 
-.wc-block-product .pergel-card-pill.is-out {
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-card-pill.is-out {
 	color: var(--wp--preset--color--muted);
 }
 

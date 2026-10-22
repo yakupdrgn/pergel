@@ -271,162 +271,213 @@ final class Schema {
 			// "wide" and 0 keep the template's and WooCommerce's own layout,
 			// so the defaults change nothing.
 			'shop'        => array(
-				'columns'        => array(
+				'columns'          => array(
 					'type'    => 'enum',
 					'options' => array( 'template', '2', '3', '4', '5', '6' ),
 					'default' => 'template',
 					'levels'  => array( 'category' ),
 				),
-				'columns_tablet' => array(
+				'columns_tablet'   => array(
 					'type'    => 'enum',
 					'options' => array( 'auto', '1', '2', '3', '4' ),
 					'default' => 'auto',
 					'levels'  => array( 'category' ),
 				),
-				'columns_phone'  => array(
+				'columns_phone'    => array(
 					'type'    => 'enum',
 					'options' => array( 'auto', '1', '2' ),
 					'default' => 'auto',
 					'levels'  => array( 'category' ),
 				),
-				'per_page'       => array(
+				'per_page'         => array(
 					'type'    => 'int',
 					'min'     => 0,
 					'max'     => 96,
 					'default' => 0,
 					'levels'  => array( 'category' ),
 				),
-				'width'          => array(
+				'width'            => array(
 					'type'    => 'enum',
 					'options' => array( 'wide', 'full' ),
 					'default' => 'wide',
 					'levels'  => array( 'category' ),
 				),
 				// Filters; see Pergel\Woo\Filters.
-				'filters'        => array(
+				'filters'          => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'left', 'right', 'drawer', 'none' ),
 					'default' => 'template',
 					'levels'  => array( 'category' ),
 				),
-				'drawer_side'    => array(
+				'drawer_side'      => array(
 					'type'    => 'enum',
 					'options' => array( 'left', 'right' ),
 					'default' => 'left',
 					'levels'  => array( 'category' ),
 				),
-				'filters_sticky' => array(
+				'filters_sticky'   => array(
 					'type'    => 'enum',
 					'options' => array( 'off', 'sticky', 'scroll' ),
 					'default' => 'off',
 				),
-				'filters_fold'   => array(
+				'filters_fold'     => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'filters_search' => array(
+				'filters_search'   => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'filter_brand'   => array(
+				'filter_brand'     => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'filter_rating'  => array(
+				'filter_rating'    => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
 				// Toolbar, list view and paging; see Pergel\Woo\Toolbar.
-				'view'           => array(
+				'view'             => array(
 					'type'    => 'enum',
 					'options' => array( 'grid', 'list' ),
 					'default' => 'grid',
 					'levels'  => array( 'category' ),
 				),
-				'view_switch'    => array(
+				'view_switch'      => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'per_page_menu'  => array(
+				'per_page_menu'    => array(
 					'type' => 'text',
 					'max'  => 40,
 				),
-				'paging'         => array(
+				'paging'           => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'more', 'scroll' ),
 					'default' => 'template',
 					'levels'  => array( 'category' ),
 				),
 				// Above the products; see Pergel\Woo\ShopHeader.
-				'banner'         => array(
+				'banner'           => array(
 					'type'   => 'pattern',
 					'levels' => array( 'category' ),
 				),
-				'category_strip' => array(
+				'category_strip'   => array(
 					'type'    => 'enum',
 					'options' => array( 'none', 'images', 'boxes', 'list', 'names' ),
 					'default' => 'none',
 					'levels'  => array( 'category' ),
 				),
 				// Product cards in every product grid; see Pergel\Woo\Cards.
-				'card_style'     => array(
+				'card_style'       => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'standard', 'boxed', 'overlay', 'plain' ),
 					'default' => 'template',
 					'levels'  => array( 'category' ),
 				),
-				'card_category'  => array(
+				'card_category'    => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'card_brand'     => array(
+				'card_brand'       => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'card_rating'    => array(
+				'card_rating'      => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'card_discount'  => array(
+				'card_discount'    => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'card_stock'     => array(
+				'card_stock'       => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'card_hover'     => array(
+				'card_hover'       => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'card_countdown' => array(
+				'card_countdown'   => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'card_stock_bar' => array(
+				'card_stock_bar'   => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'quick_view'     => array(
+				'quick_view'       => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'badge_sale'     => array(
+				'badge_sale'       => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'percent', 'none' ),
 					'default' => 'template',
 				),
-				'badge_new'      => array(
+				'badge_new'        => array(
 					'type'    => 'int',
 					'min'     => 0,
 					'max'     => 90,
 					'default' => 0,
 				),
-				'badge_featured' => array(
+				'badge_featured'   => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
-				'badge_sold_out' => array(
+				'badge_sold_out'   => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				// Product page; see Pergel\Woo\ProductPage. A category and a
+				// product may choose the layout, pictures and banner.
+				'product_layout'   => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'left', 'right', 'three' ),
+					'default' => 'template',
+					'levels'  => array( 'category', 'product' ),
+				),
+				'product_thumbs'   => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'left', 'bottom', 'none', 'grid' ),
+					'default' => 'template',
+					'levels'  => array( 'category', 'product' ),
+				),
+				'product_sticky'   => array(
+					'type'    => 'bool',
+					'default' => false,
+					'levels'  => array( 'category', 'product' ),
+				),
+				'product_zoom'     => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'product_badges'   => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'product_banner'   => array(
+					'type'   => 'pattern',
+					'levels' => array( 'category', 'product' ),
+				),
+				'product_category' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'product_brand'    => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'product_discount' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'product_stock'    => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'product_nav'      => array(
 					'type'    => 'bool',
 					'default' => false,
 				),
