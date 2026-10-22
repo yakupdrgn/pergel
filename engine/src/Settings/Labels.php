@@ -50,6 +50,10 @@ final class Labels {
 				'title'       => __( 'Shop', 'pergel-engine' ),
 				'description' => __( 'How Pergel works with WooCommerce. This tab is shown while WooCommerce is active.', 'pergel-engine' ),
 			),
+			'shop'        => array(
+				'title'       => __( 'Shop layout', 'pergel-engine' ),
+				'description' => __( 'How the shop, product category, product tag and product search pages list products. A product category can choose its own layout on its edit screen; its subcategories follow it. "As in the template" and "Automatic" keep the layout of the theme template.', 'pergel-engine' ),
+			),
 		);
 	}
 
@@ -151,13 +155,26 @@ final class Labels {
 					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
 				),
 			),
+			'shop'        => array(
+				'grid' => array(
+					'title'  => __( 'Product grid', 'pergel-engine' ),
+					'fields' => array( 'columns', 'columns_tablet', 'columns_phone', 'per_page' ),
+				),
+				'page' => array(
+					'title'  => __( 'Page', 'pergel-engine' ),
+					'fields' => array( 'width' ),
+				),
+			),
 		);
 	}
 
 	/**
 	 * Field labels and help texts.
 	 *
-	 * @return array<string, array<string, array{label: string, help?: string, svg?: string, choices?: array<string, string>}>>
+	 * With cards, the choices are shown as pictures (Pictures) instead of a
+	 * select box.
+	 *
+	 * @return array<string, array<string, array{label: string, help?: string, svg?: string, choices?: array<int|string, string>, cards?: bool}>>
 	 */
 	public static function fields(): array {
 		return array(
@@ -374,7 +391,68 @@ final class Labels {
 					'help'  => __( 'Public holidays and other days without shipping. One per line, as 2026-10-29, or a range as 2026-03-19/2026-03-22. Up to 40 lines.', 'pergel-engine' ),
 				),
 			),
+			'shop'        => array(
+				'columns'        => array(
+					'label'   => __( 'Products per row', 'pergel-engine' ),
+					'help'    => __( 'On wide screens. Narrower screens show fewer products per row unless you choose a number below.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'2'        => '2',
+						'3'        => '3',
+						'4'        => '4',
+						'5'        => '5',
+						'6'        => '6',
+					),
+				),
+				'columns_tablet' => array(
+					'label'   => __( 'Products per row on tablets', 'pergel-engine' ),
+					'help'    => __( 'Screens from 600 to 1023 pixels wide.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'auto' => __( 'Automatic', 'pergel-engine' ),
+						'1'    => '1',
+						'2'    => '2',
+						'3'    => '3',
+						'4'    => '4',
+					),
+				),
+				'columns_phone'  => array(
+					'label'   => __( 'Products per row on phones', 'pergel-engine' ),
+					'help'    => __( 'Screens narrower than 600 pixels. Two per row shows more products; one shows larger pictures.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'auto' => __( 'Automatic', 'pergel-engine' ),
+						'1'    => '1',
+						'2'    => '2',
+					),
+				),
+				'per_page'       => array(
+					'label' => __( 'Products per page', 'pergel-engine' ),
+					'help'  => __( 'From 1 to 96. 0 uses the WooCommerce setting.', 'pergel-engine' ),
+				),
+				'width'          => array(
+					'label'   => __( 'Page width', 'pergel-engine' ),
+					'help'    => __( 'Full width uses the whole screen, with a small margin at the sides.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'wide' => __( 'As in the template', 'pergel-engine' ),
+						'full' => __( 'Full width', 'pergel-engine' ),
+					),
+				),
+			),
 		);
+	}
+
+	/**
+	 * Text of the "inherit" choice on a level's own settings.
+	 *
+	 * @param string $level "category" or "product".
+	 */
+	public static function inherit( string $level ): string {
+		return 'product' === $level
+			? __( 'Same as its category or the shop', 'pergel-engine' )
+			: __( 'Same as the parent category or the shop', 'pergel-engine' );
 	}
 
 	/**

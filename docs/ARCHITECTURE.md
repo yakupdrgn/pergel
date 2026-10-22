@@ -585,6 +585,20 @@ görünmez (`Settings\Screen::shown`).
   kategori, stok ve ilk üç öznitelik). Pattern kuralları WooCommerce bloklarına yalnızca bu
   öneki taşıyan gizli pattern'lerde (`Patterns\Rules::SHOP_PREFIX`) ve mağaza bölümlerinde
   (`SHOP_SECTION_PREFIX`, aşağıda) izin verir.
+- **Mağaza düzeni (`Woo\Layout`, `Woo\LayoutFields`):** `shop` ayar grubu (Pergel → Ayarlar →
+  Mağaza düzeni; yalnızca WooCommerce açıkken) mağaza, ürün kategorisi, ürün etiketi ve ürün arama
+  sayfalarındaki ana ürün ızgarasına (sorguyu sayfadan alan `inherit:true` Product Collection)
+  uygulanır: geniş ekranda sütun (`render_block_context` ile Product Template bağlamına, çünkü
+  WordPress alt blokları üst bloğun ayrıştırılmış haliyle kurar), tablet/telefon sütunu (ızgarada
+  `pergel-columns-tablet|phone` sınıfı ve `--pergel-columns-*` değişkeni, CSS temanın
+  `woocommerce-product-template.css` dosyasında), sayfa başına ürün (`loop_shop_per_page`), tam
+  genişlik (`pergel-shop-full` gövde sınıfı). Varsayılanlar (`template`, `auto`, `wide`, 0) şablona
+  dokunmaz; Site Editor'da değiştirilmiş ya da alt temanın kendi şablonu seçilene kadar aynen
+  kalır. Şemada `levels: ['category']` taşıyan alanları bir ürün kategorisi kendisi seçebilir
+  (`pergel_shop` terim metası, yalnızca gerçek seçimler saklanır, `Schema::level_values()`); en
+  yakın seçen kategori, yoksa site ayarı geçerlidir, alt kategoriler üsttekini izler. Ayarın
+  ulaşamadığı (ızgarası silinmiş) özel şablonlar ayar ekranında uyarıyla listelenir. Görsel
+  seçimler (`Labels` `cards`) radyo düğmeli kartlar olarak çizilir (`Settings\Pictures`).
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

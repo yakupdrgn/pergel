@@ -11,6 +11,7 @@ namespace Pergel\Settings;
 
 use Pergel\Core\Svg;
 use Pergel\Seo\Detect;
+use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
 
 use const Pergel\FILE;
@@ -83,6 +84,12 @@ final class Screen {
 			. '.pergel-image__preview{margin-bottom:8px}'
 			. '.pergel-image__preview:empty,.pergel-image__remove[hidden]{display:none}'
 			. '.pergel-image__preview img{display:block;max-width:240px;height:auto;padding:12px;background:#1d2327;border-radius:4px}'
+			. '.pergel-choices{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;border:0}'
+			// Beats core's ".form-table td fieldset label" (inline-block, margins with !important).
+			. '.form-table td fieldset.pergel-choices label.pergel-choice{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:76px;margin:0!important;padding:10px 8px 8px;border:1px solid #c3c4c7;border-radius:4px;background:#fff;color:#50575e;cursor:pointer}'
+			. '.pergel-choice input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}'
+			. '.form-table td fieldset.pergel-choices label.pergel-choice:has(input:checked){border-color:var(--wp-admin-theme-color,#2271b1);box-shadow:0 0 0 1px var(--wp-admin-theme-color,#2271b1);color:var(--wp-admin-theme-color,#2271b1)}'
+			. '.form-table td fieldset.pergel-choices label.pergel-choice:has(input:focus-visible){outline:2px solid var(--wp-admin-theme-color,#2271b1);outline-offset:2px}'
 		);
 	}
 
@@ -175,6 +182,14 @@ final class Screen {
 				esc_html( sprintf( __( '%s is active, so these settings are not used now.', 'pergel-engine' ), Detect::name( $seo_plugin ) ) )
 			);
 		}
+		$lost = 'shop' === $tab ? Layout::templates_without_grid() : array();
+		if ( $lost ) {
+			printf(
+				'<div class="notice notice-warning inline"><p>%s</p></div>',
+				/* translators: %s: template names, comma separated. */
+				esc_html( sprintf( __( 'These templates were changed in the Site Editor and no longer hold the theme\'s product grid, so the settings below do not reach them: %s. Reset the template in the Site Editor to use them again.', 'pergel-engine' ), implode( ', ', $lost ) ) )
+			);
+		}
 
 		$values = Settings::all()[ $tab ];
 		foreach ( self::sections( $tab ) as $section ) {
@@ -222,14 +237,14 @@ final class Screen {
 	}
 
 	/**
-	 * Whether a tab, or a field of it, is shown. The Shop tab and its module
-	 * switch need WooCommerce; hidden fields keep their saved values.
+	 * Whether a tab, or a field of it, is shown. The shop tabs and the shop
+	 * module switch need WooCommerce; hidden fields keep their saved values.
 	 *
 	 * @param string $group Schema group.
 	 * @param string $key   Field key; empty for the whole tab.
 	 */
 	public static function shown( string $group, string $key = '' ): bool {
-		$woo = 'woo' === $group || ( 'modules' === $group && 'woo' === $key );
+		$woo = in_array( $group, array( 'woo', 'shop' ), true ) || ( 'modules' === $group && 'woo' === $key );
 		return ! $woo || Woo::active();
 	}
 
@@ -265,13 +280,19 @@ final class Screen {
 		if ( $svg_hint ) {
 			$describedby[] = "$id-svg";
 		}
-		$aria = ( $describedby ? ' aria-describedby="' . esc_attr( implode( ' ', $describedby ) ) . '"' : '' )
-			. ( '' !== $error && 'image' !== $field['type'] ? ' aria-invalid="true"' : '' );
+		$cards = 'enum' === $field['type'] && ! empty( $text['cards'] );
+		$aria  = ( $describedby ? ' aria-describedby="' . esc_attr( implode( ' ', $describedby ) ) . '"' : '' )
+			. ( '' !== $error && 'image' !== $field['type'] && ! $cards ? ' aria-invalid="true"' : '' );
 
-		// An image field has no input to label; its buttons carry the description.
-		$th = 'image' === $field['type'] ? esc_html( $label ) : '<label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label>';
+		// An image field has no input to label; its buttons carry the
+		// description. Cards are radio buttons named by their fieldset.
+		$th = 'image' === $field['type'] || $cards ? esc_html( $label ) : '<label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label>';
 		echo '<tr><th scope="row">' . $th . '</th><td>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
-		self::control( $field, $id, $name, $value, $aria, $text );
+		if ( $cards ) {
+			self::cards( $group, $key, $field, $name, $value, $aria, $text );
+		} else {
+			self::control( $field, $id, $name, $value, $aria, $text );
+		}
 		if ( '' !== $error ) {
 			echo '<p class="pergel-settings__error" id="' . esc_attr( "$id-error" ) . '">' . esc_html( $error ) . '</p>';
 		}
@@ -285,6 +306,38 @@ final class Screen {
 			echo '<p class="description" id="' . esc_attr( "$id-svg" ) . '">' . esc_html( (string) $text['svg'] ) . $link . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $link is escaped above.
 		}
 		echo '</td></tr>';
+	}
+
+	/**
+	 * An enum field as a row of picture cards, one radio button each.
+	 *
+	 * @param string               $group Schema group.
+	 * @param string               $key   Field key.
+	 * @param array<string, mixed> $field Field definition.
+	 * @param string               $name  Form name.
+	 * @param mixed                $value Current value.
+	 * @param string               $aria  Escaped aria attributes.
+	 * @param array<string, mixed> $text  Labels for the field.
+	 * @phpstan-param Field $field
+	 */
+	private static function cards( string $group, string $key, array $field, string $name, mixed $value, string $aria, array $text ): void {
+		$choices = is_array( $text['choices'] ?? null ) ? $text['choices'] : array();
+		printf(
+			'<fieldset class="pergel-choices"%1$s><legend class="screen-reader-text">%2$s</legend>',
+			$aria, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in row().
+			esc_html( (string) ( $text['label'] ?? $key ) )
+		);
+		foreach ( $field['options'] ?? array() as $option ) {
+			printf(
+				'<label class="pergel-choice"><input type="radio" name="%1$s" value="%2$s"%3$s>%4$s<span>%5$s</span></label>',
+				esc_attr( $name ),
+				esc_attr( $option ),
+				checked( $value, $option, false ),
+				Pictures::get( $group, $key, $option ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed SVG built from numbers.
+				esc_html( (string) ( $choices[ $option ] ?? $option ) )
+			);
+		}
+		echo '</fieldset>';
 	}
 
 	/**
