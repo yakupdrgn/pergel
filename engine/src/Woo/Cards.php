@@ -277,7 +277,7 @@ final class Cards {
 	 *
 	 * @param \WC_Product $product Product.
 	 */
-	private static function stock( \WC_Product $product ): string {
+	public static function stock( \WC_Product $product ): string {
 		if ( ! $product->is_in_stock() ) {
 			return sprintf( '<span class="pergel-card-pill is-out">%s</span>', esc_html__( 'Out of stock', 'pergel-engine' ) );
 		}

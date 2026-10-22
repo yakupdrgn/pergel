@@ -25,11 +25,23 @@ use const Pergel\VERSION;
  * template draws it, so a template edited in the Site Editor, or a child
  * theme's own template, keeps its look until someone picks a value. A
  * product category may choose its own values (term meta, see
- * LayoutFields); its subcategories follow it.
+ * LayoutFields); its subcategories follow it. On a product page, the
+ * product's own values (post meta) come first, then those of its category
+ * (the one the breadcrumb shows) and that category's parents.
  */
 final class Layout {
 
 	public const TERM_META = 'pergel_shop';
+
+	/**
+	 * A product's own values; the same key as on categories.
+	 */
+	public const PRODUCT_META = 'pergel_shop';
+
+	/**
+	 * Product page CSS (ProductPage).
+	 */
+	public const PRODUCT_STYLE = 'pergel-product-page';
 
 	public const STYLE = 'pergel-shop-layout';
 
@@ -60,6 +72,13 @@ final class Layout {
 	private static array $own = array();
 
 	/**
+	 * The category chain of the page on screen, by queried object id.
+	 *
+	 * @var array<int, list<int>>
+	 */
+	private static array $chains = array();
+
+	/**
 	 * Adds the hooks.
 	 */
 	public static function register(): void {
@@ -82,6 +101,7 @@ final class Layout {
 		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
 		add_filter( 'wp_robots', array( self::class, 'robots' ) );
 		add_action( 'wp', array( self::class, 'cards' ) );
+		add_action( 'wp', array( self::class, 'product_page' ) );
 		add_action( 'rest_api_init', array( self::class, 'quick_view' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
@@ -105,6 +125,18 @@ final class Layout {
 				'show_in_rest'      => false,
 			)
 		);
+		register_post_meta(
+			'product',
+			self::PRODUCT_META,
+			array(
+				'type'              => 'object',
+				'single'            => true,
+				'default'           => array(),
+				'sanitize_callback' => static fn ( mixed $value ): array => Schema::level_values( $value, 'product' ),
+				'auth_callback'     => static fn ( mixed $allowed, string $key, int $id ): bool => current_user_can( 'edit_post', $id ),
+				'show_in_rest'      => false,
+			)
+		);
 	}
 
 	/**
@@ -117,6 +149,8 @@ final class Layout {
 		wp_register_style( self::CARD_STYLE, plugins_url( 'assets/shop-cards.css', FILE ), array(), VERSION );
 		wp_register_script_module( self::CARDS_SCRIPT, plugins_url( 'assets/shop-cards.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
 		wp_style_add_data( self::CARD_STYLE, 'path', dirname( FILE ) . '/assets/shop-cards.css' );
+		wp_register_style( self::PRODUCT_STYLE, plugins_url( 'assets/product-page.css', FILE ), array(), VERSION );
+		wp_style_add_data( self::PRODUCT_STYLE, 'path', dirname( FILE ) . '/assets/product-page.css' );
 		wp_register_script_module(
 			self::LISTING_SCRIPT,
 			plugins_url( 'assets/shop-listing.js', FILE ),
@@ -206,6 +240,23 @@ final class Layout {
 	}
 
 	/**
+	 * Adds the product page hooks when a product page setting differs from
+	 * its default for the product on screen. With the defaults, product
+	 * pages never load ProductPage. Hooked on wp.
+	 */
+	public static function product_page(): void {
+		if ( ! is_singular( 'product' ) ) {
+			return;
+		}
+		foreach ( Schema::defaults()['shop'] ?? array() as $key => $default ) {
+			if ( str_starts_with( $key, 'product_' ) && self::get( "shop.$key" ) !== $default ) {
+				ProductPage::register( get_queried_object_id() );
+				return;
+			}
+		}
+	}
+
+	/**
 	 * Whether a site-wide card or badge setting differs from its default.
 	 */
 	private static function cards_chosen(): bool {
@@ -221,7 +272,8 @@ final class Layout {
 	 * Drops the request cache when a category's values change.
 	 */
 	public static function flush(): void {
-		self::$own = array();
+		self::$own    = array();
+		self::$chains = array();
 	}
 
 	/**
@@ -242,6 +294,12 @@ final class Layout {
 	 * @param string $path "group.key".
 	 */
 	public static function get( string $path ): mixed {
+		if ( is_singular( 'product' ) ) {
+			$own = Schema::level_values( get_post_meta( get_queried_object_id(), self::PRODUCT_META, true ), 'product' );
+			if ( array_key_exists( $path, $own ) ) {
+				return $own[ $path ];
+			}
+		}
 		foreach ( self::chain() as $term_id ) {
 			$own = self::own( $term_id );
 			if ( array_key_exists( $path, $own ) ) {
@@ -257,13 +315,46 @@ final class Layout {
 	 * @return list<int>
 	 */
 	private static function chain(): array {
-		$term = is_tax( 'product_cat' ) ? get_queried_object() : null;
-		if ( ! $term instanceof \WP_Term ) {
-			return array();
+		$page = get_queried_object_id();
+		if ( isset( self::$chains[ $page ] ) ) {
+			return self::$chains[ $page ];
 		}
-		$ids = array_values( array_merge( array( $term->term_id ), array_map( 'intval', get_ancestors( $term->term_id, 'product_cat', 'taxonomy' ) ) ) );
-		update_termmeta_cache( $ids );
+		$term = null;
+		if ( is_tax( 'product_cat' ) ) {
+			$term = get_queried_object();
+		} elseif ( is_singular( 'product' ) ) {
+			$term = self::product_category( $page );
+		}
+		$ids = array();
+		if ( $term instanceof \WP_Term ) {
+			$ids = array_values( array_merge( array( $term->term_id ), array_map( 'intval', get_ancestors( $term->term_id, 'product_cat', 'taxonomy' ) ) ) );
+			update_termmeta_cache( $ids );
+		}
+		self::$chains[ $page ] = $ids;
 		return $ids;
+	}
+
+	/**
+	 * The category of a product the breadcrumb shows: the deepest one,
+	 * picked as WooCommerce's breadcrumb picks it (see Trail).
+	 *
+	 * @param int $product Product id.
+	 */
+	public static function product_category( int $product ): ?\WP_Term {
+		$terms = wc_get_product_terms(
+			$product,
+			'product_cat',
+			/** This filter is documented in WooCommerce's includes/class-wc-breadcrumb.php. */
+			apply_filters(
+				'woocommerce_breadcrumb_product_terms_args', // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce's filter, so the category matches its breadcrumb.
+				array(
+					'orderby' => 'parent',
+					'order'   => 'DESC',
+				)
+			)
+		);
+		$term = $terms[0] ?? null;
+		return $term instanceof \WP_Term ? $term : null;
 	}
 
 	/**

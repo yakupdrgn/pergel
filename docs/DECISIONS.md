@@ -1548,6 +1548,16 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   kütüphane yerine tarayıcının `<dialog>` öğesi (odak tuzağı, Escape, kapanınca düğmeye dönüş).
   Stok çubuğu sahte sayı göstermez: satış yoksa çizilmez. Kategori şeridi stilleri ve
   "Kategori kartları" bloğu aynı kodu paylaşır; ayrı bir "kategori sayfası" şablonu yok.
+- **S4 ikiye bölündü (kullanıcı kararı):** S4a ürün sayfası yerleşimi (resimler solda/sağda, üç
+  sütun, küçük resimlerin yeri, ayrıntıların ekranda kalması, yakınlaştırma, rozetler, kategori,
+  marka, indirim ve stok, kampanya deseni, önceki/sonraki ürün, ürün düzeyinde seçim); S4b satış
+  (Hemen Al, kuponlar, paylaş, kartlarda varyasyon örnekleri).
+- **S4a kararları:** ürün düzeyi yalnızca yerleşim, küçük resimler, ekranda kalma ve kampanya
+  deseninde var; görünüm ayrıntıları (rozet, hap, marka) site genelidir. Üçüncü sütunda şimdilik
+  önerilen ürünler var; "son bakılanlar" S5'te (ziyaretçinin tarayıcısında tutulacak, sayfa
+  önbelleğiyle çakışmasın diye). "Bütün resimler" ızgarası WooCommerce'in tam ekran penceresini
+  kullanmaz; her resim tam boyutuna bağlanır. Önceki/sonraki ürün aynı kategoride
+  (`get_adjacent_post`), kategorisiz üründe bütün ürünler arasında.
 
 ## Aşamalar ve bitti tanımları
 

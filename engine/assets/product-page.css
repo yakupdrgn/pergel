@@ -1,0 +1,268 @@
+/*
+ * Product page (Pergel → Settings → Shop layout → Product page):
+ * Pergel\Woo\ProductPage adds the classes below to the product template
+ * and loads this file only where a product page setting is used.
+ */
+
+/* Layout: the columns that hold the gallery. */
+@media (min-width: 782px) {
+	.pergel-product-layout.is-pictures-right {
+		flex-direction: row-reverse;
+	}
+
+	.pergel-product-layout.is-sticky-details > .wp-block-column:not(:has(.wc-block-product-gallery, .pergel-product-pictures, .woocommerce-product-gallery)):not(.pergel-product-side) {
+		position: sticky;
+		top: calc(var(--wp-admin--admin-bar--height, 0px) + var(--wp--preset--spacing--40));
+		align-self: flex-start;
+	}
+}
+
+/* Three columns on wide screens; between tablet and desktop the
+ * recommended products go under the other two. */
+@media (min-width: 1200px) {
+	.pergel-product-layout.is-pictures-three > .wp-block-column:first-child {
+		flex-basis: 44% !important;
+	}
+}
+
+@media (min-width: 782px) and (max-width: 1199px) {
+	.pergel-product-layout.is-pictures-three {
+		flex-wrap: wrap !important;
+	}
+
+	.pergel-product-layout.is-pictures-three > .pergel-product-side {
+		flex-basis: 100%;
+	}
+}
+
+/* Recommended products in the third column. */
+.pergel-product-side {
+	flex: 0 0 16rem;
+	min-width: 0;
+	align-self: flex-start;
+	box-sizing: border-box;
+	padding: var(--wp--preset--spacing--30);
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--card);
+}
+
+.pergel-product-side__title {
+	margin: 0 0 var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--medium, 1rem);
+}
+
+.pergel-product-side ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pergel-product-side__item {
+	display: grid;
+	grid-template-columns: 4rem minmax(0, 1fr);
+	gap: 0.25rem 0.75rem;
+	padding-block: var(--wp--preset--spacing--20);
+}
+
+.pergel-product-side__item + .pergel-product-side__item {
+	border-top: 1px solid var(--wp--preset--color--line);
+}
+
+.pergel-product-side__link {
+	display: contents;
+	color: inherit;
+	text-decoration: none;
+}
+
+.pergel-product-side__link img {
+	grid-row: span 2;
+	width: 4rem;
+	height: 4rem;
+	border-radius: var(--wp--custom--radius--small);
+	background: var(--wp--preset--color--surface);
+	object-fit: contain;
+}
+
+.pergel-product-side__name {
+	font-size: var(--wp--preset--font-size--small);
+	line-height: 1.35;
+}
+
+.pergel-product-side__link:hover .pergel-product-side__name {
+	text-decoration: underline;
+}
+
+.pergel-product-side__link:focus-visible {
+	outline: none;
+}
+
+.pergel-product-side__link:focus-visible .pergel-product-side__name {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+.pergel-product-side__price {
+	grid-column: 2;
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+}
+
+.pergel-product-side__price ins {
+	text-decoration: none;
+}
+
+.pergel-product-side__price del {
+	margin-inline-end: 0.35em;
+	color: var(--wp--preset--color--muted);
+	font-weight: 400;
+}
+
+/* "All pictures": a grid, the first one wide. */
+.pergel-product-pictures {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--wp--preset--spacing--20);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pergel-product-pictures__item {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--wp--custom--radius--card);
+	background: var(--wp--preset--color--surface);
+}
+
+.pergel-product-pictures__item:first-child {
+	grid-column: 1 / -1;
+}
+
+.pergel-product-pictures__item a {
+	display: block;
+}
+
+.pergel-product-pictures__item img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1;
+	object-fit: contain;
+}
+
+.pergel-product-pictures__item a:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: -2px;
+}
+
+/* Badges on the big picture. */
+.pergel-product-pictures .pergel-badges,
+.wc-block-product-gallery .pergel-badges {
+	position: absolute;
+	inset-block-start: var(--wp--preset--spacing--30);
+	inset-inline-start: var(--wp--preset--spacing--30);
+	z-index: 2;
+}
+
+/* Around the product name. */
+.pergel-product-banner > :first-child {
+	margin-block-start: 0;
+}
+
+.pergel-product-banner > :last-child {
+	margin-block-end: 0;
+}
+
+.pergel-product-category {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+}
+
+.pergel-product-category a {
+	color: var(--wp--preset--color--accent);
+	text-decoration: none;
+}
+
+.pergel-product-category a:hover {
+	text-decoration: underline;
+}
+
+.pergel-product-brand {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.25rem 0.75rem;
+	margin: 0;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.pergel-product-brand__label {
+	font-weight: 600;
+}
+
+.pergel-product-brand a {
+	color: inherit;
+}
+
+.pergel-product-brand__image {
+	display: block;
+	width: auto;
+	max-width: 6rem;
+	height: 2rem;
+	object-fit: contain;
+}
+
+/* Discount and stock beside the price. */
+.pergel-product-price {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 0.75rem;
+}
+
+.pergel-product-price > :first-child {
+	margin: 0;
+}
+
+.pergel-product-price .pergel-card-pills {
+	margin: 0;
+}
+
+/* Previous and next product beside the breadcrumb. */
+.pergel-product-top {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--wp--preset--spacing--20);
+}
+
+.pergel-product-top > :first-child {
+	margin: 0;
+}
+
+.pergel-product-nav {
+	display: flex;
+	gap: 0.25rem;
+	margin-inline-start: auto;
+}
+
+.pergel-product-nav__link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 999px;
+	color: inherit;
+}
+
+.pergel-product-nav__link:hover {
+	background: var(--wp--preset--color--surface);
+}
+
+.pergel-product-nav__link:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}

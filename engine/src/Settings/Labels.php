@@ -184,6 +184,14 @@ final class Labels {
 					'title'  => __( 'Badges', 'pergel-engine' ),
 					'fields' => array( 'badge_sale', 'badge_new', 'badge_featured', 'badge_sold_out' ),
 				),
+				'product' => array(
+					'title'  => __( 'Product page', 'pergel-engine' ),
+					'fields' => array( 'product_layout', 'product_thumbs', 'product_sticky', 'product_zoom', 'product_badges', 'product_nav' ),
+				),
+				'summary' => array(
+					'title'  => __( 'Beside the pictures', 'pergel-engine' ),
+					'fields' => array( 'product_banner', 'product_category', 'product_brand', 'product_discount', 'product_stock' ),
+				),
 			),
 		);
 	}
@@ -412,7 +420,7 @@ final class Labels {
 				),
 			),
 			'shop'        => array(
-				'columns'        => array(
+				'columns'          => array(
 					'label'   => __( 'Products per row', 'pergel-engine' ),
 					'help'    => __( 'On wide screens. Narrower screens show fewer products per row unless you choose a number below.', 'pergel-engine' ),
 					'cards'   => true,
@@ -425,7 +433,7 @@ final class Labels {
 						'6'        => '6',
 					),
 				),
-				'columns_tablet' => array(
+				'columns_tablet'   => array(
 					'label'   => __( 'Products per row on tablets', 'pergel-engine' ),
 					'help'    => __( 'Screens from 600 to 1023 pixels wide.', 'pergel-engine' ),
 					'cards'   => true,
@@ -437,7 +445,7 @@ final class Labels {
 						'4'    => '4',
 					),
 				),
-				'columns_phone'  => array(
+				'columns_phone'    => array(
 					'label'   => __( 'Products per row on phones', 'pergel-engine' ),
 					'help'    => __( 'Screens narrower than 600 pixels. Two per row shows more products; one shows larger pictures.', 'pergel-engine' ),
 					'cards'   => true,
@@ -447,11 +455,11 @@ final class Labels {
 						'2'    => '2',
 					),
 				),
-				'per_page'       => array(
+				'per_page'         => array(
 					'label' => __( 'Products per page', 'pergel-engine' ),
 					'help'  => __( 'From 1 to 96. 0 uses the WooCommerce setting.', 'pergel-engine' ),
 				),
-				'width'          => array(
+				'width'            => array(
 					'label'   => __( 'Page width', 'pergel-engine' ),
 					'help'    => __( 'Full width uses the whole screen, with a small margin at the sides.', 'pergel-engine' ),
 					'cards'   => true,
@@ -460,7 +468,7 @@ final class Labels {
 						'full' => __( 'Full width', 'pergel-engine' ),
 					),
 				),
-				'filters'        => array(
+				'filters'          => array(
 					'label'   => __( 'Filter area', 'pergel-engine' ),
 					'help'    => __( 'Where the filters sit next to the products on wide screens. A panel hides them behind a "Filter products" button above the products, as on phones. Phones always use the panel.', 'pergel-engine' ),
 					'cards'   => true,
@@ -472,7 +480,7 @@ final class Labels {
 						'none'     => __( 'No filters', 'pergel-engine' ),
 					),
 				),
-				'drawer_side'    => array(
+				'drawer_side'      => array(
 					'label'   => __( 'Panel opens from', 'pergel-engine' ),
 					'help'    => __( 'The side the filter panel slides in from, on phones too.', 'pergel-engine' ),
 					'cards'   => true,
@@ -481,7 +489,7 @@ final class Labels {
 						'right' => __( 'Right', 'pergel-engine' ),
 					),
 				),
-				'filters_sticky' => array(
+				'filters_sticky'   => array(
 					'label'   => __( 'While scrolling', 'pergel-engine' ),
 					'help'    => __( 'With "Stays in view" the filter column stops at the top of the screen while the products scroll. "Scrolls on its own" also gives a long filter column its own scroll bar.', 'pergel-engine' ),
 					'cards'   => true,
@@ -491,23 +499,23 @@ final class Labels {
 						'scroll' => __( 'Scrolls on its own', 'pergel-engine' ),
 					),
 				),
-				'filters_fold'   => array(
+				'filters_fold'     => array(
 					'label' => __( 'Filter groups open and close', 'pergel-engine' ),
 					'help'  => __( 'Each filter heading becomes a button that hides or shows its options. All groups start open.', 'pergel-engine' ),
 				),
-				'filters_search' => array(
+				'filters_search'   => array(
 					'label' => __( 'Search box in long filter lists', 'pergel-engine' ),
 					'help'  => __( 'Lists with more than eight options, such as categories or brands, get a box that narrows them down as the visitor types.', 'pergel-engine' ),
 				),
-				'filter_brand'   => array(
+				'filter_brand'     => array(
 					'label' => __( 'Brand filter', 'pergel-engine' ),
 					'help'  => __( 'Filters by the WooCommerce brands (Products → Brands). Shown only while brands have products.', 'pergel-engine' ),
 				),
-				'filter_rating'  => array(
+				'filter_rating'    => array(
 					'label' => __( 'Rating filter', 'pergel-engine' ),
 					'help'  => __( 'Filters by the average customer rating. Shown only while rated products exist.', 'pergel-engine' ),
 				),
-				'view'           => array(
+				'view'             => array(
 					'label'   => __( 'Products are shown as', 'pergel-engine' ),
 					'help'    => __( 'The list shows each product in a row, with its picture beside the name, price and short description.', 'pergel-engine' ),
 					'cards'   => true,
@@ -516,15 +524,15 @@ final class Labels {
 						'list' => __( 'List', 'pergel-engine' ),
 					),
 				),
-				'view_switch'    => array(
+				'view_switch'      => array(
 					'label' => __( 'Grid and list buttons', 'pergel-engine' ),
 					'help'  => __( 'Visitors can switch between the grid and the list next to the sorting menu. Their choice is kept in their browser.', 'pergel-engine' ),
 				),
-				'per_page_menu'  => array(
+				'per_page_menu'    => array(
 					'label' => __( 'Products per page menu', 'pergel-engine' ),
 					'help'  => __( 'Numbers visitors can choose from next to the sorting menu, separated by commas, e.g. 12, 24, 48. Up to six numbers from 1 to 96. Leave empty for no menu.', 'pergel-engine' ),
 				),
-				'paging'         => array(
+				'paging'           => array(
 					'label'   => __( 'More products', 'pergel-engine' ),
 					'help'    => __( '"Load more" adds the next products under the ones on screen. "Load while scrolling" does it on its own when the visitor nears the end, and keeps the button for keyboard users. The page numbers stay in the page for search engines and without JavaScript.', 'pergel-engine' ),
 					'cards'   => true,
@@ -534,11 +542,11 @@ final class Labels {
 						'scroll'   => __( 'Load while scrolling', 'pergel-engine' ),
 					),
 				),
-				'banner'         => array(
+				'banner'           => array(
 					'label' => __( 'Banner', 'pergel-engine' ),
 					'help'  => __( 'A pattern shown above the products, e.g. a campaign. Make it under Appearance → Editor → Patterns.', 'pergel-engine' ),
 				),
-				'card_style'     => array(
+				'card_style'       => array(
 					'label'   => __( 'Card style', 'pergel-engine' ),
 					'help'    => __( 'For the products in every product grid: the shop, categories, and grids on other pages such as "New arrivals". "Buttons on the picture" puts the wishlist and compare buttons on the product picture; they show when the pointer is over the card, and always on touch screens.', 'pergel-engine' ),
 					'cards'   => true,
@@ -550,43 +558,43 @@ final class Labels {
 						'plain'    => __( 'Plain, centred', 'pergel-engine' ),
 					),
 				),
-				'card_category'  => array(
+				'card_category'    => array(
 					'label' => __( 'Category on cards', 'pergel-engine' ),
 					'help'  => __( "The product's category above its name, as a link.", 'pergel-engine' ),
 				),
-				'card_brand'     => array(
+				'card_brand'       => array(
 					'label' => __( 'Brand on cards', 'pergel-engine' ),
 					'help'  => __( "The product's brand (Products → Brands) above its name.", 'pergel-engine' ),
 				),
-				'card_rating'    => array(
+				'card_rating'      => array(
 					'label' => __( 'Rating on cards', 'pergel-engine' ),
 					'help'  => __( 'Stars and the number of reviews under the name, for products with reviews.', 'pergel-engine' ),
 				),
-				'card_discount'  => array(
+				'card_discount'    => array(
 					'label' => __( 'Discount on cards', 'pergel-engine' ),
 					'help'  => __( 'The discount in per cent beside the price, e.g. -15%. For products with options, the largest one.', 'pergel-engine' ),
 				),
-				'card_stock'     => array(
+				'card_stock'       => array(
 					'label' => __( 'Stock on cards', 'pergel-engine' ),
 					'help'  => __( 'How many are left, for products whose stock is counted, or "Out of stock", beside the price.', 'pergel-engine' ),
 				),
-				'card_hover'     => array(
+				'card_hover'       => array(
 					'label' => __( 'Second picture', 'pergel-engine' ),
 					'help'  => __( 'The first gallery picture shows while the pointer is over the card. Not on touch screens.', 'pergel-engine' ),
 				),
-				'card_countdown' => array(
+				'card_countdown'   => array(
 					'label' => __( 'Sale countdown', 'pergel-engine' ),
 					'help'  => __( 'Days, hours, minutes and seconds left on the picture, for products whose sale has an end date (Product data → General → Schedule).', 'pergel-engine' ),
 				),
-				'card_stock_bar' => array(
+				'card_stock_bar'   => array(
 					'label' => __( 'Stock bar', 'pergel-engine' ),
 					'help'  => __( 'A bar with how many were sold and how many are left, for products whose stock is counted.', 'pergel-engine' ),
 				),
-				'quick_view'     => array(
+				'quick_view'       => array(
 					'label' => __( 'Quick view', 'pergel-engine' ),
 					'help'  => __( 'A button on the picture opens the product in a window: pictures, price, short description and, for simple products, the add to cart button.', 'pergel-engine' ),
 				),
-				'badge_sale'     => array(
+				'badge_sale'       => array(
 					'label'   => __( 'Sale badge', 'pergel-engine' ),
 					'cards'   => true,
 					'choices' => array(
@@ -595,19 +603,19 @@ final class Labels {
 						'none'     => __( 'None', 'pergel-engine' ),
 					),
 				),
-				'badge_new'      => array(
+				'badge_new'        => array(
 					'label' => __( '"New" badge, days', 'pergel-engine' ),
 					'help'  => __( 'Products published in the last this many days are marked new. 0 turns the badge off.', 'pergel-engine' ),
 				),
-				'badge_featured' => array(
+				'badge_featured'   => array(
 					'label' => __( '"Popular" badge', 'pergel-engine' ),
 					'help'  => __( 'On featured products (the star in Products → All products).', 'pergel-engine' ),
 				),
-				'badge_sold_out' => array(
+				'badge_sold_out'   => array(
 					'label' => __( '"Sold out" badge', 'pergel-engine' ),
 					'help'  => __( 'On products that are out of stock. A product can also show its own badge: Product data → General → Badge.', 'pergel-engine' ),
 				),
-				'category_strip' => array(
+				'category_strip'   => array(
 					'label'   => __( 'Category strip', 'pergel-engine' ),
 					'help'    => __( 'A row of category links above the products: the main categories in the shop, the subcategories in a category. Pictures come from the category image. The same cards can go on any page with the Category cards block.', 'pergel-engine' ),
 					'cards'   => true,
@@ -618,6 +626,65 @@ final class Labels {
 						'list'   => __( 'Boxes with subcategories', 'pergel-engine' ),
 						'names'  => __( 'Names only', 'pergel-engine' ),
 					),
+				),
+				'product_layout'   => array(
+					'label'   => __( 'Layout', 'pergel-engine' ),
+					'help'    => __( 'Where the pictures go on the product page. "Three columns" adds a column of recommended products: the product\'s upsells, else related products. A category or a product can choose its own.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'left'     => __( 'Pictures on the left', 'pergel-engine' ),
+						'right'    => __( 'Pictures on the right', 'pergel-engine' ),
+						'three'    => __( 'Three columns', 'pergel-engine' ),
+					),
+				),
+				'product_thumbs'   => array(
+					'label'   => __( 'Small pictures', 'pergel-engine' ),
+					'help'    => __( 'The row of small pictures that picks the big one. "All pictures" shows every picture one under the other, two in a row after the first.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'left'     => __( 'Beside the picture', 'pergel-engine' ),
+						'bottom'   => __( 'Under the picture', 'pergel-engine' ),
+						'none'     => __( 'None', 'pergel-engine' ),
+						'grid'     => __( 'All pictures', 'pergel-engine' ),
+					),
+				),
+				'product_sticky'   => array(
+					'label' => __( 'Keep the details in view', 'pergel-engine' ),
+					'help'  => __( 'The name, price and button stay on screen while the pictures scroll past. Wide screens only.', 'pergel-engine' ),
+				),
+				'product_zoom'     => array(
+					'label' => __( 'Zoom on hover', 'pergel-engine' ),
+					'help'  => __( 'The big picture zooms in under the pointer.', 'pergel-engine' ),
+				),
+				'product_badges'   => array(
+					'label' => __( 'Badges on the pictures', 'pergel-engine' ),
+					'help'  => __( 'The badges chosen for product cards (own badge, New, Popular, Sold out) on the big picture too.', 'pergel-engine' ),
+				),
+				'product_nav'      => array(
+					'label' => __( 'Previous and next product', 'pergel-engine' ),
+					'help'  => __( 'Arrows beside the breadcrumb to the previous and next product in the same category, and a link back to the category.', 'pergel-engine' ),
+				),
+				'product_banner'   => array(
+					'label' => __( 'Banner', 'pergel-engine' ),
+					'help'  => __( 'A pattern above the product name, e.g. an offer for registered customers. Make it under Appearance → Editor → Patterns.', 'pergel-engine' ),
+				),
+				'product_category' => array(
+					'label' => __( 'Category above the name', 'pergel-engine' ),
+					'help'  => __( "The product's category as a link.", 'pergel-engine' ),
+				),
+				'product_brand'    => array(
+					'label' => __( 'Brand', 'pergel-engine' ),
+					'help'  => __( "The product's brand (Products → Brands) under its name, with the brand's picture when it has one.", 'pergel-engine' ),
+				),
+				'product_discount' => array(
+					'label' => __( 'Discount beside the price', 'pergel-engine' ),
+					'help'  => __( 'The discount in per cent, e.g. -15%. For products with options, the largest one.', 'pergel-engine' ),
+				),
+				'product_stock'    => array(
+					'label' => __( 'Stock beside the price', 'pergel-engine' ),
+					'help'  => __( 'How many are left, for products whose stock is counted, or "Out of stock".', 'pergel-engine' ),
 				),
 			),
 		);
