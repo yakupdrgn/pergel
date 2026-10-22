@@ -73,6 +73,7 @@ final class Layout {
 		// Listing and ShopHeader load only on the pages that use them.
 		add_filter( 'render_block_woocommerce/catalog-sorting', array( Listing::class, 'toolbar' ) );
 		add_filter( 'render_block_core/term-description', array( self::class, 'above' ) );
+		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
 		add_filter( 'wp_robots', array( self::class, 'robots' ) );
 		add_action( 'wp', array( self::class, 'cards' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
@@ -130,6 +131,21 @@ final class Layout {
 	 */
 	public static function above( string $html ): string {
 		return self::listing() ? ShopHeader::render( $html ) : $html;
+	}
+
+	/**
+	 * The banner and category strip before the shop layout columns, when
+	 * the template draws its term description only after the products.
+	 *
+	 * @param string               $html  Rendered columns.
+	 * @param array<string, mixed> $block Parsed block.
+	 */
+	public static function before_layout( string $html, array $block ): string {
+		$classes = $block['attrs']['className'] ?? '';
+		if ( ! is_string( $classes ) || ! in_array( 'pergel-shop-layout', explode( ' ', $classes ), true ) || ! self::listing() ) {
+			return $html;
+		}
+		return ShopHeader::before( $html );
 	}
 
 	/**

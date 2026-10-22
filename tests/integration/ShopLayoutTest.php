@@ -432,5 +432,23 @@ final class ShopLayoutTest extends TestCase {
 		$html = ShopHeader::render( '<p>About</p>' );
 		$this->assertStringStartsWith( '<p>About</p><nav class="pergel-category-strip is-names', $html, 'An unpublished banner shows nothing.' );
 		$this->assertStringContainsString( esc_html( $child->name ), $html );
+
+		// A template with the description under the products: they go
+		// before the shop layout, once.
+		$top = $this->category( 'Strip top' );
+		$sub = $this->category( 'Strip sub', $top->term_id );
+		wp_set_object_terms( $this->product, array( $top->term_id, $sub->term_id ), 'product_cat' );
+		Settings::update(
+			array(
+				'shop' => array(
+					'banner'         => 0,
+					'category_strip' => 'images',
+				),
+			)
+		);
+		$this->go_to( array( 'product_cat' => $top->slug ) );
+		$html = do_blocks( self::COLUMNS . '<!-- wp:term-description /-->' );
+		$this->assertStringStartsWith( '<nav class="pergel-category-strip is-images', $html );
+		$this->assertSame( 1, substr_count( $html, '<nav class="pergel-category-strip' ) );
 	}
 }

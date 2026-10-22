@@ -10,14 +10,16 @@ declare( strict_types=1 );
 namespace Pergel\Woo;
 
 /**
- * The "Above the products" shop settings, shown after the listing's term
- * description (the shop page has the same block, empty):
+ * The "Above the products" shop settings:
  *
  * - a banner: a synced pattern, e.g. a campaign;
  * - a category strip: the main categories in the shop, the subcategories
  *   in a category, as links with pictures or as names.
  *
- * Both default to nothing.
+ * They go after the listing's term description (the shop page has the same
+ * block, empty) or before the shop layout columns, whichever the template
+ * draws first, so a template with the description under the products still
+ * shows them above. Both default to nothing.
  */
 final class ShopHeader {
 
@@ -35,20 +37,49 @@ final class ShopHeader {
 	private static bool $drawing = false;
 
 	/**
+	 * The page they were drawn on ("shop" or a category id), so they are
+	 * drawn once.
+	 *
+	 * @var string
+	 */
+	private static string $drawn = '';
+
+	/**
 	 * Adds the banner and the strip after the term description.
 	 *
 	 * @param string $html Rendered term description; empty on the shop page.
 	 */
 	public static function render( string $html ): string {
+		return $html . self::once();
+	}
+
+	/**
+	 * Adds the banner and the strip before the shop layout columns.
+	 *
+	 * @param string $html Rendered columns.
+	 */
+	public static function before( string $html ): string {
+		return self::once() . $html;
+	}
+
+	/**
+	 * The banner and the strip, the first time they are asked for on this
+	 * page; empty after that.
+	 */
+	private static function once(): string {
 		if ( self::$drawing || ! self::shop_or_category() ) {
-			return $html;
+			return '';
+		}
+		$page = is_shop() ? 'shop' : (string) get_queried_object_id();
+		if ( self::$drawn === $page ) {
+			return '';
 		}
 		$extra = self::banner() . self::strip();
-		if ( '' === $extra ) {
-			return $html;
+		if ( '' !== $extra ) {
+			self::$drawn = $page;
+			Layout::style();
 		}
-		Layout::style();
-		return $html . $extra;
+		return $extra;
 	}
 
 	/**
