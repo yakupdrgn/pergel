@@ -156,13 +156,17 @@ final class Labels {
 				),
 			),
 			'shop'        => array(
-				'grid' => array(
+				'grid'    => array(
 					'title'  => __( 'Product grid', 'pergel-engine' ),
 					'fields' => array( 'columns', 'columns_tablet', 'columns_phone', 'per_page' ),
 				),
-				'page' => array(
+				'page'    => array(
 					'title'  => __( 'Page', 'pergel-engine' ),
 					'fields' => array( 'width' ),
+				),
+				'filters' => array(
+					'title'  => __( 'Filters', 'pergel-engine' ),
+					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filters_fold', 'filters_search', 'filter_brand', 'filter_rating' ),
 				),
 			),
 		);
@@ -439,6 +443,53 @@ final class Labels {
 						'wide' => __( 'As in the template', 'pergel-engine' ),
 						'full' => __( 'Full width', 'pergel-engine' ),
 					),
+				),
+				'filters'        => array(
+					'label'   => __( 'Filter area', 'pergel-engine' ),
+					'help'    => __( 'Where the filters sit next to the products on wide screens. A panel hides them behind a "Filter products" button above the products, as on phones. Phones always use the panel.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'left'     => __( 'Left', 'pergel-engine' ),
+						'right'    => __( 'Right', 'pergel-engine' ),
+						'drawer'   => __( 'Panel', 'pergel-engine' ),
+						'none'     => __( 'No filters', 'pergel-engine' ),
+					),
+				),
+				'drawer_side'    => array(
+					'label'   => __( 'Panel opens from', 'pergel-engine' ),
+					'help'    => __( 'The side the filter panel slides in from, on phones too.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'left'  => __( 'Left', 'pergel-engine' ),
+						'right' => __( 'Right', 'pergel-engine' ),
+					),
+				),
+				'filters_sticky' => array(
+					'label'   => __( 'While scrolling', 'pergel-engine' ),
+					'help'    => __( 'With "Stays in view" the filter column stops at the top of the screen while the products scroll. "Scrolls on its own" also gives a long filter column its own scroll bar.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'off'    => __( 'Scrolls with the page', 'pergel-engine' ),
+						'sticky' => __( 'Stays in view', 'pergel-engine' ),
+						'scroll' => __( 'Scrolls on its own', 'pergel-engine' ),
+					),
+				),
+				'filters_fold'   => array(
+					'label' => __( 'Filter groups open and close', 'pergel-engine' ),
+					'help'  => __( 'Each filter heading becomes a button that hides or shows its options. All groups start open.', 'pergel-engine' ),
+				),
+				'filters_search' => array(
+					'label' => __( 'Search box in long filter lists', 'pergel-engine' ),
+					'help'  => __( 'Lists with more than eight options, such as categories or brands, get a box that narrows them down as the visitor types.', 'pergel-engine' ),
+				),
+				'filter_brand'   => array(
+					'label' => __( 'Brand filter', 'pergel-engine' ),
+					'help'  => __( 'Filters by the WooCommerce brands (Products → Brands). Shown only while brands have products.', 'pergel-engine' ),
+				),
+				'filter_rating'  => array(
+					'label' => __( 'Rating filter', 'pergel-engine' ),
+					'help'  => __( 'Filters by the average customer rating. Shown only while rated products exist.', 'pergel-engine' ),
 				),
 			),
 		);

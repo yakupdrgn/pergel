@@ -45,27 +45,3 @@
 .wc-block-product-template .wc-block-components-product-image {
 	background-color: var(--wp--preset--color--surface);
 }
-
-/*
- * Products per row on tablets and phones, when the shop settings choose a
- * number (Pergel → Settings → Shop layout). Without one, WooCommerce's own
- * grid steps down as the screen narrows. Breakpoints follow theme.json
- * settings.viewport.
- */
-@media (min-width: 600px) and (max-width: 1023px) {
-	.pergel-columns-tablet > .wc-block-product-template.wc-block-product-template__responsive {
-		grid-template-columns: repeat(var(--pergel-columns-tablet), minmax(0, 1fr));
-	}
-}
-
-@media (max-width: 599px) {
-	.pergel-columns-phone > .wc-block-product-template.wc-block-product-template__responsive {
-		grid-template-columns: repeat(var(--pergel-columns-phone), minmax(0, 1fr));
-	}
-}
-
-/* Full-width shop pages: the wide blocks of the page column fill the
- * screen up to the site's side padding. */
-.pergel-shop-full main.is-layout-constrained > .alignwide {
-	max-width: none;
-}

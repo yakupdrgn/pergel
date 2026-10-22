@@ -1518,6 +1518,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   indirim sayfaları.
 - **Kapsam dışı:** karttaki görüntülenme sayacı (her ziyarette veritabanına yazı), 360°/AR,
   görselle arama, çok satıcılı mağaza, sadakat puanı.
+- **S2 ikiye bölündü:** S2a filtre alanı (yer, panel, sabitleme, katlanan gruplar, liste içi
+  arama, marka ve puan filtresi), S2b araç çubuğu, liste görünümü, sayfalama türleri, kampanya bandı
+  ve kategori şeridi.
+- **S2a sınırları:** panel yalnızca soldan ya da sağdan açılır (WooCommerce'in `overlayPosition`
+  seçenekleri; Unimart'taki üst/alt panel yok). "Daha fazla göster" sınırı WooCommerce'te 15'e
+  sabit, ayrı bir ayar yok. Düzen CSS'i temanın blok CSS dosyalarına eklenince satır içi CSS
+  sınırını aşıp her mağaza sayfasına ayrı bir istek ekliyordu; bu yüzden motora taşındı ve
+  yalnızca bir ayar seçildiğinde yüklenir.
 
 ## Aşamalar ve bitti tanımları
 

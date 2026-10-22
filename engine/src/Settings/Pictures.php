@@ -31,6 +31,8 @@ final class Pictures {
 		$shapes = match ( "$group.$key" ) {
 			'shop.columns', 'shop.columns_tablet', 'shop.columns_phone' => self::grid( $option ),
 			'shop.width' => self::width( $option ),
+			'shop.filters', 'shop.drawer_side' => self::filters( $option ),
+			'shop.filters_sticky' => self::sticky( $option ),
 			default      => '',
 		};
 		if ( '' === $shapes ) {
@@ -91,5 +93,42 @@ final class Pictures {
 			$side,
 			self::WIDTH - 2 * $side
 		);
+	}
+
+	/**
+	 * The filter column (outlined) beside the product tiles, or the panel
+	 * button above them.
+	 *
+	 * @param string $option Filter area or panel side.
+	 */
+	private static function filters( string $option ): string {
+		$tiles  = static fn ( int $x, int $width ): string => sprintf(
+			'<rect x="%1$d" y="9" width="%2$d" height="10" rx="1.5" fill="currentColor"/><rect x="%1$d" y="22" width="%2$d" height="10" rx="1.5" fill="currentColor"/>',
+			$x,
+			$width
+		);
+		$column = static fn ( int $x ): string => sprintf( '<rect x="%d.5" y="9.5" width="13" height="22" rx="1.5" fill="none" stroke="currentColor"/>', $x );
+		return match ( $option ) {
+			'left'     => $column( 5 ) . $tiles( 22, 37 ),
+			'right'    => $tiles( 5, 37 ) . $column( 45 ),
+			'drawer'   => '<rect x="5.5" y="5.5" width="14" height="5" rx="1.5" fill="none" stroke="currentColor"/><rect x="5" y="14" width="54" height="8" rx="1.5" fill="currentColor"/><rect x="5" y="25" width="54" height="8" rx="1.5" fill="currentColor"/>',
+			'none'     => $tiles( 5, 54 ),
+			'template' => '<g stroke-dasharray="3 2">' . $column( 5 ) . '</g><g opacity="0.5">' . $tiles( 22, 37 ) . '</g>',
+			default    => '',
+		};
+	}
+
+	/**
+	 * The filter column against the page while scrolling.
+	 *
+	 * @param string $option "off", "sticky" or "scroll".
+	 */
+	private static function sticky( string $option ): string {
+		$page = '<rect x="24" y="5" width="35" height="30" rx="1.5" fill="currentColor" opacity="0.35"/>';
+		return $page . match ( $option ) {
+			'sticky' => '<rect x="5.5" y="5.5" width="14" height="20" rx="1.5" fill="none" stroke="currentColor"/><path d="M12.5 29v6" stroke="currentColor"/>',
+			'scroll' => '<rect x="5.5" y="5.5" width="14" height="29" rx="1.5" fill="none" stroke="currentColor"/><rect x="16" y="9" width="2" height="9" rx="1" fill="currentColor"/>',
+			default  => '<rect x="5.5" y="12.5" width="14" height="22" rx="1.5" fill="none" stroke="currentColor"/><path d="M12.5 4v6" stroke="currentColor"/>',
+		};
 	}
 }

@@ -302,6 +302,40 @@ final class Schema {
 					'default' => 'wide',
 					'levels'  => array( 'category' ),
 				),
+				// Filters; see Pergel\Woo\Filters.
+				'filters'        => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'left', 'right', 'drawer', 'none' ),
+					'default' => 'template',
+					'levels'  => array( 'category' ),
+				),
+				'drawer_side'    => array(
+					'type'    => 'enum',
+					'options' => array( 'left', 'right' ),
+					'default' => 'left',
+					'levels'  => array( 'category' ),
+				),
+				'filters_sticky' => array(
+					'type'    => 'enum',
+					'options' => array( 'off', 'sticky', 'scroll' ),
+					'default' => 'off',
+				),
+				'filters_fold'   => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'filters_search' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'filter_brand'   => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'filter_rating'  => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 		);
 	}

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-22 13:06+0000\n"
-"PO-Revision-Date: 2026-10-22 13:06+0000\n"
+"POT-Creation-Date: 2026-10-22 13:25+0000\n"
+"PO-Revision-Date: 2026-10-22 13:25+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -496,6 +496,9 @@ msgstr "Hız"
 msgid "Product grid"
 msgstr "Ürün ızgarası"
 
+msgid "Filters"
+msgstr "Filtreler"
+
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr "Bloklarda (Block Bindings) ve yapılandırılmış veride marka bilgileri."
 
@@ -826,6 +829,69 @@ msgstr "Tam genişlik, kenarlarda küçük bir boşluk bırakarak bütün ekran�
 msgid "Full width"
 msgstr "Tam genişlik"
 
+msgid "Filter area"
+msgstr "Filtre alanı"
+
+msgid "Where the filters sit next to the products on wide screens. A panel hides them behind a \"Filter products\" button above the products, as on phones. Phones always use the panel."
+msgstr "Geniş ekranlarda filtrelerin ürünlerin neresinde duracağı. Panel, filtreleri telefondaki gibi ürünlerin üstündeki \"Ürünleri filtrele\" düğmesinin arkasına alır. Telefonlar her zaman paneli kullanır."
+
+msgid "Left"
+msgstr "Sol"
+
+msgid "Right"
+msgstr "Sağ"
+
+msgid "Panel"
+msgstr "Panel"
+
+msgid "No filters"
+msgstr "Filtre yok"
+
+msgid "Panel opens from"
+msgstr "Panelin açıldığı yer"
+
+msgid "The side the filter panel slides in from, on phones too."
+msgstr "Filtre panelinin kayarak geldiği taraf; telefonlarda da geçerlidir."
+
+msgid "While scrolling"
+msgstr "Sayfa kayarken"
+
+msgid "With \"Stays in view\" the filter column stops at the top of the screen while the products scroll. \"Scrolls on its own\" also gives a long filter column its own scroll bar."
+msgstr "\"Görünür kalır\" seçilirse ürünler kayarken filtre sütunu ekranın üstünde durur. \"Kendi içinde kayar\" ayrıca uzun bir filtre sütununa kendi kaydırma çubuğunu verir."
+
+msgid "Scrolls with the page"
+msgstr "Sayfayla birlikte kayar"
+
+msgid "Stays in view"
+msgstr "Görünür kalır"
+
+msgid "Scrolls on its own"
+msgstr "Kendi içinde kayar"
+
+msgid "Filter groups open and close"
+msgstr "Filtre grupları açılıp kapanır"
+
+msgid "Each filter heading becomes a button that hides or shows its options. All groups start open."
+msgstr "Her filtre başlığı, seçeneklerini gizleyen veya gösteren bir düğmeye dönüşür. Bütün gruplar açık başlar."
+
+msgid "Search box in long filter lists"
+msgstr "Uzun filtre listelerinde arama kutusu"
+
+msgid "Lists with more than eight options, such as categories or brands, get a box that narrows them down as the visitor types."
+msgstr "Kategori veya marka gibi sekizden fazla seçeneği olan listelere, ziyaretçi yazdıkça listeyi daraltan bir kutu eklenir."
+
+msgid "Brand filter"
+msgstr "Marka filtresi"
+
+msgid "Filters by the WooCommerce brands (Products → Brands). Shown only while brands have products."
+msgstr "WooCommerce markalarına göre filtreler (Ürünler → Markalar). Yalnızca ürünü olan markalar varken gösterilir."
+
+msgid "Rating filter"
+msgstr "Puan filtresi"
+
+msgid "Filters by the average customer rating. Shown only while rated products exist."
+msgstr "Ortalama müşteri puanına göre filtreler. Yalnızca puanlanmış ürünler varken gösterilir."
+
 msgid "Same as its category or the shop"
 msgstr "Kategorisi veya mağazayla aynı"
 
@@ -1019,6 +1085,9 @@ msgstr "Bu ürünün fiyatının gösterilip gösterilmeyeceği ve sepete ekleni
 
 msgid "Applies to the products of this category and its subcategories, unless a product chooses its own mode. A product in several categories takes the strictest mode."
 msgstr "Kendi modunu seçen ürünler dışında, bu kategorinin ve alt kategorilerinin ürünlerine uygulanır. Birden fazla kategoride bulunan bir ürün en kısıtlayıcı modu alır."
+
+msgid "Search the options"
+msgstr "Seçeneklerde ara"
 
 msgid "Inherit"
 msgstr "Üsttekiyle aynı"
@@ -1508,9 +1577,6 @@ msgstr "Google Maps'te aranır. Marka ayarlarındaki adresi kullanmak için boş
 
 msgid "Zoom"
 msgstr "Yakınlaştırma"
-
-msgid "Panel"
-msgstr "Panel"
 
 msgid "A template part in the Mega menu area. Edit it under Site Editor → Patterns."
 msgstr "Mega menü alanındaki bir şablon parçası. Site düzenleyici → Desenler bölümünden düzenleyin."

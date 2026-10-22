@@ -14,6 +14,7 @@ namespace Pergel\Tests\Integration;
 
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
+use Pergel\Woo\Filters;
 use Pergel\Woo\Layout;
 use Pergel\Woo\LayoutFields;
 use Pergel\Woo\Module as Woo;
@@ -30,6 +31,14 @@ final class ShopLayoutTest extends TestCase {
 	private const GRID = '<!-- wp:woocommerce/product-collection {"queryId":0,"query":{"inherit":true,"isProductCollectionBlock":true,"perPage":12,"postType":"product"},"tagName":"div","displayLayout":{"type":"flex","columns":3,"shrinkColumns":true}} -->'
 		. '<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template --><!-- wp:post-title /--><!-- /wp:woocommerce/product-template --></div>'
 		. '<!-- /wp:woocommerce/product-collection -->';
+
+	/**
+	 * The theme's shop layout: a filter column and a product column.
+	 */
+	private const COLUMNS = '<!-- wp:columns {"className":"pergel-shop-layout"} --><div class="wp-block-columns pergel-shop-layout">'
+		. '<!-- wp:column {"width":"16rem","className":"pergel-shop-layout__filters"} --><div class="wp-block-column pergel-shop-layout__filters" style="flex-basis:16rem"><p>Filters</p></div><!-- /wp:column -->'
+		. '<!-- wp:column {"className":"pergel-shop-layout__products"} --><div class="wp-block-column pergel-shop-layout__products"><p>Products</p></div><!-- /wp:column -->'
+		. '</div><!-- /wp:columns -->';
 
 	/**
 	 * The option as it was before the test (false: not saved).
@@ -85,6 +94,8 @@ final class ShopLayoutTest extends TestCase {
 			wp_delete_term( $term_id, 'product_cat' );
 		}
 		Layout::flush();
+		wp_dequeue_style( Layout::STYLE );
+		wp_dequeue_script_module( Filters::SCRIPT );
 		unset( $_POST['pergel_shop'] );
 		wp_set_current_user( 0 );
 		if ( null !== $this->query ) {
@@ -217,5 +228,78 @@ final class ShopLayoutTest extends TestCase {
 		$_POST['pergel_shop'] = array( 'shop.columns' => '' );
 		LayoutFields::save_category( $term->term_id );
 		$this->assertFalse( metadata_exists( 'term', $term->term_id, Layout::TERM_META ) );
+	}
+
+	public function test_default_filters_change_nothing(): void {
+		$this->go_to( array( 'post_type' => 'product' ) );
+
+		$html = do_blocks( self::COLUMNS );
+
+		$this->assertStringContainsString( 'pergel-shop-layout__filters', $html );
+		$this->assertStringNotContainsString( 'pergel-filters-', $html );
+		$this->assertFalse( wp_style_is( Layout::STYLE ) );
+		$this->assertSame( array(), apply_filters( 'pergel/shop/filters', array() ) );
+		$filters = array(
+			'blockName' => 'woocommerce/product-filters',
+			'attrs'     => array(),
+		);
+		$this->assertSame( $filters, Filters::block_data( $filters ) );
+		$this->assertSame( '<h3 class="wp-block-heading">Price</h3>', Filters::heading( '<h3 class="wp-block-heading">Price</h3>' ) );
+	}
+
+	public function test_filter_area_settings_reach_the_layout(): void {
+		Settings::update(
+			array(
+				'shop' => array(
+					'filters'        => 'right',
+					'filters_sticky' => 'scroll',
+					'filters_fold'   => true,
+					'filter_brand'   => true,
+					'filter_rating'  => true,
+				),
+			)
+		);
+		$this->go_to( array( 'post_type' => 'product' ) );
+
+		$html = do_blocks( self::COLUMNS );
+
+		$this->assertStringContainsString( 'pergel-filters-right', $html );
+		$this->assertStringContainsString( 'pergel-filters-scroll', $html );
+		$this->assertTrue( wp_style_is( Layout::STYLE ) );
+		$this->assertSame( array( 'brand', 'rating' ), apply_filters( 'pergel/shop/filters', array() ) );
+		$this->assertSame(
+			'<div><h3 class="wp-block-heading"><button type="button" class="pergel-filter-toggle" aria-expanded="true">Price</button></h3><h3>Other</h3></div>',
+			Filters::heading( '<div><h3 class="wp-block-heading">Price</h3><h3>Other</h3></div>' )
+		);
+	}
+
+	public function test_panel_and_no_filters(): void {
+		Settings::update(
+			array(
+				'shop' => array(
+					'filters'        => 'drawer',
+					'drawer_side'    => 'right',
+					'filters_sticky' => 'sticky',
+				),
+			)
+		);
+		$this->go_to( array( 'post_type' => 'product' ) );
+
+		$html = do_blocks( self::COLUMNS );
+		$this->assertStringContainsString( 'pergel-filters-drawer', $html );
+		$this->assertStringNotContainsString( 'pergel-filters-sticky', $html, 'A panel does not stick.' );
+		$filters = Filters::block_data(
+			array(
+				'blockName' => 'woocommerce/product-filters',
+				'attrs'     => array(),
+			)
+		);
+		$this->assertSame( 'always', $filters['attrs']['overlayMode'] );
+		$this->assertSame( 'right', $filters['attrs']['overlayPosition'] );
+
+		Settings::update( array( 'shop' => array( 'filters' => 'none' ) ) );
+		$html = do_blocks( self::COLUMNS );
+		$this->assertStringNotContainsString( 'pergel-shop-layout__filters', $html );
+		$this->assertStringContainsString( 'pergel-shop-layout__products', $html );
 	}
 }

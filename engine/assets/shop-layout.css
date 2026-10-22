@@ -1,0 +1,141 @@
+/*
+ * Shop layout settings (Pergel → Settings → Shop layout): Pergel\Woo\Layout
+ * and Pergel\Woo\Filters add the classes below, and load this file, only
+ * on listing pages where a setting was chosen. Small enough to be inlined.
+ * Breakpoints follow theme.json settings.viewport; the filter rules start
+ * where WooCommerce's own phone panel ends (783px).
+ */
+/* Products per row on tablets and phones. Without a number, WooCommerce's
+ * own grid steps down as the screen narrows. */
+@media (min-width: 600px) and (max-width: 1023px) {
+	.pergel-columns-tablet > .wc-block-product-template.wc-block-product-template__responsive {
+		grid-template-columns: repeat(var(--pergel-columns-tablet), minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 599px) {
+	.pergel-columns-phone > .wc-block-product-template.wc-block-product-template__responsive {
+		grid-template-columns: repeat(var(--pergel-columns-phone), minmax(0, 1fr));
+	}
+}
+
+/* Full-width shop pages: the wide blocks of the page column fill the
+ * screen up to the site's side padding. */
+.pergel-shop-full main.is-layout-constrained > .alignwide {
+	max-width: none;
+}
+
+/* Filter column position and scrolling. Phones keep WooCommerce's own
+ * panel. */
+@media (min-width: 783px) {
+	.pergel-shop-layout.pergel-filters-left {
+		flex-direction: row;
+	}
+
+	.pergel-shop-layout.pergel-filters-right {
+		flex-direction: row-reverse;
+	}
+
+	.pergel-filters-sticky > .pergel-shop-layout__filters,
+	.pergel-filters-scroll > .pergel-shop-layout__filters {
+		position: sticky;
+		top: calc(var(--wp-admin--admin-bar--height, 0px) + var(--wp--preset--spacing--40));
+		align-self: flex-start;
+	}
+
+	.pergel-filters-scroll > .pergel-shop-layout__filters {
+		max-height: calc(100vh - var(--wp-admin--admin-bar--height, 0px) - 2 * var(--wp--preset--spacing--40));
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		scrollbar-width: thin;
+		padding-inline-end: var(--wp--preset--spacing--20);
+	}
+}
+
+/* Panel: the filter column becomes a row with the "Filter products"
+ * button above the products. */
+/* Core keeps wide-screen columns on one line with !important. */
+.pergel-shop-layout.pergel-filters-drawer {
+	flex-wrap: wrap !important;
+	row-gap: var(--wp--preset--spacing--30);
+}
+
+.pergel-shop-layout.pergel-filters-drawer > .wp-block-column {
+	flex-basis: 100% !important;
+}
+
+.pergel-filters-drawer .wc-block-product-filters .wc-block-product-filters__open-overlay {
+	gap: 0.5em;
+	padding: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
+	border: 1px solid var(--wp--preset--color--line);
+	border-radius: var(--wp--custom--radius--small);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+/* Filter groups that open and close: the heading is a button. */
+.wc-block-product-filters .pergel-filter-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--wp--preset--spacing--20);
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-align: start;
+	cursor: pointer;
+}
+
+.wc-block-product-filters .pergel-filter-toggle::after {
+	content: "";
+	flex: none;
+	width: 0.5em;
+	height: 0.5em;
+	border-right: 2px solid currentcolor;
+	border-bottom: 2px solid currentcolor;
+	transform: translateY(25%) rotate(-135deg);
+	transition: transform 0.2s;
+}
+
+.wc-block-product-filters .pergel-filter-toggle[aria-expanded="false"]::after {
+	transform: translateY(-25%) rotate(45deg);
+}
+
+.wc-block-product-filters .pergel-filter-toggle:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+.wc-block-product-filters .is-pergel-folded > :not(.wp-block-heading) {
+	display: none;
+}
+
+.wc-block-product-filters .is-pergel-folded > .wp-block-heading {
+	margin-bottom: 0;
+}
+
+/* Search box in long option lists; a search shows only the matches. */
+.wc-block-product-filters .pergel-filter-search {
+	box-sizing: border-box;
+	width: 100%;
+	margin-bottom: var(--wp--preset--spacing--20);
+	padding: 0.5em 0.75em;
+	border: 1px solid var(--wp--preset--color--muted);
+	border-radius: var(--wp--custom--radius--small);
+	background: var(--wp--preset--color--base);
+	color: inherit;
+	font: inherit;
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__item[data-pergel-miss] {
+	display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.wc-block-product-filters .pergel-filter-toggle::after {
+		transition: none;
+	}
+}

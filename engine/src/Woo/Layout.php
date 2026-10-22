@@ -12,6 +12,9 @@ namespace Pergel\Woo;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 
+use const Pergel\FILE;
+use const Pergel\VERSION;
+
 /**
  * Applies the "shop" settings to the product listing pages: the shop, product
  * categories, product tags and product search. The templates stay plain
@@ -27,6 +30,8 @@ use Pergel\Settings\Settings;
 final class Layout {
 
 	public const TERM_META = 'pergel_shop';
+
+	public const STYLE = 'pergel-shop-layout';
 
 	/**
 	 * Templates that hold the main product grid.
@@ -48,10 +53,14 @@ final class Layout {
 		add_action( 'updated_term_meta', array( self::class, 'flush' ) );
 		add_action( 'added_term_meta', array( self::class, 'flush' ) );
 		add_action( 'deleted_term_meta', array( self::class, 'flush' ) );
+		// Also for the editors, so the theme's filter pattern looks the same there.
+		add_filter( 'pergel/shop/filters', array( Filters::class, 'groups' ) );
 		if ( is_admin() ) {
 			LayoutFields::register();
 			return;
 		}
+		Filters::register();
+		add_action( 'init', array( self::class, 'register_style' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
@@ -74,6 +83,22 @@ final class Layout {
 				'show_in_rest'      => false,
 			)
 		);
+	}
+
+	/**
+	 * Registers the layout CSS; WordPress inlines it, as it is small.
+	 */
+	public static function register_style(): void {
+		wp_register_style( self::STYLE, plugins_url( 'assets/shop-layout.css', FILE ), array(), VERSION );
+		wp_style_add_data( self::STYLE, 'path', dirname( FILE ) . '/assets/shop-layout.css' );
+	}
+
+	/**
+	 * Loads the layout CSS on this page. Called wherever a setting adds one
+	 * of its classes; the shop templates render before the head is printed.
+	 */
+	public static function style(): void {
+		wp_enqueue_style( self::STYLE );
 	}
 
 	/**
@@ -190,7 +215,7 @@ final class Layout {
 
 	/**
 	 * Columns on tablets and phones, as classes and custom properties on the
-	 * grid; the theme's Product Template style reads them.
+	 * grid; shop-layout.css reads them.
 	 *
 	 * @param string               $html  Rendered block.
 	 * @param array<string, mixed> $block Parsed block.
@@ -198,6 +223,10 @@ final class Layout {
 	public static function grid( string $html, array $block ): string {
 		if ( ! self::main_grid( $block ) || ! self::listing() ) {
 			return $html;
+		}
+		// The body class for the full width comes after the head is printed.
+		if ( 'full' === self::get( 'shop.width' ) ) {
+			self::style();
 		}
 		$classes = array();
 		$styles  = array();
@@ -218,6 +247,7 @@ final class Layout {
 		if ( ! $tags->next_tag() ) {
 			return $html;
 		}
+		self::style();
 		foreach ( $classes as $class ) {
 			$tags->add_class( $class );
 		}
