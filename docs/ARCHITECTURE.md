@@ -768,6 +768,15 @@ görünmez (`Settings\Screen::shown`).
   deposu ile sepet/ödeme bloklarının `@wordpress/data` deposu bunu yayınlar) sepeti bir kez okur,
   çubukları ve sepet sayısını değiştirir; WooCommerce'in kilitli `woocommerce` iAPI deposu
   kullanılmaz. `Woo\Module` bu iki sınıfı yalnızca ayarları açıkken yükler.
+- **Unimart hazır ayarı (`Woo\Preset`, S6b):** Mağaza düzeni sekmesinin üstünde bir kutu.
+  "Değişiklikleri önizle" (`?pergel-preset=unimart`) formun yerine değişecek her ayarı sekme,
+  ad, şu an ve sonra olarak listeler; "Uygula" `admin-post.php?action=pergel_preset_apply`
+  (nonce, `manage_options`) ayarları `Settings::update` ile yazar ve eski değerleri
+  `pergel_preset_undo` seçeneğinde (autoload kapalı) tutar; ikinci uygulama ilk eski değerleri
+  korur. "Geri al" (`pergel_preset_undo`) yalnızca hâlâ hazır ayarın değerini taşıyan ayarları
+  eski hâline getirir, elle değiştirilenlere dokunmaz. Değerler `Preset::values()`'ta (`shop` ve
+  `woo` grupları); istek listesi ve karşılaştırma yalnızca sayfaları ayarlıysa açılır. Kategori
+  ve ürün düzeyindeki seçimlere dokunulmaz. Sınıf yalnızca yönetimde yüklenir.
 - **Satış modları (`Woo\Modes`):** `sale` (fiyat ve sepet herkese), `login` (fiyat girişten
   sonra), `quote` (fiyat yok, teklif) ve `catalog` (fiyat yok). Mağazanın modu `woo.sales_mode`
   ayarında; ürün kategorisi (`pergel_sales_mode` term meta) ve ürün (`_pergel_sales_mode` post

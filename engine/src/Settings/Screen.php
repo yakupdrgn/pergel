@@ -13,6 +13,7 @@ use Pergel\Core\Svg;
 use Pergel\Seo\Detect;
 use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
+use Pergel\Woo\Preset;
 
 use const Pergel\FILE;
 use const Pergel\VERSION;
@@ -168,6 +169,15 @@ final class Screen {
 			);
 		}
 		echo '</nav>';
+
+		if ( 'shop' === $tab && Preset::previewing() ) {
+			echo Preset::preview(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Preset.
+			echo '</div>';
+			return;
+		}
+		if ( 'shop' === $tab ) {
+			echo Preset::box(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Preset.
+		}
 
 		echo '<form method="post" action="options.php">';
 		settings_fields( 'pergel' );

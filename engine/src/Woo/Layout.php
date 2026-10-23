@@ -133,6 +133,7 @@ final class Layout {
 			BadgeField::register();
 			CouponField::register();
 			DetailsFields::register();
+			Preset::register();
 			if ( true === Settings::get( 'shop.details_qa' ) ) {
 				QuestionsAdmin::register();
 			}
