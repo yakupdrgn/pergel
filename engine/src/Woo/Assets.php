@@ -66,6 +66,29 @@ final class Assets {
 		wp_dequeue_style( 'woocommerce-inline' );
 		// Block theme fixes for classic shop markup, all under .woocommerce.
 		wp_dequeue_style( 'woocommerce-blocktheme' );
+		self::icon_font();
+	}
+
+	/**
+	 * WooCommerce's icon font for the blocks that draw stars with it (the
+	 * rating of each review, for one): only the classic stylesheet declares
+	 * it. The declaration alone downloads nothing; the browser fetches the
+	 * font when a star is drawn.
+	 */
+	private static function icon_font(): void {
+		if ( ! wp_style_is( 'wc-blocks-style', 'registered' ) || ! function_exists( 'WC' ) ) {
+			return;
+		}
+		$fonts = WC()->plugin_url() . '/assets/fonts/WooCommerce';
+		$css   = '';
+		foreach ( array( 'WooCommerce', 'star' ) as $family ) {
+			$css .= sprintf(
+				'@font-face{font-family:%1$s;src:url("%2$s.woff2") format("woff2"),url("%2$s.woff") format("woff");font-weight:400;font-style:normal;font-display:block}',
+				$family,
+				esc_url( $fonts )
+			);
+		}
+		wp_add_inline_style( 'wc-blocks-style', $css );
 	}
 
 	/**
