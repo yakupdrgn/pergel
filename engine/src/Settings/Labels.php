@@ -178,7 +178,7 @@ final class Labels {
 				),
 				'cards'   => array(
 					'title'  => __( 'Product cards', 'pergel-engine' ),
-					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view' ),
+					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches' ),
 				),
 				'badges'  => array(
 					'title'  => __( 'Badges', 'pergel-engine' ),
@@ -191,6 +191,10 @@ final class Labels {
 				'summary' => array(
 					'title'  => __( 'Beside the pictures', 'pergel-engine' ),
 					'fields' => array( 'product_banner', 'product_category', 'product_brand', 'product_discount', 'product_stock' ),
+				),
+				'buying'  => array(
+					'title'  => __( 'Buying', 'pergel-engine' ),
+					'fields' => array( 'product_buy_now', 'product_coupons', 'product_share' ),
 				),
 			),
 		);
@@ -685,6 +689,22 @@ final class Labels {
 				'product_stock'    => array(
 					'label' => __( 'Stock beside the price', 'pergel-engine' ),
 					'help'  => __( 'How many are left, for products whose stock is counted, or "Out of stock".', 'pergel-engine' ),
+				),
+				'product_buy_now'  => array(
+					'label' => __( '"Buy now" button', 'pergel-engine' ),
+					'help'  => __( 'Beside "Add to cart", and in the bar at the bottom of the screen: adds the product to the cart and goes straight to the checkout.', 'pergel-engine' ),
+				),
+				'product_coupons'  => array(
+					'label' => __( 'Coupons', 'pergel-engine' ),
+					'help'  => __( 'Coupons that apply to the product, under the add to cart button, with a button that copies the code. Choose them in Marketing → Coupons → Show on product pages.', 'pergel-engine' ),
+				),
+				'product_share'    => array(
+					'label' => __( 'Share links', 'pergel-engine' ),
+					'help'  => __( 'Links that share the product on Facebook, X, LinkedIn, WhatsApp, Pinterest and by email, and a button that copies its address. Plain links: no scripts from those sites.', 'pergel-engine' ),
+				),
+				'card_swatches'    => array(
+					'label' => __( 'Colours on cards', 'pergel-engine' ),
+					'help'  => __( 'For products with options: the colours or pictures of the first attribute with the "Color / image" type, under the name. Choosing one shows that option\'s picture on the card.', 'pergel-engine' ),
 				),
 			),
 		);

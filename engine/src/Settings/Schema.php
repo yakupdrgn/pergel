@@ -411,6 +411,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				'card_swatches'    => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 				'badge_sale'       => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'percent', 'none' ),
@@ -478,6 +482,19 @@ final class Schema {
 					'default' => false,
 				),
 				'product_nav'      => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'product_buy_now'  => array(
+					'type'    => 'bool',
+					'default' => false,
+					'levels'  => array( 'category', 'product' ),
+				),
+				'product_coupons'  => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'product_share'    => array(
 					'type'    => 'bool',
 					'default' => false,
 				),

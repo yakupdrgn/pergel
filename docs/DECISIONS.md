@@ -1558,6 +1558,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   önbelleğiyle çakışmasın diye). "Bütün resimler" ızgarası WooCommerce'in tam ekran penceresini
   kullanmaz; her resim tam boyutuna bağlanır. Önceki/sonraki ürün aynı kategoride
   (`get_adjacent_post`), kategorisiz üründe bütün ürünler arasında.
+- **S4b kararları:** "Hemen al" kendi sepet isteğini yapmaz: formun kendi düğmesine basar, böylece
+  miktar, seçenekler, hata bildirimleri ve mini sepet WooCommerce'te kalır; ödeme sayfasına
+  yalnızca WooCommerce ürünü eklediğini bildirince gidilir. Kuponlar kendiliğinden listelenmez:
+  her kupon ayrıca seçilir (gizli kodlar sızmasın). Kupon kuralları yalnızca ürün ve kategori
+  düzeyinde denetlenir; en az/en çok tutar sepette denetlenir, sayfada "%s üzeri siparişlerde"
+  olarak yazılır. Paylaşımda Web Share API yok: her tarayıcıda aynı görünen düz bağlantılar.
+  Kart renkleri yalnızca WooCommerce'in kendi "Renk / görsel" nitelik türünden gelir; ayrı bir
+  renk alanı eklenmedi.
 
 ## Aşamalar ve bitti tanımları
 

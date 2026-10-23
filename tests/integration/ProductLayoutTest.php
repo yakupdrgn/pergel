@@ -14,6 +14,7 @@ namespace Pergel\Tests\Integration;
 
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
+use Pergel\Woo\CouponField;
 use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
 use Pergel\Woo\ProductPage;
@@ -62,6 +63,13 @@ final class ProductLayoutTest extends TestCase {
 	 */
 	private array $terms = array();
 
+	/**
+	 * Coupons made for the test.
+	 *
+	 * @var list<int>
+	 */
+	private array $coupons = array();
+
 	protected function setUp(): void {
 		// Saved first: tearDown() runs after a skip too.
 		$this->saved = get_option( Settings::OPTION, false );
@@ -86,6 +94,9 @@ final class ProductLayoutTest extends TestCase {
 		foreach ( $this->terms as $id ) {
 			wp_delete_term( $id, 'product_cat' );
 		}
+		foreach ( $this->coupons as $id ) {
+			wp_delete_post( $id, true );
+		}
 		$hooks = array(
 			'render_block_data'                                   => 'gallery_data',
 			'render_block_context'                                => 'zoom',
@@ -95,6 +106,8 @@ final class ProductLayoutTest extends TestCase {
 			'render_block_core/post-title'                        => 'title',
 			'render_block_woocommerce/product-price'              => 'price',
 			'render_block_pergel/breadcrumb'                      => 'nav',
+			'render_block_woocommerce/add-to-cart-with-options'   => 'buying',
+			'render_block_pergel/product-cta'                     => 'share',
 		);
 		foreach ( $hooks as $hook => $method ) {
 			remove_filter( $hook, array( ProductPage::class, $method ), 10 );
@@ -241,6 +254,75 @@ final class ProductLayoutTest extends TestCase {
 		$gallery = ProductPage::gallery_data( $columns['innerBlocks'][0]['innerBlocks'][0] );
 		$this->assertCount( count( $gallery['innerBlocks'] ), array_keys( $gallery['innerContent'], null, true ) );
 		return array_map( static fn ( array $block ): string => (string) $block['blockName'], $gallery['innerBlocks'] );
+	}
+
+	public function test_buy_now_coupons_and_share(): void {
+		[ $id, $term ] = $this->product( 'Page buying' );
+		$this->coupon( 'pergel-shown', array() );
+		$this->coupon( 'pergel-hidden', array(), false );
+		$this->coupon( 'pergel-other-category', array( 'product_categories' => array( $term + 100000 ) ) );
+		Settings::update(
+			array(
+				'shop' => array(
+					'product_buy_now' => true,
+					'product_coupons' => true,
+					'product_share'   => true,
+				),
+			)
+		);
+		$this->go_to( $id );
+		Layout::product_page();
+
+		$html = do_blocks( '<!-- wp:woocommerce/add-to-cart-with-options /--><!-- wp:pergel/product-cta /-->' );
+
+		$this->assertMatchesRegularExpression( '#<button type="button" class="wp-element-button pergel-buy-now" data-pergel-buy-now>[^<]+</button></form>#', $html );
+		$this->assertStringContainsString( 'data-pergel-copy="PERGEL-SHOWN"', $html );
+		$this->assertStringNotContainsString( 'PERGEL-HIDDEN', $html, 'Not chosen for product pages.' );
+		$this->assertStringNotContainsString( 'PERGEL-OTHER-CATEGORY', $html, 'For another category.' );
+		$this->assertStringContainsString( 'https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode( (string) get_permalink( $id ) ), $html );
+		$this->assertStringContainsString( 'class="pergel-share__link is-copy" data-pergel-copy="' . esc_attr( (string) get_permalink( $id ) ) . '"', $html );
+	}
+
+	public function test_coupon_rules(): void {
+		[ $id, $term ] = $this->product( 'Page rules' );
+		$product       = wc_get_product( $id );
+		$this->assertInstanceOf( \WC_Product::class, $product );
+		$coupon = static function ( array $props ): \WC_Coupon {
+			$coupon = new \WC_Coupon();
+			$coupon->set_code( 'rule-' . wp_generate_password( 6, false ) );
+			$coupon->set_props( $props );
+			return $coupon;
+		};
+
+		$this->assertTrue( ProductPage::applies( $coupon( array() ), $product ) );
+		$this->assertTrue( ProductPage::applies( $coupon( array( 'product_categories' => array( $term ) ) ), $product ) );
+		$this->assertFalse( ProductPage::applies( $coupon( array( 'excluded_product_categories' => array( $term ) ) ), $product ) );
+		$this->assertFalse( ProductPage::applies( $coupon( array( 'product_ids' => array( $id + 100000 ) ) ), $product ) );
+		$this->assertFalse( ProductPage::applies( $coupon( array( 'excluded_product_ids' => array( $id ) ) ), $product ) );
+		$this->assertFalse( ProductPage::applies( $coupon( array( 'email_restrictions' => array( 'someone@example.com' ) ) ), $product ) );
+		$this->assertFalse( ProductPage::applies( $coupon( array( 'date_expires' => time() - DAY_IN_SECONDS ) ), $product ) );
+		$this->assertFalse( ProductPage::applies( $coupon( array( 'exclude_sale_items' => true ) ), $product ), 'The product is on sale.' );
+	}
+
+	/**
+	 * Makes a coupon.
+	 *
+	 * @param string               $code  Code.
+	 * @param array<string, mixed> $props Coupon properties.
+	 * @param bool                 $shown Whether it is chosen for product pages.
+	 */
+	private function coupon( string $code, array $props, bool $shown = true ): int {
+		$coupon = new \WC_Coupon();
+		$coupon->set_code( $code );
+		$coupon->set_discount_type( 'percent' );
+		$coupon->set_amount( 10 );
+		$coupon->set_props( $props );
+		if ( $shown ) {
+			$coupon->update_meta_data( CouponField::META, 'yes' );
+		}
+		$id              = $coupon->save();
+		$this->coupons[] = $id;
+		return $id;
 	}
 
 	public function test_product_values_are_cleaned(): void {

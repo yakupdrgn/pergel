@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-22 16:47+0000\n"
-"PO-Revision-Date: 2026-10-22 16:47+0000\n"
+"POT-Creation-Date: 2026-10-22 17:24+0000\n"
+"PO-Revision-Date: 2026-10-22 17:24+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -513,6 +513,9 @@ msgstr "Rozetler"
 
 msgid "Beside the pictures"
 msgstr "Resimlerin yanında"
+
+msgid "Buying"
+msgstr "Satın alma"
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr "Bloklarda (Block Bindings) ve yapılandırılmış veride marka bilgileri."
@@ -1147,6 +1150,30 @@ msgstr "Fiyatın yanında stok"
 msgid "How many are left, for products whose stock is counted, or \"Out of stock\"."
 msgstr "Stoğu sayılan ürünlerde kaç tane kaldığı ya da \"Stokta yok\"."
 
+msgid "\"Buy now\" button"
+msgstr "\"Hemen al\" düğmesi"
+
+msgid "Beside \"Add to cart\", and in the bar at the bottom of the screen: adds the product to the cart and goes straight to the checkout."
+msgstr "\"Sepete ekle\"nin yanında ve ekranın altındaki çubukta: ürünü sepete ekler ve doğrudan ödeme sayfasına gider."
+
+msgid "Coupons"
+msgstr "Kuponlar"
+
+msgid "Coupons that apply to the product, under the add to cart button, with a button that copies the code. Choose them in Marketing → Coupons → Show on product pages."
+msgstr "Ürüne uygulanan kuponlar, sepete ekle düğmesinin altında, kodu kopyalayan bir düğmeyle. Pazarlama → Kuponlar → Ürün sayfalarında göster ile seçin."
+
+msgid "Share links"
+msgstr "Paylaşım bağlantıları"
+
+msgid "Links that share the product on Facebook, X, LinkedIn, WhatsApp, Pinterest and by email, and a button that copies its address. Plain links: no scripts from those sites."
+msgstr "Ürünü Facebook, X, LinkedIn, WhatsApp, Pinterest ve e-postayla paylaşan bağlantılar ve adresini kopyalayan bir düğme. Düz bağlantılar: bu sitelerden betik yüklenmez."
+
+msgid "Colours on cards"
+msgstr "Kartlarda renkler"
+
+msgid "For products with options: the colours or pictures of the first attribute with the \"Color / image\" type, under the name. Choosing one shows that option's picture on the card."
+msgstr "Seçenekli ürünlerde: \"Renk / görsel\" türündeki ilk niteliğin renkleri ya da resimleri, adın altında. Birini seçmek o seçeneğin resmini kartta gösterir."
+
 msgid "Same as its category or the shop"
 msgstr "Kategorisi veya mağazayla aynı"
 
@@ -1309,6 +1336,11 @@ msgstr "Yükleniyor…"
 msgid "The product could not be loaded. Open its page instead."
 msgstr "Ürün yüklenemedi. Bunun yerine sayfasını açın."
 
+msgid "more option"
+msgid_plural "more options"
+msgstr[0] "seçenek daha"
+msgstr[1] "seçenek daha"
+
 #. translators: %d: discount in per cent.
 msgid "-%d%%"
 msgstr "-%%%d"
@@ -1377,6 +1409,12 @@ msgstr "Ürün kategorileri"
 
 msgid "Subcategories"
 msgstr "Alt kategoriler"
+
+msgid "Show on product pages"
+msgstr "Ürün sayfalarında göster"
+
+msgid "List this coupon on the pages of the products it applies to, with a button that copies the code (Pergel → Settings → Shop → Coupons)."
+msgstr "Bu kuponu uygulandığı ürünlerin sayfalarında, kodu kopyalayan bir düğmeyle listele (Pergel → Ayarlar → Mağaza → Kuponlar)."
 
 msgid "Shown on product pages: what a visitor can do when a product is not sold to them."
 msgstr "Ürün sayfalarında gösterilir: Bir ürün ziyaretçiye satışa sunulmadığında ziyaretçinin yapabilecekleri."
@@ -1565,6 +1603,58 @@ msgstr "Sonraki ürün: %s"
 #. translators: %s: category name.
 msgid "Back to %s"
 msgstr "%s sayfasına dön"
+
+msgid "Copied"
+msgstr "Kopyalandı"
+
+msgid "Copy it by hand: select the text."
+msgstr "Elle kopyalayın: metni seçin."
+
+msgid "Buy now"
+msgstr "Hemen al"
+
+msgid "Offers"
+msgstr "Fırsatlar"
+
+#. translators: %s: discount in per cent, a number such as 10.
+msgid "%s%% off"
+msgstr "%%%s indirim"
+
+#. translators: %s: amount, e.g. $5.
+msgid "%s off this product"
+msgstr "Bu üründe %s indirim"
+
+#. translators: %s: amount, e.g. $5.
+msgid "%s off your order"
+msgstr "Siparişte %s indirim"
+
+msgid "Free shipping"
+msgstr "Ücretsiz kargo"
+
+#. translators: %s: amount.
+msgid "Orders over %s"
+msgstr "%s üzeri siparişlerde"
+
+#. translators: %s: date.
+msgid "Until %s"
+msgstr "%s tarihine kadar"
+
+msgid "Copy code"
+msgstr "Kodu kopyala"
+
+#. translators: %s: site name, e.g. Facebook.
+msgid "Share by %s"
+msgstr "%s ile paylaş"
+
+#. translators: %s: site name, e.g. Facebook.
+msgid "Share on %s (opens in a new tab)"
+msgstr "%s üzerinde paylaş (yeni sekmede açılır)"
+
+msgid "Copy the link"
+msgstr "Bağlantıyı kopyala"
+
+msgid "Share"
+msgstr "Paylaş"
 
 msgid "This product cannot be shown."
 msgstr "Bu ürün gösterilemiyor."

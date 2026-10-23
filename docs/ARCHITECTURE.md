@@ -681,6 +681,18 @@ görünmez (`Settings\Screen::shown`).
   ürün olan bloklara eklenir; sayfadaki ürün ızgaraları etkilenmez. Rozet ve hap CSS'i kartlarla
   ortaktır (`shop-cards.css`), yerleşim CSS'i `assets/product-page.css`. `Layout::product_page`
   (`wp` kancası) `ProductPage`'i yalnızca bir ürün sayfası ayarı varsayılandan farklıysa yükler.
+  Satın alma (S4b): "Hemen al" sepete ekleme formunun (`woocommerce/add-to-cart-with-options`)
+  sonuna ve yapışkan çubuğa bir düğme koyar; `assets/product-page.js` formun kendi düğmesine basar,
+  WooCommerce `wc-blocks_added_to_cart` olayını yayınca ödeme sayfasına gider (seçenek eksikse
+  ilk seçeneğe götürür). Kuponlar: kupon ekranındaki "Ürün sayfalarında göster" kutusu
+  (`Woo\CouponField`, meta `_pergel_show`) ile seçilen, yayımlanmış, süresi ve kullanım sınırı
+  dolmamış, e-posta kısıtı olmayan ve ürün/kategori kurallarına göre bu ürüne uygulanan kuponlar
+  formun altında, kodu kopyalayan düğmeyle listelenir. Paylaşım bağlantıları `pergel/product-cta`
+  bloğundan sonra gelir (iki ürün şablonunda da var, satış modunda boş çizilir): düz bağlantılar,
+  sitelerden betik yüklenmez; bağlantıyı kopyala düğmesi. Kartlarda renkler
+  (`shop.card_swatches`): seçenekli üründe ilk `wc-visual` türündeki niteliğin terimleri
+  (WooCommerce'in `color`/`image` term meta'sı), resmi olan seçenek kartın resmini değiştiren bir
+  düğme; WooCommerce'in iç (`Internal`) sınıfları kullanılmaz.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

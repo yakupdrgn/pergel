@@ -276,6 +276,82 @@ final class CardsTest extends TestCase {
 		$this->assertTrue( wp_style_is( CategoryCards::STYLE_HANDLE ) );
 	}
 
+	public function test_colours_of_a_product_with_options(): void {
+		// With WooCommerce's "Color swatches" feature off (as on CI),
+		// wc_create_attribute() would quietly store the type as "select".
+		$types = static fn ( array $types ): array => $types + array( 'wc-visual' => 'Color / image' );
+		add_filter( 'product_attributes_type_selector', $types );
+		$slug = 'pgt' . strtolower( wp_generate_password( 5, false ) );
+		$made = wc_create_attribute(
+			array(
+				'name' => 'Card colour',
+				'slug' => $slug,
+				'type' => 'wc-visual',
+			)
+		);
+		remove_filter( 'product_attributes_type_selector', $types );
+		$this->assertIsInt( $made );
+		$taxonomy = wc_attribute_taxonomy_name( $slug );
+		register_taxonomy( $taxonomy, 'product' );
+		$terms = array();
+		foreach ( array(
+			'red'  => '#ff0000',
+			'blue' => '#0000ff',
+		) as $name => $color ) {
+			$term = wp_insert_term( $name, $taxonomy );
+			$this->assertIsArray( $term );
+			update_term_meta( (int) $term['term_id'], 'color', $color );
+			$terms[ $name ] = (int) $term['term_id'];
+		}
+		$picture = wp_insert_attachment(
+			array(
+				'post_title'     => 'Red picture',
+				'post_mime_type' => 'image/png',
+				'post_status'    => 'inherit',
+			)
+		);
+		$attribute = new \WC_Product_Attribute();
+		$attribute->set_id( $made );
+		$attribute->set_name( $taxonomy );
+		$attribute->set_options( array_values( $terms ) );
+		$attribute->set_variation( true );
+		$product = new \WC_Product_Variable();
+		$product->set_name( 'Card colours' );
+		$product->set_status( 'publish' );
+		$product->set_attributes( array( $attribute ) );
+		$parent = $product->save();
+		wp_set_object_terms( $parent, array_values( $terms ), $taxonomy );
+		$variation = new \WC_Product_Variation();
+		$variation->set_parent_id( $parent );
+		$variation->set_attributes( array( $taxonomy => 'red' ) );
+		$variation->set_regular_price( '5' );
+		$variation->set_image_id( $picture );
+		$variation->save();
+		$plain = new \WC_Product_Variation();
+		$plain->set_parent_id( $parent );
+		$plain->set_attributes( array( $taxonomy => 'blue' ) );
+		$plain->set_regular_price( '5' );
+		$plain->save();
+		$loaded = wc_get_product( $parent );
+		$this->assertInstanceOf( \WC_Product_Variable::class, $loaded );
+
+		$html = Cards::swatches( $loaded );
+
+		wp_delete_post( $parent, true );
+		wp_delete_post( $variation->get_id(), true );
+		wp_delete_post( $plain->get_id(), true );
+		wp_delete_post( $picture, true );
+		foreach ( $terms as $id ) {
+			wp_delete_term( $id, $taxonomy );
+		}
+		wc_delete_attribute( $made );
+
+		// The label comes from WooCommerce's attribute cache, made before this test.
+		$this->assertMatchesRegularExpression( '#^<div class="pergel-card-swatches" role="group" aria-label="[^"]+">#', $html );
+		$this->assertMatchesRegularExpression( '#<button type="button" class="pergel-card-swatch" style="background-color:\#ff0000" title="red" data-pergel-src="[^"]*" data-pergel-srcset="[^"]*" aria-pressed="false"><span class="screen-reader-text">red</span></button>#', $html, 'Red has a picture of its own.' );
+		$this->assertStringContainsString( '<span class="pergel-card-swatch" style="background-color:#0000ff" title="blue">', $html, 'Blue has none.' );
+	}
+
 	public function test_badge_text_is_cleaned(): void {
 		$this->assertSame( 'Limited', BadgeField::clean( "  <b>Limited</b>\n" ) );
 		$this->assertSame( 24, mb_strlen( BadgeField::clean( str_repeat( 'ç', 40 ) ) ) );

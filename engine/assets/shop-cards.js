@@ -1,6 +1,6 @@
 /**
- * Product card extras (Pergel\Woo\Cards): the sale countdown and the quick
- * view window.
+ * Product card extras (Pergel\Woo\Cards): the sale countdown, the quick
+ * view window and the colour options.
  *
  * The countdown boxes come with the page; this updates them every second,
  * also in products drawn later ("Load more", filters). The quick view
@@ -143,12 +143,40 @@ const show = async ( button ) => {
 	}
 };
 
+/* Colours: an option's picture on the card; pressed again, the product's. */
+
+const swatch = ( button ) => {
+	const card = button.closest( 'li' );
+	const box = card && card.querySelector( '.wc-block-components-product-image' );
+	const image = box && box.querySelector( 'img:not(.pergel-second-picture)' );
+	if ( ! image ) {
+		return;
+	}
+	if ( ! image.dataset.pergelOwnSrc ) {
+		image.dataset.pergelOwnSrc = image.currentSrc || image.src;
+		image.dataset.pergelOwnSrcset = image.getAttribute( 'srcset' ) || '';
+	}
+	const pressed = 'true' === button.getAttribute( 'aria-pressed' );
+	for ( const other of card.querySelectorAll( '.pergel-card-swatch[aria-pressed]' ) ) {
+		other.setAttribute( 'aria-pressed', 'false' );
+	}
+	image.srcset = pressed ? image.dataset.pergelOwnSrcset : button.dataset.pergelSrcset || '';
+	image.src = pressed ? image.dataset.pergelOwnSrc : button.dataset.pergelSrc;
+	button.setAttribute( 'aria-pressed', pressed ? 'false' : 'true' );
+	box.classList.toggle( 'has-pergel-swatch', ! pressed );
+};
+
 document.addEventListener( 'click', ( event ) => {
-	const button =
-		event.target instanceof Element &&
-		event.target.closest( '[data-pergel-quick]' );
+	const target = event.target instanceof Element ? event.target : null;
+	const button = target && target.closest( '[data-pergel-quick]' );
 	if ( button ) {
 		event.preventDefault();
 		show( button );
+		return;
+	}
+	const option = target && target.closest( '.pergel-card-swatch[data-pergel-src]' );
+	if ( option ) {
+		event.preventDefault();
+		swatch( option );
 	}
 } );
