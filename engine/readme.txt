@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.2
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,17 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.3.0 =
+* Shop layout settings (Pergel → Settings → Shop layout), each one off or "as in the template" by default, most of them also for a product category or a single product: columns per screen size, products per page and page width; the filter area on the left, right or in a panel, sticky, with folding groups, a search in long lists and brand and rating filters; a grid / list switch, a products-per-page menu, "Load more" or loading on scroll; a banner pattern and a strip of subcategories above the products.
+* Product cards: card styles, category, brand, rating, discount and stock pills, badges (sale as a percentage, new, featured, sold out, a product's own text), the second picture on hover, a sale countdown, a stock bar, quick view, colour swatches. New block: Category cards.
+* Product pages: pictures on the left, on the right or in three columns, small pictures beside, under or in a grid, details that stay in view, zoom, badges, category, brand, discount and stock beside the pictures, a campaign pattern, previous and next product; "Buy now", coupons chosen for product pages with a copy button, share links.
+* Under the product: tabs or all sections open, a product's own feature list and tab, two pattern tabs, questions and answers from logged-in customers (Products → Questions, with an email when answered) and a rating summary.
+* Related products as a grid or carousel, their number and title; a comparison with up to three similar products; recently viewed products, kept in the visitor's browser. New block: Recently viewed products.
+* A bar of shop shortcuts at the bottom of phones, and free shipping progress in the mini cart, the cart, the checkout and on product pages.
+* "Unimart layout": one button that previews and applies all of the above as one arrangement, with Undo.
+* Project packages: content files can use the child theme's own patterns, and an import writes the SEO title and description into the active SEO plugin too (Rank Math, Yoast, SEOPress, The SEO Framework, All in One SEO).
+* Fixed: review stars showed as letters while the classic WooCommerce styles were left out.
 
 = 1.2.2 =
 * Project packages: `logo` sets the Site Logo (package format 3). A logo may be an SVG file when the site takes SVG uploads (the Safe SVG plugin cleans it; run WP-CLI as an administrator). An export writes the logo back when the package made it.
