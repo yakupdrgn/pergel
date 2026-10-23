@@ -203,7 +203,7 @@ async function page( { path, indexable, described = false, trail = false, questi
 	}
 	if ( noindex ) {
 		const robots = tags( head, 'meta' ).filter( ( a ) => ( a.name ?? '' ).toLowerCase() === 'robots' ).map( ( a ) => a.content ?? '' );
-		if ( 1 !== robots.length || ! /noindex/i.test( robots[ 0 ] ) ) {
+		if ( 1 !== robots.length || ! /\bnoindex\b/i.test( robots[ 0 ] ) ) {
 			fail( where, `robots ${ JSON.stringify( robots ) }, expected one tag with noindex` );
 		}
 	}

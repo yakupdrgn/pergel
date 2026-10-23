@@ -9,7 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
-use Pergel\Seo\Robots;
+use Pergel\Seo\Module as Seo;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 
@@ -146,7 +146,7 @@ final class Layout {
 		add_filter( 'render_block_woocommerce/catalog-sorting', array( Listing::class, 'toolbar' ) );
 		add_filter( 'render_block_core/term-description', array( self::class, 'above' ) );
 		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
-		add_filter( Robots::FILTER, array( self::class, 'noindex' ) );
+		add_filter( Seo::NOINDEX, array( self::class, 'noindex' ) );
 		add_action( 'wp', array( self::class, 'cards' ) );
 		add_action( 'wp', array( self::class, 'product_page' ) );
 		add_action( 'rest_api_init', array( self::class, 'quick_view' ) );

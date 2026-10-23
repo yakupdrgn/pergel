@@ -9,7 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
-use Pergel\Seo\Robots;
+use Pergel\Seo\Module as Seo;
 use Pergel\Settings\Settings;
 
 use const Pergel\FILE;
@@ -106,7 +106,7 @@ final class FlashSales {
 		add_filter( 'render_block_data', array( self::class, 'collection' ) );
 		add_filter( 'render_block_context', array( self::class, 'context' ) );
 		add_filter( 'pre_render_block', array( self::class, 'sections' ), 10, 2 );
-		add_filter( Robots::FILTER, array( self::class, 'noindex' ) );
+		add_filter( Seo::NOINDEX, array( self::class, 'noindex' ) );
 		if ( true === Settings::get( 'woo.sales_product' ) ) {
 			add_filter( 'render_block_woocommerce/product-price', array( self::class, 'price' ), 30, 3 );
 		}

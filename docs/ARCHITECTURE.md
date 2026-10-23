@@ -163,8 +163,10 @@ katman çalışır.
   `rank_math/frontend/robots` (`index` => `noindex`), AIOSEO `aioseo_robots_meta` (ikisi de
   çekirdeğin robots filtrelerini siler), SEOPress `seopress_titles_noindex_bypass` (`'1'`, kendi
   etiketini basar ve çekirdeğinkini boşaltır), TSF `the_seo_framework_robots_meta_array`
-  (yalnızca sorgu argümanı olmadan, yani gösterilen sayfa için). SEO panelindeki "arama
-  motorlarından gizle" yedek katmanın işidir ve `Head` üzerinden kalır.
+  (yalnızca sorgu argümanı olmadan, yani gösterilen sayfa için). Filtreyi `Seo\Module` kurar ve
+  soruyu kendisi sorar (`Module::noindex()`); `Robots` yalnızca dışarıda tutulan sayfada yüklenir
+  (`pergel_files` bütçesi). SEO panelindeki "arama motorlarından gizle" yedek katmanın işidir ve
+  `Head` üzerinden kalır.
 - `Seo\Meta` — `_pergel_seo_title`, `_pergel_seo_description`, `_pergel_seo_noindex`
   (REST'te, `edit_post` yetkisiyle) ve editörde build'siz "SEO" paneli
   (`engine/assets/seo-panel.js`).

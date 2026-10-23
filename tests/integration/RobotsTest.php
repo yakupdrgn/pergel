@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Tests\Integration;
 
+use Pergel\Seo\Module as Seo;
 use Pergel\Seo\Robots;
 use PHPUnit\Framework\TestCase;
 
@@ -18,63 +19,103 @@ use PHPUnit\Framework\TestCase;
  */
 final class RobotsTest extends TestCase {
 
+	/**
+	 * Robots filters of the SEO plugins, with a value as the plugin passes
+	 * it and the value after Pergel's noindex.
+	 */
+	private const HOOKS = array(
+		'rank-math' => array( 'rank_math/frontend/robots', array( 'index' => 'index' ), array( 'index' => 'noindex', 'follow' => 'follow' ) ),
+		'aioseo'    => array( 'aioseo_robots_meta', array( 'noindex' => '' ), array( 'noindex' => 'noindex' ) ),
+		'seopress'  => array( 'seopress_titles_noindex_bypass', '', '1' ),
+		'tsf'       => array( 'the_seo_framework_robots_meta_array', array(), array( 'noindex' => 'noindex' ) ),
+	);
+
+	/**
+	 * Filters as they were before the test.
+	 *
+	 * @var array<string, \WP_Hook|null>
+	 */
+	private array $saved = array();
+
+	/**
+	 * Saves the filters the test adds to.
+	 */
+	protected function setUp(): void {
+		global $wp_filter;
+		foreach ( array_merge( array( 'wp_robots' ), array_column( self::HOOKS, 0 ) ) as $hook ) {
+			$this->saved[ $hook ] = isset( $wp_filter[ $hook ] ) ? clone $wp_filter[ $hook ] : null;
+		}
+	}
+
+	/**
+	 * Puts the filters back.
+	 */
 	protected function tearDown(): void {
-		remove_all_filters( Robots::FILTER );
+		global $wp_filter;
+		remove_all_filters( Seo::NOINDEX );
+		foreach ( $this->saved as $hook => $saved ) {
+			if ( null === $saved ) {
+				unset( $wp_filter[ $hook ] );
+			} else {
+				$wp_filter[ $hook ] = $saved; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Puts back the filter saved in setUp.
+			}
+		}
 	}
 
-	public function test_nothing_changes_unless_a_page_is_kept_out(): void {
-		$robots = array( 'max-image-preview' => 'large' );
-		$this->assertSame( $robots, Robots::core( $robots ) );
-		$this->assertSame( array( 'index' => 'index' ), Robots::rank_math( array( 'index' => 'index' ) ) );
-		$this->assertSame( array( 'noindex' => '' ), Robots::aioseo( array( 'noindex' => '' ) ) );
-		$this->assertSame( '', Robots::seopress( '' ) );
-		$this->assertSame( array(), Robots::tsf( array(), null ) );
-
-		add_filter( Robots::FILTER, static fn (): string => 'yes' );
-		$this->assertFalse( Robots::noindex(), 'Only true counts.' );
+	/**
+	 * Adds the robots filter for a plugin, as Module::register() does.
+	 *
+	 * @param string $plugin Plugin id from Detect.
+	 */
+	private static function hook( string $plugin ): void {
+		( new \ReflectionMethod( Seo::class, 'robots' ) )->invoke( null, $plugin );
 	}
 
+	/**
+	 * Only true keeps a page out.
+	 */
+	public function test_only_true_counts(): void {
+		$this->assertFalse( Seo::noindex() );
+		add_filter( Seo::NOINDEX, static fn (): string => 'yes' );
+		$this->assertFalse( Seo::noindex() );
+		add_filter( Seo::NOINDEX, '__return_true' );
+		$this->assertTrue( Seo::noindex() );
+	}
+
+	/**
+	 * Each plugin's filter, with and without Pergel's noindex.
+	 */
 	public function test_each_plugin_gets_noindex_follow(): void {
-		add_filter( Robots::FILTER, '__return_true' );
+		foreach ( self::HOOKS as $plugin => [ $hook, $value, $kept_out ] ) {
+			remove_all_filters( $hook );
+			self::hook( $plugin );
+			$this->assertSame( $value, apply_filters( $hook, $value, null ), $plugin );
+			add_filter( Seo::NOINDEX, '__return_true' );
+			$this->assertSame( $kept_out, apply_filters( $hook, $value, null ), $plugin );
+			remove_all_filters( Seo::NOINDEX );
+		}
 
+		add_filter( Seo::NOINDEX, '__return_true' );
+		$this->assertSame( array(), apply_filters( 'the_seo_framework_robots_meta_array', array(), array( 'id' => 1 ) ), 'Not when The SEO Framework asks about another page.' );
+	}
+
+	/**
+	 * Core's wp_robots, without a plugin and with Yoast SEO.
+	 */
+	public function test_core_robots(): void {
+		remove_all_filters( 'wp_robots' );
+		self::hook( 'yoast' );
+		$this->assertSame( array( 'max-image-preview' => 'large' ), apply_filters( 'wp_robots', array( 'max-image-preview' => 'large' ) ) );
+
+		add_filter( Seo::NOINDEX, '__return_true' );
 		$this->assertSame(
 			array(
 				'noindex' => true,
 				'follow'  => true,
 			),
-			Robots::core( array( 'max-image-preview' => 'large' ) )
+			apply_filters( 'wp_robots', array( 'max-image-preview' => 'large' ) )
 		);
 		$this->assertArrayNotHasKey( 'follow', Robots::core( array( 'nofollow' => true ) ), 'A nofollow page stays nofollow.' );
-		$this->assertSame(
-			array(
-				'index'  => 'noindex',
-				'follow' => 'follow',
-			),
-			Robots::rank_math( array( 'index' => 'index' ) )
-		);
 		$this->assertSame( 'nofollow', Robots::rank_math( array( 'follow' => 'nofollow' ) )['follow'] );
-		$this->assertSame( 'noindex', Robots::aioseo( array( 'noindex' => '' ) )['noindex'] );
-		$this->assertSame( '1', Robots::seopress( '' ) );
-		$this->assertSame( array( 'noindex' => 'noindex' ), Robots::tsf( array(), null ) );
-		$this->assertSame( array(), Robots::tsf( array(), array( 'id' => 1 ) ), 'Not when The SEO Framework asks about another page.' );
-	}
-
-	public function test_the_filter_of_the_plugin_that_prints_the_tag(): void {
-		$hooks = array(
-			'rank-math' => array( 'rank_math/frontend/robots', 'rank_math' ),
-			'aioseo'    => array( 'aioseo_robots_meta', 'aioseo' ),
-			'seopress'  => array( 'seopress_titles_noindex_bypass', 'seopress' ),
-			'tsf'       => array( 'the_seo_framework_robots_meta_array', 'tsf' ),
-			'yoast'     => array( 'wp_robots', 'core' ),
-		);
-		foreach ( $hooks as $plugin => [ $hook, $method ] ) {
-			$callback = array( Robots::class, $method );
-			$had      = has_filter( $hook, $callback );
-			Robots::register( $plugin );
-			$this->assertNotFalse( has_filter( $hook, $callback ), $plugin );
-			if ( false === $had ) {
-				remove_filter( $hook, $callback, 'wp_robots' === $hook ? 10 : 20 );
-			}
-		}
 	}
 }
