@@ -394,14 +394,14 @@ final class Related {
 		if ( ! $term instanceof \WP_Term ) {
 			return $list;
 		}
+		// The products already chosen are left out here, not in the query.
 		$found = wc_get_products(
 			array(
 				'status'       => 'publish',
 				'visibility'   => 'catalog',
 				'stock_status' => 'instock',
 				'category'     => array( $term->slug ),
-				'exclude'      => array_keys( $skip ),
-				'limit'        => self::CANDIDATES,
+				'limit'        => self::CANDIDATES + count( $skip ),
 				'orderby'      => 'date',
 				'order'        => 'DESC',
 			)
@@ -409,7 +409,7 @@ final class Related {
 		$price = (float) $product->get_price();
 		$near  = array();
 		foreach ( is_array( $found ) ? $found : array() as $other ) {
-			if ( $other instanceof \WC_Product && self::shown( $other ) ) {
+			if ( $other instanceof \WC_Product && ! isset( $skip[ $other->get_id() ] ) && self::shown( $other ) ) {
 				$near[] = $other;
 			}
 		}
