@@ -693,6 +693,30 @@ görünmez (`Settings\Screen::shown`).
   (`shop.card_swatches`): seçenekli üründe ilk `wc-visual` türündeki niteliğin terimleri
   (WooCommerce'in `color`/`image` term meta'sı), resmi olan seçenek kartın resmini değiştiren bir
   düğme; WooCommerce'in iç (`Internal`) sınıfları kullanılmaz.
+  Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
+  `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
+  ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları
+  `details_title`/`details_title2`, kategori düzeyi) · Sorular · Değerlendirmeler. Yeni bölüm
+  şablonun ilk bölümünden kopyalanır (başlık düzeyi ve görünüm aynı kalır); başka eklentilerin
+  `woocommerce_product_tabs` sekmelerini WooCommerce bunlardan sonra ekler. "Özellik listesi"
+  açıkken ürünün kendi listesi (`Woo\DetailsFields`, meta `_pergel_details`: özellikler, ürüne
+  özel sekmenin başlığı ve içeriği) "Teknik özellikler" olur, nitelik tablosunun bölümü "Ek
+  bilgiler" diye yeniden adlandırılır. `details_style` (site, kategori, ürün): "Sekmeler"
+  akordeonun kendi `autoclose`'unu açar ve çizilmiş HTML'den (`WP_HTML_Processor`, yalnızca üst
+  düzey başlıklar) bir `role="tablist"` şeridi yapar; şeridin düğmeleri gizlenen başlık
+  düğmelerine basar (`assets/product-details.js`), açık bölümü WordPress'in akordeonu yönetir.
+  Telefonda (`details_phone`) bölümler alt alta açılır ya da şerit yana kayar. "Hepsi açık"
+  her bölümü `openByDefault` yapar. Puan özeti (`details_rating`) `get_rating_counts()`'tan,
+  ek sorgu yok. `Layout::product_page` `Details`'i yalnızca bir `details_` ayarı varsayılandan
+  farklıysa ya da ürünün kendi listesi/sekmesi varsa yükler.
+  Soru-Cevap (`details_qa`, `Woo\Questions`): soru, ürüne ait `pergel_question` türünde bir
+  yorumdur; yalnızca giriş yapmış müşteri sorar (form `admin-post.php`'ye gider, nonce'lu;
+  misafire giriş bağlantısı), saatte 5 soru sınırı, soru her zaman onay bekler. Ürünler →
+  Sorular (`Woo\QuestionsAdmin`, yalnızca yönetimde ve ayar açıkken yüklenir): yanıt sorunun
+  altına aynı türde bir yanıt yorumu olarak yazılır, soru yayımlanır ve ilk yanıtta müşteriye
+  WooCommerce e-postası gider (`Woo\QuestionEmail`, WooCommerce → Ayarlar → E-postalar).
+  `Layout::hide_questions` (`pre_get_comments`) türü belirtmeyen her yorum sorgusundan bu türü
+  çıkarır; sorular ayar kapatılsa da değerlendirmelere karışmaz.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

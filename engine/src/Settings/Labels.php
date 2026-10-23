@@ -196,6 +196,10 @@ final class Labels {
 					'title'  => __( 'Buying', 'pergel-engine' ),
 					'fields' => array( 'product_buy_now', 'product_coupons', 'product_share' ),
 				),
+				'details' => array(
+					'title'  => __( 'Under the product', 'pergel-engine' ),
+					'fields' => array( 'details_style', 'details_phone', 'details_features', 'details_title', 'details_tab', 'details_title2', 'details_tab2', 'details_qa', 'details_rating' ),
+				),
 			),
 		);
 	}
@@ -701,6 +705,50 @@ final class Labels {
 				'product_share'    => array(
 					'label' => __( 'Share links', 'pergel-engine' ),
 					'help'  => __( 'Links that share the product on Facebook, X, LinkedIn, WhatsApp, Pinterest and by email, and a button that copies its address. Plain links: no scripts from those sites.', 'pergel-engine' ),
+				),
+				'details_style'    => array(
+					'label'   => __( 'Description and reviews', 'pergel-engine' ),
+					'help'    => __( 'How the description, specifications, reviews and the tabs below show under the product. "Tabs" shows one section at a time; "All open" shows every section open. A category or a product can choose its own.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'tabs'     => __( 'Tabs', 'pergel-engine' ),
+						'open'     => __( 'All open', 'pergel-engine' ),
+					),
+				),
+				'details_phone'    => array(
+					'label'   => __( 'Tabs on phones', 'pergel-engine' ),
+					'help'    => __( 'With "Tabs": on narrow screens the sections open one under the other, or the tabs stay in a row that scrolls sideways.', 'pergel-engine' ),
+					'choices' => array(
+						'accordion' => __( 'One under the other', 'pergel-engine' ),
+						'scroll'    => __( 'Tabs that scroll sideways', 'pergel-engine' ),
+					),
+				),
+				'details_features' => array(
+					'label' => __( 'Feature list', 'pergel-engine' ),
+					'help'  => __( 'A product\'s own list of features, written in the "Product page sections" box of the product, shows as "Specifications"; the table of weight, size and attributes moves to "Additional information".', 'pergel-engine' ),
+				),
+				'details_title'    => array(
+					'label' => __( 'Extra tab: title', 'pergel-engine' ),
+					'help'  => __( 'e.g. Shipping and returns. Shown on every product page, with the pattern below as its content. A category can choose its own.', 'pergel-engine' ),
+				),
+				'details_tab'      => array(
+					'label' => __( 'Extra tab: pattern', 'pergel-engine' ),
+					'help'  => __( 'Make it under Appearance → Editor → Patterns.', 'pergel-engine' ),
+				),
+				'details_title2'   => array(
+					'label' => __( 'Second extra tab: title', 'pergel-engine' ),
+				),
+				'details_tab2'     => array(
+					'label' => __( 'Second extra tab: pattern', 'pergel-engine' ),
+				),
+				'details_qa'       => array(
+					'label' => __( 'Questions and answers', 'pergel-engine' ),
+					'help'  => __( 'Customers who are logged in can ask a question about the product. Questions wait under Products → Questions; one shows on the product page once you answer it, and the customer gets an email.', 'pergel-engine' ),
+				),
+				'details_rating'   => array(
+					'label' => __( 'Rating summary', 'pergel-engine' ),
+					'help'  => __( 'Above the reviews: the average rating and a bar for each number of stars.', 'pergel-engine' ),
 				),
 				'card_swatches'    => array(
 					'label' => __( 'Colours on cards', 'pergel-engine' ),

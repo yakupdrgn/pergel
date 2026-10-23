@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-22T20:23:53+03:00\n"
+"POT-Creation-Date: 2026-10-23T11:48:54+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -535,6 +535,9 @@ msgid "Beside the pictures"
 msgstr ""
 
 msgid "Buying"
+msgstr ""
+
+msgid "Under the product"
 msgstr ""
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
@@ -1188,6 +1191,66 @@ msgstr ""
 msgid "Links that share the product on Facebook, X, LinkedIn, WhatsApp, Pinterest and by email, and a button that copies its address. Plain links: no scripts from those sites."
 msgstr ""
 
+msgid "Description and reviews"
+msgstr ""
+
+msgid "How the description, specifications, reviews and the tabs below show under the product. \"Tabs\" shows one section at a time; \"All open\" shows every section open. A category or a product can choose its own."
+msgstr ""
+
+msgid "Tabs"
+msgstr ""
+
+msgid "All open"
+msgstr ""
+
+msgid "Tabs on phones"
+msgstr ""
+
+msgid "With \"Tabs\": on narrow screens the sections open one under the other, or the tabs stay in a row that scrolls sideways."
+msgstr ""
+
+msgid "One under the other"
+msgstr ""
+
+msgid "Tabs that scroll sideways"
+msgstr ""
+
+msgid "Feature list"
+msgstr ""
+
+msgid "A product's own list of features, written in the \"Product page sections\" box of the product, shows as \"Specifications\"; the table of weight, size and attributes moves to \"Additional information\"."
+msgstr ""
+
+msgid "Extra tab: title"
+msgstr ""
+
+msgid "e.g. Shipping and returns. Shown on every product page, with the pattern below as its content. A category can choose its own."
+msgstr ""
+
+msgid "Extra tab: pattern"
+msgstr ""
+
+msgid "Make it under Appearance → Editor → Patterns."
+msgstr ""
+
+msgid "Second extra tab: title"
+msgstr ""
+
+msgid "Second extra tab: pattern"
+msgstr ""
+
+msgid "Questions and answers"
+msgstr ""
+
+msgid "Customers who are logged in can ask a question about the product. Questions wait under Products → Questions; one shows on the product page once you answer it, and the customer gets an email."
+msgstr ""
+
+msgid "Rating summary"
+msgstr ""
+
+msgid "Above the reviews: the average rating and a bar for each number of stars."
+msgstr ""
+
 msgid "Colours on cards"
 msgstr ""
 
@@ -1499,6 +1562,44 @@ msgstr ""
 msgid "Working days from shipping to delivery, such as 3 or 2-4, for products of this class. Leave it empty to use Pergel → Settings → Shop."
 msgstr ""
 
+msgid "Additional information"
+msgstr ""
+
+msgid "Product details"
+msgstr ""
+
+#. translators: %d: number of stars, 1 to 5.
+#, php-format
+msgid "%d star"
+msgid_plural "%d stars"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "out of 5"
+msgstr ""
+
+#. translators: %s: number of reviews.
+#, php-format
+msgid "Based on %s review"
+msgid_plural "Based on %s reviews"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Product page sections"
+msgstr ""
+
+msgid "One feature on each line. Shown as \"Specifications\" under the product when the feature list is on in Pergel → Settings → Shop."
+msgstr ""
+
+msgid "Own tab: title"
+msgstr ""
+
+msgid "A section of this product only, before the questions and reviews, e.g. Warranty. Shown when it has both a title and content."
+msgstr ""
+
+msgid "Own tab: content"
+msgstr ""
+
 msgid "Same as its categories or the shop"
 msgstr ""
 
@@ -1707,6 +1808,154 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
+msgid "Question answered"
+msgstr ""
+
+msgid "Sent to a customer who asked a question about a product, when the shop answers it."
+msgstr ""
+
+msgid "Your question about {product_name} is answered"
+msgstr ""
+
+msgid "Your question is answered"
+msgstr ""
+
+#. translators: %s: product name.
+#, php-format
+msgid "You asked about %s:"
+msgstr ""
+
+msgid "Does it come with a warranty?"
+msgstr ""
+
+msgid "Our answer:"
+msgstr ""
+
+msgid "Yes, two years."
+msgstr ""
+
+msgctxt "question mark letter"
+msgid "Q"
+msgstr ""
+
+msgid "Question:"
+msgstr ""
+
+#. translators: 1: name of the customer, 2: date.
+#, php-format
+msgid "Asked by %1$s on %2$s"
+msgstr ""
+
+msgctxt "answer mark letter"
+msgid "A"
+msgstr ""
+
+msgid "Answer:"
+msgstr ""
+
+msgid "No questions yet."
+msgstr ""
+
+#. translators: %s: number of answered questions.
+#, php-format
+msgid "Questions (%s)"
+msgstr ""
+
+#. translators: %s: number of answered questions.
+msgid "Questions"
+msgstr ""
+
+msgid "Log in to ask a question"
+msgstr ""
+
+msgid "Your question"
+msgstr ""
+
+msgid "It shows here once the shop answers it, and you get the answer by email."
+msgstr ""
+
+msgid "Send the question"
+msgstr ""
+
+msgid "Thank you. Your question shows here once the shop answers it."
+msgstr ""
+
+#. translators: 1: shortest, 2: longest question in characters.
+#, php-format
+msgid "Write a question of %1$d to %2$d characters."
+msgstr ""
+
+msgid "You have sent several questions already. Try again in an hour."
+msgstr ""
+
+msgid "You have already sent this question."
+msgstr ""
+
+msgid "Log in to ask a question."
+msgstr ""
+
+msgid "The question could not be sent. Reload the page and try again."
+msgstr ""
+
+msgid "The answer is published and the customer was emailed."
+msgstr ""
+
+msgid "The answer is updated."
+msgstr ""
+
+msgid "The question is hidden from the product page."
+msgstr ""
+
+msgid "The question is in the trash."
+msgstr ""
+
+msgid "Write an answer first."
+msgstr ""
+
+msgid "Waiting"
+msgstr ""
+
+msgid "Answered"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Question"
+msgstr ""
+
+msgid "Answer"
+msgstr ""
+
+msgid "No questions here."
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+#. translators: 1: customer name, 2: email address, 3: date.
+#, php-format
+msgid "%1$s (%2$s), %3$s"
+msgstr ""
+
+msgid "On the product page"
+msgstr ""
+
+msgid "Answer and publish"
+msgstr ""
+
+msgid "Update the answer"
+msgstr ""
+
+msgid "You cannot answer this question."
+msgstr ""
+
+msgid "You cannot change this question."
+msgstr ""
+
 msgid "This product cannot be shown."
 msgstr ""
 
@@ -1844,13 +2093,7 @@ msgstr ""
 msgid "Addresses waiting for a sold-out product or option. When it is back in stock, each gets one email; addresses that are not confirmed are deleted after 7 days, emailed ones after 30 days."
 msgstr ""
 
-msgid "All"
-msgstr ""
-
 msgid "Most wanted"
-msgstr ""
-
-msgid "Waiting"
 msgstr ""
 
 msgid "All alerts"
@@ -1872,9 +2115,6 @@ msgid "No alerts yet."
 msgstr ""
 
 msgid "customer"
-msgstr ""
-
-msgid "Delete"
 msgstr ""
 
 #. translators: %d: product id.

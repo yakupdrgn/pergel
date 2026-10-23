@@ -40,6 +40,7 @@ final class Pictures {
 			'shop.badge_sale' => self::sale( $option ),
 			'shop.product_layout' => self::product( $option ),
 			'shop.product_thumbs' => self::thumbs( $option ),
+			'shop.details_style' => self::details( $option ),
 			default      => '',
 		};
 		if ( '' === $shapes ) {
@@ -266,6 +267,22 @@ final class Pictures {
 			'bottom'   => '<rect x="19" y="4" width="26" height="22" rx="2" fill="currentColor" opacity="0.35"/>' . $small( array( array( 19, 29 ), array( 28.5, 29 ), array( 38, 29 ) ) ),
 			'none'     => '<rect x="18" y="5" width="28" height="30" rx="2" fill="currentColor" opacity="0.35"/>',
 			'grid'     => '<g fill="currentColor" opacity="0.35"><rect x="19" y="3" width="26" height="16" rx="2"/><rect x="19" y="21" width="12.5" height="8" rx="1.5"/><rect x="32.5" y="21" width="12.5" height="8" rx="1.5"/><rect x="19" y="31" width="12.5" height="6" rx="1.5"/><rect x="32.5" y="31" width="12.5" height="6" rx="1.5"/></g>',
+			default    => '',
+		};
+	}
+
+	/**
+	 * The sections under the product: closed sections, tabs over one open
+	 * section, or every section open.
+	 *
+	 * @param string $option "template", "tabs" or "open".
+	 */
+	private static function details( string $option ): string {
+		$lines = static fn ( int $y ): string => sprintf( '<rect x="10" y="%1$d" width="44" height="2" rx="1" fill="currentColor" opacity="0.45"/><rect x="10" y="%2$d" width="30" height="2" rx="1" fill="currentColor" opacity="0.45"/>', $y, $y + 4 );
+		return match ( $option ) {
+			'template' => '<g fill="none" stroke="currentColor" stroke-dasharray="3 2"><rect x="8.5" y="6.5" width="47" height="7" rx="1.5"/><rect x="8.5" y="16.5" width="47" height="7" rx="1.5"/><rect x="8.5" y="26.5" width="47" height="7" rx="1.5"/></g>',
+			'tabs'     => '<rect x="8" y="6" width="14" height="6" rx="1.5" fill="currentColor"/><rect x="25" y="6" width="14" height="6" rx="1.5" fill="currentColor" opacity="0.35"/><rect x="42" y="6" width="14" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>' . $lines( 18 ) . $lines( 27 ),
+			'open'     => '<rect x="8" y="5" width="22" height="3" rx="1" fill="currentColor"/>' . $lines( 10 ) . '<rect x="8" y="21" width="22" height="3" rx="1" fill="currentColor"/>' . $lines( 26 ),
 			default    => '',
 		};
 	}

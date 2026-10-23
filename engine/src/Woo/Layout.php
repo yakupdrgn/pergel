@@ -48,6 +48,23 @@ final class Layout {
 	 */
 	public const PRODUCT_SCRIPT = 'pergel/product-page';
 
+	/**
+	 * Sections under the product (Details): CSS and the tabs script.
+	 */
+	public const DETAILS_STYLE = 'pergel-product-details';
+
+	public const DETAILS_SCRIPT = 'pergel/product-details';
+
+	/**
+	 * A product's own feature list and extra tab (DetailsFields).
+	 */
+	public const DETAILS_META = '_pergel_details';
+
+	/**
+	 * Comment type of product questions and their answers (Questions).
+	 */
+	public const QUESTION = 'pergel_question';
+
 	public const STYLE = 'pergel-shop-layout';
 
 	public const CARD_STYLE = 'pergel-shop-cards';
@@ -91,12 +108,17 @@ final class Layout {
 		add_action( 'updated_term_meta', array( self::class, 'flush' ) );
 		add_action( 'added_term_meta', array( self::class, 'flush' ) );
 		add_action( 'deleted_term_meta', array( self::class, 'flush' ) );
+		add_action( 'pre_get_comments', array( self::class, 'hide_questions' ) );
 		// Also for the editors, so the theme's filter pattern looks the same there.
 		add_filter( 'pergel/shop/filters', array( Filters::class, 'groups' ) );
 		if ( is_admin() ) {
 			LayoutFields::register();
 			BadgeField::register();
 			CouponField::register();
+			DetailsFields::register();
+			if ( true === Settings::get( 'shop.details_qa' ) ) {
+				QuestionsAdmin::register();
+			}
 			return;
 		}
 		Filters::register();
@@ -158,6 +180,9 @@ final class Layout {
 		wp_register_style( self::PRODUCT_STYLE, plugins_url( 'assets/product-page.css', FILE ), array(), VERSION );
 		wp_style_add_data( self::PRODUCT_STYLE, 'path', dirname( FILE ) . '/assets/product-page.css' );
 		wp_register_script_module( self::PRODUCT_SCRIPT, plugins_url( 'assets/product-page.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
+		wp_register_style( self::DETAILS_STYLE, plugins_url( 'assets/product-details.css', FILE ), array(), VERSION );
+		wp_style_add_data( self::DETAILS_STYLE, 'path', dirname( FILE ) . '/assets/product-details.css' );
+		wp_register_script_module( self::DETAILS_SCRIPT, plugins_url( 'assets/product-details.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
 		wp_register_script_module(
 			self::LISTING_SCRIPT,
 			plugins_url( 'assets/shop-listing.js', FILE ),
@@ -248,19 +273,47 @@ final class Layout {
 
 	/**
 	 * Adds the product page hooks when a product page setting differs from
-	 * its default for the product on screen. With the defaults, product
-	 * pages never load ProductPage. Hooked on wp.
+	 * its default for the product on screen, and those of the sections
+	 * under the product when a "details" setting does or the product has
+	 * a feature list or tab of its own. With the defaults, product pages
+	 * load neither ProductPage nor Details. Hooked on wp.
 	 */
 	public static function product_page(): void {
 		if ( ! is_singular( 'product' ) ) {
 			return;
 		}
+		$id      = get_queried_object_id();
+		$page    = false;
+		$details = is_array( get_post_meta( $id, self::DETAILS_META, true ) );
 		foreach ( Schema::defaults()['shop'] ?? array() as $key => $default ) {
-			if ( str_starts_with( $key, 'product_' ) && self::get( "shop.$key" ) !== $default ) {
-				ProductPage::register( get_queried_object_id() );
-				return;
+			if ( ! $page && str_starts_with( $key, 'product_' ) ) {
+				$page = self::get( "shop.$key" ) !== $default;
+			} elseif ( ! $details && str_starts_with( $key, 'details_' ) ) {
+				$details = self::get( "shop.$key" ) !== $default;
 			}
 		}
+		if ( $page ) {
+			ProductPage::register( $id );
+		}
+		if ( $details ) {
+			Details::register( $id );
+		}
+	}
+
+	/**
+	 * Keeps product questions out of comment lists that do not ask for them
+	 * by type: the reviews under a product, recent comments, Comments in
+	 * the admin. They stay out when the setting is turned off, too.
+	 *
+	 * @param \WP_Comment_Query $query Comment query about to run.
+	 */
+	public static function hide_questions( \WP_Comment_Query $query ): void {
+		$vars = &$query->query_vars;
+		// WordPress's defaults for these are empty strings.
+		if ( array() !== array_filter( (array) ( $vars['type'] ?? '' ) ) || array() !== array_filter( (array) ( $vars['type__in'] ?? '' ) ) ) {
+			return;
+		}
+		$vars['type__not_in'] = array_values( array_unique( array_merge( array_filter( (array) ( $vars['type__not_in'] ?? '' ) ), array( self::QUESTION ) ) ) );
 	}
 
 	/**

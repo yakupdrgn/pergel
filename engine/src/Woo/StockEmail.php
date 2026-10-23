@@ -1,6 +1,6 @@
 <?php
 /**
- * Base of the back-in-stock emails.
+ * Base of the shop's own customer emails.
  *
  * @package Pergel
  */
@@ -10,8 +10,9 @@ declare( strict_types=1 );
 namespace Pergel\Woo;
 
 /**
- * What the two back-in-stock emails share: the product they are about,
- * the address they go to, one link and WooCommerce's header and footer.
+ * What the back-in-stock emails and the question answered email share:
+ * the product they are about, the address they go to, one link and
+ * WooCommerce's header and footer.
  * Loaded only from the woocommerce_email_classes filter, once WC_Email
  * exists.
  *

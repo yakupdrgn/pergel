@@ -1,0 +1,222 @@
+/*
+ * Sections under the product (Pergel → Settings → Shop → Under the
+ * product): Pergel\Woo\Details adds the markup below and loads this file
+ * only where one of those settings, or a product's own section, is used.
+ */
+
+/* Tabs: a row of tabs over the sections, which keep their own headings
+ * on phones unless the row scrolls sideways there too. */
+.pergel-details-tabs {
+	display: none;
+	gap: var(--wp--preset--spacing--40);
+	margin-bottom: var(--wp--preset--spacing--40);
+	border-bottom: 1px solid var(--wp--preset--color--line, currentColor);
+}
+
+.pergel-details-tab {
+	flex: 0 0 auto;
+	margin: 0 0 -1px;
+	padding: var(--wp--preset--spacing--20) 0;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	background: none;
+	color: inherit;
+	font: inherit;
+	font-weight: 600;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.pergel-details-tab[aria-selected="true"] {
+	border-bottom-color: var(--wp--preset--color--accent, currentColor);
+	color: var(--wp--preset--color--accent, currentColor);
+}
+
+.pergel-details-tab:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+@media (min-width: 600px) {
+	.pergel-details.is-tabs > .pergel-details-tabs {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.pergel-details.is-tabs > .wp-block-accordion > .wp-block-accordion-item > .wp-block-accordion-heading,
+	.pergel-details.is-tabs > .wp-block-accordion > .wp-block-accordion-item:not(.is-open) {
+		display: none;
+	}
+
+	.pergel-details.is-tabs > .wp-block-accordion > .wp-block-accordion-item {
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+}
+
+.pergel-details.is-tabs.is-phone-scroll > .pergel-details-tabs {
+	display: flex;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.pergel-details.is-tabs.is-phone-scroll > .wp-block-accordion > .wp-block-accordion-item > .wp-block-accordion-heading,
+.pergel-details.is-tabs.is-phone-scroll > .wp-block-accordion > .wp-block-accordion-item:not(.is-open) {
+	display: none;
+}
+
+.pergel-details.is-tabs.is-phone-scroll > .wp-block-accordion > .wp-block-accordion-item {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+/* A product's own feature list. */
+.pergel-features {
+	margin: 0;
+	padding-left: 1.25em;
+}
+
+.pergel-features li + li {
+	margin-top: var(--wp--preset--spacing--10, 0.25rem);
+}
+
+/* Questions and answers. */
+.pergel-questions {
+	scroll-margin-top: calc(var(--wp-admin--admin-bar--height, 0px) + var(--wp--preset--spacing--60, 4rem));
+}
+
+.pergel-questions__list {
+	margin: 0 0 var(--wp--preset--spacing--40);
+	padding: 0;
+	list-style: none;
+}
+
+.pergel-question {
+	padding: var(--wp--preset--spacing--30) 0;
+	border-bottom: 1px solid var(--wp--preset--color--line, currentColor);
+}
+
+.pergel-question p {
+	margin: 0;
+}
+
+.pergel-question__text {
+	font-weight: 600;
+}
+
+.pergel-question__meta {
+	margin-top: var(--wp--preset--spacing--10, 0.25rem) !important;
+	color: var(--wp--preset--color--muted, inherit);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.pergel-question__answer {
+	display: flex;
+	gap: 0;
+	margin-top: var(--wp--preset--spacing--20);
+}
+
+.pergel-question__answer > p + p {
+	margin-top: var(--wp--preset--spacing--20);
+}
+
+.pergel-question__mark {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 1.5em;
+	height: 1.5em;
+	margin-right: 0.5em;
+	border-radius: var(--wp--custom--radius--small, 4px);
+	background: var(--wp--preset--color--surface, transparent);
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 700;
+	line-height: 1;
+}
+
+.pergel-question__answer .pergel-question__mark {
+	background: var(--wp--preset--color--accent, currentColor);
+	color: var(--wp--preset--color--base, #fff);
+}
+
+.pergel-questions__notice {
+	padding: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
+	border-left: 3px solid var(--wp--preset--color--muted, currentColor);
+	background: var(--wp--preset--color--surface, transparent);
+}
+
+.pergel-questions__notice.is-sent {
+	border-left-color: var(--wp--preset--color--accent, currentColor);
+}
+
+.pergel-questions__form label {
+	display: block;
+	margin-bottom: var(--wp--preset--spacing--10, 0.25rem);
+	font-weight: 600;
+}
+
+.pergel-questions__form textarea {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.pergel-questions__hint {
+	color: var(--wp--preset--color--muted, inherit);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+/* Rating summary above the reviews. */
+.pergel-rating-summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--preset--spacing--30) var(--wp--preset--spacing--50);
+	align-items: center;
+	margin-bottom: var(--wp--preset--spacing--40);
+}
+
+.pergel-rating-summary__average {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+}
+
+.pergel-rating-summary__number {
+	font-size: var(--wp--preset--font-size--x-large, 2rem);
+	font-weight: 700;
+	line-height: 1.1;
+}
+
+.pergel-rating-summary__total {
+	color: var(--wp--preset--color--muted, inherit);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.pergel-rating-summary__rows {
+	flex: 1 1 14rem;
+	max-width: 24rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pergel-rating-summary__row {
+	display: grid;
+	grid-template-columns: 4.5em 1fr 2.5em;
+	gap: var(--wp--preset--spacing--20);
+	align-items: center;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.pergel-rating-summary__bar {
+	height: 0.5em;
+	border-radius: 999px;
+	background: linear-gradient(to right, var(--wp--preset--color--accent, currentColor) var(--pergel-share, 0%), var(--wp--preset--color--line, #ddd) 0);
+}
+
+.pergel-rating-summary__count {
+	text-align: end;
+}

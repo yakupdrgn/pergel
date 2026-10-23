@@ -205,8 +205,8 @@ final class LayoutFields {
 	}
 
 	/**
-	 * The input: a select box with "inherit" first, or a number box whose
-	 * empty value inherits.
+	 * The input: a select box with "inherit" first, or a number or text box
+	 * whose empty value inherits.
 	 *
 	 * @param string               $path  "group.key".
 	 * @param array<string, mixed> $field Field definition.
@@ -224,6 +224,16 @@ final class LayoutFields {
 				(int) ( $field['min'] ?? 0 ),
 				(int) ( $field['max'] ?? 0 ),
 				esc_attr__( 'Inherit', 'pergel-engine' )
+			);
+		}
+		if ( 'text' === $field['type'] ) {
+			return sprintf(
+				'<input type="text" %1$s class="%2$s" value="%3$s" maxlength="%4$d" placeholder="%5$s">',
+				$attrs,
+				'product' === $level ? 'widefat' : 'regular-text',
+				null === $value ? '' : esc_attr( (string) $value ),
+				(int) ( $field['max'] ?? 200 ),
+				esc_attr( Labels::inherit( $level ) )
 			);
 		}
 		$choices = array( '' => Labels::inherit( $level ) );
