@@ -541,6 +541,37 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// Related products, the comparison with similar products and
+				// recently viewed ones; see Pergel\Woo\Related.
+				'related_style'    => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'grid', 'carousel' ),
+					'default' => 'template',
+					'levels'  => array( 'category', 'product' ),
+				),
+				'related_count'    => array(
+					'type'    => 'int',
+					'min'     => 0,
+					'max'     => 12,
+					'default' => 0,
+					'levels'  => array( 'category' ),
+				),
+				'related_title'    => array(
+					'type'   => 'text',
+					'max'    => 40,
+					'levels' => array( 'category' ),
+				),
+				'related_compare'  => array(
+					'type'    => 'enum',
+					'options' => array( 'off', '2', '3', '4' ),
+					'default' => 'off',
+					'levels'  => array( 'category', 'product' ),
+				),
+				'related_recent'   => array(
+					'type'    => 'enum',
+					'options' => array( 'off', 'track', 'show' ),
+					'default' => 'off',
+				),
 			),
 		);
 	}

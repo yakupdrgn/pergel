@@ -1,0 +1,116 @@
+/*
+ * Compare with similar products (Pergel → Settings → Shop → Related and
+ * recently viewed): Pergel\Woo\Related adds the table above the related
+ * products and loads this file only where it does.
+ */
+.pergel-compare {
+	margin-block: var(--wp--preset--spacing--50, 2rem);
+}
+
+.pergel-compare__title {
+	font-size: var(--wp--preset--font-size--large, 1.5rem);
+	margin-block: 0 var(--wp--preset--spacing--30, 1rem);
+}
+
+.pergel-compare__scroll {
+	overflow-x: auto;
+	/* Keeps the hidden texts inside, so they do not widen the page. */
+	position: relative;
+}
+
+.pergel-compare__scroll:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.pergel-compare__table {
+	--pergel-compare-label: 6.5rem;
+	border-collapse: collapse;
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+	/* A label column and at least 9.5rem per product; the box scrolls. */
+	min-width: calc(var(--pergel-compare-label) + var(--pergel-compare-columns, 4) * 9.5rem);
+	table-layout: fixed;
+	width: 100%;
+}
+
+.pergel-compare__table th,
+.pergel-compare__table td {
+	border-bottom: 1px solid var(--wp--preset--color--line);
+	padding: 0.65rem 0.75rem;
+	text-align: start;
+	vertical-align: top;
+}
+
+.pergel-compare__table tbody th {
+	font-weight: 600;
+	width: var(--pergel-compare-label);
+}
+
+.pergel-compare__table thead th {
+	font-weight: 400;
+}
+
+.pergel-compare__table thead td {
+	width: var(--pergel-compare-label);
+}
+
+@media (min-width: 600px) {
+	.pergel-compare__table {
+		--pergel-compare-label: 9rem;
+	}
+}
+
+.pergel-compare__table .is-current {
+	background: var(--wp--preset--color--surface);
+}
+
+.pergel-compare__image {
+	display: block;
+	margin-bottom: 0.5rem;
+}
+
+.pergel-compare__image img {
+	aspect-ratio: 1;
+	border-radius: var(--wp--custom--radius--small, 4px);
+	display: block;
+	height: auto;
+	max-width: 8rem;
+	object-fit: contain;
+	width: 100%;
+}
+
+.pergel-compare__name {
+	color: inherit;
+	display: block;
+	font-weight: 600;
+	line-height: 1.35;
+}
+
+.pergel-compare__this {
+	display: block;
+	font-size: 0.8125rem;
+	opacity: 0.75;
+}
+
+.pergel-compare__discount {
+	background: var(--wp--preset--color--contrast);
+	border-radius: var(--wp--custom--radius--small, 4px);
+	color: var(--wp--preset--color--base);
+	display: inline-block;
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding: 0.1em 0.45em;
+	white-space: nowrap;
+}
+
+.pergel-compare .pergel-sr {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}

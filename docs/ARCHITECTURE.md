@@ -717,6 +717,29 @@ görünmez (`Settings\Screen::shown`).
   WooCommerce e-postası gider (`Woo\QuestionEmail`, WooCommerce → Ayarlar → E-postalar).
   `Layout::hide_questions` (`pre_get_comments`) türü belirtmeyen her yorum sorgusundan bu türü
   çıkarır; sorular ayar kapatılsa da değerlendirmelere karışmaz.
+  Daha fazla ürün (S5b, `Woo\Related`): WooCommerce'in "related" koleksiyonlu
+  `woocommerce/product-collection` bloğuna `render_block_data` ile adet (`related_count`, kategori
+  düzeyi; 0 = şablonunki), başlık (`related_title`, kategori düzeyi) ve düzen (`related_style`:
+  şablondaki gibi / ızgara / kaydırıcı; site, kategori, ürün) uygulanır. Kaydırıcı WooCommerce'in
+  kendi `carousel` düzenidir: editörün düzen değişince kurduğu yapı sunucuda kurulur (başlık ve
+  `woocommerce/product-gallery-large-image-next-previous` düğmeleri `wc-product-collection-carousel-header`
+  grubunda, ürün şablonu tek sıra, sayfa numaraları yok); CSS ve kaydırma betiği WooCommerce'in.
+  "Benzerleriyle karşılaştır" (`related_compare`: kapalı veya ürünle birlikte 2–4 sütun; site,
+  kategori, ürün) koleksiyondan önce bir tablo çizer: önce ürünün yukarı satışları, sonra
+  breadcrumb kategorisindeki son 24 üründen fiyatı en yakınlar (görünür, stokta). Satırlar fiyat
+  ve indirim, puan, stok, boyut, ağırlık ve ürünün görünür nitelikleri; değeri olmayan satır
+  düşer. Hücre yardımcıları `ListView` ile ortak, CSS `assets/product-related.css`.
+  Son bakılanlar (`related_recent`: kapalı / hatırla / hatırla ve göster): ID'ler ziyaretçinin
+  tarayıcısında (`localStorage`, en fazla 12, en yenisi başta), sunucu yalnızca kartları çizer
+  (`GET pergel/v1/recently-viewed?ids=…&count=…`), böylece önbellekli sayfa çalışır.
+  `assets/recently-viewed.js` modülü verisini `script_module_data_pergel/recently-viewed` ile
+  alır; önce kutuları doldurur (ekrandaki ürünü dışarıda bırakır), sonra ekrandaki ürünü listeye
+  ekler, sunucunun artık göstermediği ID'leri unutur. `pergel/recently-viewed` bloğu her yere
+  konabilir (başlık ve adet ayarlı); "hatırla ve göster"de şablonda blok yoksa koleksiyondan
+  sonra kendiliğinden eklenir. Rota `Layout::recently_viewed` ile yalnızca ayar açıkken kaydedilir
+  (ürün sayfaları `rest_api_init` çalıştırır). Şablonda ilgili ürünler bloğu yoksa tablo ve
+  otomatik liste çıkmaz; blok yine çalışır. `Layout::product_page` `Related`'i yalnızca bir
+  `related_` ayarı varsayılandan farklıysa yükler.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

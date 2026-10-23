@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-23 08:50+0000\n"
-"PO-Revision-Date: 2026-10-23 08:50+0000\n"
+"POT-Creation-Date: 2026-10-23 10:48+0000\n"
+"PO-Revision-Date: 2026-10-23 10:48+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -519,6 +519,9 @@ msgstr "Satın alma"
 
 msgid "Under the product"
 msgstr "Ürünün altında"
+
+msgid "Related and recently viewed"
+msgstr "İlgili ve son bakılan ürünler"
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr "Bloklarda (Block Bindings) ve yapılandırılmış veride marka bilgileri."
@@ -1231,6 +1234,54 @@ msgstr "Puan özeti"
 msgid "Above the reviews: the average rating and a bar for each number of stars."
 msgstr "Değerlendirmelerin üstünde: ortalama puan ve her yıldız sayısı için bir çubuk."
 
+msgid "Related products"
+msgstr "İlgili ürünler"
+
+msgid "Products from the same categories and tags, under the product. \"Carousel\" puts them in one row that scrolls sideways, with arrows. A category or a product can choose its own."
+msgstr "Ürünün altında, aynı kategori ve etiketlerdeki ürünler. \"Kaydırıcı\" onları oklarla yana kayan tek bir sıraya dizer. Bir kategori veya ürün kendi seçimini yapabilir."
+
+msgid "Related products: how many"
+msgstr "İlgili ürünler: kaç tane"
+
+msgid "0 keeps the number the template shows."
+msgstr "0, şablonun gösterdiği sayıyı korur."
+
+msgid "Related products: title"
+msgstr "İlgili ürünler: başlık"
+
+msgid "Empty keeps the template's title. A category can choose its own."
+msgstr "Boş bırakılırsa şablonun başlığı kalır. Bir kategori kendi başlığını seçebilir."
+
+msgid "Compare with similar products"
+msgstr "Benzer ürünlerle karşılaştır"
+
+msgid "A table above the related products: the product beside similar ones, with their pictures, prices, ratings, stock, size, weight and attributes. Similar ones are the product's upsells first, then products of its category with the nearest price."
+msgstr "İlgili ürünlerin üstünde bir tablo: ürün, benzerlerinin yanında; görselleri, fiyatları, puanları, stokları, boyutları, ağırlıkları ve nitelikleriyle. Benzerler önce ürünün yukarı satış ürünleri, ardından kategorisindeki fiyatı en yakın ürünlerdir."
+
+msgid "Off"
+msgstr "Kapalı"
+
+msgid "With 1 similar product"
+msgstr "1 benzer ürünle"
+
+msgid "With 2 similar products"
+msgstr "2 benzer ürünle"
+
+msgid "With 3 similar products"
+msgstr "3 benzer ürünle"
+
+msgid "Recently viewed"
+msgstr "Son baktıklarınız"
+
+msgid "The products a visitor looked at last, kept in their browser. \"Remember\" only notes them, for the Recently viewed block placed anywhere; \"Remember and show\" also shows them under the related products."
+msgstr "Ziyaretçinin en son baktığı ürünler, kendi tarayıcısında tutulur. \"Hatırla\" onları yalnızca not eder (herhangi bir yere konan Son bakılan ürünler bloğu için); \"Hatırla ve göster\" ayrıca ilgili ürünlerin altında gösterir."
+
+msgid "Remember"
+msgstr "Hatırla"
+
+msgid "Remember and show"
+msgstr "Hatırla ve göster"
+
 msgid "Colours on cards"
 msgstr "Kartlarda renkler"
 
@@ -1581,9 +1632,6 @@ msgstr "Üsttekiyle aynı"
 msgid "On"
 msgstr "Açık"
 
-msgid "Off"
-msgstr "Kapalı"
-
 msgid "Show"
 msgstr "Göster"
 
@@ -1924,6 +1972,12 @@ msgstr "1 ile %s arasında bir tam sayı girin."
 #. translators: %s: stock keeping unit.
 msgid "SKU: %s"
 msgstr "Stok kodu: %s"
+
+msgid "This product"
+msgstr "Bu ürün"
+
+msgid "Shown to visitors who have viewed products: the ones they looked at last. Turn it on with \"Recently viewed\" under Pergel → Settings → Shop."
+msgstr "Ürünlere bakmış ziyaretçilere gösterilir: en son baktıkları ürünler. Pergel → Ayarlar → Mağaza altındaki \"Son baktıklarınız\" ile açın."
 
 msgid "Shown on product pages that have a size guide: a button that opens the guide."
 msgstr "Beden rehberi olan ürün sayfalarında gösterilir: rehberi açan bir düğme."
@@ -2361,6 +2415,12 @@ msgstr "Satıştaki ürünlerde de bağlantıları göster"
 msgid "Otherwise the block shows only where a product has no price or cart."
 msgstr "Aksi halde blok yalnızca fiyatı veya sepeti olmayan ürünlerde görünür."
 
+msgid "Title"
+msgstr "Başlık"
+
+msgid "Most products"
+msgstr "En fazla ürün"
+
 msgid "Visitors see the products they chose to compare here, side by side."
 msgstr "Ziyaretçiler karşılaştırmak için seçtikleri ürünleri burada yan yana görür."
 
@@ -2753,6 +2813,30 @@ msgid "lead"
 msgstr "potansiyel müşteri"
 
 msgctxt "block title"
+msgid "Recently viewed products"
+msgstr "Son bakılan ürünler"
+
+msgctxt "block description"
+msgid "The products a visitor looked at last, kept in their browser; hidden until there are some. Turn it on with \"Recently viewed\" under Pergel → Settings → Shop."
+msgstr "Ziyaretçinin en son baktığı ürünler, kendi tarayıcısında tutulur; ürün olana dek gizlidir. Pergel → Ayarlar → Mağaza altındaki \"Son baktıklarınız\" ile açın."
+
+msgctxt "block keyword"
+msgid "recently viewed"
+msgstr "son bakılanlar"
+
+msgctxt "block keyword"
+msgid "history"
+msgstr "tarihçe"
+
+msgctxt "block keyword"
+msgid "last seen"
+msgstr "son görülenler"
+
+msgctxt "block keyword"
+msgid "products"
+msgstr "ürünler"
+
+msgctxt "block title"
 msgid "Wishlist and compare links"
 msgstr "İstek listesi ve karşılaştırma bağlantıları"
 
@@ -2931,10 +3015,6 @@ msgstr "Zaman çizelgesi"
 msgctxt "block description"
 msgid "Milestones in order, one under the other in narrow spaces and on both sides of a line when there is room."
 msgstr "Sıralı kilometre taşları: dar alanlarda alt alta, yer olduğunda bir çizginin iki yanında."
-
-msgctxt "block keyword"
-msgid "history"
-msgstr "tarihçe"
 
 msgctxt "block keyword"
 msgid "milestones"

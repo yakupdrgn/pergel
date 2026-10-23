@@ -200,6 +200,10 @@ final class Labels {
 					'title'  => __( 'Under the product', 'pergel-engine' ),
 					'fields' => array( 'details_style', 'details_phone', 'details_features', 'details_title', 'details_tab', 'details_title2', 'details_tab2', 'details_qa', 'details_rating' ),
 				),
+				'related' => array(
+					'title'  => __( 'Related and recently viewed', 'pergel-engine' ),
+					'fields' => array( 'related_style', 'related_count', 'related_title', 'related_compare', 'related_recent' ),
+				),
 			),
 		);
 	}
@@ -749,6 +753,43 @@ final class Labels {
 				'details_rating'   => array(
 					'label' => __( 'Rating summary', 'pergel-engine' ),
 					'help'  => __( 'Above the reviews: the average rating and a bar for each number of stars.', 'pergel-engine' ),
+				),
+				'related_style'    => array(
+					'label'   => __( 'Related products', 'pergel-engine' ),
+					'help'    => __( 'Products from the same categories and tags, under the product. "Carousel" puts them in one row that scrolls sideways, with arrows. A category or a product can choose its own.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'template' => __( 'As in the template', 'pergel-engine' ),
+						'grid'     => __( 'Grid', 'pergel-engine' ),
+						'carousel' => __( 'Carousel', 'pergel-engine' ),
+					),
+				),
+				'related_count'    => array(
+					'label' => __( 'Related products: how many', 'pergel-engine' ),
+					'help'  => __( '0 keeps the number the template shows.', 'pergel-engine' ),
+				),
+				'related_title'    => array(
+					'label' => __( 'Related products: title', 'pergel-engine' ),
+					'help'  => __( 'Empty keeps the template\'s title. A category can choose its own.', 'pergel-engine' ),
+				),
+				'related_compare'  => array(
+					'label'   => __( 'Compare with similar products', 'pergel-engine' ),
+					'help'    => __( 'A table above the related products: the product beside similar ones, with their pictures, prices, ratings, stock, size, weight and attributes. Similar ones are the product\'s upsells first, then products of its category with the nearest price.', 'pergel-engine' ),
+					'choices' => array(
+						'off' => __( 'Off', 'pergel-engine' ),
+						'2'   => __( 'With 1 similar product', 'pergel-engine' ),
+						'3'   => __( 'With 2 similar products', 'pergel-engine' ),
+						'4'   => __( 'With 3 similar products', 'pergel-engine' ),
+					),
+				),
+				'related_recent'   => array(
+					'label'   => __( 'Recently viewed', 'pergel-engine' ),
+					'help'    => __( 'The products a visitor looked at last, kept in their browser. "Remember" only notes them, for the Recently viewed block placed anywhere; "Remember and show" also shows them under the related products.', 'pergel-engine' ),
+					'choices' => array(
+						'off'   => __( 'Off', 'pergel-engine' ),
+						'track' => __( 'Remember', 'pergel-engine' ),
+						'show'  => __( 'Remember and show', 'pergel-engine' ),
+					),
 				),
 				'card_swatches'    => array(
 					'label' => __( 'Colours on cards', 'pergel-engine' ),
