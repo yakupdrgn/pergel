@@ -173,6 +173,29 @@ final class WooTest extends TestCase {
 		wp_deregister_style( 'woocommerce-blocktheme' );
 	}
 
+	public function test_the_icon_font_stays_without_the_classic_styles(): void {
+		$this->needs_woocommerce();
+		$registered = wp_style_is( 'wc-blocks-style', 'registered' );
+		if ( ! $registered ) {
+			wp_register_style( 'wc-blocks-style', 'https://example.test/wc-blocks.css', array(), '1' );
+		}
+		$before = wp_styles()->get_data( 'wc-blocks-style', 'after' );
+
+		Assets::scripts();
+
+		$after = (array) wp_styles()->get_data( 'wc-blocks-style', 'after' );
+		$css   = implode( '', $after );
+		$this->assertStringContainsString( '@font-face{font-family:WooCommerce;', $css );
+		$this->assertStringContainsString( '@font-face{font-family:star;', $css, 'The review rating block uses this name.' );
+		$this->assertStringContainsString( '/assets/fonts/WooCommerce.woff2', $css );
+
+		if ( $registered ) {
+			wp_styles()->add_data( 'wc-blocks-style', 'after', $before );
+		} else {
+			wp_deregister_style( 'wc-blocks-style' );
+		}
+	}
+
 	public function test_mini_cart_follows_the_menu_of_pergel_headers_once(): void {
 		$this->needs_woocommerce();
 		$header = array(
