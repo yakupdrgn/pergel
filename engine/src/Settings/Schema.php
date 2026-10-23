@@ -498,6 +498,49 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// Description, specifications, reviews and extra tabs under the
+				// product; see Pergel\Woo\Details.
+				'details_style'    => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'tabs', 'open' ),
+					'default' => 'template',
+					'levels'  => array( 'category', 'product' ),
+				),
+				'details_phone'    => array(
+					'type'    => 'enum',
+					'options' => array( 'accordion', 'scroll' ),
+					'default' => 'accordion',
+				),
+				'details_features' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'details_title'    => array(
+					'type'   => 'text',
+					'max'    => 40,
+					'levels' => array( 'category' ),
+				),
+				'details_tab'      => array(
+					'type'   => 'pattern',
+					'levels' => array( 'category' ),
+				),
+				'details_title2'   => array(
+					'type'   => 'text',
+					'max'    => 40,
+					'levels' => array( 'category' ),
+				),
+				'details_tab2'     => array(
+					'type'   => 'pattern',
+					'levels' => array( 'category' ),
+				),
+				'details_qa'       => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'details_rating'   => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 		);
 	}

@@ -1566,6 +1566,15 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   olarak yazılır. Paylaşımda Web Share API yok: her tarayıcıda aynı görünen düz bağlantılar.
   Kart renkleri yalnızca WooCommerce'in kendi "Renk / görsel" nitelik türünden gelir; ayrı bir
   renk alanı eklenmedi.
+- **S5a kararları:** Sekmeler ayrı bir blok değil, şablonun kendi akordeonu: açma kapama, bağlantı
+  ile açma ve sayfada bulma WordPress'te kalır, Site Düzenleyici'de değiştirilen şablon da ayarı
+  alır. Şerit sunucuda çizilir (yük sonrası kayma yok); başlıklar şablon ve diğer eklentiler
+  dahil çizilmiş HTML'den okunur. Telefonda akordeon ya da yana kayan şerit ayarla seçilir.
+  Unimart'taki gibi "Teknik özellikler" (ürünün kendi listesi) ile "Ek bilgiler" (nitelik
+  tablosu) ayrılabilir; liste yazılmamış üründe şablon olduğu gibi kalır. Soru-Cevap yalnızca
+  giriş yapmış müşterilere açık (spam ve sahte soru riski), her soru onay bekler ve yalnızca
+  yanıtlanınca görünür; ayrı tablo yok, WordPress yorumları (moderasyon e-postası, çöp kutusu,
+  gizlilik araçları) kullanılır. Ek sorgu: Soru-Cevap açıkken ürün sayfasında iki yorum sorgusu.
 
 ## Aşamalar ve bitti tanımları
 

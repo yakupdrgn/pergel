@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-22 17:24+0000\n"
-"PO-Revision-Date: 2026-10-22 17:24+0000\n"
+"POT-Creation-Date: 2026-10-23 08:50+0000\n"
+"PO-Revision-Date: 2026-10-23 08:50+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -516,6 +516,9 @@ msgstr "Resimlerin yanında"
 
 msgid "Buying"
 msgstr "Satın alma"
+
+msgid "Under the product"
+msgstr "Ürünün altında"
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
 msgstr "Bloklarda (Block Bindings) ve yapılandırılmış veride marka bilgileri."
@@ -1168,6 +1171,66 @@ msgstr "Paylaşım bağlantıları"
 msgid "Links that share the product on Facebook, X, LinkedIn, WhatsApp, Pinterest and by email, and a button that copies its address. Plain links: no scripts from those sites."
 msgstr "Ürünü Facebook, X, LinkedIn, WhatsApp, Pinterest ve e-postayla paylaşan bağlantılar ve adresini kopyalayan bir düğme. Düz bağlantılar: bu sitelerden betik yüklenmez."
 
+msgid "Description and reviews"
+msgstr "Açıklama ve değerlendirmeler"
+
+msgid "How the description, specifications, reviews and the tabs below show under the product. \"Tabs\" shows one section at a time; \"All open\" shows every section open. A category or a product can choose its own."
+msgstr "Açıklama, teknik özellikler, değerlendirmeler ve aşağıdaki sekmelerin ürünün altında nasıl görüneceği. \"Sekmeler\" bir seferde tek bölüm gösterir; \"Hepsi açık\" bütün bölümleri açık gösterir. Bir kategori ya da ürün kendi seçimini yapabilir."
+
+msgid "Tabs"
+msgstr "Sekmeler"
+
+msgid "All open"
+msgstr "Hepsi açık"
+
+msgid "Tabs on phones"
+msgstr "Telefonda sekmeler"
+
+msgid "With \"Tabs\": on narrow screens the sections open one under the other, or the tabs stay in a row that scrolls sideways."
+msgstr "\"Sekmeler\" seçiliyken: dar ekranlarda bölümler alt alta açılır ya da sekmeler yana kayan bir sırada kalır."
+
+msgid "One under the other"
+msgstr "Alt alta"
+
+msgid "Tabs that scroll sideways"
+msgstr "Yana kayan sekmeler"
+
+msgid "Feature list"
+msgstr "Özellik listesi"
+
+msgid "A product's own list of features, written in the \"Product page sections\" box of the product, shows as \"Specifications\"; the table of weight, size and attributes moves to \"Additional information\"."
+msgstr "Ürünün \"Ürün sayfası bölümleri\" kutusuna yazılan kendi özellik listesi \"Teknik özellikler\" olarak görünür; ağırlık, boyut ve nitelik tablosu \"Ek bilgiler\" bölümüne geçer."
+
+msgid "Extra tab: title"
+msgstr "Ek sekme: başlık"
+
+msgid "e.g. Shipping and returns. Shown on every product page, with the pattern below as its content. A category can choose its own."
+msgstr "ör. Kargo ve iade. Her ürün sayfasında, içeriği aşağıdaki desen olarak gösterilir. Bir kategori kendi sekmesini seçebilir."
+
+msgid "Extra tab: pattern"
+msgstr "Ek sekme: desen"
+
+msgid "Make it under Appearance → Editor → Patterns."
+msgstr "Görünüm → Düzenleyici → Desenler altında hazırlayın."
+
+msgid "Second extra tab: title"
+msgstr "İkinci ek sekme: başlık"
+
+msgid "Second extra tab: pattern"
+msgstr "İkinci ek sekme: desen"
+
+msgid "Questions and answers"
+msgstr "Soru-Cevap"
+
+msgid "Customers who are logged in can ask a question about the product. Questions wait under Products → Questions; one shows on the product page once you answer it, and the customer gets an email."
+msgstr "Giriş yapmış müşteriler ürün hakkında soru sorabilir. Sorular Ürünler → Sorular altında bekler; yanıtladığınız soru ürün sayfasında görünür ve müşteriye e-posta gider."
+
+msgid "Rating summary"
+msgstr "Puan özeti"
+
+msgid "Above the reviews: the average rating and a bar for each number of stars."
+msgstr "Değerlendirmelerin üstünde: ortalama puan ve her yıldız sayısı için bir çubuk."
+
 msgid "Colours on cards"
 msgstr "Kartlarda renkler"
 
@@ -1461,6 +1524,42 @@ msgstr "Teslimat süresi"
 msgid "Working days from shipping to delivery, such as 3 or 2-4, for products of this class. Leave it empty to use Pergel → Settings → Shop."
 msgstr "Bu sınıftaki ürünler için kargoya verilişten teslimata kadar geçen iş günü; 3 ya da 2-4 gibi. Pergel → Ayarlar → Mağaza ayarını kullanmak için boş bırakın."
 
+msgid "Additional information"
+msgstr "Ek bilgiler"
+
+msgid "Product details"
+msgstr "Ürün ayrıntıları"
+
+#. translators: %d: number of stars, 1 to 5.
+msgid "%d star"
+msgid_plural "%d stars"
+msgstr[0] "%d yıldız"
+msgstr[1] "%d yıldız"
+
+msgid "out of 5"
+msgstr "/ 5"
+
+#. translators: %s: number of reviews.
+msgid "Based on %s review"
+msgid_plural "Based on %s reviews"
+msgstr[0] "%s değerlendirmeye göre"
+msgstr[1] "%s değerlendirmeye göre"
+
+msgid "Product page sections"
+msgstr "Ürün sayfası bölümleri"
+
+msgid "One feature on each line. Shown as \"Specifications\" under the product when the feature list is on in Pergel → Settings → Shop."
+msgstr "Her satıra bir özellik. Pergel → Ayarlar → Mağaza altında özellik listesi açıkken ürünün altında \"Teknik özellikler\" olarak görünür."
+
+msgid "Own tab: title"
+msgstr "Ürüne özel sekme: başlık"
+
+msgid "A section of this product only, before the questions and reviews, e.g. Warranty. Shown when it has both a title and content."
+msgstr "Yalnızca bu ürüne ait, sorular ve değerlendirmelerden önce gelen bir bölüm, ör. Garanti. Başlığı ve içeriği olduğunda gösterilir."
+
+msgid "Own tab: content"
+msgstr "Ürüne özel sekme: içerik"
+
 msgid "Same as its categories or the shop"
 msgstr "Kategorileriyle veya mağazayla aynı"
 
@@ -1656,6 +1755,149 @@ msgstr "Bağlantıyı kopyala"
 msgid "Share"
 msgstr "Paylaş"
 
+msgid "Question answered"
+msgstr "Soru yanıtlandı"
+
+msgid "Sent to a customer who asked a question about a product, when the shop answers it."
+msgstr "Bir ürün hakkında soru soran müşteriye, mağaza soruyu yanıtladığında gönderilir."
+
+msgid "Your question about {product_name} is answered"
+msgstr "{product_name} hakkındaki sorunuz yanıtlandı"
+
+msgid "Your question is answered"
+msgstr "Sorunuz yanıtlandı"
+
+#. translators: %s: product name.
+msgid "You asked about %s:"
+msgstr "%s hakkında sordunuz:"
+
+msgid "Does it come with a warranty?"
+msgstr "Garantisi var mı?"
+
+msgid "Our answer:"
+msgstr "Yanıtımız:"
+
+msgid "Yes, two years."
+msgstr "Evet, iki yıl."
+
+msgctxt "question mark letter"
+msgid "Q"
+msgstr "S"
+
+msgid "Question:"
+msgstr "Soru:"
+
+#. translators: 1: name of the customer, 2: date.
+msgid "Asked by %1$s on %2$s"
+msgstr "Soran: %1$s, %2$s"
+
+msgctxt "answer mark letter"
+msgid "A"
+msgstr "C"
+
+msgid "Answer:"
+msgstr "Cevap:"
+
+msgid "No questions yet."
+msgstr "Henüz soru yok."
+
+#. translators: %s: number of answered questions.
+msgid "Questions (%s)"
+msgstr "Sorular (%s)"
+
+#. translators: %s: number of answered questions.
+msgid "Questions"
+msgstr "Sorular"
+
+msgid "Log in to ask a question"
+msgstr "Soru sormak için giriş yapın"
+
+msgid "Your question"
+msgstr "Sorunuz"
+
+msgid "It shows here once the shop answers it, and you get the answer by email."
+msgstr "Mağaza yanıtladığında burada görünür; yanıt size e-postayla da gelir."
+
+msgid "Send the question"
+msgstr "Soruyu gönder"
+
+msgid "Thank you. Your question shows here once the shop answers it."
+msgstr "Teşekkürler. Sorunuz mağaza yanıtladığında burada görünecek."
+
+#. translators: 1: shortest, 2: longest question in characters.
+msgid "Write a question of %1$d to %2$d characters."
+msgstr "%1$d ile %2$d karakter arasında bir soru yazın."
+
+msgid "You have sent several questions already. Try again in an hour."
+msgstr "Kısa sürede birkaç soru gönderdiniz. Bir saat sonra yeniden deneyin."
+
+msgid "You have already sent this question."
+msgstr "Bu soruyu zaten gönderdiniz."
+
+msgid "Log in to ask a question."
+msgstr "Soru sormak için giriş yapın."
+
+msgid "The question could not be sent. Reload the page and try again."
+msgstr "Soru gönderilemedi. Sayfayı yenileyip yeniden deneyin."
+
+msgid "The answer is published and the customer was emailed."
+msgstr "Yanıt yayımlandı ve müşteriye e-posta gönderildi."
+
+msgid "The answer is updated."
+msgstr "Yanıt güncellendi."
+
+msgid "The question is hidden from the product page."
+msgstr "Soru ürün sayfasından gizlendi."
+
+msgid "The question is in the trash."
+msgstr "Soru çöp kutusuna taşındı."
+
+msgid "Write an answer first."
+msgstr "Önce bir yanıt yazın."
+
+msgid "Waiting"
+msgstr "Bekleyen"
+
+msgid "Answered"
+msgstr "Yanıtlanan"
+
+msgid "All"
+msgstr "Tümü"
+
+msgid "Question"
+msgstr "Soru"
+
+msgid "Answer"
+msgstr "Yanıt"
+
+msgid "No questions here."
+msgstr "Burada soru yok."
+
+msgid "Hide"
+msgstr "Gizle"
+
+msgid "Delete"
+msgstr "Sil"
+
+#. translators: 1: customer name, 2: email address, 3: date.
+msgid "%1$s (%2$s), %3$s"
+msgstr "%1$s (%2$s), %3$s"
+
+msgid "On the product page"
+msgstr "Ürün sayfasında"
+
+msgid "Answer and publish"
+msgstr "Yanıtla ve yayımla"
+
+msgid "Update the answer"
+msgstr "Yanıtı güncelle"
+
+msgid "You cannot answer this question."
+msgstr "Bu soruyu yanıtlayamazsınız."
+
+msgid "You cannot change this question."
+msgstr "Bu soruyu değiştiremezsiniz."
+
 msgid "This product cannot be shown."
 msgstr "Bu ürün gösterilemiyor."
 
@@ -1786,14 +2028,8 @@ msgstr "Bildirim silindi."
 msgid "Addresses waiting for a sold-out product or option. When it is back in stock, each gets one email; addresses that are not confirmed are deleted after 7 days, emailed ones after 30 days."
 msgstr "Tükenen bir ürünü ya da seçeneği bekleyen adresler. Ürün yeniden stoğa girdiğinde her birine tek bir e-posta gider; onaylanmayan adresler 7 gün, e-posta gönderilenler 30 gün sonra silinir."
 
-msgid "All"
-msgstr "Tümü"
-
 msgid "Most wanted"
 msgstr "En çok beklenenler"
-
-msgid "Waiting"
-msgstr "Bekleyen"
 
 msgid "All alerts"
 msgstr "Tüm bildirimler"
@@ -1815,9 +2051,6 @@ msgstr "Henüz bildirim yok."
 
 msgid "customer"
 msgstr "müşteri"
-
-msgid "Delete"
-msgstr "Sil"
 
 #. translators: %d: product id.
 msgid "Deleted product #%d"
