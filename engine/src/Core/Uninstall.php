@@ -16,11 +16,15 @@ use Pergel\Seo\Meta;
 use Pergel\Settings\Settings;
 use Pergel\Starters\Shop;
 use Pergel\Starters\Starter;
+use Pergel\Woo\Cards;
+use Pergel\Woo\CouponField;
 use Pergel\Woo\Delivery;
 use Pergel\Woo\FlashSalePrices;
 use Pergel\Woo\FlashSales;
+use Pergel\Woo\Layout;
 use Pergel\Woo\Lists;
 use Pergel\Woo\Modes;
+use Pergel\Woo\Preset;
 use Pergel\Woo\SizeGuide;
 use Pergel\Woo\StockAlert;
 use Pergel\Woo\StockAlertStore;
@@ -28,10 +32,12 @@ use Pergel\Woo\StockAlertStore;
 /**
  * Deleting the plugin (uninstall.php) removes what it stored on each site:
  * the settings, its tables (search index, stock alerts), scheduled events,
- * limit counters, form messages, flash sales (their prices go back first)
- * and the meta it keeps on posts, products,
- * terms and users (SEO title and description, sales modes, delivery days,
- * size guides, wishlists, starter and package marks). WordPress asks
+ * limit counters, form messages, product questions and their answers,
+ * flash sales (their prices go back first) and the meta it keeps on
+ * posts, products, coupons, terms and users (SEO title and description,
+ * sales modes, shop layout choices, product badges and sections, coupons
+ * shown on product pages, delivery days, size guides, wishlists, starter
+ * and package marks). WordPress asks
  * "delete Pergel Engine and its data?" first. Pages, products, menus,
  * terms and media that a starter or package made stay: they are the site's
  * content, and so does a child theme a package wrote.
@@ -47,6 +53,7 @@ final class Uninstall {
 		Shop::ATTRIBUTES_OPTION,
 		FlashSales::RULES,
 		FlashSales::INDEX,
+		Preset::UNDO,
 		'woocommerce_' . StockAlert::EMAIL_CONFIRM . '_settings',
 		'woocommerce_' . StockAlert::EMAIL_BACK . '_settings',
 	);
@@ -67,9 +74,13 @@ final class Uninstall {
 		Starter::META,
 		Starter::META_KEY,
 		FlashSalePrices::META,
+		Layout::PRODUCT_META,
+		Layout::DETAILS_META,
+		Cards::BADGE_META,
+		CouponField::META,
 	);
 
-	private const TERM_META = array( Modes::TERM_META, Delivery::META, SizeGuide::META, Starter::META, Starter::META_KEY );
+	private const TERM_META = array( Modes::TERM_META, Delivery::META, SizeGuide::META, Starter::META, Starter::META_KEY, Layout::TERM_META );
 
 	private const USER_META = array( Lists::META );
 
@@ -131,6 +142,16 @@ final class Uninstall {
 				$deleted += wp_delete_post( (int) $id, true ) ? 1 : 0;
 			}
 			// A message a filter keeps from deletion would come back in every batch.
+		} while ( self::BATCH === $found && $deleted > 0 );
+
+		// Product questions and their answers: comments of their own type.
+		do {
+			$ids     = $wpdb->get_col( $wpdb->prepare( "SELECT comment_ID FROM {$wpdb->comments} WHERE comment_type = %s ORDER BY comment_ID LIMIT %d", Layout::QUESTION, self::BATCH ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Uninstall; nothing to cache.
+			$found   = count( $ids );
+			$deleted = 0;
+			foreach ( $ids as $id ) {
+				$deleted += wp_delete_comment( (int) $id, true ) ? 1 : 0;
+			}
 		} while ( self::BATCH === $found && $deleted > 0 );
 
 		foreach ( self::POST_META as $key ) {

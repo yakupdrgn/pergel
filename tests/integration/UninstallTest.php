@@ -18,19 +18,29 @@ use Pergel\Search\Index;
 use Pergel\Seo\Meta;
 use Pergel\Settings\Settings;
 use Pergel\Starters\Shop;
+use Pergel\Woo\Cards;
+use Pergel\Woo\CouponField;
 use Pergel\Woo\Delivery;
+use Pergel\Woo\FlashSalePrices;
+use Pergel\Woo\FlashSales;
+use Pergel\Woo\Layout;
 use Pergel\Woo\Lists;
 use Pergel\Woo\Modes;
+use Pergel\Woo\Preset;
 use Pergel\Woo\StockAlert;
 use Pergel\Woo\StockAlertStore;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Options, tables and content made by the test are put back or removed after it.
+ * The site's own rows that the uninstall deletes (Pergel meta, form messages,
+ * flash sales, product questions) are kept before and written back after, so
+ * running the test on a local site keeps its data; flash sales then write
+ * their prices again.
  */
 final class UninstallTest extends TestCase {
 
-	private const OPTIONS = array( Settings::OPTION, Modes::INDEX, Shop::ATTRIBUTES_OPTION );
+	private const OPTIONS = array( Settings::OPTION, Modes::INDEX, Shop::ATTRIBUTES_OPTION, Preset::UNDO );
 
 	/**
 	 * Options as they were before the test (false: not saved).
@@ -60,12 +70,61 @@ final class UninstallTest extends TestCase {
 		'user'  => 0,
 	);
 
+	/**
+	 * The site's rows the uninstall deletes, by table.
+	 *
+	 * @var array<string, list<array<string, mixed>>>
+	 */
+	private array $rows = array();
+
 	protected function setUp(): void {
 		foreach ( self::OPTIONS as $option ) {
 			$this->saved[ $option ] = get_option( $option, false );
 		}
 		$this->indexed = Index::ready();
 		$this->alerts  = StockAlertStore::installed();
+		$this->keep();
+	}
+
+	/**
+	 * Keeps the site's rows the uninstall deletes.
+	 */
+	private function keep(): void {
+		global $wpdb;
+		$list = static fn ( string $name ): array => array_values( array_diff( (array) ( new \ReflectionClassConstant( Uninstall::class, $name ) )->getValue(), array( FlashSalePrices::META ) ) );
+		$in   = static fn ( array $values ): string => implode( ',', array_map( static fn ( $value ): string => $wpdb->prepare( '%s', $value ), $values ) );
+		$ids  = array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN (%s, %s)", Inbox::TYPE, FlashSales::TYPE ) ) );
+		$asks = array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT comment_ID FROM {$wpdb->comments} WHERE comment_type = %s", Layout::QUESTION ) ) );
+		$num  = static fn ( array $values ): string => array() === $values ? '0' : implode( ',', $values );
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The lists are prepared or whole numbers.
+		$this->rows = array(
+			$wpdb->postmeta    => $wpdb->get_results( "SELECT * FROM {$wpdb->postmeta} WHERE meta_key IN (" . $in( $list( 'POST_META' ) ) . ') OR post_id IN (' . $num( $ids ) . ')', ARRAY_A ),
+			$wpdb->termmeta    => $wpdb->get_results( "SELECT * FROM {$wpdb->termmeta} WHERE meta_key IN (" . $in( $list( 'TERM_META' ) ) . ')', ARRAY_A ),
+			$wpdb->usermeta    => $wpdb->get_results( "SELECT * FROM {$wpdb->usermeta} WHERE meta_key IN (" . $in( $list( 'USER_META' ) ) . ')', ARRAY_A ),
+			$wpdb->posts       => $wpdb->get_results( "SELECT * FROM {$wpdb->posts} WHERE ID IN (" . $num( $ids ) . ')', ARRAY_A ),
+			$wpdb->comments    => $wpdb->get_results( "SELECT * FROM {$wpdb->comments} WHERE comment_ID IN (" . $num( $asks ) . ')', ARRAY_A ),
+			$wpdb->commentmeta => $wpdb->get_results( "SELECT * FROM {$wpdb->commentmeta} WHERE comment_id IN (" . $num( $asks ) . ')', ARRAY_A ),
+		);
+		// phpcs:enable
+	}
+
+	/**
+	 * Writes the kept rows back, and the flash sale prices.
+	 */
+	private function put_back(): void {
+		global $wpdb;
+		foreach ( $this->rows as $table => $rows ) {
+			foreach ( $rows as $row ) {
+				$wpdb->replace( $table, $row ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Test clean-up.
+			}
+		}
+		wp_cache_flush();
+		foreach ( $this->rows[ $wpdb->posts ] ?? array() as $row ) {
+			if ( FlashSales::TYPE === $row['post_type'] ) {
+				delete_post_meta( (int) $row['ID'], FlashSalePrices::APPLIED );
+				FlashSalePrices::schedule( (int) $row['ID'] );
+			}
+		}
 	}
 
 	protected function tearDown(): void {
@@ -89,6 +148,7 @@ final class UninstallTest extends TestCase {
 			}
 		}
 		Settings::flush();
+		$this->put_back();
 		if ( $this->alerts ) {
 			StockAlertStore::install();
 		}
@@ -132,6 +192,32 @@ final class UninstallTest extends TestCase {
 		update_post_meta( $page, 'pergel_uninstall_other', 'stays' );
 		update_post_meta( $message, Inbox::META_EMAIL, 'ada@example.invalid' );
 		update_term_meta( $this->made['term'], Delivery::META, '2-4' );
+		update_term_meta( $this->made['term'], Layout::TERM_META, array( 'shop.columns' => '3' ) );
+		foreach ( array( Layout::PRODUCT_META, Layout::DETAILS_META, Cards::BADGE_META, CouponField::META ) as $key ) {
+			update_post_meta( $page, $key, 'x' );
+		}
+		update_option( Preset::UNDO, array( 'values' => array() ), false );
+		$question = (int) wp_insert_comment(
+			array(
+				'comment_post_ID' => $page,
+				'comment_type'    => Layout::QUESTION,
+				'comment_content' => 'Pergel uninstall question',
+			)
+		);
+		$answer   = (int) wp_insert_comment(
+			array(
+				'comment_post_ID' => $page,
+				'comment_type'    => Layout::QUESTION,
+				'comment_parent'  => $question,
+				'comment_content' => 'Pergel uninstall answer',
+			)
+		);
+		$review   = (int) wp_insert_comment(
+			array(
+				'comment_post_ID' => $page,
+				'comment_content' => 'Pergel uninstall comment',
+			)
+		);
 		update_user_meta( $this->made['user'], Lists::META, '12,15' );
 		update_option( 'woocommerce_' . StockAlert::EMAIL_BACK . '_settings', array( 'enabled' => 'yes' ) );
 		set_transient( 'pergel_l_uninstall', 3, 600 );
@@ -155,6 +241,14 @@ final class UninstallTest extends TestCase {
 		$this->assertFalse( metadata_exists( 'post', $page, Meta::NOINDEX ), 'Registered meta reads its default, so the row is checked.' );
 		$this->assertSame( '0', $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE post_id = %d", $message ) ), 'Their meta goes with them.' );
 		$this->assertSame( '', get_term_meta( $this->made['term'], Delivery::META, true ) );
+		$this->assertFalse( metadata_exists( 'term', $this->made['term'], Layout::TERM_META ) );
+		foreach ( array( Layout::PRODUCT_META, Layout::DETAILS_META, Cards::BADGE_META, CouponField::META ) as $key ) {
+			$this->assertFalse( metadata_exists( 'post', $page, $key ), $key );
+		}
+		$this->assertFalse( get_option( Preset::UNDO ) );
+		$this->assertNull( get_comment( $question ), 'Product questions are deleted.' );
+		$this->assertNull( get_comment( $answer ), 'So are their answers.' );
+		$this->assertInstanceOf( \WP_Comment::class, get_comment( $review ), 'Other comments stay.' );
 		$this->assertSame( '', get_user_meta( $this->made['user'], Lists::META, true ) );
 
 		$this->assertInstanceOf( \WP_Post::class, get_post( $page ), 'Pages stay.' );
