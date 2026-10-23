@@ -16,6 +16,7 @@ use Pergel\Settings\Settings;
 use Pergel\Woo\FlashSaleFields;
 use Pergel\Woo\FlashSalePrices;
 use Pergel\Woo\FlashSales;
+use Pergel\Woo\Modes;
 use Pergel\Woo\Module as Woo;
 use PHPUnit\Framework\TestCase;
 
@@ -88,6 +89,8 @@ final class FlashSalesTest extends TestCase {
 			add_filter( 'sanitize_option_' . Settings::OPTION, array( \Pergel\Settings\Module::class, 'sanitize' ) );
 		}
 		Settings::flush();
+		remove_all_filters( 'pergel/woo/enforce_modes' );
+		Modes::flush();
 		if ( null !== $this->query ) {
 			$GLOBALS['wp_the_query'] = $this->query; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Puts back the query go_to() replaced.
 		}
@@ -508,6 +511,69 @@ final class FlashSalesTest extends TestCase {
 		$this->assertStringContainsString( '<span class="pergel-badge is-flash">' . esc_html__( 'Flash sale', 'pergel-engine' ) . '</span>', \Pergel\Woo\Cards::badges( $product->get_id(), null ) );
 		Settings::update( array( 'woo' => array( 'sales_card' => false ) ) );
 		$this->assertStringNotContainsString( 'is-flash', \Pergel\Woo\Cards::badges( $product->get_id(), null ) );
+	}
+
+	public function test_products_without_a_price_are_left_out(): void {
+		$sold    = $this->product( '100' );
+		$quote   = $this->product( '100' );
+		$catalog = $this->product( '100' );
+		$login   = $this->product( '100' );
+		foreach ( array(
+			Modes::QUOTE   => $quote,
+			Modes::CATALOG => $catalog,
+			Modes::LOGIN   => $login,
+		) as $mode => $product ) {
+			update_post_meta( $product->get_id(), Modes::POST_META, $mode );
+		}
+		Modes::flush();
+		$id = $this->sale( -60, HOUR_IN_SECONDS, 20, array( $sold->get_id(), $quote->get_id(), $catalog->get_id(), $login->get_id() ) );
+		FlashSalePrices::run( $id );
+
+		$this->assertSame( array( $sold->get_id(), $login->get_id() ), FlashSales::items( $id ), 'Sold in the shop or to customers.' );
+		$this->assertCount( 4, FlashSales::chosen( $id ) );
+		$this->assertSame( '', $this->fresh( $quote->get_id() )->get_sale_price( 'edit' ), 'No campaign price on a product sold on request.' );
+		$this->assertSame( '', $this->fresh( $catalog->get_id() )->get_sale_price( 'edit' ) );
+		$this->assertSame( '80', wc_format_decimal( $this->fresh( $login->get_id() )->get_sale_price( 'edit' ) ) );
+		$this->assertSame( 0, FlashSales::of( $quote->get_id() ) );
+
+		$none = $this->sale( -60, HOUR_IN_SECONDS, 20, array( $quote->get_id() ) );
+		FlashSalePrices::run( $none );
+		$this->assertArrayNotHasKey( $none, FlashSales::index()['sales'], 'A campaign that shows nothing is not offered to the band.' );
+		$this->assertArrayHasKey( $id, FlashSales::index()['sales'] );
+
+		$later = $this->sale( HOUR_IN_SECONDS, 2 * HOUR_IN_SECONDS, 20, array( $catalog->get_id() ) );
+		FlashSalePrices::run( $later );
+		$this->assertTrue( FlashSales::bare( $none ) );
+		$this->assertTrue( FlashSales::bare( $later ), 'Known before it starts.' );
+		$this->assertFalse( FlashSales::bare( $id ) );
+		$listed = get_posts(
+			FlashSales::loop(
+				array(
+					'post_type'      => FlashSales::TYPE,
+					'fields'         => 'ids',
+					'posts_per_page' => -1,
+				)
+			)
+		);
+		$this->assertContains( $id, $listed );
+		$this->assertNotContains( $none, $listed, 'Not on the list pages.' );
+		$this->assertNotContains( $later, $listed );
+		$this->go_to( $none );
+		$this->assertTrue( FlashSales::robots( array() )['noindex'] ?? false );
+		$this->assertSame( '', FlashSales::sections( null, array( 'attrs' => array( 'className' => FlashSales::PRODUCTS_CLASS ) ) ), 'No empty grid.' );
+		$this->assertNull( FlashSales::sections( null, array( 'attrs' => array( 'className' => FlashSales::OTHERS_CLASS ) ) ), 'The running campaigns instead.' );
+
+		// A visitor who is not logged in sees no price on the login product,
+		// so no badge and no box either.
+		add_filter( 'pergel/woo/enforce_modes', '__return_true' );
+		Modes::flush();
+		wp_set_current_user( 0 );
+		$this->assertStringContainsString( 'is-flash', \Pergel\Woo\Cards::badges( $sold->get_id(), null ) );
+		$this->assertStringNotContainsString( 'is-flash', \Pergel\Woo\Cards::badges( $login->get_id(), null ) );
+		$this->go_to( $login->get_id(), 'product' );
+		$block          = new \WP_Block( array( 'blockName' => 'core/null' ) );
+		$block->context = array( 'postId' => $login->get_id() );
+		$this->assertSame( '<div></div>', FlashSales::price( '<div></div>', array(), $block ) );
 	}
 
 	public function test_band_prefers_a_campaign_of_the_category(): void {

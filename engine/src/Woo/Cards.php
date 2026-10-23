@@ -581,7 +581,7 @@ final class Cards {
 	 */
 	public static function badges( int $id, ?\WC_Product $product ): string {
 		$badges = array();
-		if ( Layout::sale_badges() && FlashSales::of( $id ) > 0 ) {
+		if ( Layout::sale_badges() && FlashSales::of( $id ) > 0 && ! Modes::hidden( $id ) ) {
 			$badges['flash'] = __( 'Flash sale', 'pergel-engine' );
 		}
 		$own = trim( (string) get_post_meta( $id, self::BADGE_META, true ) );

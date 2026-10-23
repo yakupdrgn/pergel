@@ -25,12 +25,14 @@
 
 .wp-block-pergel-sale-timer__count {
 	display: inline-flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: var(--wp--preset--spacing--20, 0.5rem);
 }
 
 .wp-block-pergel-sale-timer__label {
 	font-weight: 600;
+	white-space: nowrap;
 }
 
 .wp-block-pergel-sale-timer .pergel-countdown__parts {
@@ -69,6 +71,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
+	box-sizing: border-box;
 	gap: var(--wp--preset--spacing--20, 0.5rem) var(--wp--preset--spacing--30, 1rem);
 }
 

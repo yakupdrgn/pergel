@@ -55,6 +55,12 @@ final class FlashSales {
 	public const SHOWN = '_pergel_sale_shown';
 
 	/**
+	 * Campaign meta, '1' when it covers no product that is sold (see sold()),
+	 * worked out at each price step of a campaign that has not ended.
+	 */
+	public const BARE = '_pergel_sale_bare';
+
+	/**
 	 * Option: the running campaigns (id => end, soonest end first) and their
 	 * products (product id => campaign id).
 	 */
@@ -294,14 +300,46 @@ final class FlashSales {
 	}
 
 	/**
-	 * The published products a campaign covers: the chosen ones and those in
+	 * The products a campaign covers: the chosen ones that are sold (see
+	 * sold()).
+	 *
+	 * @param int $id Campaign.
+	 * @return list<int>
+	 */
+	public static function products( int $id ): array {
+		return array_values( array_filter( self::chosen( $id ), array( self::class, 'sold' ) ) );
+	}
+
+	/**
+	 * Whether a campaign covers no product that is sold: it stays out of the
+	 * lists, and its page shows the running campaigns instead of products.
+	 *
+	 * @param int $id Campaign.
+	 */
+	public static function bare( int $id ): bool {
+		return '1' === get_post_meta( $id, self::BARE, true );
+	}
+
+	/**
+	 * Whether a product is sold under some mode: in the shop or to logged-in
+	 * customers. Under the quote and catalog modes a product shows no
+	 * price, so a campaign leaves it out.
+	 *
+	 * @param int $product Product.
+	 */
+	public static function sold( int $product ): bool {
+		return in_array( Modes::of( $product ), array( Modes::SALE, Modes::LOGIN ), true );
+	}
+
+	/**
+	 * The published products a campaign chooses: the chosen ones and those in
 	 * the chosen categories (with their subcategories). Grouped products have
 	 * no price of their own and are left out.
 	 *
 	 * @param int $id Campaign.
 	 * @return list<int>
 	 */
-	public static function products( int $id ): array {
+	public static function chosen( int $id ): array {
 		$sale = self::campaign( $id );
 		$ids  = $sale['products'];
 		if ( $sale['categories'] ) {
@@ -398,7 +436,8 @@ final class FlashSales {
 	}
 
 	/**
-	 * Query vars for campaigns that have not ended.
+	 * Query vars for campaigns that have not ended and cover a product that
+	 * is sold.
 	 *
 	 * @param array<string, mixed> $query Query vars to add to.
 	 * @return array<string, mixed>
@@ -412,6 +451,10 @@ final class FlashSales {
 					'value'   => time(),
 					'compare' => '>',
 					'type'    => 'NUMERIC',
+				),
+				array(
+					'key'     => self::BARE,
+					'compare' => 'NOT EXISTS',
 				),
 			),
 			'meta_key'   => self::START, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- As above.
@@ -464,18 +507,21 @@ final class FlashSales {
 		if ( null !== $html || ( ! $products && ! $others ) || ! is_singular( self::TYPE ) ) {
 			return $html;
 		}
-		$ended = 'ended' === self::state( (int) get_queried_object_id() );
+		$id    = (int) get_queried_object_id();
+		$ended = 'ended' === self::state( $id ) || self::bare( $id );
 		return $ended === $others ? null : '';
 	}
 
 	/**
-	 * Keeps ended campaigns out of search results.
+	 * Keeps ended campaigns, and those without products, out of search
+	 * results.
 	 *
 	 * @param array<string, bool|string> $robots Robots directives.
 	 * @return array<string, bool|string>
 	 */
 	public static function robots( array $robots ): array {
-		if ( is_singular( self::TYPE ) && 'ended' === self::state( (int) get_queried_object_id() ) ) {
+		$id = (int) get_queried_object_id();
+		if ( is_singular( self::TYPE ) && ( 'ended' === self::state( $id ) || self::bare( $id ) ) ) {
 			$robots['noindex'] = true;
 			$robots['follow']  = true;
 		}
@@ -627,8 +673,14 @@ final class FlashSales {
 			)
 		);
 		foreach ( self::ids( $ids ) as $id ) {
+			// A campaign that shows no product (none sold, or all in another
+			// campaign) is not offered to the band or the block.
+			$shown = self::ids( get_post_meta( $id, self::SHOWN, true ) );
+			if ( ! $shown ) {
+				continue;
+			}
 			$index['sales'][ $id ] = self::campaign( $id )['end'];
-			foreach ( self::ids( get_post_meta( $id, self::SHOWN, true ) ) as $product ) {
+			foreach ( $shown as $product ) {
 				$index['products'][ $product ] ??= $id;
 			}
 		}
@@ -669,7 +721,7 @@ final class FlashSales {
 			return $html;
 		}
 		$id = self::of( $product );
-		if ( 0 === $id || ! self::running( $id ) ) {
+		if ( 0 === $id || ! self::running( $id ) || Modes::hidden( $product ) ) {
 			return $html;
 		}
 		self::style();
@@ -687,6 +739,9 @@ final class FlashSales {
 	 * show it after the end.
 	 */
 	public static function band(): string {
+		if ( Modes::nothing_sells() ) {
+			return '';
+		}
 		$id = self::pick( is_product_category() ? (int) get_queried_object_id() : 0 );
 		if ( 0 === $id ) {
 			return '';

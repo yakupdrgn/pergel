@@ -803,6 +803,16 @@ görünmez (`Settings\Screen::shown`).
     (`_pergel_sale_skipped`, düzenleme kutusunda uyarı), kampanya yeniden kaydedilince tekrar
     denenir. Kategoriler adım sırasında ürünlere açılır (alt kategoriler dahil, gruplu ürünler
     hariç); sonradan kategoriye eklenen ürün kampanya yeniden kaydedilince katılır.
+  - **Satış modu:** `quote` ya da `catalog` modundaki ürün (kendi, kategorisinin ya da mağazanın
+    modu, `Modes::of`) fiyat göstermediği için kampanyaya alınmaz (`FlashSales::sold`); ona fiyat
+    yazılmaz, kampanya sayfasında, kartta, kutuda görünmez, düzenleme kutusu kaç ürünün dışarıda
+    kaldığını söyler (`FlashSales::chosen` ile `products` farkı). `login` modundaki ürüne fiyat
+    yazılır; giriş yapmamış ziyaretçiye (`Modes::hidden`) rozet ve kutu çıkmaz, hiçbir şeyin
+    satılmadığı mağazada bant çizilmez. Satılan hiçbir ürünü kapsamayan kampanya (adımlarda,
+    bitmemişse yaklaşırken de, `_pergel_sale_bare`) liste sayfasında ve kampanya Sorgu
+    Döngülerinde çıkmaz; sayfası `noindex, follow` olur ve ürün ızgarası yerine biten kampanyadaki
+    gibi süren kampanyaları gösterir. Kampanya sürerken değişen mod bir sonraki adımda
+    (başlangıç, bitiş ya da kampanyanın kaydı) işlenir.
   - **Sayfalar:** motor iki blok şablonu kaydeder (`register_block_template`,
     `pergel-engine//archive-pergel_sale` ve `//single-pergel_sale`, `engine/templates/`); temanın
     aynı adlı dosyası önce gelir. Adres `woo.sales_slug`, boşsa çevrilen "flash-sale" (Türkçede
@@ -819,8 +829,8 @@ görünmez (`Settings\Screen::shown`).
     erdi". `countdown: false` liste kartlarında yalnızca tarihleri gösterir.
   - **Dizin (S7b):** her adım kampanyanın gösterdiği ürünleri (fiyatı yazılmış hedeflerin ürünleri;
     değişken üründe ana ürün, `_pergel_sale_shown`) kaydeder ve `pergel_sale_index` seçeneğini
-    (otomatik yüklenir) süren kampanyalardan yeniden kurar: `sales` (kampanya → bitiş, en yakın
-    önce) ve `products` (ürün → kampanya). Kart, kutu ve bant yalnızca bunu okur; mağaza listesi
+    (otomatik yüklenir) süren ve en az bir ürün gösteren kampanyalardan yeniden kurar: `sales`
+    (kampanya → bitiş, en yakın önce) ve `products` (ürün → kampanya). Kart, kutu ve bant yalnızca bunu okur; mağaza listesi
     ek sorgu yapmaz. Bitiş saati geçmiş kayıt, adım çalışana kadar da yok sayılır.
   - **Ürün kutusu** (`woo.sales_product`, açık): `render_block_woocommerce/product-price`'ın
     ardından, yalnızca ekrandaki ürünün kendi fiyatında (benzer ürünlerin fiyatında değil) ve
