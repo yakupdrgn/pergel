@@ -802,6 +802,57 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'sale-timer' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/sale-timer',
+    'title' => 'Flash sale dates',
+    'category' => 'pergel',
+    'icon' => 'clock',
+    'description' => 'A flash sale\'s discount, its dates and a countdown to the start or the end; after the end, that it has ended. For the flash sale templates (Pergel → Settings → Shop → Flash sales).',
+    'keywords' => 
+    array (
+      0 => 'flash sale',
+      1 => 'campaign',
+      2 => 'countdown',
+      3 => 'discount',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'attributes' => 
+    array (
+      'countdown' => 
+      array (
+        'type' => 'boolean',
+        'default' => true,
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+      'typography' => 
+      array (
+        'fontSize' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'shop-links' => 
   array (
     'apiVersion' => 3,

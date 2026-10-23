@@ -321,6 +321,16 @@ final class Schema {
 					'max'     => 1000000,
 					'default' => 0,
 				),
+				// Flash sale campaigns; see Pergel\Woo\FlashSales. An empty
+				// address part uses the translated "flash-sale".
+				'flash_sales'       => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'sales_slug'        => array(
+					'type' => 'text',
+					'max'  => 40,
+				),
 			),
 			// Shop listing look; see Pergel\Woo\Layout. "template", "auto",
 			// "wide" and 0 keep the template's and WooCommerce's own layout,

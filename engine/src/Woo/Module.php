@@ -95,6 +95,12 @@ final class Module implements Core\Module {
 				break;
 			}
 		}
+		// Also with the campaigns off, so the prices they wrote always go back.
+		add_action( 'pergel_sale_step', array( FlashSalePrices::class, 'step' ) );
+		add_action( 'pergel_sale_next', array( FlashSalePrices::class, 'step' ) );
+		if ( true === Settings::get( 'woo.flash_sales' ) ) {
+			FlashSales::register();
+		}
 		// The Product enquiry block's quote form.
 		add_filter( 'pergel/forms/subject_fields', array( Quote::class, 'fields' ), 10, 3 );
 		add_filter( 'pergel/forms/subject_values', array( Quote::class, 'values' ), 10, 3 );

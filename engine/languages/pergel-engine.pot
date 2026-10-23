@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T15:35:29+03:00\n"
+"POT-Creation-Date: 2026-10-23T17:03:58+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -516,6 +516,9 @@ msgstr ""
 msgid "Free shipping progress"
 msgstr ""
 
+msgid "Flash sales"
+msgstr ""
+
 msgid "Speed"
 msgstr ""
 
@@ -838,6 +841,18 @@ msgid "Free shipping from"
 msgstr ""
 
 msgid "The amount comes from the \"Free shipping\" method of the customer's shipping zone (WooCommerce → Settings → Shipping) when it asks for a minimum order amount. This amount is used where there is no such method; 0 shows nothing there."
+msgstr ""
+
+msgid "Flash sale campaigns"
+msgstr ""
+
+msgid "Adds Products → Flash sales. A campaign has a start, an end, a discount and its products or categories; while it runs, its price is the WooCommerce sale price of the products, and afterwards their own prices come back. A list page shows the running and upcoming campaigns, and each campaign has a page with a countdown and its products."
+msgstr ""
+
+msgid "Address of the campaign pages"
+msgstr ""
+
+msgid "The part after the site address, such as \"flash-sale\" for /flash-sale/. Leave empty for the default in the site language."
 msgstr ""
 
 msgid "Show the estimated delivery date"
@@ -1585,6 +1600,11 @@ msgstr ""
 msgid "Quick view: %s"
 msgstr ""
 
+#. translators: %s: date the sale ends.
+#, php-format
+msgid "Sale ends %s"
+msgstr ""
+
 msgctxt "days, short"
 msgid "d"
 msgstr ""
@@ -1599,11 +1619,6 @@ msgstr ""
 
 msgctxt "seconds, short"
 msgid "s"
-msgstr ""
-
-#. translators: %s: date the sale ends.
-#, php-format
-msgid "Sale ends %s"
 msgstr ""
 
 msgid "New"
@@ -1730,6 +1745,131 @@ msgid "Applies to the products of this category and its subcategories, unless a 
 msgstr ""
 
 msgid "Search the options"
+msgstr ""
+
+msgid "Campaign"
+msgstr ""
+
+msgid "Starts"
+msgstr ""
+
+msgid "Ends"
+msgstr ""
+
+#. translators: %s: time zone name.
+#, php-format
+msgid "In the site's time zone (%s)."
+msgstr ""
+
+msgid "Discount"
+msgstr ""
+
+msgid "Search for a product…"
+msgstr ""
+
+msgid "Choose categories…"
+msgstr ""
+
+msgid "Every published product in these categories and their subcategories takes part, with the products chosen above. Products added to a category later join when the campaign is saved again."
+msgstr ""
+
+msgid "Set the start, the end and the discount, and choose products or categories."
+msgstr ""
+
+msgid "Not started yet. The prices change when it starts."
+msgstr ""
+
+#. translators: %d: number of products and variations.
+#, php-format
+msgid "Running: the campaign price is on %d product."
+msgid_plural "Running: the campaign price is on %d products."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Ended. The products have their own prices again."
+msgstr ""
+
+msgid "The campaign runs once it is published."
+msgstr ""
+
+#. translators: %d: number of products.
+#, php-format
+msgid "%d product is in another running campaign and keeps that price:"
+msgid_plural "%d products are in another running campaign and keep that price:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Not set up"
+msgstr ""
+
+msgid "Upcoming"
+msgstr ""
+
+msgid "Running"
+msgstr ""
+
+msgid "Ended"
+msgstr ""
+
+#. translators: %d: discount in percent.
+#, php-format,js-format
+msgid "%d%% off"
+msgstr ""
+
+msgid "Flash sale"
+msgstr ""
+
+msgid "Add flash sale"
+msgstr ""
+
+msgid "Edit flash sale"
+msgstr ""
+
+msgid "New flash sale"
+msgstr ""
+
+msgid "View flash sale"
+msgstr ""
+
+msgid "View flash sales"
+msgstr ""
+
+msgid "Search flash sales"
+msgstr ""
+
+msgid "No flash sales yet."
+msgstr ""
+
+msgid "No flash sales in the trash."
+msgstr ""
+
+msgctxt "Address part of the flash sale pages"
+msgid "flash-sale"
+msgstr ""
+
+msgid "The list of running and upcoming flash sales."
+msgstr ""
+
+msgid "A flash sale with its countdown and products."
+msgstr ""
+
+msgid "This campaign has ended."
+msgstr ""
+
+msgid "Ends in"
+msgstr ""
+
+msgid "Starts in"
+msgstr ""
+
+#. translators: %s: date and time.
+#, php-format
+msgid "Campaign ends %s"
+msgstr ""
+
+#. translators: %s: date and time.
+#, php-format
+msgid "Campaign starts %s"
 msgstr ""
 
 msgid "Your order ships free."
@@ -2348,6 +2488,18 @@ msgstr ""
 msgid "Sample product"
 msgstr ""
 
+msgid "There is no flash sale right now. Have a look again soon."
+msgstr ""
+
+msgid "See the products"
+msgstr ""
+
+msgid "No products are in this campaign yet."
+msgstr ""
+
+msgid "Running and upcoming campaigns"
+msgstr ""
+
 msgid "Scroll animation"
 msgstr ""
 
@@ -2621,6 +2773,18 @@ msgid "Title"
 msgstr ""
 
 msgid "Most products"
+msgstr ""
+
+msgid "Start – end of the campaign"
+msgstr ""
+
+msgid "Countdown"
+msgstr ""
+
+msgid "Show the countdown"
+msgstr ""
+
+msgid "To the start before the campaign, to the end while it runs."
 msgstr ""
 
 msgid "Visitors see the products they chose to compare here, side by side."
@@ -3036,6 +3200,30 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "products"
+msgstr ""
+
+msgctxt "block title"
+msgid "Flash sale dates"
+msgstr ""
+
+msgctxt "block description"
+msgid "A flash sale's discount, its dates and a countdown to the start or the end; after the end, that it has ended. For the flash sale templates (Pergel → Settings → Shop → Flash sales)."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "flash sale"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "campaign"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "countdown"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "discount"
 msgstr ""
 
 msgctxt "block title"

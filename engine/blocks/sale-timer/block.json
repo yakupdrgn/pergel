@@ -1,0 +1,35 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/sale-timer",
+	"title": "Flash sale dates",
+	"category": "pergel",
+	"icon": "clock",
+	"description": "A flash sale's discount, its dates and a countdown to the start or the end; after the end, that it has ended. For the flash sale templates (Pergel → Settings → Shop → Flash sales).",
+	"keywords": [ "flash sale", "campaign", "countdown", "discount" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId", "postType" ],
+	"attributes": {
+		"countdown": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

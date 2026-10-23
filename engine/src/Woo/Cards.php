@@ -502,11 +502,21 @@ final class Cards {
 	 */
 	public static function countdown( \WC_Product $product ): string {
 		$end = $product->is_on_sale() ? $product->get_date_on_sale_to() : null;
-		$now = time();
-		if ( null === $end || $end->getTimestamp() <= $now ) {
+		if ( null === $end || $end->getTimestamp() <= time() ) {
 			return '';
 		}
-		$left  = $end->getTimestamp() - $now;
+		/* translators: %s: date the sale ends. */
+		return self::timer( $end->getTimestamp(), sprintf( __( 'Sale ends %s', 'pergel-engine' ), wp_date( (string) get_option( 'date_format' ), $end->getTimestamp() ) ) );
+	}
+
+	/**
+	 * Countdown boxes to a time, also for the flash sale dates block.
+	 *
+	 * @param int    $until Unix time.
+	 * @param string $text  What screen readers get instead of the numbers.
+	 */
+	public static function timer( int $until, string $text ): string {
+		$left  = max( 0, $until - time() );
 		$parts = array(
 			'd' => array( intdiv( $left, DAY_IN_SECONDS ), _x( 'd', 'days, short', 'pergel-engine' ) ),
 			'h' => array( intdiv( $left % DAY_IN_SECONDS, HOUR_IN_SECONDS ), _x( 'h', 'hours, short', 'pergel-engine' ) ),
@@ -520,10 +530,9 @@ final class Cards {
 		wp_enqueue_script_module( Layout::CARDS_SCRIPT );
 		return sprintf(
 			'<span class="pergel-countdown" data-pergel-until="%1$d"><span class="pergel-countdown__parts" aria-hidden="true">%2$s</span><span class="screen-reader-text">%3$s</span></span>',
-			$end->getTimestamp(),
+			$until,
 			$boxes,
-			/* translators: %s: date the sale ends. */
-			esc_html( sprintf( __( 'Sale ends %s', 'pergel-engine' ), wp_date( (string) get_option( 'date_format' ), $end->getTimestamp() ) ) )
+			esc_html( $text )
 		);
 	}
 

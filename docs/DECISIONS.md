@@ -1600,6 +1600,26 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   onayı, 23 Ekim 2026). Kampanya bandı, teslimat tahmini, stok uyarısı ve beden rehberi
   ayarlanmaz (siteye özel içerik ister); hazır ayar sayfa oluşturmaz. Geri al tam yedek değil:
   yalnızca hazır ayarın değiştirdiği ve sonra elle değiştirilmemiş ayarlar geri döner.
+- **S7 kararları (kullanıcı, 23 Ekim 2026):** Unimart'ta kampanya listesi (görsel, tarih aralığı,
+  başlık, açıklama), kampanya sayfası ve indirimli ürünler sayfası ölçüldü; demodaki kampanya
+  sayfası ürünsüz. Fiyatlar **WooCommerce'in indirimine yazılır** (eski değer saklanır, bitince geri
+  gelir); anlık fiyat süzgeci reddedildi, çünkü fiyat filtresi, sıralama ve beslemeler eski fiyatı
+  görürdü. Kampanyalar **kendi yazı türünde** (liste + kampanya sayfası, şablonlar motordan). Biten
+  kampanyanın sayfası açık kalır: bitti notu, süren kampanyalar, noindex. S7b'de ürün sayfası
+  kutusu, kart rozeti, kampanya blokları ve mağaza üstü bant. **Kapsam dışı:** sepette "10 dakika
+  içinde ödeyin" sayacı ve uydurma "son satılanlar" sayıları (sahte aciliyet). S7 1.4.0'a girer.
+- **S7a kararları:** Kampanya fiyatları başlangıçta yazılır, kayıtta değil: önceden yazmak ürünün
+  o an süren kendi indirimini kampanya başlamadan bitirirdi. WooCommerce 10.5'ten beri indirim
+  başlangıç ve bitişini kendi Action Scheduler işleriyle tam zamanında işliyor; Pergel buna
+  güvenmek yerine kendi adımlarını kurar, çünkü bitişte ürünün eski indirimini geri koymak
+  WooCommerce'in işi değil. Pergel geri koyarken tarihleri değiştirdiği için WooCommerce'in
+  bekleyen bitiş işi kendiliğinden kalkar. Adımlar 50'lik parçalar: 5.000 ürünlük bir kategori
+  tek istekte zaman aşımına uğramasın. Kampanya kutusu kenar çubuğunda, çünkü blok
+  düzenleyicide alttaki meta kutuları kapalı gelir ve ana ayar gözden kaçıyordu. Adımlara
+  kampanya başına bir kilit kondu: panelden kaydederken hemen çalışan adımla, yayın durumu
+  değişince sıraya giren adım aynı anda çalışabiliyor (yönetim sayfasının arka plan istekleri
+  Action Scheduler işlerini hemen yürütüyor); eski bilgiyle çalışan adım, biten bir kampanyanın
+  fiyatlarını yeniden yazabiliyordu.
 
 ## Aşamalar ve bitti tanımları
 
