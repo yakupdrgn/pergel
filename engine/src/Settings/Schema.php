@@ -492,6 +492,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				'card_quote'       => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 				'badge_sale'       => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'percent', 'none' ),

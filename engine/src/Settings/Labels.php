@@ -190,7 +190,7 @@ final class Labels {
 				),
 				'cards'   => array(
 					'title'  => __( 'Product cards', 'pergel-engine' ),
-					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches' ),
+					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches', 'card_quote' ),
 				),
 				'badges'  => array(
 					'title'  => __( 'Badges', 'pergel-engine' ),
@@ -870,6 +870,10 @@ final class Labels {
 				'card_swatches'    => array(
 					'label' => __( 'Colours on cards', 'pergel-engine' ),
 					'help'  => __( 'For products with options: the colours or pictures of the first attribute with the "Color / image" type, under the name. Choosing one shows that option\'s picture on the card.', 'pergel-engine' ),
+				),
+				'card_quote'       => array(
+					'label' => __( '"Request a quote" on cards', 'pergel-engine' ),
+					'help'  => __( 'For products sold on request (Quote sales mode): the card button says "Request a quote" and opens the quote form on the product page, instead of "Read more".', 'pergel-engine' ),
 				),
 			),
 		);

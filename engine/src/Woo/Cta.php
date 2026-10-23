@@ -27,6 +27,11 @@ final class Cta {
 	public const STORE = 'pergel/product-cta';
 
 	/**
+	 * Anchor of the quote form; a link to it opens the form.
+	 */
+	public const QUOTE_ANCHOR = 'pergel-quote';
+
+	/**
 	 * Block markup.
 	 *
 	 * @param array<string, mixed> $attributes Block attributes.
@@ -65,7 +70,8 @@ final class Cta {
 	/**
 	 * The quote form about the product, folded under a button. It is open
 	 * when the page comes back with a result (the form sent without
-	 * JavaScript).
+	 * JavaScript), and when the address ends with its anchor (a card's
+	 * "Request a quote" button).
 	 *
 	 * @param \WC_Product $product Product.
 	 */
@@ -94,7 +100,7 @@ final class Cta {
 			return '';
 		}
 		$open = isset( $_GET['pergel_form'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only opens the panel.
-		return '<details class="wp-block-pergel-product-cta__quote"' . ( $open ? ' open' : '' ) . '>'
+		return '<details id="' . self::QUOTE_ANCHOR . '" class="wp-block-pergel-product-cta__quote" data-wp-init="callbacks.anchor"' . ( $open ? ' open' : '' ) . '>'
 			. '<summary class="wp-element-button">' . esc_html__( 'Request a quote', 'pergel-engine' ) . '</summary>'
 			. '<div class="wp-block-pergel-product-cta__panel">' . $form . '</div>'
 			. '</details>';
