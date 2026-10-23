@@ -463,20 +463,18 @@ final class ProductDetailsTest extends TestCase {
 	}
 
 	public function test_own_values_are_cleaned(): void {
-		$this->assertSame(
+		$own = DetailsFields::clean(
 			array(
-				'features' => array( 'One', 'Two' ),
-				'tab_name' => 'Warranty',
-				'tab'      => '<p>Two years</p>alert(1)',
-			),
-			DetailsFields::clean(
-				array(
-					'features' => "  One \n\n<b>Two</b>\r\n",
-					'tab_name' => ' <i>Warranty</i> ',
-					'tab'      => '<p>Two years</p><script>alert(1)</script>',
-				)
+				'features' => "  One \n\n<b>Two</b>\r\n",
+				'tab_name' => ' <i>Warranty</i> ',
+				'tab'      => '<p>Two years</p><script>alert(1)</script>',
 			)
 		);
+		$this->assertSame( array( 'One', 'Two' ), $own['features'] );
+		$this->assertSame( 'Warranty', $own['tab_name'] );
+		// What WordPress keeps of a script's text differs between versions.
+		$this->assertStringStartsWith( '<p>Two years</p>', $own['tab'] );
+		$this->assertStringNotContainsString( '<script', $own['tab'] );
 		$this->assertSame( DetailsFields::FEATURES, count( DetailsFields::clean( array( 'features' => str_repeat( "x\n", 50 ) ) )['features'] ) );
 		$this->assertSame(
 			array(
