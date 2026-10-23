@@ -55,6 +55,12 @@ final class FlashSales {
 	public const SHOWN = '_pergel_sale_shown';
 
 	/**
+	 * Campaign meta, '1' when it covers no product that is sold (see sold()),
+	 * worked out at each price step of a campaign that has not ended.
+	 */
+	public const BARE = '_pergel_sale_bare';
+
+	/**
 	 * Option: the running campaigns (id => end, soonest end first) and their
 	 * products (product id => campaign id).
 	 */
@@ -305,6 +311,16 @@ final class FlashSales {
 	}
 
 	/**
+	 * Whether a campaign covers no product that is sold: it stays out of the
+	 * lists, and its page shows the running campaigns instead of products.
+	 *
+	 * @param int $id Campaign.
+	 */
+	public static function bare( int $id ): bool {
+		return '1' === get_post_meta( $id, self::BARE, true );
+	}
+
+	/**
 	 * Whether a product is sold under some mode: in the shop or to logged-in
 	 * customers. Under the quote and catalog modes a product shows no
 	 * price, so a campaign leaves it out.
@@ -420,7 +436,8 @@ final class FlashSales {
 	}
 
 	/**
-	 * Query vars for campaigns that have not ended.
+	 * Query vars for campaigns that have not ended and cover a product that
+	 * is sold.
 	 *
 	 * @param array<string, mixed> $query Query vars to add to.
 	 * @return array<string, mixed>
@@ -434,6 +451,10 @@ final class FlashSales {
 					'value'   => time(),
 					'compare' => '>',
 					'type'    => 'NUMERIC',
+				),
+				array(
+					'key'     => self::BARE,
+					'compare' => 'NOT EXISTS',
 				),
 			),
 			'meta_key'   => self::START, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- As above.
@@ -486,18 +507,21 @@ final class FlashSales {
 		if ( null !== $html || ( ! $products && ! $others ) || ! is_singular( self::TYPE ) ) {
 			return $html;
 		}
-		$ended = 'ended' === self::state( (int) get_queried_object_id() );
+		$id    = (int) get_queried_object_id();
+		$ended = 'ended' === self::state( $id ) || self::bare( $id );
 		return $ended === $others ? null : '';
 	}
 
 	/**
-	 * Keeps ended campaigns out of search results.
+	 * Keeps ended campaigns, and those without products, out of search
+	 * results.
 	 *
 	 * @param array<string, bool|string> $robots Robots directives.
 	 * @return array<string, bool|string>
 	 */
 	public static function robots( array $robots ): array {
-		if ( is_singular( self::TYPE ) && 'ended' === self::state( (int) get_queried_object_id() ) ) {
+		$id = (int) get_queried_object_id();
+		if ( is_singular( self::TYPE ) && ( 'ended' === self::state( $id ) || self::bare( $id ) ) ) {
 			$robots['noindex'] = true;
 			$robots['follow']  = true;
 		}

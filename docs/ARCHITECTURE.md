@@ -808,7 +808,10 @@ görünmez (`Settings\Screen::shown`).
     yazılmaz, kampanya sayfasında, kartta, kutuda görünmez, düzenleme kutusu kaç ürünün dışarıda
     kaldığını söyler (`FlashSales::chosen` ile `products` farkı). `login` modundaki ürüne fiyat
     yazılır; giriş yapmamış ziyaretçiye (`Modes::hidden`) rozet ve kutu çıkmaz, hiçbir şeyin
-    satılmadığı mağazada bant çizilmez. Kampanya sürerken değişen mod bir sonraki adımda
+    satılmadığı mağazada bant çizilmez. Satılan hiçbir ürünü kapsamayan kampanya (adımlarda,
+    bitmemişse yaklaşırken de, `_pergel_sale_bare`) liste sayfasında ve kampanya Sorgu
+    Döngülerinde çıkmaz; sayfası `noindex, follow` olur ve ürün ızgarası yerine biten kampanyadaki
+    gibi süren kampanyaları gösterir. Kampanya sürerken değişen mod bir sonraki adımda
     (başlangıç, bitiş ya da kampanyanın kaydı) işlenir.
   - **Sayfalar:** motor iki blok şablonu kaydeder (`register_block_template`,
     `pergel-engine//archive-pergel_sale` ve `//single-pergel_sale`, `engine/templates/`); temanın

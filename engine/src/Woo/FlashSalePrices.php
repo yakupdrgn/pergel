@@ -158,6 +158,14 @@ final class FlashSalePrices {
 		if ( $running ) {
 			update_post_meta( $id, FlashSales::ITEMS, $items );
 		}
+		// An ended campaign keeps its last answer.
+		if ( $running || 'ended' !== FlashSales::state( $id ) ) {
+			if ( $running ? $items : FlashSales::products( $id ) ) {
+				delete_post_meta( $id, FlashSales::BARE );
+			} else {
+				update_post_meta( $id, FlashSales::BARE, '1' );
+			}
+		}
 		foreach ( $applied as $product => $written ) {
 			if ( $left <= 0 ) {
 				break;

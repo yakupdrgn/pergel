@@ -530,6 +530,28 @@ final class FlashSalesTest extends TestCase {
 		$this->assertArrayNotHasKey( $none, FlashSales::index()['sales'], 'A campaign that shows nothing is not offered to the band.' );
 		$this->assertArrayHasKey( $id, FlashSales::index()['sales'] );
 
+		$later = $this->sale( HOUR_IN_SECONDS, 2 * HOUR_IN_SECONDS, 20, array( $catalog->get_id() ) );
+		FlashSalePrices::run( $later );
+		$this->assertTrue( FlashSales::bare( $none ) );
+		$this->assertTrue( FlashSales::bare( $later ), 'Known before it starts.' );
+		$this->assertFalse( FlashSales::bare( $id ) );
+		$listed = get_posts(
+			FlashSales::loop(
+				array(
+					'post_type'      => FlashSales::TYPE,
+					'fields'         => 'ids',
+					'posts_per_page' => -1,
+				)
+			)
+		);
+		$this->assertContains( $id, $listed );
+		$this->assertNotContains( $none, $listed, 'Not on the list pages.' );
+		$this->assertNotContains( $later, $listed );
+		$this->go_to( $none );
+		$this->assertTrue( FlashSales::robots( array() )['noindex'] ?? false );
+		$this->assertSame( '', FlashSales::sections( null, array( 'attrs' => array( 'className' => FlashSales::PRODUCTS_CLASS ) ) ), 'No empty grid.' );
+		$this->assertNull( FlashSales::sections( null, array( 'attrs' => array( 'className' => FlashSales::OTHERS_CLASS ) ) ), 'The running campaigns instead.' );
+
 		// A visitor who is not logged in sees no price on the login product,
 		// so no badge and no box either.
 		add_filter( 'pergel/woo/enforce_modes', '__return_true' );

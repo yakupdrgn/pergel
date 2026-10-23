@@ -1633,7 +1633,8 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   kampanya yalnızca "%15 indirim" ve geri sayım gösteriyordu, fiyat yoktu. Karar: fiyatı
   gösterilmeyen (`quote`, `catalog`) ürünler kampanyaya alınmaz, düzenleme kutusu bunu söyler.
   Fiyatı yalnızca müşteriye gösteren `login` modunda indirim yazılır, rozet ve kutu yalnızca
-  fiyatı görene çıkar.
+  fiyatı görene çıkar. Hiç ürünü kalmayan kampanya listelerden de çıkar (kullanıcı); sayfası
+  açık kalır, çünkü paylaşılmış bağlantı 404 vermesin.
 
 ## Aşamalar ve bitti tanımları
 
