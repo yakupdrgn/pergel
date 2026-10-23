@@ -152,6 +152,14 @@ final class FlashSaleFields {
 		if ( 'running' === $state && 'publish' !== get_post_status( $id ) ) {
 			$html = '<p><strong>' . esc_html__( 'The campaign runs once it is published.', 'pergel-engine' ) . '</strong></p>';
 		}
+		$unsold = 'unset' === $state ? 0 : count( FlashSales::chosen( $id ) ) - count( FlashSales::products( $id ) );
+		if ( $unsold > 0 ) {
+			$html .= sprintf(
+				'<div class="notice notice-info inline"><p>%s</p></div>',
+				/* translators: %d: number of products. */
+				esc_html( sprintf( _n( '%d product has no price under its sales mode (quote or catalog), so the campaign leaves it out.', '%d products have no price under their sales mode (quote or catalog), so the campaign leaves them out.', $unsold, 'pergel-engine' ), $unsold ) )
+			);
+		}
 		$taken = array_keys( array_filter( FlashSalePrices::skipped( $id ), static fn ( string $reason ): bool => 'taken' === $reason ) );
 		if ( $taken ) {
 			$names = array();

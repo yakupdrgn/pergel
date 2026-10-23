@@ -1629,6 +1629,11 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   dizin süren kampanyalardan her adımda baştan kurulur, böylece iki kampanyanın adımları aynı
   anda yazsa da bir sonraki adımda düzelir. Bant bitişte betikle gizlenir, yeni bir istek
   yapılmaz.
+- **Satış modu ile kampanya (kullanıcı, 23 Ekim 2026):** prova'da (mağaza `quote` modunda)
+  kampanya yalnızca "%15 indirim" ve geri sayım gösteriyordu, fiyat yoktu. Karar: fiyatı
+  gösterilmeyen (`quote`, `catalog`) ürünler kampanyaya alınmaz, düzenleme kutusu bunu söyler.
+  Fiyatı yalnızca müşteriye gösteren `login` modunda indirim yazılır, rozet ve kutu yalnızca
+  fiyatı görene çıkar.
 
 ## Aşamalar ve bitti tanımları
 

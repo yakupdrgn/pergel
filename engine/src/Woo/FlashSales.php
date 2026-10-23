@@ -294,14 +294,36 @@ final class FlashSales {
 	}
 
 	/**
-	 * The published products a campaign covers: the chosen ones and those in
+	 * The products a campaign covers: the chosen ones that are sold (see
+	 * sold()).
+	 *
+	 * @param int $id Campaign.
+	 * @return list<int>
+	 */
+	public static function products( int $id ): array {
+		return array_values( array_filter( self::chosen( $id ), array( self::class, 'sold' ) ) );
+	}
+
+	/**
+	 * Whether a product is sold under some mode: in the shop or to logged-in
+	 * customers. Under the quote and catalog modes a product shows no
+	 * price, so a campaign leaves it out.
+	 *
+	 * @param int $product Product.
+	 */
+	public static function sold( int $product ): bool {
+		return in_array( Modes::of( $product ), array( Modes::SALE, Modes::LOGIN ), true );
+	}
+
+	/**
+	 * The published products a campaign chooses: the chosen ones and those in
 	 * the chosen categories (with their subcategories). Grouped products have
 	 * no price of their own and are left out.
 	 *
 	 * @param int $id Campaign.
 	 * @return list<int>
 	 */
-	public static function products( int $id ): array {
+	public static function chosen( int $id ): array {
 		$sale = self::campaign( $id );
 		$ids  = $sale['products'];
 		if ( $sale['categories'] ) {
@@ -627,8 +649,14 @@ final class FlashSales {
 			)
 		);
 		foreach ( self::ids( $ids ) as $id ) {
+			// A campaign that shows no product (none sold, or all in another
+			// campaign) is not offered to the band or the block.
+			$shown = self::ids( get_post_meta( $id, self::SHOWN, true ) );
+			if ( ! $shown ) {
+				continue;
+			}
 			$index['sales'][ $id ] = self::campaign( $id )['end'];
-			foreach ( self::ids( get_post_meta( $id, self::SHOWN, true ) ) as $product ) {
+			foreach ( $shown as $product ) {
 				$index['products'][ $product ] ??= $id;
 			}
 		}
@@ -669,7 +697,7 @@ final class FlashSales {
 			return $html;
 		}
 		$id = self::of( $product );
-		if ( 0 === $id || ! self::running( $id ) ) {
+		if ( 0 === $id || ! self::running( $id ) || Modes::hidden( $product ) ) {
 			return $html;
 		}
 		self::style();
@@ -687,6 +715,9 @@ final class FlashSales {
 	 * show it after the end.
 	 */
 	public static function band(): string {
+		if ( Modes::nothing_sells() ) {
+			return '';
+		}
 		$id = self::pick( is_product_category() ? (int) get_queried_object_id() : 0 );
 		if ( 0 === $id ) {
 			return '';
