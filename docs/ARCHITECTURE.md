@@ -817,6 +817,30 @@ görünmez (`Settings\Screen::shown`).
   - **Blok `pergel/sale-timer`** ("Flash sale dates"): indirim, tarih aralığı ve başlangıca ya da
     bitişe geri sayım (`Cards::timer`, kart geri sayımıyla aynı betik); bitince "Bu kampanya sona
     erdi". `countdown: false` liste kartlarında yalnızca tarihleri gösterir.
+  - **Dizin (S7b):** her adım kampanyanın gösterdiği ürünleri (fiyatı yazılmış hedeflerin ürünleri;
+    değişken üründe ana ürün, `_pergel_sale_shown`) kaydeder ve `pergel_sale_index` seçeneğini
+    (otomatik yüklenir) süren kampanyalardan yeniden kurar: `sales` (kampanya → bitiş, en yakın
+    önce) ve `products` (ürün → kampanya). Kart, kutu ve bant yalnızca bunu okur; mağaza listesi
+    ek sorgu yapmaz. Bitiş saati geçmiş kayıt, adım çalışana kadar da yok sayılır.
+  - **Ürün kutusu** (`woo.sales_product`, açık): `render_block_woocommerce/product-price`'ın
+    ardından, yalnızca ekrandaki ürünün kendi fiyatında (benzer ürünlerin fiyatında değil) ve
+    kampanya sürerken: kampanya adı (bağlantı), indirim, bitişe geri sayım.
+  - **Kart rozeti** (`woo.sales_card`, açık): `Cards::badges` rozet satırının başına
+    `is-flash` "Flaş indirim" ekler. Açıkken kart kancaları mağaza listesi dışındaki ürün
+    listelerinde de eklenir (`Layout::sale_badges`). Kartın indirim geri sayımı zaten kampanyanın
+    bitişini gösterir, çünkü bitiş ürünün indirim bitişine yazılır.
+  - **Bant** (`woo.sales_band`, kapalı): `ShopHeader` bandı kampanya bandı ve kategori şeridinden
+    önce çizer. Kategori sayfasında o kategorinin ya da bir üst kategorinin kampanyası, yoksa en
+    yakında biten seçilir (`FlashSales::pick`). Geri sayım bitince kart betiği `is-over` koyar ve
+    CSS bandı ve kutuyu gizler; önbellekteki sayfa bitmiş kampanyayı göstermez.
+  - **"Flaş indirim listesi":** `core/query` türevi (`namespace: pergel/sale-list`,
+    `engine/assets/sale-list.js`); kartları liste sayfasındakilerle aynı. Kampanya türündeki her
+    Sorgu Döngüsü ve REST sorgusu (`rest_pergel_sale_query`, düzenleyici önizlemesi) aynı sırayı
+    alır.
+  - **Blok `pergel/sale-current`** ("Running flash sale"): en yakında biten ya da seçilen
+    kampanya, yalnızca sürerken; başlık, tarih bloğunun parçaları ve 1–12 ürün (WooCommerce ürün
+    listesi, seçilen ürünler öznitelikte, `do_blocks`). Kutu, bant ve blok tarih bloğunun
+    stillerini kullanır.
 - **Satış modları (`Woo\Modes`):** `sale` (fiyat ve sepet herkese), `login` (fiyat girişten
   sonra), `quote` (fiyat yok, teklif) ve `catalog` (fiyat yok). Mağazanın modu `woo.sales_mode`
   ayarında; ürün kategorisi (`pergel_sales_mode` term meta) ve ürün (`_pergel_sales_mode` post

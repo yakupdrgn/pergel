@@ -63,8 +63,12 @@ final class CardsTest extends TestCase {
 		Settings::update(
 			array(
 				'shop' => Schema::defaults()['shop'],
-				// The wishlist button draws the product-actions block.
-				'woo'  => array( 'wishlist' => true ),
+				// The wishlist button draws the product-actions block; the
+				// flash sale badge would add the card hooks everywhere.
+				'woo'  => array(
+					'wishlist'    => true,
+					'flash_sales' => false,
+				),
 			)
 		);
 		$product = new \WC_Product_Simple();

@@ -9,12 +9,15 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
+use Pergel\Settings\Settings;
+
 /**
  * The "Above the products" shop settings:
  *
  * - a banner: a synced pattern, e.g. a campaign;
  * - a category strip: the main categories in the shop, the subcategories
- *   in a category, as links with pictures or as names.
+ *   in a category, as links with pictures or as names;
+ * - with the flash sales on, a band for a running campaign (FlashSales).
  *
  * They go after the listing's term description (the shop page has the same
  * block, empty) or before the shop layout columns, whichever the template
@@ -69,7 +72,8 @@ final class ShopHeader {
 		if ( self::$drawn === $page ) {
 			return '';
 		}
-		$extra = self::banner() . self::strip();
+		$band  = true === Settings::get( 'woo.flash_sales' ) && true === Settings::get( 'woo.sales_band' ) ? FlashSales::band() : '';
+		$extra = $band . self::banner() . self::strip();
 		if ( '' !== $extra ) {
 			self::$drawn = $page;
 			Layout::style();

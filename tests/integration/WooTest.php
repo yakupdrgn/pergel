@@ -125,6 +125,9 @@ final class WooTest extends TestCase {
 				'shipping_min'      => 0,
 				'flash_sales'       => false,
 				'sales_slug'        => '',
+				'sales_product'     => true,
+				'sales_card'        => true,
+				'sales_band'        => false,
 			),
 			Schema::defaults()['woo']
 		);

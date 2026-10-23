@@ -46,6 +46,7 @@ final class Uninstall {
 		Modes::INDEX,
 		Shop::ATTRIBUTES_OPTION,
 		FlashSales::RULES,
+		FlashSales::INDEX,
 		'woocommerce_' . StockAlert::EMAIL_CONFIRM . '_settings',
 		'woocommerce_' . StockAlert::EMAIL_BACK . '_settings',
 	);

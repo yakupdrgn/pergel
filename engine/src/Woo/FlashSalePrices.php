@@ -149,7 +149,7 @@ final class FlashSalePrices {
 	private static function work( int $id ): bool {
 		$running   = FlashSales::running( $id );
 		$items     = $running ? FlashSales::products( $id ) : array();
-		$wanted    = array_fill_keys( self::targets( $items ), true );
+		$wanted    = self::targets( $items );
 		$signature = self::signature( $id );
 		$applied   = self::applied( $id );
 		$skipped   = self::skipped( $id );
@@ -189,6 +189,15 @@ final class FlashSalePrices {
 			\WC_Product_Variable::sync( $parent );
 		}
 		self::save( $id, $applied, $skipped );
+		// The products shown with the campaign: those with a written price.
+		$shown = array();
+		foreach ( array_keys( $applied ) as $product ) {
+			if ( isset( $wanted[ $product ] ) ) {
+				$shown[ $wanted[ $product ] ] = true;
+			}
+		}
+		update_post_meta( $id, FlashSales::SHOWN, array_keys( $shown ) );
+		FlashSales::reindex();
 
 		$done = $left > 0;
 		// Not through queue(): this step's own action still counts as scheduled.
@@ -218,6 +227,8 @@ final class FlashSalePrices {
 			as_unschedule_all_actions( self::HOOK, array( 'sale' => $id ), self::GROUP );
 			as_unschedule_all_actions( self::NEXT, array( 'sale' => $id ), self::GROUP );
 		}
+		delete_post_meta( $id, FlashSales::SHOWN );
+		FlashSales::reindex();
 	}
 
 	/**
@@ -245,10 +256,10 @@ final class FlashSalePrices {
 
 	/**
 	 * The products whose price is written: simple and external products, and
-	 * the variations of variable ones.
+	 * the variations of variable ones; each with the product it belongs to.
 	 *
 	 * @param int[] $items Products of the campaign.
-	 * @return list<int>
+	 * @return array<int, int> Product or variation => product.
 	 */
 	public static function targets( array $items ): array {
 		if ( ! $items ) {
@@ -269,13 +280,20 @@ final class FlashSalePrices {
 				'post_type'       => 'product_variation',
 				'post_parent__in' => $variable,
 				'post_status'     => 'publish',
-				'fields'          => 'ids',
+				'fields'          => 'id=>parent',
 				'posts_per_page'  => -1,
 				'orderby'         => 'ID',
 				'order'           => 'ASC',
 			)
 		) : array();
-		return array_values( array_merge( array_diff( $items, $variable ), FlashSales::ids( $variations ) ) );
+		$targets    = array();
+		foreach ( array_diff( $items, $variable ) as $item ) {
+			$targets[ (int) $item ] = (int) $item;
+		}
+		foreach ( $variations as $variation => $parent ) {
+			$targets[ (int) $variation ] = (int) $parent;
+		}
+		return $targets;
 	}
 
 	/**

@@ -21,6 +21,12 @@ use const Pergel\FILE;
  * shows its picture, a countdown and its products, and after the end a
  * note with the campaigns still running. Both templates come from the
  * engine and can be changed in the site editor.
+ *
+ * While a campaign runs, its products can show a box under the price on
+ * their page, a "Flash sale" badge on their cards, and the shop pages a
+ * band above the products, each with its own setting. They read a small
+ * autoloaded index the price steps keep, so a shop listing makes no extra
+ * query.
  */
 final class FlashSales {
 
@@ -41,6 +47,18 @@ final class FlashSales {
 	 * variations), worked out on save and at each price step.
 	 */
 	public const ITEMS = '_pergel_sale_items';
+
+	/**
+	 * Campaign meta: the products shown with it, those with a written price
+	 * (variable products, not their variations).
+	 */
+	public const SHOWN = '_pergel_sale_shown';
+
+	/**
+	 * Option: the running campaigns (id => end, soonest end first) and their
+	 * products (product id => campaign id).
+	 */
+	public const INDEX = 'pergel_sale_index';
 
 	/**
 	 * Classes that mark the campaign page's product grid and its "running
@@ -69,6 +87,9 @@ final class FlashSales {
 		add_action( 'wp_loaded', array( self::class, 'rules' ) );
 		add_action( 'transition_post_status', array( self::class, 'status' ), 10, 3 );
 		add_action( 'before_delete_post', array( FlashSalePrices::class, 'deleted' ), 10, 2 );
+		add_action( 'enqueue_block_editor_assets', array( self::class, 'editor' ) );
+		// The editors list campaigns through the REST API: the same order there.
+		add_filter( 'rest_' . self::TYPE . '_query', array( self::class, 'loop' ) );
 		if ( is_admin() ) {
 			FlashSaleFields::register();
 			return;
@@ -79,6 +100,17 @@ final class FlashSales {
 		add_filter( 'render_block_context', array( self::class, 'context' ) );
 		add_filter( 'pre_render_block', array( self::class, 'sections' ), 10, 2 );
 		add_filter( 'wp_robots', array( self::class, 'robots' ) );
+		if ( true === Settings::get( 'woo.sales_product' ) ) {
+			add_filter( 'render_block_woocommerce/product-price', array( self::class, 'price' ), 30, 3 );
+		}
+	}
+
+	/**
+	 * The "Flash sale list" Query Loop variation in the editors.
+	 */
+	public static function editor(): void {
+		wp_enqueue_script( 'pergel-sale-list', plugins_url( 'assets/sale-list.js', FILE ), array( 'wp-blocks', 'wp-i18n' ), \Pergel\VERSION, true );
+		wp_set_script_translations( 'pergel-sale-list', 'pergel-engine', dirname( FILE ) . '/languages' );
 	}
 
 	/**
@@ -484,23 +516,44 @@ final class FlashSales {
 		if ( 0 === $id || self::TYPE !== get_post_type( $id ) ) {
 			return '';
 		}
+		$parts = self::dates( $id, ( $attributes['countdown'] ?? true ) !== false );
+		if ( '' === $parts ) {
+			return '';
+		}
+		return sprintf( '<div %1$s>%2$s</div>', get_block_wrapper_attributes( array( 'class' => 'is-' . self::state( $id ) ) ), $parts );
+	}
+
+	/**
+	 * The parts of the dates block: the discount, the dates and the
+	 * countdown (each unless left out), or that the campaign has ended.
+	 *
+	 * @param int  $id        Campaign.
+	 * @param bool $countdown With the countdown.
+	 * @param bool $range     With the dates.
+	 */
+	public static function dates( int $id, bool $countdown = true, bool $range = true ): string {
 		$state = self::state( $id );
 		if ( 'unset' === $state ) {
 			return '';
 		}
 		$sale  = self::campaign( $id );
 		$parts = sprintf(
-			'<span class="wp-block-pergel-sale-timer__discount">%1$s</span><span class="wp-block-pergel-sale-timer__dates"><time datetime="%2$s">%3$s</time> – <time datetime="%4$s">%5$s</time></span>',
+			'<span class="wp-block-pergel-sale-timer__discount">%s</span>',
 			/* translators: %d: discount in percent. */
-			esc_html( sprintf( __( '%d%% off', 'pergel-engine' ), $sale['discount'] ) ),
-			esc_attr( gmdate( 'c', $sale['start'] ) ),
-			esc_html( self::date( $sale['start'] ) ),
-			esc_attr( gmdate( 'c', $sale['end'] ) ),
-			esc_html( self::date( $sale['end'] ) )
+			esc_html( sprintf( __( '%d%% off', 'pergel-engine' ), $sale['discount'] ) )
 		);
+		if ( $range ) {
+			$parts .= sprintf(
+				'<span class="wp-block-pergel-sale-timer__dates"><time datetime="%1$s">%2$s</time> – <time datetime="%3$s">%4$s</time></span>',
+				esc_attr( gmdate( 'c', $sale['start'] ) ),
+				esc_html( self::date( $sale['start'] ) ),
+				esc_attr( gmdate( 'c', $sale['end'] ) ),
+				esc_html( self::date( $sale['end'] ) )
+			);
+		}
 		if ( 'ended' === $state ) {
 			$parts .= '<p class="wp-block-pergel-sale-timer__ended">' . esc_html__( 'This campaign has ended.', 'pergel-engine' ) . '</p>';
-		} elseif ( false !== ( $attributes['countdown'] ?? true ) ) {
+		} elseif ( $countdown ) {
 			$running = 'running' === $state;
 			$parts  .= sprintf(
 				'<span class="wp-block-pergel-sale-timer__count"><span class="wp-block-pergel-sale-timer__label">%1$s</span>%2$s</span>',
@@ -512,6 +565,234 @@ final class FlashSales {
 				)
 			);
 		}
-		return sprintf( '<div %1$s>%2$s</div>', get_block_wrapper_attributes( array( 'class' => 'is-' . $state ) ), $parts );
+		return $parts;
+	}
+
+	/**
+	 * The campaign index.
+	 *
+	 * @return array{sales: array<int, int>, products: array<int, int>}
+	 */
+	public static function index(): array {
+		$kept  = get_option( self::INDEX, array() );
+		$index = array(
+			'sales'    => array(),
+			'products' => array(),
+		);
+		foreach ( array( 'sales', 'products' ) as $part ) {
+			foreach ( is_array( $kept ) && is_array( $kept[ $part ] ?? null ) ? $kept[ $part ] : array() as $key => $value ) {
+				if ( is_int( $key ) && is_int( $value ) ) {
+					$index[ $part ][ $key ] = $value;
+				}
+			}
+		}
+		return $index;
+	}
+
+	/**
+	 * Makes the index again from the running campaigns; the price steps
+	 * call it.
+	 */
+	public static function reindex(): void {
+		$now   = time();
+		$index = array(
+			'sales'    => array(),
+			'products' => array(),
+		);
+		$ids   = get_posts(
+			array(
+				'post_type'      => self::TYPE,
+				'post_status'    => 'publish',
+				'fields'         => 'ids',
+				'posts_per_page' => 100,
+				'no_found_rows'  => true,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Only when a price step runs.
+				'meta_query'     => array(
+					array(
+						'key'     => self::END,
+						'value'   => $now,
+						'compare' => '>',
+						'type'    => 'NUMERIC',
+					),
+					array(
+						'key'     => self::START,
+						'value'   => $now,
+						'compare' => '<=',
+						'type'    => 'NUMERIC',
+					),
+				),
+				'meta_key'       => self::END, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- As above.
+				'orderby'        => 'meta_value_num',
+				'order'          => 'ASC',
+			)
+		);
+		foreach ( self::ids( $ids ) as $id ) {
+			$index['sales'][ $id ] = self::campaign( $id )['end'];
+			foreach ( self::ids( get_post_meta( $id, self::SHOWN, true ) ) as $product ) {
+				$index['products'][ $product ] ??= $id;
+			}
+		}
+		update_option( self::INDEX, $index, true );
+	}
+
+	/**
+	 * The running campaign a product is in, or 0.
+	 *
+	 * @param int $product Product (not a variation).
+	 */
+	public static function of( int $product ): int {
+		$index = self::index();
+		$id    = $index['products'][ $product ] ?? 0;
+		return ( $index['sales'][ $id ] ?? 0 ) > time() ? $id : 0;
+	}
+
+	/**
+	 * The running campaigns, soonest end first.
+	 *
+	 * @return list<int>
+	 */
+	public static function live(): array {
+		$now = time();
+		return array_keys( array_filter( self::index()['sales'], static fn ( int $end ): bool => $end > $now ) );
+	}
+
+	/**
+	 * The campaign box under the price on the product's own page.
+	 *
+	 * @param string    $html     Rendered price.
+	 * @param mixed     $block    Parsed block.
+	 * @param \WP_Block $instance Block, for the product in context.
+	 */
+	public static function price( string $html, mixed $block, \WP_Block $instance ): string {
+		$product = (int) get_queried_object_id();
+		if ( ! is_product() || (int) ( $instance->context['postId'] ?? 0 ) !== $product ) {
+			return $html;
+		}
+		$id = self::of( $product );
+		if ( 0 === $id || ! self::running( $id ) ) {
+			return $html;
+		}
+		self::style();
+		return $html . sprintf(
+			'<div class="pergel-sale-box"><a class="pergel-sale-box__name" href="%1$s">%2$s</a><div class="wp-block-pergel-sale-timer is-running">%3$s</div></div>',
+			esc_url( (string) get_permalink( $id ) ),
+			esc_html( get_the_title( $id ) ),
+			self::dates( $id, true, false )
+		);
+	}
+
+	/**
+	 * The band above the products on the shop and category pages. The card
+	 * script hides it once its countdown is over, so a cached page does not
+	 * show it after the end.
+	 */
+	public static function band(): string {
+		$id = self::pick( is_product_category() ? (int) get_queried_object_id() : 0 );
+		if ( 0 === $id ) {
+			return '';
+		}
+		self::style();
+		return sprintf(
+			'<div class="pergel-sale-band alignwide"><span class="pergel-sale-band__name">%1$s</span><div class="wp-block-pergel-sale-timer is-running">%2$s</div><a class="pergel-sale-band__link" href="%3$s">%4$s</a></div>',
+			esc_html( get_the_title( $id ) ),
+			self::dates( $id, true, false ),
+			esc_url( (string) get_permalink( $id ) ),
+			esc_html__( 'See the campaign', 'pergel-engine' )
+		);
+	}
+
+	/**
+	 * The running campaign to show: on a category, one of that category or
+	 * a parent first, else the one that ends soonest; 0 when none runs.
+	 *
+	 * @param int $category Product category, or 0.
+	 */
+	public static function pick( int $category ): int {
+		$live = array_values( array_filter( self::live(), array( self::class, 'running' ) ) );
+		if ( $category > 0 ) {
+			$chain = array_merge( array( $category ), array_map( 'intval', get_ancestors( $category, 'product_cat', 'taxonomy' ) ) );
+			foreach ( $live as $id ) {
+				if ( array_intersect( $chain, self::campaign( $id )['categories'] ) ) {
+					return $id;
+				}
+			}
+		}
+		return $live[0] ?? 0;
+	}
+
+	/**
+	 * The Running flash sale block: a campaign's name, discount, countdown
+	 * and some of its products, with a link to all of them. Nothing while
+	 * no campaign runs.
+	 *
+	 * @param array<string, mixed> $attributes Block attributes.
+	 */
+	public static function running_sale( array $attributes ): string {
+		$chosen = absint( $attributes['sale'] ?? 0 );
+		$id     = $chosen > 0 ? ( self::running( $chosen ) ? $chosen : 0 ) : self::pick( 0 );
+		if ( 0 === $id ) {
+			return '';
+		}
+		self::style();
+		$count = max( 1, min( 12, absint( $attributes['count'] ?? 4 ) ) );
+		$items = self::items( $id );
+		$title = trim( (string) ( $attributes['title'] ?? '' ) );
+		return sprintf(
+			'<section %1$s><div class="wp-block-pergel-sale-current__head"><h2 class="wp-block-pergel-sale-current__title"><a href="%2$s">%3$s</a></h2><div class="wp-block-pergel-sale-timer is-running">%4$s</div></div>%5$s<p class="wp-block-pergel-sale-current__more"><a href="%2$s">%6$s</a></p></section>',
+			get_block_wrapper_attributes(),
+			esc_url( (string) get_permalink( $id ) ),
+			esc_html( '' !== $title ? $title : get_the_title( $id ) ),
+			self::dates( $id, true, false ),
+			$items ? self::grid( $items, $count ) : '',
+			esc_html__( 'See all the products', 'pergel-engine' )
+		);
+	}
+
+	/**
+	 * Some of a campaign's products, as WooCommerce's product collection
+	 * draws them.
+	 *
+	 * @param int[] $items Products.
+	 * @param int   $count How many.
+	 */
+	private static function grid( array $items, int $count ): string {
+		$attributes = array(
+			'queryId'       => 0,
+			'query'         => array(
+				'perPage'                       => $count,
+				'pages'                         => 1,
+				'offset'                        => 0,
+				'postType'                      => 'product',
+				'order'                         => 'asc',
+				'orderBy'                       => 'title',
+				'inherit'                       => false,
+				'isProductCollectionBlock'      => true,
+				'woocommerceStockStatus'        => array( 'instock', 'onbackorder' ),
+				'woocommerceHandPickedProducts' => $items,
+			),
+			'tagName'       => 'div',
+			'displayLayout' => array(
+				'type'          => 'flex',
+				'columns'       => min( 4, $count ),
+				'shrinkColumns' => true,
+			),
+		);
+		return do_blocks(
+			'<!-- wp:woocommerce/product-collection ' . wp_json_encode( $attributes ) . ' --><div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->'
+			. '<!-- wp:woocommerce/product-image {"imageSizing":"thumbnail","isDescendentOfQueryLoop":true,"aspectRatio":"1","scale":"contain","style":{"border":{"radius":"var(--wp--custom--radius--card)"}}} -->'
+			. '<!-- wp:woocommerce/product-sale-badge {"isDescendentOfQueryLoop":true,"align":"right"} /--><!-- /wp:woocommerce/product-image -->'
+			. '<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"medium","__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->'
+			. '<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->'
+			. '<!-- wp:woocommerce/product-button {"textAlign":"left","isDescendentOfQueryLoop":true,"fontSize":"small"} /-->'
+			. '<!-- /wp:woocommerce/product-template --></div><!-- /wp:woocommerce/product-collection -->'
+		);
+	}
+
+	/**
+	 * The styles of the box, the band and the blocks: those of the dates
+	 * block.
+	 */
+	private static function style(): void {
+		wp_enqueue_style( generate_block_asset_handle( 'pergel/sale-timer', 'style' ) );
 	}
 }

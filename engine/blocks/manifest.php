@@ -802,6 +802,64 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'sale-current' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/sale-current',
+    'title' => 'Running flash sale',
+    'category' => 'pergel',
+    'icon' => 'megaphone',
+    'description' => 'A running flash sale with its discount, a countdown to the end and some of its products; the one that ends soonest, or a chosen one. Shows nothing while no campaign runs (Pergel → Settings → Shop → Flash sales).',
+    'keywords' => 
+    array (
+      0 => 'flash sale',
+      1 => 'campaign',
+      2 => 'countdown',
+      3 => 'deal',
+    ),
+    'textdomain' => 'pergel-engine',
+    'attributes' => 
+    array (
+      'sale' => 
+      array (
+        'type' => 'integer',
+        'default' => 0,
+      ),
+      'count' => 
+      array (
+        'type' => 'integer',
+        'default' => 4,
+        'minimum' => 1,
+        'maximum' => 12,
+      ),
+      'title' => 
+      array (
+        'type' => 'string',
+        'default' => '',
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'render' => 'file:./render.php',
+  ),
   'sale-timer' => 
   array (
     'apiVersion' => 3,
