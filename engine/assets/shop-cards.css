@@ -565,3 +565,9 @@
 		transition: none;
 	}
 }
+
+/* Flash sale badge (Pergel\Woo\FlashSales). */
+:is(.wc-block-product, .wc-block-product-gallery, .pergel-product-pictures, .pergel-product-price) .pergel-badge.is-flash {
+	background: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--on-accent);
+}

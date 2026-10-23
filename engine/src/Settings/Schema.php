@@ -331,6 +331,18 @@ final class Schema {
 					'type' => 'text',
 					'max'  => 40,
 				),
+				'sales_product'     => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'sales_card'        => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'sales_band'        => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 			),
 			// Shop listing look; see Pergel\Woo\Layout. "template", "auto",
 			// "wide" and 0 keep the template's and WooCommerce's own layout,

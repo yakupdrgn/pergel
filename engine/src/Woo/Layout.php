@@ -371,12 +371,23 @@ final class Layout {
 	 * Whether a site-wide card or badge setting differs from its default.
 	 */
 	private static function cards_chosen(): bool {
+		if ( self::sale_badges() ) {
+			return true;
+		}
 		foreach ( Schema::defaults()['shop'] ?? array() as $key => $default ) {
 			if ( ( str_starts_with( $key, 'card_' ) || str_starts_with( $key, 'badge_' ) || 'quick_view' === $key ) && Settings::get( "shop.$key" ) !== $default ) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Whether cards show the "Flash sale" badge; read here, so a shop
+	 * without campaigns does not load their class.
+	 */
+	public static function sale_badges(): bool {
+		return true === Settings::get( 'woo.flash_sales' ) && true === Settings::get( 'woo.sales_card' );
 	}
 
 	/**

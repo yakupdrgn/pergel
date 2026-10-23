@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T17:03:58+03:00\n"
+"POT-Creation-Date: 2026-10-23T17:39:32+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -855,6 +855,24 @@ msgstr ""
 msgid "The part after the site address, such as \"flash-sale\" for /flash-sale/. Leave empty for the default in the site language."
 msgstr ""
 
+msgid "Campaign box on product pages"
+msgstr ""
+
+msgid "Under the price of a product in a running campaign: its name, the discount and a countdown to the end, with a link to the campaign page."
+msgstr ""
+
+msgid "\"Flash sale\" badge on product cards"
+msgstr ""
+
+msgid "With the other badges on the picture. The sale countdown of the cards (Shop layout → Product cards) counts down to the end of the campaign."
+msgstr ""
+
+msgid "Band above the products"
+msgstr ""
+
+msgid "On the shop and category pages while a campaign runs: its name, the discount, a countdown and a link. A category page shows a campaign of that category first, else the one that ends soonest."
+msgstr ""
+
 msgid "Show the estimated delivery date"
 msgstr ""
 
@@ -1621,6 +1639,9 @@ msgctxt "seconds, short"
 msgid "s"
 msgstr ""
 
+msgid "Flash sale"
+msgstr ""
+
 msgid "New"
 msgstr ""
 
@@ -1816,9 +1837,6 @@ msgstr ""
 msgid "%d%% off"
 msgstr ""
 
-msgid "Flash sale"
-msgstr ""
-
 msgid "Add flash sale"
 msgstr ""
 
@@ -1870,6 +1888,12 @@ msgstr ""
 #. translators: %s: date and time.
 #, php-format
 msgid "Campaign starts %s"
+msgstr ""
+
+msgid "See the campaign"
+msgstr ""
+
+msgid "See all the products"
 msgstr ""
 
 msgid "Your order ships free."
@@ -2542,6 +2566,18 @@ msgstr ""
 msgid "The header sits over the first section, without its background until the page scrolls. Use it on templates that open with a full-width image."
 msgstr ""
 
+msgid "Flash sale list"
+msgstr ""
+
+msgid "The running and upcoming flash sales, soonest first; ended ones are left out."
+msgstr ""
+
+msgid "flash sale"
+msgstr ""
+
+msgid "campaign"
+msgstr ""
+
 #. translators: 1: characters typed, 2: recommended maximum.
 #, js-format
 msgid "%1$d of about %2$d characters."
@@ -2773,6 +2809,21 @@ msgid "Title"
 msgstr ""
 
 msgid "Most products"
+msgstr ""
+
+msgid "The one that ends soonest"
+msgstr ""
+
+msgid "A chosen campaign shows only while it runs."
+msgstr ""
+
+msgid "The campaign name"
+msgstr ""
+
+msgid "Running flash sale"
+msgstr ""
+
+msgid "No flash sale runs now. The block shows the campaign that ends soonest while one runs."
 msgstr ""
 
 msgid "Start – end of the campaign"
@@ -3203,11 +3254,11 @@ msgid "products"
 msgstr ""
 
 msgctxt "block title"
-msgid "Flash sale dates"
+msgid "Running flash sale"
 msgstr ""
 
 msgctxt "block description"
-msgid "A flash sale's discount, its dates and a countdown to the start or the end; after the end, that it has ended. For the flash sale templates (Pergel → Settings → Shop → Flash sales)."
+msgid "A running flash sale with its discount, a countdown to the end and some of its products; the one that ends soonest, or a chosen one. Shows nothing while no campaign runs (Pergel → Settings → Shop → Flash sales)."
 msgstr ""
 
 msgctxt "block keyword"
@@ -3220,6 +3271,18 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "countdown"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "deal"
+msgstr ""
+
+msgctxt "block title"
+msgid "Flash sale dates"
+msgstr ""
+
+msgctxt "block description"
+msgid "A flash sale's discount, its dates and a countdown to the start or the end; after the end, that it has ended. For the flash sale templates (Pergel → Settings → Shop → Flash sales)."
 msgstr ""
 
 msgctxt "block keyword"

@@ -446,6 +446,103 @@ final class FlashSalesTest extends TestCase {
 		$this->assertFalse( as_has_scheduled_action( FlashSalePrices::HOOK, array( 'sale' => $id ), FlashSalePrices::GROUP ) );
 	}
 
+	public function test_index_follows_the_steps(): void {
+		$plain             = $this->product( '100' );
+		[ $parent, $kids ] = $this->variable();
+		$id                = $this->sale( -60, HOUR_IN_SECONDS, 20, array( $plain->get_id(), $parent->get_id() ) );
+
+		FlashSalePrices::run( $id );
+		$index = FlashSales::index();
+		$this->assertSame( (int) get_post_meta( $id, FlashSales::END, true ), $index['sales'][ $id ] ?? null );
+		$this->assertSame( $id, $index['products'][ $plain->get_id() ] ?? null );
+		$this->assertSame( $id, FlashSales::of( $parent->get_id() ), 'A variable product, not its variations.' );
+		$this->assertSame( 0, FlashSales::of( $kids[0] ) );
+		$this->assertContains( $id, FlashSales::live() );
+
+		update_post_meta( $id, FlashSales::END, time() - 1 );
+		FlashSalePrices::run( $id );
+		$this->assertSame( 0, FlashSales::of( $plain->get_id() ) );
+		$this->assertNotContains( $id, FlashSales::live() );
+	}
+
+	public function test_product_box_under_its_own_price(): void {
+		$product = $this->product( '100' );
+		$other   = $this->product( '50' );
+		$id      = $this->sale( -60, HOUR_IN_SECONDS, 20, array( $product->get_id() ) );
+		FlashSalePrices::run( $id );
+		$this->go_to( $product->get_id(), 'product' );
+
+		// An unregistered block keeps no context; it is set by hand.
+		$own          = new \WP_Block( array( 'blockName' => 'core/null' ) );
+		$own->context = array( 'postId' => $product->get_id() );
+		$html         = FlashSales::price( '<div class="price"></div>', array(), $own );
+		$this->assertStringStartsWith( '<div class="price"></div><div class="pergel-sale-box">', $html );
+		$this->assertStringContainsString( esc_html( get_the_title( $id ) ), $html );
+		$this->assertStringContainsString( 'data-pergel-until="' . get_post_meta( $id, FlashSales::END, true ) . '"', $html );
+
+		$related          = new \WP_Block( array( 'blockName' => 'core/null' ) );
+		$related->context = array( 'postId' => $other->get_id() );
+		$this->assertSame( '<div></div>', FlashSales::price( '<div></div>', array(), $related ), 'Not under the prices of other products.' );
+
+		$this->go_to( $other->get_id(), 'product' );
+		$related->context = array( 'postId' => $other->get_id() );
+		$this->assertSame( '<div></div>', FlashSales::price( '<div></div>', array(), $related ), 'Not for a product outside the campaign.' );
+	}
+
+	public function test_card_badge_follows_its_setting(): void {
+		$product = $this->product( '100' );
+		$id      = $this->sale( -60, HOUR_IN_SECONDS, 20, array( $product->get_id() ) );
+		FlashSalePrices::run( $id );
+
+		$this->assertStringContainsString( '<span class="pergel-badge is-flash">' . esc_html__( 'Flash sale', 'pergel-engine' ) . '</span>', \Pergel\Woo\Cards::badges( $product->get_id(), null ) );
+		Settings::update( array( 'woo' => array( 'sales_card' => false ) ) );
+		$this->assertStringNotContainsString( 'is-flash', \Pergel\Woo\Cards::badges( $product->get_id(), null ) );
+	}
+
+	public function test_band_prefers_a_campaign_of_the_category(): void {
+		$term = wp_insert_term( 'Flash sale test ' . wp_generate_password( 4, false ), 'product_cat' );
+		$this->assertIsArray( $term );
+		$child = wp_insert_term( 'Flash sale child ' . wp_generate_password( 4, false ), 'product_cat', array( 'parent' => (int) $term['term_id'] ) );
+		$this->assertIsArray( $child );
+		$this->category = (int) $term['term_id'];
+		$inside         = $this->product( '100' );
+		$this->category = 0;
+		$outside        = $this->product( '100' );
+
+		$soon           = $this->sale( -60, HOUR_IN_SECONDS, 10, array( $outside->get_id() ) );
+		$later          = $this->sale( -60, 2 * HOUR_IN_SECONDS, 20, array(), array( (int) $term['term_id'] ) );
+		$this->category = (int) $term['term_id'];
+		FlashSalePrices::run( $soon );
+		FlashSalePrices::run( $later );
+
+		$this->assertSame( $soon, FlashSales::pick( 0 ), 'The one that ends soonest.' );
+		$this->assertSame( $later, FlashSales::pick( (int) $term['term_id'] ) );
+		$this->assertSame( $later, FlashSales::pick( (int) $child['term_id'] ), 'A campaign of a parent category counts.' );
+		wp_delete_term( (int) $child['term_id'], 'product_cat' );
+		$this->assertSame( $later, FlashSales::of( $inside->get_id() ) );
+	}
+
+	public function test_running_sale_block(): void {
+		$product  = $this->product( '100' );
+		$running  = $this->sale( -60, HOUR_IN_SECONDS, 20, array( $product->get_id() ) );
+		$upcoming = $this->sale( HOUR_IN_SECONDS, 2 * HOUR_IN_SECONDS, 20, array( $product->get_id() ) );
+		FlashSalePrices::run( $running );
+		FlashSalePrices::run( $upcoming );
+
+		$html = FlashSales::running_sale(
+			array(
+				'sale'  => $running,
+				'count' => 1,
+				'title' => 'Our deals',
+			)
+		);
+		$this->assertStringContainsString( '>Our deals</a></h2>', $html );
+		$this->assertStringContainsString( 'wp-block-woocommerce-product-collection', $html );
+		$this->assertStringContainsString( esc_html( $product->get_name() ), $html );
+		$this->assertStringContainsString( 'href="' . esc_url( (string) get_permalink( $running ) ) . '"', $html );
+		$this->assertSame( '', FlashSales::running_sale( array( 'sale' => $upcoming ) ), 'Not before it starts.' );
+	}
+
 	public function test_templates_come_from_the_engine(): void {
 		$registry = \WP_Block_Templates_Registry::get_instance();
 		foreach ( array( 'archive-', 'single-' ) as $kind ) {
@@ -462,16 +559,17 @@ final class FlashSalesTest extends TestCase {
 	}
 
 	/**
-	 * Shows a campaign page, as a page view would.
+	 * Shows a campaign or product page, as a page view would.
 	 *
-	 * @param int $id Campaign.
+	 * @param int    $id   Campaign or product.
+	 * @param string $type Its post type.
 	 */
-	private function go_to( int $id ): void {
+	private function go_to( int $id, string $type = FlashSales::TYPE ): void {
 		$this->query           ??= $GLOBALS['wp_the_query'];
 		$GLOBALS['wp_the_query'] = new \WP_Query( // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Test page view; put back in tearDown.
 			array(
 				'p'         => $id,
-				'post_type' => FlashSales::TYPE,
+				'post_type' => $type,
 			)
 		);
 		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query']; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- As above.

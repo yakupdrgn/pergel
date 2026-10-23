@@ -160,7 +160,7 @@ final class Labels {
 				),
 				'sales'     => array(
 					'title'  => __( 'Flash sales', 'pergel-engine' ),
-					'fields' => array( 'flash_sales', 'sales_slug' ),
+					'fields' => array( 'flash_sales', 'sales_slug', 'sales_product', 'sales_card', 'sales_band' ),
 				),
 				'speed'     => array(
 					'title'  => __( 'Speed', 'pergel-engine' ),
@@ -460,6 +460,18 @@ final class Labels {
 				'sales_slug'        => array(
 					'label' => __( 'Address of the campaign pages', 'pergel-engine' ),
 					'help'  => __( 'The part after the site address, such as "flash-sale" for /flash-sale/. Leave empty for the default in the site language.', 'pergel-engine' ),
+				),
+				'sales_product'     => array(
+					'label' => __( 'Campaign box on product pages', 'pergel-engine' ),
+					'help'  => __( 'Under the price of a product in a running campaign: its name, the discount and a countdown to the end, with a link to the campaign page.', 'pergel-engine' ),
+				),
+				'sales_card'        => array(
+					'label' => __( '"Flash sale" badge on product cards', 'pergel-engine' ),
+					'help'  => __( 'With the other badges on the picture. The sale countdown of the cards (Shop layout → Product cards) counts down to the end of the campaign.', 'pergel-engine' ),
+				),
+				'sales_band'        => array(
+					'label' => __( 'Band above the products', 'pergel-engine' ),
+					'help'  => __( 'On the shop and category pages while a campaign runs: its name, the discount, a countdown and a link. A category page shows a campaign of that category first, else the one that ends soonest.', 'pergel-engine' ),
 				),
 				'delivery'          => array(
 					'label' => __( 'Show the estimated delivery date', 'pergel-engine' ),

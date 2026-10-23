@@ -62,3 +62,92 @@
 .wp-block-pergel-sale-timer .pergel-countdown.is-over {
 	display: none;
 }
+
+/* The campaign box under a product's price (Pergel\Woo\FlashSales). */
+.pergel-sale-box,
+.pergel-sale-band {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--wp--preset--spacing--20, 0.5rem) var(--wp--preset--spacing--30, 1rem);
+}
+
+.pergel-sale-box {
+	margin-block: var(--wp--preset--spacing--30, 1rem);
+	padding: var(--wp--preset--spacing--30, 1rem);
+	border: 1px solid var(--wp--preset--color--line, currentColor);
+	border-radius: var(--wp--custom--radius--card, 8px);
+}
+
+.pergel-sale-box__name,
+.pergel-sale-band__name {
+	flex-basis: 100%;
+	font-weight: 700;
+}
+
+.pergel-sale-box .wp-block-pergel-sale-timer__count {
+	margin-inline-start: auto;
+}
+
+/* The band above the products. */
+.pergel-sale-band {
+	margin-block-end: var(--wp--preset--spacing--40, 1.5rem);
+	padding: var(--wp--preset--spacing--20, 0.5rem) var(--wp--preset--spacing--30, 1rem);
+	border-radius: var(--wp--custom--radius--card, 8px);
+	background: var(--wp--preset--color--surface, #f4f4f5);
+}
+
+@media (min-width: 782px) {
+	.pergel-sale-band__name {
+		flex-basis: auto;
+	}
+
+	.pergel-sale-band__link {
+		margin-inline-start: auto;
+	}
+}
+
+.pergel-sale-band .pergel-countdown__part,
+.pergel-sale-box .pergel-countdown__part {
+	min-width: 2.25rem;
+	padding-block: 0.15rem;
+}
+
+.pergel-sale-band .pergel-countdown__part b,
+.pergel-sale-box .pergel-countdown__part b {
+	font-size: 0.9375rem;
+}
+
+/* Over (a cached page after the end): the box and the band go. */
+.pergel-sale-box:has(.pergel-countdown.is-over),
+.pergel-sale-band:has(.pergel-countdown.is-over) {
+	display: none;
+}
+
+/* The Running flash sale block. */
+.wp-block-pergel-sale-current {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--40, 1.5rem);
+}
+
+.wp-block-pergel-sale-current__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--wp--preset--spacing--30, 1rem);
+}
+
+.wp-block-pergel-sale-current__title {
+	margin: 0;
+}
+
+.wp-block-pergel-sale-current__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.wp-block-pergel-sale-current__more {
+	margin: 0;
+}

@@ -1620,6 +1620,15 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   değişince sıraya giren adım aynı anda çalışabiliyor (yönetim sayfasının arka plan istekleri
   Action Scheduler işlerini hemen yürütüyor); eski bilgiyle çalışan adım, biten bir kampanyanın
   fiyatlarını yeniden yazabiliyordu.
+- **S7b kararları (kullanıcı, 23 Ekim 2026):** Ürün kutusu yalnızca kampanya sürerken (fiyat
+  zaten indirimliyken neden ve ne zamana kadar olduğunu söyler). Kart rozeti sabit "Flaş indirim"
+  (dar kartlara sığar). Liste bir Sorgu Döngüsü türevi (kartlar düzenleyicide değiştirilebilir),
+  süren kampanya kendi bloğu. Bant mağaza ve kategori sayfalarında, varsayılanı kapalı. Kutu ve
+  rozet `flash_sales` açılınca açık gelir: kampanya kuran mağaza bunları görmek ister.
+- **S7b uygulama:** Kart ve bant her istekte kampanya sorgulamasın diye adımlar bir dizin tutar;
+  dizin süren kampanyalardan her adımda baştan kurulur, böylece iki kampanyanın adımları aynı
+  anda yazsa da bir sonraki adımda düzelir. Bant bitişte betikle gizlenir, yeni bir istek
+  yapılmaz.
 
 ## Aşamalar ve bitti tanımları
 
