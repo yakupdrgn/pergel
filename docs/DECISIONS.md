@@ -1583,6 +1583,17 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   saklanmaz (çerez yok, kişisel veri yok, önbellekle çakışmaz); kartlar sade (resim, ad, fiyat)
   çünkü blok mağaza dışı sayfalara da konabilir ve ürün kartı CSS'ine bağlı kalmamalı. Ek sorgu:
   karşılaştırma açıkken ürün sayfasında bir ürün sorgusu (en fazla 24 ürün).
+- **S6 kararları (kullanıcı):** S6a telefon alt çubuğu ve ücretsiz kargo çubuğu, S6b "Unimart" hazır
+  ayarı ve v1.3.0. Alt çubuk sabit bir set, her öğe panelden açılıp kapanır (menüden düzenleme
+  yok). Kargo çubuğu dört yerde, her biri ayrı ayarla. Sınır önce WooCommerce'in kargo
+  yönteminden, yoksa Pergel ayarından (ikisi çelişmesin diye yöntem önce gelir). Hazır ayar
+  düğme + değişecek ayarların listesi + geri al.
+- **S6a kararları:** Kargo çubuğunun metni ve tutarı tek yerde, PHP'de hesaplanır; betik yalnızca
+  Store API yanıtındaki hazır işaretlemeyi yerleştirir (biçimlendirme, vergi ve indirim kuralları
+  iki kez yazılmaz). Sayfa yüklenince ek istek yok; yalnızca WooCommerce sepetin değiştiğini
+  söyleyince bir istek. Mini sepette çubuk başlığın altında değil ara toplamın üstünde: başlık
+  bloğunun eksi kenar boşluğu ve maskesi altındakini örtüyor, alt kısım da kaymadan görünür kalıyor.
+  Alt çubuk ödeme sayfasında yok (dikkat dağıtmasın).
 
 ## Aşamalar ve bitti tanımları
 

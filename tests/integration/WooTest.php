@@ -111,6 +111,18 @@ final class WooTest extends TestCase {
 				'stock_alert'       => false,
 				'size_guide'        => false,
 				'bought_together'   => false,
+				'bottom_bar'        => false,
+				'bar_shop'          => true,
+				'bar_filter'        => true,
+				'bar_search'        => true,
+				'bar_wishlist'      => true,
+				'bar_account'       => true,
+				'bar_cart'          => true,
+				'shipping_mini'     => false,
+				'shipping_cart'     => false,
+				'shipping_product'  => false,
+				'shipping_checkout' => false,
+				'shipping_min'      => 0,
 			),
 			Schema::defaults()['woo']
 		);

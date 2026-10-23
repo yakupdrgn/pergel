@@ -150,6 +150,14 @@ final class Labels {
 					'title'  => __( 'Header', 'pergel-engine' ),
 					'fields' => array( 'mini_cart' ),
 				),
+				'phones'    => array(
+					'title'  => __( 'Bar at the bottom of phones', 'pergel-engine' ),
+					'fields' => array( 'bottom_bar', 'bar_shop', 'bar_filter', 'bar_search', 'bar_wishlist', 'bar_account', 'bar_cart' ),
+				),
+				'shipping'  => array(
+					'title'  => __( 'Free shipping progress', 'pergel-engine' ),
+					'fields' => array( 'shipping_mini', 'shipping_cart', 'shipping_product', 'shipping_checkout', 'shipping_min' ),
+				),
 				'speed'     => array(
 					'title'  => __( 'Speed', 'pergel-engine' ),
 					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
@@ -396,6 +404,50 @@ final class Labels {
 				'bought_together'   => array(
 					'label' => __( 'Frequently bought together', 'pergel-engine' ),
 					'help'  => __( 'Under the add-to-cart button, the product and up to three of its cross-sells (Product data → Linked products) with checkboxes, a total and one button that adds the chosen ones to the cart. Cross-sells with options get a link to their page. Each product keeps its own price.', 'pergel-engine' ),
+				),
+				'bottom_bar'        => array(
+					'label' => __( 'Show the bar on phones', 'pergel-engine' ),
+					'help'  => __( 'A row of shortcuts fixed to the bottom of narrow screens, on every page but the checkout. On product pages the sticky add-to-cart bar sits above it.', 'pergel-engine' ),
+				),
+				'bar_shop'          => array(
+					'label' => __( 'Shop', 'pergel-engine' ),
+				),
+				'bar_filter'        => array(
+					'label' => __( 'Filter', 'pergel-engine' ),
+					'help'  => __( 'Only on shop pages whose filters open in a panel on phones.', 'pergel-engine' ),
+				),
+				'bar_search'        => array(
+					'label' => __( 'Search', 'pergel-engine' ),
+					'help'  => __( 'Opens a product search box.', 'pergel-engine' ),
+				),
+				'bar_wishlist'      => array(
+					'label' => __( 'Wishlist', 'pergel-engine' ),
+					'help'  => __( 'With the number of saved products. Needs the wishlist and its page, above.', 'pergel-engine' ),
+				),
+				'bar_account'       => array(
+					'label' => __( 'My account', 'pergel-engine' ),
+				),
+				'bar_cart'          => array(
+					'label' => __( 'Cart', 'pergel-engine' ),
+					'help'  => __( 'With the number of products in the cart.', 'pergel-engine' ),
+				),
+				'shipping_mini'     => array(
+					'label' => __( 'In the mini cart', 'pergel-engine' ),
+					'help'  => __( 'How much more the customer needs to spend for free shipping, with a bar that fills up. It follows the cart as products are added or removed.', 'pergel-engine' ),
+				),
+				'shipping_cart'     => array(
+					'label' => __( 'On the cart page', 'pergel-engine' ),
+				),
+				'shipping_product'  => array(
+					'label' => __( 'On product pages', 'pergel-engine' ),
+					'help'  => __( 'Under the add-to-cart button.', 'pergel-engine' ),
+				),
+				'shipping_checkout' => array(
+					'label' => __( 'On the checkout page', 'pergel-engine' ),
+				),
+				'shipping_min'      => array(
+					'label' => __( 'Free shipping from', 'pergel-engine' ),
+					'help'  => __( 'The amount comes from the "Free shipping" method of the customer\'s shipping zone (WooCommerce → Settings → Shipping) when it asks for a minimum order amount. This amount is used where there is no such method; 0 shows nothing there.', 'pergel-engine' ),
 				),
 				'delivery'          => array(
 					'label' => __( 'Show the estimated delivery date', 'pergel-engine' ),

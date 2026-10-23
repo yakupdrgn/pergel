@@ -76,6 +76,12 @@ final class Layout {
 	 */
 	public const RECENT_SCRIPT = 'pergel/recently-viewed';
 
+	/**
+	 * Script module that keeps the cart's numbers current (FreeShipping,
+	 * BottomBar).
+	 */
+	public const CART_SCRIPT = 'pergel/cart-sync';
+
 	public const STYLE = 'pergel-shop-layout';
 
 	public const CARD_STYLE = 'pergel-shop-cards';
@@ -198,6 +204,8 @@ final class Layout {
 		wp_register_style( self::RELATED_STYLE, plugins_url( 'assets/product-related.css', FILE ), array(), VERSION );
 		wp_style_add_data( self::RELATED_STYLE, 'path', dirname( FILE ) . '/assets/product-related.css' );
 		wp_register_script_module( self::RECENT_SCRIPT, plugins_url( 'assets/recently-viewed.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
+		wp_register_script_module( self::CART_SCRIPT, plugins_url( 'assets/cart-sync.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
+		add_filter( 'script_module_data_' . self::CART_SCRIPT, array( self::class, 'cart_data' ) );
 		wp_register_script_module(
 			self::LISTING_SCRIPT,
 			plugins_url( 'assets/shop-listing.js', FILE ),
@@ -284,6 +292,16 @@ final class Layout {
 		if ( true === Settings::get( 'shop.quick_view' ) ) {
 			QuickView::routes();
 		}
+	}
+
+	/**
+	 * The cart route the cart script reads.
+	 *
+	 * @param array<string, mixed> $data Module data.
+	 * @return array<string, mixed>
+	 */
+	public static function cart_data( array $data ): array {
+		return $data + array( 'cart' => rest_url( 'wc/store/v1/cart' ) );
 	}
 
 	/**

@@ -85,6 +85,16 @@ final class Module implements Core\Module {
 		if ( true === Settings::get( 'woo.sticky_cart' ) ) {
 			StickyCart::register();
 		}
+		if ( true === Settings::get( 'woo.bottom_bar' ) && ! is_admin() ) {
+			BottomBar::register();
+		}
+		// Read here, so a shop without the bars does not load their class.
+		foreach ( array( 'mini', 'cart', 'product', 'checkout' ) as $place ) {
+			if ( true === Settings::get( "woo.shipping_$place" ) ) {
+				FreeShipping::register();
+				break;
+			}
+		}
 		// The Product enquiry block's quote form.
 		add_filter( 'pergel/forms/subject_fields', array( Quote::class, 'fields' ), 10, 3 );
 		add_filter( 'pergel/forms/subject_values', array( Quote::class, 'values' ), 10, 3 );
