@@ -437,8 +437,19 @@ final class FlashSalesTest extends TestCase {
 		FlashSalePrices::run( $id );
 		$this->assertSame( '80', wc_format_decimal( $this->fresh( $product->get_id() )->get_price() ) );
 
-		// Every campaign on the site goes, as on a real uninstall.
-		FlashSalePrices::uninstall();
+		// Every campaign on the site goes, as on a real uninstall; the site's
+		// own campaigns step aside meanwhile and are scheduled again after.
+		global $wpdb;
+		$kept = array_map( 'intval', $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND ID <> %d", FlashSales::TYPE, $id ) ) );
+		$this->aside( $kept, FlashSales::TYPE, 'pergel_sale_kept' );
+		try {
+			FlashSalePrices::uninstall();
+		} finally {
+			$this->aside( $kept, 'pergel_sale_kept', FlashSales::TYPE );
+			foreach ( $kept as $sale ) {
+				FlashSalePrices::schedule( $sale );
+			}
+		}
 
 		$this->assertNull( get_post( $id ) );
 		$this->assertSame( '90', wc_format_decimal( $this->fresh( $product->get_id() )->get_price() ) );
@@ -555,6 +566,21 @@ final class FlashSalesTest extends TestCase {
 		$this->assertStringContainsString( '"className":"' . FlashSales::OTHERS_CLASS . '"', $single );
 		foreach ( parse_blocks( $single ) as $block ) {
 			$this->assertIsArray( $block['attrs'], 'Every block comment parses.' );
+		}
+	}
+
+	/**
+	 * Changes the post type of campaigns.
+	 *
+	 * @param int[]  $ids  Campaigns.
+	 * @param string $from Post type now.
+	 * @param string $to   Post type after.
+	 */
+	private function aside( array $ids, string $from, string $to ): void {
+		global $wpdb;
+		foreach ( $ids as $id ) {
+			$wpdb->update( $wpdb->posts, array( 'post_type' => $to ), array( 'ID' => $id, 'post_type' => $from ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Test set-up.
+			clean_post_cache( $id );
 		}
 	}
 

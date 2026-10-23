@@ -1126,7 +1126,11 @@ Varsayılan olarak kapalıdır (`modules.abilities`, panelde "Yapay zekâ erişi
 - Silinecekler `Core\Uninstall`'daki listelerdedir (seçenekler, cron kancaları, yazı, terim ve
   kullanıcı meta anahtarları); tablolar kendi sınıflarının `uninstall()` yöntemiyle düşer. Yeni
   bir seçenek, meta veya tablo ekleyen kod bu listeye de eklenir; `UninstallTest` en yaygın
-  olanları sınar.
+  olanları sınar. Ürün soruları ve yanıtları kendi yorum türleridir (`Layout::QUESTION`) ve
+  meta'dan önce silinir; diğer yorumlar kalır.
+- `UninstallTest` gerçek test sitesinde `site()`'ı çalıştırır. Sitenin silinecek satırlarını
+  (listelerdeki meta, form mesajları, kampanyalar, ürün soruları) önce saklar, sonra yerine
+  yazar ve kampanya fiyatlarını yeniden uygular; yerel bir sitede çalışınca veri kaybolmaz.
 - `PERGEL_KEEP_DATA` `true` ise hiçbir şey silinmez. İçerik (sayfa, ürün, menü, terim, medya,
   child tema) hiçbir durumda silinmez.
 

@@ -21,7 +21,8 @@ Framework) is active, Pergel defers to it and adds its own data to that
 plugin's schema graph instead of printing a second one.
 
 Deactivating the plugin keeps its data. Deleting it under Plugins removes its
-settings, tables, scheduled events, form messages and the meta it stored;
+settings, tables, scheduled events, form messages, product questions and
+the meta it stored (flash sale prices go back first);
 pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
