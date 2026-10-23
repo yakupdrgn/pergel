@@ -263,7 +263,12 @@ final class FactsTest extends TestCase {
 		$this->assertSame( array( 'Material', 'Size' ), array_column( $markup['additionalProperty'], 'name' ) );
 		$this->assertSame( 30, has_filter( 'woocommerce_structured_data_product', array( Properties::class, 'structured_data' ) ) );
 
-		$this->go_to( array( 'p' => $id, 'post_type' => 'product' ) );
+		$this->go_to(
+			array(
+				'p'         => $id,
+				'post_type' => 'product',
+			)
+		);
 		$graph = Properties::graph( array( array( '@type' => 'Product' ) ) );
 		$this->assertIsArray( $graph );
 		$this->assertSame( 'PP & PE', $graph[0]['additionalProperty'][0]['value'] );

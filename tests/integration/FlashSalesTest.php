@@ -426,12 +426,12 @@ final class FlashSalesTest extends TestCase {
 		);
 		$this->assertSame( array( $product->get_id() ), $context['query']['woocommerceHandPickedProducts'] );
 		$this->assertArrayNotHasKey( 'woocommerceHandPickedProducts', FlashSales::context( array( 'queryId' => 8 ) + array( 'query' => array() ) )['query'] );
-		$this->assertArrayNotHasKey( 'noindex', FlashSales::robots( array() ) );
+		$this->assertFalse( FlashSales::noindex( false ) );
 
 		update_post_meta( $id, FlashSales::END, time() - 1 );
 		$this->assertSame( '', FlashSales::sections( null, $grid ) );
 		$this->assertNull( FlashSales::sections( null, $others ) );
-		$this->assertTrue( FlashSales::robots( array() )['noindex'] ?? false );
+		$this->assertTrue( FlashSales::noindex( false ) );
 	}
 
 	public function test_uninstall_puts_the_prices_back_first(): void {
@@ -559,7 +559,7 @@ final class FlashSalesTest extends TestCase {
 		$this->assertNotContains( $none, $listed, 'Not on the list pages.' );
 		$this->assertNotContains( $later, $listed );
 		$this->go_to( $none );
-		$this->assertTrue( FlashSales::robots( array() )['noindex'] ?? false );
+		$this->assertTrue( FlashSales::noindex( false ) );
 		$this->assertSame( '', FlashSales::sections( null, array( 'attrs' => array( 'className' => FlashSales::PRODUCTS_CLASS ) ) ), 'No empty grid.' );
 		$this->assertNull( FlashSales::sections( null, array( 'attrs' => array( 'className' => FlashSales::OTHERS_CLASS ) ) ), 'The running campaigns instead.' );
 
@@ -645,7 +645,14 @@ final class FlashSalesTest extends TestCase {
 	private function aside( array $ids, string $from, string $to ): void {
 		global $wpdb;
 		foreach ( $ids as $id ) {
-			$wpdb->update( $wpdb->posts, array( 'post_type' => $to ), array( 'ID' => $id, 'post_type' => $from ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Test set-up.
+			$wpdb->update(
+				$wpdb->posts,
+				array( 'post_type' => $to ),
+				array(
+					'ID'        => $id,
+					'post_type' => $from,
+				)
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Test set-up.
 			clean_post_cache( $id );
 		}
 	}

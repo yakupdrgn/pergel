@@ -8,6 +8,8 @@
 # INSTALL=1 installs the plugins from wordpress.org first (CI); locally they
 # must already be in wp-content/plugins. Each plugin is deactivated again
 # after its run; pergel_settings and the Site Logo are restored at the end.
+# tools/seo/noindex.php goes into mu-plugins for the run (a page Pergel keeps
+# out of search results) and is removed again.
 # Options and tables the plugins create stay, as they do on any site.
 set -euo pipefail
 
@@ -44,7 +46,9 @@ wp option get pergel_settings --format=json > "$backup"
 active=""
 logo=""
 previous_logo="$(wp option get site_logo 2> /dev/null || true)"
+noindex="$WP_DIR/wp-content/mu-plugins/pergel-seo-noindex.php"
 restore() {
+	rm -f "$noindex"
 	[ -z "$active" ] || wp plugin deactivate "$active" --quiet || true
 	[ -z "$logo" ] || wp eval-file "$REPO_PHP/tools/seo/logo.php" remove "$logo" "$previous_logo"
 	wp option delete pergel_settings --quiet
@@ -53,6 +57,8 @@ restore() {
 	rm -f "$backup"
 }
 trap restore EXIT
+mkdir -p "$(dirname "$noindex")"
+cp "$REPO/tools/seo/noindex.php" "$noindex"
 
 # A company site has a logo; Yoast SEO prints no Organization without one.
 logo="$(wp eval-file "$REPO_PHP/tools/seo/logo.php" add)"

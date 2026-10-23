@@ -114,11 +114,11 @@ final class PackageFieldsTest extends TestCase {
 	}
 
 	public function test_values_read_every_pattern_back(): void {
-		$keep  = static fn( string $url, int $id, string $alt ): array => array(
+		$keep   = static fn( string $url, int $id, string $alt ): array => array(
 			'src' => $url,
 			'alt' => $alt,
 		);
-		$media = static fn( string $src, ?string $alt ): array => array(
+		$media  = static fn( string $src, ?string $alt ): array => array(
 			'id'  => 0,
 			'url' => $src,
 			'alt' => $alt ?? '',
@@ -170,7 +170,7 @@ final class PackageFieldsTest extends TestCase {
 		);
 		$this->assertSame( array( $hero, array() ), $read( 'pergel/hero-split', $hero ) );
 
-		$plan  = array(
+		$plan = array(
 			'heading' => 'Plan',
 			'text'    => '1 ₺',
 		);
@@ -232,7 +232,7 @@ final class PackageFieldsTest extends TestCase {
 	}
 
 	public function test_forms_take_their_settings(): void {
-		$form   = array(
+		$form = array(
 			'kind'             => 'contact',
 			'company'          => true,
 			'message_required' => false,
@@ -270,9 +270,9 @@ final class PackageFieldsTest extends TestCase {
 		// The pattern's consent stays; kind at its default is left out.
 		$this->assertEquals(
 			array(
-				'consent'     => true,
-				'submitLabel' => 'Send request',
-				'fields'      => array(
+				'consent'         => true,
+				'submitLabel'     => 'Send request',
+				'fields'          => array(
 					array(
 						'label'    => 'Country',
 						'type'     => 'text',
@@ -296,14 +296,35 @@ final class PackageFieldsTest extends TestCase {
 		$this->assertSame( array( 'General', 'Sample' ), $back['form']['fields'][1]['options'] );
 
 		$cases = array(
-			'form: a form is a map of settings'                  => 'x',
-			'form: "title" is not a form setting'                => array( 'title' => 'x' ),
-			'form.kind: one of contact, quote'                   => array( 'kind' => 'order' ),
-			'form.phone: true or false'                          => array( 'phone' => 'yes' ),
-			'form.fields[1].type: one of text, textarea'         => array( 'fields' => array( array( 'label' => 'x', 'type' => 'date' ) ) ),
-			'form.fields[1].options: a list of 1 to 30 choices'  => array( 'fields' => array( array( 'label' => 'x', 'type' => 'select' ) ) ),
-			'form.fields[1].options: only a select field'        => array( 'fields' => array( array( 'label' => 'x', 'options' => array( 'a' ) ) ) ),
-			'form.fields[1].label: a text of at most 100'        => array( 'fields' => array( array( 'type' => 'text' ) ) ),
+			'form: a form is a map of settings'           => 'x',
+			'form: "title" is not a form setting'         => array( 'title' => 'x' ),
+			'form.kind: one of contact, quote'            => array( 'kind' => 'order' ),
+			'form.phone: true or false'                   => array( 'phone' => 'yes' ),
+			'form.fields[1].type: one of text, textarea'  => array(
+				'fields' => array(
+					array(
+						'label' => 'x',
+						'type'  => 'date',
+					),
+				),
+			),
+			'form.fields[1].options: a list of 1 to 30 choices' => array(
+				'fields' => array(
+					array(
+						'label' => 'x',
+						'type'  => 'select',
+					),
+				),
+			),
+			'form.fields[1].options: only a select field' => array(
+				'fields' => array(
+					array(
+						'label'   => 'x',
+						'options' => array( 'a' ),
+					),
+				),
+			),
+			'form.fields[1].label: a text of at most 100' => array( 'fields' => array( array( 'type' => 'text' ) ) ),
 		);
 		foreach ( $cases as $message => $value ) {
 			try {
@@ -398,7 +419,15 @@ final class PackageFieldsTest extends TestCase {
 	}
 
 	public function test_null_removes_a_block(): void {
-		$blocks = parse_blocks( self::fill( 'pergel/hero-split', array( 'eyebrow' => null, 'buttons' => null ) ) );
+		$blocks = parse_blocks(
+			self::fill(
+				'pergel/hero-split',
+				array(
+					'eyebrow' => null,
+					'buttons' => null,
+				)
+			)
+		);
 		$names  = self::names( $blocks );
 
 		$this->assertNotContains( 'core/buttons', $names );
@@ -409,8 +438,8 @@ final class PackageFieldsTest extends TestCase {
 		$cases = array(
 			'"title" is not a field here; fields: eyebrow, heading, text, buttons, image' => array( 'title' => 'x' ),
 			'buttons: a list of { label, url } is expected' => array( 'buttons' => 'x' ),
-			'buttons[1]: a button is { label, url }'        => array( 'buttons' => array( array( 'label' => 'x' ) ) ),
-			'heading: text is expected'                     => array( 'heading' => array( 'x' ) ),
+			'buttons[1]: a button is { label, url }' => array( 'buttons' => array( array( 'label' => 'x' ) ) ),
+			'heading: text is expected'              => array( 'heading' => array( 'x' ) ),
 			'text: the link "javascript:alert(1" uses javascript:' => array( 'text' => '[x](javascript:alert(1))' ),
 		);
 		foreach ( $cases as $message => $values ) {
@@ -514,8 +543,8 @@ final class PackageFieldsTest extends TestCase {
 		$cases = array(
 			'table: a table is { head, rows } or a list of rows' => 'x',
 			'table: head is a list of texts and rows a list of rows' => array( 'rows' => array() ),
-			'table.rows[2]: a row is a list of texts'            => array( array( 'a' ), array() ),
-			'table.head[1]: text is expected'                    => array(
+			'table.rows[2]: a row is a list of texts' => array( array( 'a' ), array() ),
+			'table.head[1]: text is expected'         => array(
 				'head' => array( array( 'x' ) ),
 				'rows' => array(),
 			),
@@ -543,7 +572,7 @@ final class PackageFieldsTest extends TestCase {
 				array( 'file' => 'media/sertifika.pdf' ),
 			),
 		);
-		$html = self::fill( 'pergel/product-downloads', $values );
+		$html   = self::fill( 'pergel/product-downloads', $values );
 
 		$this->assertSame( 3, substr_count( $html, '<!-- wp:file' ) );
 		$this->assertStringContainsString( '<!-- wp:file {"href":"http://site.test/wp-content/uploads/kilavuz.pdf","id":7} -->', $html );

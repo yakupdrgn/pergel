@@ -180,7 +180,7 @@ final class AbilitiesTest extends TestCase {
 				'post_author' => get_current_user_id(),
 			)
 		);
-		$writer      = wp_insert_user(
+		$writer     = wp_insert_user(
 			array(
 				'user_login' => 'pergel-page-writer',
 				'user_pass'  => wp_generate_password(),

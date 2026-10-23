@@ -144,7 +144,7 @@ final class SeoTest extends TestCase {
 		add_filter( 'get_post_metadata', $raw, 10, 3 );
 		$this->assertSame( 'Fish &amp; chips &lt;/title&gt;&lt;script&gt;', Head::document_title( '' ), 'A title stored past the sanitizer is escaped too.' );
 		remove_filter( 'get_post_metadata', $raw, 10 );
-		$meta =self::capture( 'print_meta' );
+		$meta = self::capture( 'print_meta' );
 		$this->assertStringContainsString( '<meta name="description" content="Custom search description &amp; more" />', $meta );
 		$this->assertStringContainsString( '<meta property="og:type" content="article" />', $meta );
 		$this->assertStringContainsString( '<meta property="og:title" content="Custom search title" />', $meta );

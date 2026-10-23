@@ -54,7 +54,15 @@ final class FormatTest extends TestCase {
 			'country'     => 'TR',
 		);
 		$this->assertSame( 'Örnek Sok. 1, 34000 Kadıköy, İstanbul', Format::address( $full ) );
-		$this->assertSame( 'Kadıköy, İstanbul', Format::address( array( 'locality' => 'Kadıköy', 'region' => 'İstanbul' ) ) );
+		$this->assertSame(
+			'Kadıköy, İstanbul',
+			Format::address(
+				array(
+					'locality' => 'Kadıköy',
+					'region'   => 'İstanbul',
+				)
+			)
+		);
 		$this->assertSame( '34000', Format::address( array( 'postal_code' => '34000' ) ) );
 		$this->assertSame( '', Format::address( array( 'country' => 'TR' ) ) );
 		$this->assertSame( '', Format::address( array( 'street' => array( 'not text' ) ) ) );

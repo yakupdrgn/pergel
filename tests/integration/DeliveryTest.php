@@ -249,8 +249,8 @@ final class DeliveryTest extends TestCase {
 		$this->assertSame( array( 5, 7 ), array( $rules['min'], $rules['max'] ) );
 
 		// The classes screen shows it; the cached term stays as it was.
-		$term   = get_term( $class, 'product_shipping_class' );
-		$shown  = Delivery::classes( array( $term ) );
+		$term  = get_term( $class, 'product_shipping_class' );
+		$shown = Delivery::classes( array( $term ) );
 		$this->assertSame( '5-7', $shown[0]->pergel_delivery );
 		$this->assertFalse( isset( get_term( $class, 'product_shipping_class' )->pergel_delivery ) );
 

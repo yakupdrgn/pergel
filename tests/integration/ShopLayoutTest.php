@@ -372,7 +372,7 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertSame( 48, Layout::per_page( 16 ) );
 		$_GET[ Listing::ARG ] = '30';
 		$this->assertSame( 30, Layout::per_page( 16 ), '"Load more" asks for any number up to 96.' );
-		$this->assertTrue( Listing::robots( array() )['noindex'] ?? false );
+		$this->assertTrue( Listing::noindex() );
 		$_GET[ Listing::ARG ] = '500';
 		$this->assertSame( 16, Layout::per_page( 16 ) );
 		unset( $_GET[ Listing::ARG ] );

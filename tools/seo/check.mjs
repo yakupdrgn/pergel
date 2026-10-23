@@ -57,6 +57,8 @@ const PAGES = [
 	{ path: '/pergel-sample-faq/', indexable: true, described: true, trail: true, questions: 2 },
 	{ path: '/?category_name=pergel-test', indexable: true, trail: true },
 	{ path: '/?s=pergel', indexable: false },
+	// tools/seo/noindex.php: a page Pergel keeps out of search results.
+	{ path: '/pergel-sample-page/?pergel-noindex=1', indexable: false, noindex: true },
 	{ path: '/pergel-seo-missing/', indexable: false, status: 404 },
 ];
 // Tags that must not appear twice in the head.
@@ -173,7 +175,7 @@ function breadcrumb( where, html, all, trail ) {
 	return visible.length;
 }
 
-async function page( { path, indexable, described = false, trail = false, questions = 0, status = 200 } ) {
+async function page( { path, indexable, described = false, trail = false, questions = 0, status = 200, noindex = false } ) {
 	const res = await get( BASE + path, { redirect: 'follow' } );
 	const html = await res.text();
 	const where = `${ args.scenario } ${ path }`;
@@ -197,6 +199,12 @@ async function page( { path, indexable, described = false, trail = false, questi
 		const n = count( head, el, attr, value );
 		if ( n > 1 ) {
 			fail( where, `${ n } × ${ value }` );
+		}
+	}
+	if ( noindex ) {
+		const robots = tags( head, 'meta' ).filter( ( a ) => ( a.name ?? '' ).toLowerCase() === 'robots' ).map( ( a ) => a.content ?? '' );
+		if ( 1 !== robots.length || ! /noindex/i.test( robots[ 0 ] ) ) {
+			fail( where, `robots ${ JSON.stringify( robots ) }, expected one tag with noindex` );
 		}
 	}
 

@@ -285,8 +285,8 @@ final class CardsTest extends TestCase {
 		// wc_create_attribute() would quietly store the type as "select".
 		$types = static fn ( array $types ): array => $types + array( 'wc-visual' => 'Color / image' );
 		add_filter( 'product_attributes_type_selector', $types );
-		$slug = 'pgt' . strtolower( wp_generate_password( 5, false ) );
-		$made = wc_create_attribute(
+		$slug  = 'pgt' . strtolower( wp_generate_password( 5, false ) );
+		$made  = wc_create_attribute(
 			array(
 				'name' => 'Card colour',
 				'slug' => $slug,
@@ -307,7 +307,7 @@ final class CardsTest extends TestCase {
 			update_term_meta( (int) $term['term_id'], 'color', $color );
 			$terms[ $name ] = (int) $term['term_id'];
 		}
-		$picture = wp_insert_attachment(
+		$picture   = wp_insert_attachment(
 			array(
 				'post_title'     => 'Red picture',
 				'post_mime_type' => 'image/png',

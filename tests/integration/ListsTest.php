@@ -375,12 +375,39 @@ final class ListsTest extends TestCase {
 		$this->assertStringContainsString( 'data-pergel-drawn="true"', $page );
 		$this->assertSame( '', get_user_meta( $user, Lists::META, true ) );
 
-		Lists::change( $this->request( 'POST', '/pergel/v1/wishlist', array( 'action' => 'add', 'ids' => array( $one->get_id() ) ) ) );
-		$merged = Lists::change( $this->request( 'POST', '/pergel/v1/wishlist', array( 'action' => 'merge', 'ids' => array( $two->get_id(), $one->get_id(), 999999999 ) ) ) );
+		Lists::change(
+			$this->request(
+				'POST',
+				'/pergel/v1/wishlist',
+				array(
+					'action' => 'add',
+					'ids'    => array( $one->get_id() ),
+				)
+			)
+		);
+		$merged = Lists::change(
+			$this->request(
+				'POST',
+				'/pergel/v1/wishlist',
+				array(
+					'action' => 'merge',
+					'ids'    => array( $two->get_id(), $one->get_id(), 999999999 ),
+				)
+			)
+		);
 		$this->assertSame( array( 'ids' => array( $one->get_id(), $two->get_id() ) ), $merged->get_data() );
 		$this->assertSame( array( $one->get_id(), $two->get_id() ), Lists::saved( $user ) );
 
-		Lists::change( $this->request( 'POST', '/pergel/v1/wishlist', array( 'action' => 'remove', 'ids' => array( $one->get_id() ) ) ) );
+		Lists::change(
+			$this->request(
+				'POST',
+				'/pergel/v1/wishlist',
+				array(
+					'action' => 'remove',
+					'ids'    => array( $one->get_id() ),
+				)
+			)
+		);
 		$this->assertSame( array( $two->get_id() ), Lists::saved( $user ) );
 
 		$data = Lists::data( array() );

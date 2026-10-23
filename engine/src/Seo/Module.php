@@ -50,6 +50,7 @@ final class Module implements Core\Module {
 	public function register(): void {
 		$plugin = Detect::active();
 		self::faq( $plugin );
+		Robots::register( $plugin );
 		if ( '' !== $plugin ) {
 			Integrations::register( $plugin );
 			Trail::register( $plugin );

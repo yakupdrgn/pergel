@@ -286,11 +286,11 @@ final class StockAlertTest extends TestCase {
 	 */
 	private function form( int $page, int $product, array $fields = array() ): array {
 		return $fields + array(
-			'token'        => StockAlert::sign( $page, time() - 10 ),
-			'product'      => (string) $product,
-			'email'        => 'Ada@Example.invalid',
-			'consent'      => '1',
-			Submit::TRAP   => '',
+			'token'      => StockAlert::sign( $page, time() - 10 ),
+			'product'    => (string) $product,
+			'email'      => 'Ada@Example.invalid',
+			'consent'    => '1',
+			Submit::TRAP => '',
 		);
 	}
 
@@ -430,7 +430,18 @@ final class StockAlertTest extends TestCase {
 		$in_stock = $this->simple( true );
 		$this->assertSame( 'unavailable', StockAlert::handle( $this->form( $in_stock->get_id(), $in_stock->get_id() ), $this->ip, 0 )['code'] );
 
-		$result = StockAlert::handle( $this->form( $id, $id, array( 'email' => 'not-an-address', 'consent' => '' ) ), $this->ip, 0 );
+		$result = StockAlert::handle(
+			$this->form(
+				$id,
+				$id,
+				array(
+					'email'   => 'not-an-address',
+					'consent' => '',
+				)
+			),
+			$this->ip,
+			0
+		);
 		$this->assertSame( 'invalid', $result['code'] );
 		$this->assertSame( array( 'email', 'consent' ), array_keys( $result['errors'] ) );
 		$this->assertSame( 'invalid', StockAlert::handle( $this->form( $id, $id, array( 'email' => str_repeat( 'a', 90 ) . '@example.invalid' ) ), $this->ip, 0 )['code'] );
