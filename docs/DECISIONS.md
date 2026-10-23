@@ -1575,6 +1575,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   giriş yapmış müşterilere açık (spam ve sahte soru riski), her soru onay bekler ve yalnızca
   yanıtlanınca görünür; ayrı tablo yok, WordPress yorumları (moderasyon e-postası, çöp kutusu,
   gizlilik araçları) kullanılır. Ek sorgu: Soru-Cevap açıkken ürün sayfasında iki yorum sorgusu.
+- **S5b kararları:** Kaydırıcı için kendi betiğimiz yok: WooCommerce'in ürün koleksiyonu kaydırıcı
+  düzenini ve önceki/sonraki düğmelerini kullanıyoruz, yapıyı editörün kurduğu gibi sunucuda
+  kuruyoruz (Site Düzenleyici'de kaydırıcıya çevrilmiş şablon da olduğu gibi kalır). Karşılaştırma
+  tablosu "bu ürün + en fazla 3 benzer" (kullanıcı kararı); benzerlik için ayrı bir alan yok:
+  yukarı satışlar elle seçim, geri kalanı aynı kategoride en yakın fiyat. Son bakılanlar sunucuda
+  saklanmaz (çerez yok, kişisel veri yok, önbellekle çakışmaz); kartlar sade (resim, ad, fiyat)
+  çünkü blok mağaza dışı sayfalara da konabilir ve ürün kartı CSS'ine bağlı kalmamalı. Ek sorgu:
+  karşılaştırma açıkken ürün sayfasında bir ürün sorgusu (en fazla 24 ürün).
 
 ## Aşamalar ve bitti tanımları
 

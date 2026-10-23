@@ -753,6 +753,55 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'recently-viewed' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/recently-viewed',
+    'title' => 'Recently viewed products',
+    'category' => 'pergel',
+    'icon' => 'backup',
+    'description' => 'The products a visitor looked at last, kept in their browser; hidden until there are some. Turn it on with "Recently viewed" under Pergel → Settings → Shop.',
+    'keywords' => 
+    array (
+      0 => 'recently viewed',
+      1 => 'history',
+      2 => 'last seen',
+      3 => 'products',
+    ),
+    'textdomain' => 'pergel-engine',
+    'attributes' => 
+    array (
+      'count' => 
+      array (
+        'type' => 'integer',
+        'default' => 4,
+        'minimum' => 1,
+        'maximum' => 12,
+      ),
+      'title' => 
+      array (
+        'type' => 'string',
+        'default' => '',
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'align' => 
+      array (
+        0 => 'wide',
+        1 => 'full',
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'shop-links' => 
   array (
     'apiVersion' => 3,

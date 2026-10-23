@@ -65,6 +65,17 @@ final class Layout {
 	 */
 	public const QUESTION = 'pergel_question';
 
+	/**
+	 * Comparison with similar products (Related): CSS.
+	 */
+	public const RELATED_STYLE = 'pergel-product-related';
+
+	/**
+	 * Recently viewed products (Related): the script module that remembers
+	 * them and fills the block.
+	 */
+	public const RECENT_SCRIPT = 'pergel/recently-viewed';
+
 	public const STYLE = 'pergel-shop-layout';
 
 	public const CARD_STYLE = 'pergel-shop-cards';
@@ -131,6 +142,7 @@ final class Layout {
 		add_action( 'wp', array( self::class, 'cards' ) );
 		add_action( 'wp', array( self::class, 'product_page' ) );
 		add_action( 'rest_api_init', array( self::class, 'quick_view' ) );
+		add_action( 'rest_api_init', array( self::class, 'recently_viewed' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
@@ -183,6 +195,9 @@ final class Layout {
 		wp_register_style( self::DETAILS_STYLE, plugins_url( 'assets/product-details.css', FILE ), array(), VERSION );
 		wp_style_add_data( self::DETAILS_STYLE, 'path', dirname( FILE ) . '/assets/product-details.css' );
 		wp_register_script_module( self::DETAILS_SCRIPT, plugins_url( 'assets/product-details.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
+		wp_register_style( self::RELATED_STYLE, plugins_url( 'assets/product-related.css', FILE ), array(), VERSION );
+		wp_style_add_data( self::RELATED_STYLE, 'path', dirname( FILE ) . '/assets/product-related.css' );
+		wp_register_script_module( self::RECENT_SCRIPT, plugins_url( 'assets/recently-viewed.js', FILE ), array(), VERSION, array( 'fetchpriority' => 'low' ) );
 		wp_register_script_module(
 			self::LISTING_SCRIPT,
 			plugins_url( 'assets/shop-listing.js', FILE ),
@@ -272,11 +287,22 @@ final class Layout {
 	}
 
 	/**
+	 * Adds the recently viewed route while the setting is on; see
+	 * quick_view() for why it is checked here.
+	 */
+	public static function recently_viewed(): void {
+		if ( 'off' !== Settings::get( 'shop.related_recent' ) ) {
+			Related::routes();
+		}
+	}
+
+	/**
 	 * Adds the product page hooks when a product page setting differs from
-	 * its default for the product on screen, and those of the sections
-	 * under the product when a "details" setting does or the product has
-	 * a feature list or tab of its own. With the defaults, product pages
-	 * load neither ProductPage nor Details. Hooked on wp.
+	 * its default for the product on screen, those of the sections under
+	 * the product when a "details" setting does or the product has a
+	 * feature list or tab of its own, and those of the related products
+	 * when a "related" setting does. With the defaults, product pages load
+	 * none of ProductPage, Details and Related. Hooked on wp.
 	 */
 	public static function product_page(): void {
 		if ( ! is_singular( 'product' ) ) {
@@ -285,11 +311,14 @@ final class Layout {
 		$id      = get_queried_object_id();
 		$page    = false;
 		$details = is_array( get_post_meta( $id, self::DETAILS_META, true ) );
+		$related = false;
 		foreach ( Schema::defaults()['shop'] ?? array() as $key => $default ) {
 			if ( ! $page && str_starts_with( $key, 'product_' ) ) {
 				$page = self::get( "shop.$key" ) !== $default;
 			} elseif ( ! $details && str_starts_with( $key, 'details_' ) ) {
 				$details = self::get( "shop.$key" ) !== $default;
+			} elseif ( ! $related && str_starts_with( $key, 'related_' ) ) {
+				$related = self::get( "shop.$key" ) !== $default;
 			}
 		}
 		if ( $page ) {
@@ -297,6 +326,9 @@ final class Layout {
 		}
 		if ( $details ) {
 			Details::register( $id );
+		}
+		if ( $related ) {
+			Related::register( $id );
 		}
 	}
 

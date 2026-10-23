@@ -41,6 +41,7 @@ final class Pictures {
 			'shop.product_layout' => self::product( $option ),
 			'shop.product_thumbs' => self::thumbs( $option ),
 			'shop.details_style' => self::details( $option ),
+			'shop.related_style' => self::related( $option ),
 			default      => '',
 		};
 		if ( '' === $shapes ) {
@@ -283,6 +284,21 @@ final class Pictures {
 			'template' => '<g fill="none" stroke="currentColor" stroke-dasharray="3 2"><rect x="8.5" y="6.5" width="47" height="7" rx="1.5"/><rect x="8.5" y="16.5" width="47" height="7" rx="1.5"/><rect x="8.5" y="26.5" width="47" height="7" rx="1.5"/></g>',
 			'tabs'     => '<rect x="8" y="6" width="14" height="6" rx="1.5" fill="currentColor"/><rect x="25" y="6" width="14" height="6" rx="1.5" fill="currentColor" opacity="0.35"/><rect x="42" y="6" width="14" height="6" rx="1.5" fill="currentColor" opacity="0.35"/>' . $lines( 18 ) . $lines( 27 ),
 			'open'     => '<rect x="8" y="5" width="22" height="3" rx="1" fill="currentColor"/>' . $lines( 10 ) . '<rect x="8" y="21" width="22" height="3" rx="1" fill="currentColor"/>' . $lines( 26 ),
+			default    => '',
+		};
+	}
+
+	/**
+	 * Related products under the product.
+	 *
+	 * @param string $option "template", "grid" or "carousel".
+	 */
+	private static function related( string $option ): string {
+		$card = static fn ( int $x, int $y, int $w ): string => sprintf( '<rect x="%1$d" y="%2$d" width="%3$d" height="%3$d" rx="1.5" fill="currentColor" opacity="0.35"/><rect x="%1$d" y="%4$d" width="%5$d" height="2" rx="1" fill="currentColor" opacity="0.6"/>', $x, $y, $w, $y + $w + 2, (int) round( $w * 0.7 ) );
+		return match ( $option ) {
+			'template' => '<g fill="none" stroke="currentColor" stroke-dasharray="3 2"><rect x="8.5" y="10.5" width="10" height="16" rx="1.5"/><rect x="21.5" y="10.5" width="10" height="16" rx="1.5"/><rect x="34.5" y="10.5" width="10" height="16" rx="1.5"/><rect x="47.5" y="10.5" width="8" height="16" rx="1.5"/></g>',
+			'grid'     => $card( 8, 4, 10 ) . $card( 21, 4, 10 ) . $card( 34, 4, 10 ) . $card( 47, 4, 10 ) . $card( 8, 21, 10 ) . $card( 21, 21, 10 ) . $card( 34, 21, 10 ) . $card( 47, 21, 10 ),
+			'carousel' => $card( 4, 11, 13 ) . $card( 20, 11, 13 ) . $card( 36, 11, 13 ) . '<rect x="52" y="11" width="10" height="13" rx="1.5" fill="currentColor" opacity="0.2"/><path d="M58 15l2.5 2.5L58 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
 			default    => '',
 		};
 	}

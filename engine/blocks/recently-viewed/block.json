@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/recently-viewed",
+	"title": "Recently viewed products",
+	"category": "pergel",
+	"icon": "backup",
+	"description": "The products a visitor looked at last, kept in their browser; hidden until there are some. Turn it on with \"Recently viewed\" under Pergel → Settings → Shop.",
+	"keywords": [ "recently viewed", "history", "last seen", "products" ],
+	"textdomain": "pergel-engine",
+	"attributes": {
+		"count": {
+			"type": "integer",
+			"default": 4,
+			"minimum": 1,
+			"maximum": 12
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

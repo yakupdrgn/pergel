@@ -209,7 +209,7 @@ final class ListView {
 	 *
 	 * @param \WC_Product $product Product.
 	 */
-	private static function rating( \WC_Product $product ): string {
+	public static function rating( \WC_Product $product ): string {
 		$rating = (float) $product->get_average_rating();
 		if ( ! wc_review_ratings_enabled() || $rating <= 0 ) {
 			return '';
@@ -223,7 +223,7 @@ final class ListView {
 	 *
 	 * @param \WC_Product $product Product.
 	 */
-	private static function availability( \WC_Product $product ): string {
+	public static function availability( \WC_Product $product ): string {
 		$availability = $product->get_availability();
 		$text         = is_array( $availability ) ? (string) ( $availability['availability'] ?? '' ) : '';
 		if ( '' !== $text ) {
@@ -238,7 +238,7 @@ final class ListView {
 	 *
 	 * @param \WC_Product $product Product.
 	 */
-	private static function buy( \WC_Product $product ): string {
+	public static function buy( \WC_Product $product ): string {
 		$link = (string) get_permalink( $product->get_id() );
 		if ( $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() ) {
 			return '<a class="wp-element-button" rel="nofollow" href="' . esc_url( add_query_arg( 'add-to-cart', $product->get_id(), $link ) ) . '">'
