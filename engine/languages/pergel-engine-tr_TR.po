@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-23 11:40+0000\n"
-"PO-Revision-Date: 2026-10-23 11:40+0000\n"
+"POT-Creation-Date: 2026-10-23 12:04+0000\n"
+"PO-Revision-Date: 2026-10-23 12:04+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1810,6 +1810,57 @@ msgstr "Sepete ekle"
 
 msgid "View product"
 msgstr "Ürünü gör"
+
+msgid "The Unimart layout is on. Undo puts back the settings it changed."
+msgstr "Unimart düzeni açık. Geri al, değiştirdiği ayarları eski hâline getirir."
+
+msgid "The settings are back as they were."
+msgstr "Ayarlar eski hâline döndü."
+
+msgid "Unimart layout"
+msgstr "Unimart düzeni"
+
+msgid "Sets the shop in one go to a layout close to the Unimart electronics shop: filters on the left, boxed cards with their details, pictures on the left and tabs below on product pages, related products in a carousel, the bar on phones and the free shipping progress. Colours and fonts stay your site's. You see every change before it is made."
+msgstr "Mağazayı tek seferde Unimart elektronik mağazasına yakın bir düzene getirir: solda filtreler, ayrıntılarıyla kutulu kartlar, ürün sayfalarında solda resimler ve altta sekmeler, kaydırıcıda ilgili ürünler, telefonlarda alt çubuk ve ücretsiz kargo ilerlemesi. Renkler ve yazı tipleri sitenizin kalır. Her değişikliği yapılmadan önce görürsünüz."
+
+msgid "Preview the changes"
+msgstr "Değişiklikleri önizle"
+
+msgid "Undo the Unimart layout"
+msgstr "Unimart düzenini geri al"
+
+msgid "Back to the settings"
+msgstr "Ayarlara dön"
+
+msgid "Unimart layout: the changes"
+msgstr "Unimart düzeni: değişiklikler"
+
+msgid "The settings already match the Unimart layout."
+msgstr "Ayarlar zaten Unimart düzenine uyuyor."
+
+#. translators: %d: number of settings.
+msgid "Applying it changes %d setting. Product categories and products keep their own choices."
+msgid_plural "Applying it changes %d settings. Product categories and products keep their own choices."
+msgstr[0] "Uygulamak %d ayarı değiştirir. Ürün kategorileri ve ürünler kendi seçimlerini korur."
+msgstr[1] "Uygulamak %d ayarı değiştirir. Ürün kategorileri ve ürünler kendi seçimlerini korur."
+
+msgid "Tab"
+msgstr "Sekme"
+
+msgid "Setting"
+msgstr "Ayar"
+
+msgid "Now"
+msgstr "Şu an"
+
+msgid "After"
+msgstr "Sonra"
+
+msgid "Apply the Unimart layout"
+msgstr "Unimart düzenini uygula"
+
+msgid "You are not allowed to change these settings."
+msgstr "Bu ayarları değiştirme izniniz yok."
 
 msgid "You may also like"
 msgstr "Bunlar da ilginizi çekebilir"

@@ -1594,6 +1594,12 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   söyleyince bir istek. Mini sepette çubuk başlığın altında değil ara toplamın üstünde: başlık
   bloğunun eksi kenar boşluğu ve maskesi altındakini örtüyor, alt kısım da kaymadan görünür kalıyor.
   Alt çubuk ödeme sayfasında yok (dikkat dağıtmasın).
+- **S6b kararları:** Unimart hazır ayarının değerleri Unimart elektronik mağazasının ölçülen
+  düzeninden (filtre sütunuyla 3 sütun, solda katlanan filtreler, kutulu kartlar, sayfa
+  numaraları, görselli kategori şeridi) ve S4–S6'daki kullanıcı kararlarından geldi (kullanıcı
+  onayı, 23 Ekim 2026). Kampanya bandı, teslimat tahmini, stok uyarısı ve beden rehberi
+  ayarlanmaz (siteye özel içerik ister); hazır ayar sayfa oluşturmaz. Geri al tam yedek değil:
+  yalnızca hazır ayarın değiştirdiği ve sonra elle değiştirilmemiş ayarlar geri döner.
 
 ## Aşamalar ve bitti tanımları
 
