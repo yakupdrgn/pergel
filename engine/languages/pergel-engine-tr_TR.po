@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-23 10:48+0000\n"
-"PO-Revision-Date: 2026-10-23 10:48+0000\n"
+"POT-Creation-Date: 2026-10-23 11:40+0000\n"
+"PO-Revision-Date: 2026-10-23 11:40+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -490,6 +490,12 @@ msgstr "Tahmini teslimat"
 msgid "Header"
 msgstr "Üst bilgi"
 
+msgid "Bar at the bottom of phones"
+msgstr "Telefonlarda alt çubuk"
+
+msgid "Free shipping progress"
+msgstr "Ücretsiz kargo ilerlemesi"
+
 msgid "Speed"
 msgstr "Hız"
 
@@ -762,6 +768,57 @@ msgstr "Birlikte sık alınanlar"
 
 msgid "Under the add-to-cart button, the product and up to three of its cross-sells (Product data → Linked products) with checkboxes, a total and one button that adds the chosen ones to the cart. Cross-sells with options get a link to their page. Each product keeps its own price."
 msgstr "Sepete ekle düğmesinin altında ürün ve en fazla üç çapraz satış ürünü (Ürün verisi → Bağlantılı ürünler) onay kutularıyla, bir toplamla ve seçilenleri sepete ekleyen tek bir düğmeyle gösterilir. Seçenekli çapraz satış ürünleri için kendi sayfalarına bağlantı verilir. Her ürün kendi fiyatıyla satılır."
+
+msgid "Show the bar on phones"
+msgstr "Çubuğu telefonlarda göster"
+
+msgid "A row of shortcuts fixed to the bottom of narrow screens, on every page but the checkout. On product pages the sticky add-to-cart bar sits above it."
+msgstr "Dar ekranların altına sabitlenmiş bir kısayol sırası; ödeme sayfası dışında her sayfada. Ürün sayfalarında yapışkan sepete ekle çubuğu bunun üstünde durur."
+
+msgid "Filter"
+msgstr "Filtrele"
+
+msgid "Only on shop pages whose filters open in a panel on phones."
+msgstr "Yalnızca filtreleri telefonda bir panelde açılan mağaza sayfalarında."
+
+msgid "Opens a product search box."
+msgstr "Bir ürün arama kutusu açar."
+
+msgid "With the number of saved products. Needs the wishlist and its page, above."
+msgstr "Kaydedilen ürün sayısıyla. Yukarıdaki istek listesi ve sayfası gerekir."
+
+msgid "My account"
+msgstr "Hesabım"
+
+msgid "Cart"
+msgstr "Sepet"
+
+msgid "With the number of products in the cart."
+msgstr "Sepetteki ürün sayısıyla."
+
+msgid "In the mini cart"
+msgstr "Mini sepette"
+
+msgid "How much more the customer needs to spend for free shipping, with a bar that fills up. It follows the cart as products are added or removed."
+msgstr "Müşterinin ücretsiz kargo için daha ne kadar alışveriş yapması gerektiği, dolan bir çubukla. Ürün eklendikçe veya çıkarıldıkça sepeti izler."
+
+msgid "On the cart page"
+msgstr "Sepet sayfasında"
+
+msgid "On product pages"
+msgstr "Ürün sayfalarında"
+
+msgid "Under the add-to-cart button."
+msgstr "Sepete ekle düğmesinin altında."
+
+msgid "On the checkout page"
+msgstr "Ödeme sayfasında"
+
+msgid "Free shipping from"
+msgstr "Ücretsiz kargo alt sınırı"
+
+msgid "The amount comes from the \"Free shipping\" method of the customer's shipping zone (WooCommerce → Settings → Shipping) when it asks for a minimum order amount. This amount is used where there is no such method; 0 shows nothing there."
+msgstr "Tutar, müşterinin kargo bölgesindeki \"Ücretsiz kargo\" yöntemi en az sipariş tutarı istiyorsa oradan gelir (WooCommerce → Ayarlar → Kargo). Böyle bir yöntem olmayan yerde bu tutar kullanılır; 0 iken orada hiçbir şey gösterilmez."
 
 msgid "Show the estimated delivery date"
 msgstr "Tahmini teslimat tarihini göster"
@@ -1401,6 +1458,21 @@ msgstr "ör. Sınırlı"
 msgid "A short label on the product picture in product grids. Leave empty for none."
 msgstr "Ürün ızgaralarında ürün resminin üstünde kısa bir etiket. İstemiyorsanız boş bırakın."
 
+msgid "Account"
+msgstr "Hesap"
+
+msgid "products"
+msgstr "ürün"
+
+msgid "Shop shortcuts"
+msgstr "Mağaza kısayolları"
+
+msgid "Search products"
+msgstr "Ürün ara"
+
+msgid "Close"
+msgstr "Kapat"
+
 msgid "Shown on product pages with cross-sells: the product and up to three of them, added to the cart with one button."
 msgstr "Çapraz satış ürünü olan ürün sayfalarında gösterilir: ürün ve en fazla üç çapraz satış ürünü, tek düğmeyle sepete eklenir."
 
@@ -1440,9 +1512,6 @@ msgid "%d product added to your cart."
 msgid_plural "%d products added to your cart."
 msgstr[0] "%d ürün sepetinize eklendi."
 msgstr[1] "%d ürün sepetinize eklendi."
-
-msgid "Close"
-msgstr "Kapat"
 
 msgid "Loading…"
 msgstr "Yükleniyor…"
@@ -1622,6 +1691,17 @@ msgstr "Kendi modunu seçen ürünler dışında, bu kategorinin ve alt kategori
 
 msgid "Search the options"
 msgstr "Seçeneklerde ara"
+
+msgid "Your order ships free."
+msgstr "Siparişiniz ücretsiz kargoyla gönderilecek."
+
+#. translators: %s: amount, e.g. ₺500.00.
+msgid "Free shipping on orders of %s or more."
+msgstr "%s ve üzeri siparişlerde kargo ücretsiz."
+
+#. translators: %s: amount still to spend, e.g. ₺120.00.
+msgid "Add %s more to get free shipping."
+msgstr "Ücretsiz kargo için %s daha ekleyin."
 
 msgid "Product page layout"
 msgstr "Ürün sayfası yerleşimi"

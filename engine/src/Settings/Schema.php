@@ -266,6 +266,61 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// Shortcuts at the bottom of phone screens; see
+				// Pergel\Woo\BottomBar. The items count only while it is on.
+				'bottom_bar'        => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'bar_shop'          => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'bar_filter'        => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'bar_search'        => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'bar_wishlist'      => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'bar_account'       => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'bar_cart'          => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				// Free shipping progress; see Pergel\Woo\FreeShipping. The
+				// amount is used where WooCommerce has no free shipping method
+				// with a minimum; 0 leaves it to WooCommerce.
+				'shipping_mini'     => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'shipping_cart'     => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'shipping_product'  => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'shipping_checkout' => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'shipping_min'      => array(
+					'type'    => 'int',
+					'min'     => 0,
+					'max'     => 1000000,
+					'default' => 0,
+				),
 			),
 			// Shop listing look; see Pergel\Woo\Layout. "template", "auto",
 			// "wide" and 0 keep the template's and WooCommerce's own layout,

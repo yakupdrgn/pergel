@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T13:48:41+03:00\n"
+"POT-Creation-Date: 2026-10-23T14:40:29+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -510,6 +510,12 @@ msgstr ""
 msgid "Header"
 msgstr ""
 
+msgid "Bar at the bottom of phones"
+msgstr ""
+
+msgid "Free shipping progress"
+msgstr ""
+
 msgid "Speed"
 msgstr ""
 
@@ -781,6 +787,57 @@ msgid "Frequently bought together"
 msgstr ""
 
 msgid "Under the add-to-cart button, the product and up to three of its cross-sells (Product data → Linked products) with checkboxes, a total and one button that adds the chosen ones to the cart. Cross-sells with options get a link to their page. Each product keeps its own price."
+msgstr ""
+
+msgid "Show the bar on phones"
+msgstr ""
+
+msgid "A row of shortcuts fixed to the bottom of narrow screens, on every page but the checkout. On product pages the sticky add-to-cart bar sits above it."
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "Only on shop pages whose filters open in a panel on phones."
+msgstr ""
+
+msgid "Opens a product search box."
+msgstr ""
+
+msgid "With the number of saved products. Needs the wishlist and its page, above."
+msgstr ""
+
+msgid "My account"
+msgstr ""
+
+msgid "Cart"
+msgstr ""
+
+msgid "With the number of products in the cart."
+msgstr ""
+
+msgid "In the mini cart"
+msgstr ""
+
+msgid "How much more the customer needs to spend for free shipping, with a bar that fills up. It follows the cart as products are added or removed."
+msgstr ""
+
+msgid "On the cart page"
+msgstr ""
+
+msgid "On product pages"
+msgstr ""
+
+msgid "Under the add-to-cart button."
+msgstr ""
+
+msgid "On the checkout page"
+msgstr ""
+
+msgid "Free shipping from"
+msgstr ""
+
+msgid "The amount comes from the \"Free shipping\" method of the customer's shipping zone (WooCommerce → Settings → Shipping) when it asks for a minimum order amount. This amount is used where there is no such method; 0 shows nothing there."
 msgstr ""
 
 msgid "Show the estimated delivery date"
@@ -1426,6 +1483,21 @@ msgstr ""
 msgid "A short label on the product picture in product grids. Leave empty for none."
 msgstr ""
 
+msgid "Account"
+msgstr ""
+
+msgid "products"
+msgstr ""
+
+msgid "Shop shortcuts"
+msgstr ""
+
+msgid "Search products"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
 msgid "Shown on product pages with cross-sells: the product and up to three of them, added to the cart with one button."
 msgstr ""
 
@@ -1468,9 +1540,6 @@ msgid "%d product added to your cart."
 msgid_plural "%d products added to your cart."
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Close"
-msgstr ""
 
 msgid "Loading…"
 msgstr ""
@@ -1661,6 +1730,19 @@ msgid "Applies to the products of this category and its subcategories, unless a 
 msgstr ""
 
 msgid "Search the options"
+msgstr ""
+
+msgid "Your order ships free."
+msgstr ""
+
+#. translators: %s: amount, e.g. ₺500.00.
+#, php-format
+msgid "Free shipping on orders of %s or more."
+msgstr ""
+
+#. translators: %s: amount still to spend, e.g. ₺120.00.
+#, php-format
+msgid "Add %s more to get free shipping."
 msgstr ""
 
 msgid "Product page layout"

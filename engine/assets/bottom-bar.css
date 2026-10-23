@@ -1,0 +1,158 @@
+/*
+ * The bar at the bottom of phones (Pergel → Settings → Shop → Bar at the
+ * bottom of phones): Pergel\Woo\BottomBar prints it and loads this file
+ * only where it does.
+ */
+.pergel-bottom-bar {
+	display: none;
+}
+
+@media (max-width: 599.98px) {
+	body.has-pergel-bottom-bar {
+		--pergel-bottom-bar-height: calc(3.5rem + env(safe-area-inset-bottom));
+		padding-block-end: var(--pergel-bottom-bar-height);
+	}
+
+	/* Room for both bars while the sticky add-to-cart bar shows. */
+	.has-pergel-sticky-cart body.has-pergel-bottom-bar {
+		padding-block-end: calc(var(--pergel-sticky-cart, 4.5rem) + var(--pergel-bottom-bar-height));
+	}
+
+	.pergel-bottom-bar {
+		background: var(--wp--preset--color--base);
+		border-top: 1px solid var(--wp--preset--color--line);
+		display: block;
+		inset-block-end: 0;
+		inset-inline: 0;
+		padding-block-end: env(safe-area-inset-bottom);
+		position: fixed;
+		z-index: 99;
+	}
+
+	/* The sticky add-to-cart bar sits on top of it. */
+	.has-pergel-bottom-bar .wp-block-pergel-sticky-add-to-cart {
+		inset-block-end: var(--pergel-bottom-bar-height);
+	}
+}
+
+.pergel-bottom-bar__list {
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.pergel-bottom-bar__list > li {
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+.pergel-bottom-bar__list > li[hidden] {
+	display: none;
+}
+
+.pergel-bottom-bar__item {
+	align-items: center;
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	font: inherit;
+	font-size: 0.6875rem;
+	gap: 0.15rem;
+	height: 3.5rem;
+	justify-content: center;
+	padding: 0 0.25rem;
+	position: relative;
+	text-decoration: none;
+	width: 100%;
+}
+
+.pergel-bottom-bar__item[aria-current="page"] {
+	color: var(--wp--preset--color--accent, currentColor);
+}
+
+.pergel-bottom-bar__item:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: -4px;
+}
+
+.pergel-bottom-bar__label {
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.pergel-bottom-bar__count {
+	background: var(--wp--preset--color--accent, currentColor);
+	border-radius: 999px;
+	color: var(--wp--preset--color--on-accent, #fff);
+	font-size: 0.625rem;
+	font-weight: 600;
+	inset-block-start: 0.4rem;
+	inset-inline-start: calc(50% + 0.35rem);
+	line-height: 1rem;
+	min-width: 1rem;
+	padding: 0 0.25rem;
+	position: absolute;
+	text-align: center;
+}
+
+.pergel-bottom-bar__count[hidden] {
+	display: none;
+}
+
+.pergel-bottom-search {
+	background: var(--wp--preset--color--base);
+	border: 0;
+	color: inherit;
+	inset-block-start: 0;
+	margin: 0;
+	max-width: none;
+	padding: 1rem;
+	width: 100%;
+}
+
+.pergel-bottom-search::backdrop {
+	background: rgb(0 0 0 / 0.4);
+}
+
+.pergel-bottom-search__head {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-block-end: 0.75rem;
+}
+
+.pergel-bottom-search__title {
+	font-size: var(--wp--preset--font-size--medium, 1.125rem);
+	margin: 0;
+}
+
+.pergel-bottom-search__close {
+	align-items: center;
+	background: none;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	height: 44px;
+	justify-content: center;
+	width: 44px;
+}
+
+.pergel-bottom-bar .pergel-sr,
+.pergel-bottom-search .pergel-sr {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}

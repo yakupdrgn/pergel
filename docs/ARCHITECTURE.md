@@ -747,6 +747,27 @@ görünmez (`Settings\Screen::shown`).
   sepeti her header pattern'ine ekler; Pergel süzgeci öncelik 20'de çalışır, Pergel header'larında
   bu kaydı önce listeden çıkarır ve yalnızca koşullar tutuyorsa geri koyar. Başka temaların ve
   pattern'lerin kaydına dokunmaz.
+- **Telefon alt çubuğu (`Woo\BottomBar`, S6a):** `woo.bottom_bar` açıkken `wp_footer`'da sabit bir
+  `<nav>`: Mağaza, Filtrele, Arama, İstek listesi, Hesap, Sepet (her biri `woo.bar_*` ile açılıp
+  kapanır). Ödeme sayfasında çıkmaz; yalnızca 600 px altında görünür, gövdeye
+  `has-pergel-bottom-bar` sınıfı ve alt boşluk eklenir, yapışkan sepet çubuğu üstüne çıkar.
+  Filtrele düğmesi WooCommerce'in kendi filtre panelini açar (`.wc-block-product-filters__open-overlay`),
+  o düğme görünmüyorsa gizlenir. Arama bir `<dialog>` içinde `post_type=product` sorgulu
+  `core/search` bloğudur (canlı arama da çalışır). İstek listesi sayısı `shop-lists.js`'in
+  `data-pergel-count`'u, sepet sayısı `assets/cart-sync.js`'in `data-pergel-cart-count`'u.
+- **Ücretsiz kargo ilerlemesi (`Woo\FreeShipping`, S6a):** `woo.shipping_mini` (mini sepette ara
+  toplamın üstü), `shipping_cart` (sepetin üstü), `shipping_checkout` (ödemenin üstü),
+  `shipping_product` (sepete ekle formunun altı; satın alınabilir, sanal olmayan, gizli olmayan
+  ürün) ayrı ayrı açılır. Tutar müşterinin kargo bölgesindeki "Ücretsiz kargo" yöntemlerinden
+  (`min_amount` veya `either`, en düşüğü) gelir, yoksa `woo.shipping_min`; karşılaştırılan sepet
+  tutarı WooCommerce'in yöntemiyle aynı (gösterilen ara toplam, `ignore_discounts` değilse
+  indirimler düşülür). Çubuk sunucuda çizilir; aynı işaretleme Store API sepet yanıtına
+  `extensions.pergel.free_shipping.html` olarak eklenir (`woocommerce_store_api_register_endpoint_data`).
+  `assets/cart-sync.js` (`Layout::CART_SCRIPT`) `wc-blocks_added_to_cart`,
+  `wc-blocks_removed_from_cart` ve `wc-blocks_store_sync_required` olaylarında (mini sepetin iAPI
+  deposu ile sepet/ödeme bloklarının `@wordpress/data` deposu bunu yayınlar) sepeti bir kez okur,
+  çubukları ve sepet sayısını değiştirir; WooCommerce'in kilitli `woocommerce` iAPI deposu
+  kullanılmaz. `Woo\Module` bu iki sınıfı yalnızca ayarları açıkken yükler.
 - **Satış modları (`Woo\Modes`):** `sale` (fiyat ve sepet herkese), `login` (fiyat girişten
   sonra), `quote` (fiyat yok, teklif) ve `catalog` (fiyat yok). Mağazanın modu `woo.sales_mode`
   ayarında; ürün kategorisi (`pergel_sales_mode` term meta) ve ürün (`_pergel_sales_mode` post
