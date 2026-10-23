@@ -181,6 +181,8 @@ final class ShopBarsTest extends TestCase {
 
 	public function test_bars_in_their_places(): void {
 		Settings::update( array( 'woo' => array( 'shipping_min' => 300 ) ) );
+		// The site may boot with the bars off, so the style is not registered yet.
+		FreeShipping::assets();
 
 		$this->assertStringStartsWith( '<div class="pergel-free-shipping is-cart" data-pergel-shipping', FreeShipping::cart( '<div class="cart"></div>' ) );
 		$this->assertStringEndsWith( '<div class="cart"></div>', FreeShipping::cart( '<div class="cart"></div>' ) );
