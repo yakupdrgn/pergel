@@ -277,6 +277,10 @@ final class CardsTest extends TestCase {
 	}
 
 	public function test_colours_of_a_product_with_options(): void {
+		// With WooCommerce's "Color swatches" feature off (as on CI),
+		// wc_create_attribute() would quietly store the type as "select".
+		$types = static fn ( array $types ): array => $types + array( 'wc-visual' => 'Color / image' );
+		add_filter( 'product_attributes_type_selector', $types );
 		$slug = 'pgt' . strtolower( wp_generate_password( 5, false ) );
 		$made = wc_create_attribute(
 			array(
@@ -285,6 +289,7 @@ final class CardsTest extends TestCase {
 				'type' => 'wc-visual',
 			)
 		);
+		remove_filter( 'product_attributes_type_selector', $types );
 		$this->assertIsInt( $made );
 		$taxonomy = wc_attribute_taxonomy_name( $slug );
 		register_taxonomy( $taxonomy, 'product' );
