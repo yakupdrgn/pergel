@@ -17,6 +17,8 @@ use Pergel\Settings\Settings;
 use Pergel\Starters\Shop;
 use Pergel\Starters\Starter;
 use Pergel\Woo\Delivery;
+use Pergel\Woo\FlashSalePrices;
+use Pergel\Woo\FlashSales;
 use Pergel\Woo\Lists;
 use Pergel\Woo\Modes;
 use Pergel\Woo\SizeGuide;
@@ -26,7 +28,8 @@ use Pergel\Woo\StockAlertStore;
 /**
  * Deleting the plugin (uninstall.php) removes what it stored on each site:
  * the settings, its tables (search index, stock alerts), scheduled events,
- * limit counters, form messages and the meta it keeps on posts, products,
+ * limit counters, form messages, flash sales (their prices go back first)
+ * and the meta it keeps on posts, products,
  * terms and users (SEO title and description, sales modes, delivery days,
  * size guides, wishlists, starter and package marks). WordPress asks
  * "delete Pergel Engine and its data?" first. Pages, products, menus,
@@ -42,6 +45,7 @@ final class Uninstall {
 		Settings::OPTION,
 		Modes::INDEX,
 		Shop::ATTRIBUTES_OPTION,
+		FlashSales::RULES,
 		'woocommerce_' . StockAlert::EMAIL_CONFIRM . '_settings',
 		'woocommerce_' . StockAlert::EMAIL_BACK . '_settings',
 	);
@@ -61,6 +65,7 @@ final class Uninstall {
 		Importer::FILE,
 		Starter::META,
 		Starter::META_KEY,
+		FlashSalePrices::META,
 	);
 
 	private const TERM_META = array( Modes::TERM_META, Delivery::META, SizeGuide::META, Starter::META, Starter::META_KEY );
@@ -102,6 +107,8 @@ final class Uninstall {
 		global $wpdb;
 		Index::uninstall();
 		StockAlertStore::uninstall();
+		// Before the product meta goes: it holds the prices to put back.
+		FlashSalePrices::uninstall();
 		foreach ( self::HOOKS as $hook ) {
 			wp_unschedule_hook( $hook );
 		}

@@ -158,6 +158,10 @@ final class Labels {
 					'title'  => __( 'Free shipping progress', 'pergel-engine' ),
 					'fields' => array( 'shipping_mini', 'shipping_cart', 'shipping_product', 'shipping_checkout', 'shipping_min' ),
 				),
+				'sales'     => array(
+					'title'  => __( 'Flash sales', 'pergel-engine' ),
+					'fields' => array( 'flash_sales', 'sales_slug' ),
+				),
 				'speed'     => array(
 					'title'  => __( 'Speed', 'pergel-engine' ),
 					'fields' => array( 'shop_assets_only', 'no_cart_fragments' ),
@@ -448,6 +452,14 @@ final class Labels {
 				'shipping_min'      => array(
 					'label' => __( 'Free shipping from', 'pergel-engine' ),
 					'help'  => __( 'The amount comes from the "Free shipping" method of the customer\'s shipping zone (WooCommerce → Settings → Shipping) when it asks for a minimum order amount. This amount is used where there is no such method; 0 shows nothing there.', 'pergel-engine' ),
+				),
+				'flash_sales'       => array(
+					'label' => __( 'Flash sale campaigns', 'pergel-engine' ),
+					'help'  => __( 'Adds Products → Flash sales. A campaign has a start, an end, a discount and its products or categories; while it runs, its price is the WooCommerce sale price of the products, and afterwards their own prices come back. A list page shows the running and upcoming campaigns, and each campaign has a page with a countdown and its products.', 'pergel-engine' ),
+				),
+				'sales_slug'        => array(
+					'label' => __( 'Address of the campaign pages', 'pergel-engine' ),
+					'help'  => __( 'The part after the site address, such as "flash-sale" for /flash-sale/. Leave empty for the default in the site language.', 'pergel-engine' ),
 				),
 				'delivery'          => array(
 					'label' => __( 'Show the estimated delivery date', 'pergel-engine' ),

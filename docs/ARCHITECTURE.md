@@ -777,6 +777,46 @@ görünmez (`Settings\Screen::shown`).
   eski hâline getirir, elle değiştirilenlere dokunmaz. Değerler `Preset::values()`'ta (`shop` ve
   `woo` grupları); istek listesi ve karşılaştırma yalnızca sayfaları ayarlıysa açılır. Kategori
   ve ürün düzeyindeki seçimlere dokunulmaz. Sınıf yalnızca yönetimde yüklenir.
+- **Flaş indirimler (`Woo\FlashSales`, `FlashSalePrices`, `FlashSaleFields`, S7a):** `woo.flash_sales`
+  açıkken `pergel_sale` yazı türü Ürünler → Flaş indirimler altında (yetki `product`, mağaza
+  yöneticisi de düzenler). Kenar çubuğundaki "Kampanya" kutusu başlangıç ve bitişi (sitenin saat
+  diliminde, Unix zamanı olarak `_pergel_sale_start` / `_pergel_sale_end`), indirimi (1–90,
+  `_pergel_sale_discount`), ürünleri (WooCommerce ürün arama kutusu) ve kategorileri tutar.
+  - **Fiyatlar:** kampanya sürerken her ürüne (değişken üründe her varyasyona) WooCommerce'in kendi
+    zamanlanmış indirimi yazılır: indirimli fiyat ve kampanyanın tarihleri. Ürünün önceki indirimi
+    ürün meta `_pergel_sale`'de durur ve bitişte geri konur; o sırada indirimli fiyat elle
+    değiştirilmişse ona dokunulmaz. Kampanya fiyatı ürünün o an süren kendi indiriminden pahalı
+    olmaz. Sepet, fiyat filtresi, sıralama ve beslemeler kampanya fiyatını WooCommerce'ten görür.
+  - **Adımlar:** Action Scheduler işleri (`pergel_sale_step` başlangıç ve bitiş zamanında,
+    `pergel_sale_next` kalanlar için). Her adım kampanyanın şu an istediğini yazdıklarıyla
+    (`_pergel_sale_applied`: ürün → indirim/başlangıç/bitiş imzası) karşılaştırır; en fazla 50 ürün
+    geri koyar ya da yazar, iş kalırsa bir sonrakini sıraya koyar; iki kez çalışması bir şey
+    değiştirmez. Kampanya kaydedilince işler yeniden kurulur ve ilk adım hemen çalışır; yayın
+    durumu değişince (taslak, çöp) bir adım sıraya girer; kalıcı silmede bütün ürünler hemen geri
+    konur. Adım kancaları ayar kapalıyken de eklenir (sınıf ancak iş çalışınca yüklenir), böylece
+    yazılmış fiyatlar her durumda geri döner. Bir kampanyada aynı anda tek adım çalışır: kilit,
+    `pergel_sale_lock_{id}` seçenek satırı (`INSERT IGNORE` ile atomik; 5 dakikadan eski kilit
+    ölmüş bir adımındır ve devralınır). Meşgul kampanyanın adımı bir dakika sonra yeniden dener.
+    Eklenti silinirken (`Core\Uninstall`) önce bütün kampanyaların fiyatları geri konur, sonra
+    kampanyalar, işleri ve kilitleri silinir.
+  - **Çakışma:** bir ürün aynı anda tek kampanyada; süren başka bir kampanyadaki ürün atlanır
+    (`_pergel_sale_skipped`, düzenleme kutusunda uyarı), kampanya yeniden kaydedilince tekrar
+    denenir. Kategoriler adım sırasında ürünlere açılır (alt kategoriler dahil, gruplu ürünler
+    hariç); sonradan kategoriye eklenen ürün kampanya yeniden kaydedilince katılır.
+  - **Sayfalar:** motor iki blok şablonu kaydeder (`register_block_template`,
+    `pergel-engine//archive-pergel_sale` ve `//single-pergel_sale`, `engine/templates/`); temanın
+    aynı adlı dosyası önce gelir. Adres `woo.sales_slug`, boşsa çevrilen "flash-sale" (Türkçede
+    `flas-indirim`); adres değişince yeniden yazma kuralları `wp_loaded`'da bir kez yenilenir
+    (`pergel_sale_rules` seçeneği). Liste sayfası ve kampanya türündeki her Sorgu Döngüsü bitmemiş
+    kampanyaları başlangıca göre sıralar (önce sürenler, sonra yaklaşanlar). Kampanya sayfasındaki
+    ürün ızgarası (`pergel-sale-products` sınıflı `woocommerce/product-collection`) kampanyanın
+    ürünleriyle dolar: WordPress iç blokların bağlamını ızgaranın ayrıştırılmış özniteliklerinden
+    kurduğu için seçilen ürünler `render_block_context` ile `woocommerceHandPickedProducts`'a
+    yazılır. Biten kampanyada ızgara hiç çizilmez (`pre_render_block`), `pergel-sale-others`
+    bölümü süren kampanyaları gösterir, sayfa `noindex, follow` olur.
+  - **Blok `pergel/sale-timer`** ("Flash sale dates"): indirim, tarih aralığı ve başlangıca ya da
+    bitişe geri sayım (`Cards::timer`, kart geri sayımıyla aynı betik); bitince "Bu kampanya sona
+    erdi". `countdown: false` liste kartlarında yalnızca tarihleri gösterir.
 - **Satış modları (`Woo\Modes`):** `sale` (fiyat ve sepet herkese), `login` (fiyat girişten
   sonra), `quote` (fiyat yok, teklif) ve `catalog` (fiyat yok). Mağazanın modu `woo.sales_mode`
   ayarında; ürün kategorisi (`pergel_sales_mode` term meta) ve ürün (`_pergel_sales_mode` post
