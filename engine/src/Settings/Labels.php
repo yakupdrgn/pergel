@@ -58,6 +58,68 @@ final class Labels {
 	}
 
 	/**
+	 * The Shop tab's menu: the shop and shop layout groups together, split
+	 * into pages listed on the left. Each page shows sections of
+	 * sections() as "group.section", and saves only its own fields.
+	 *
+	 * @return array<string, array{title: string, description: string, parts: list<string>}>
+	 */
+	public static function menu(): array {
+		return array(
+			'general'  => array(
+				'title'       => __( 'General', 'pergel-engine' ),
+				'description' => __( 'How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, the header cart and speed.', 'pergel-engine' ),
+				'parts'       => array( 'woo.selling', 'woo.enquiries', 'woo.lists', 'woo.header', 'woo.speed' ),
+			),
+			'listing'  => array(
+				'title'       => __( 'Shop page', 'pergel-engine' ),
+				'description' => __( 'How the shop, product category, product tag and product search pages list products. A product category can choose its own layout on its edit screen; its subcategories follow it. "As in the template" and "Automatic" keep the layout of the theme template.', 'pergel-engine' ),
+				'parts'       => array( 'shop.grid', 'shop.page', 'shop.toolbar', 'shop.header' ),
+			),
+			'filters'  => array(
+				'title'       => __( 'Filters', 'pergel-engine' ),
+				'description' => __( 'The filters beside the products on the shop and category pages.', 'pergel-engine' ),
+				'parts'       => array( 'shop.filters' ),
+			),
+			'cards'    => array(
+				'title'       => __( 'Product cards', 'pergel-engine' ),
+				'description' => __( 'The cards of every product grid: the shop, categories, related products and the grids on other pages.', 'pergel-engine' ),
+				'parts'       => array( 'shop.cards', 'shop.badges' ),
+			),
+			'product'  => array(
+				'title'       => __( 'Product page', 'pergel-engine' ),
+				'description' => __( 'The top of the product page: the pictures, the details beside them and buying. A product category and a product can choose some of these for themselves.', 'pergel-engine' ),
+				'parts'       => array( 'shop.product', 'shop.summary', 'shop.buying', 'woo.product' ),
+			),
+			'details'  => array(
+				'title'       => __( 'Under the product', 'pergel-engine' ),
+				'description' => __( 'The description, specifications, questions and reviews under the product, then related and recently viewed products.', 'pergel-engine' ),
+				'parts'       => array( 'shop.details', 'shop.related' ),
+			),
+			'sales'    => array(
+				'title'       => __( 'Flash sales', 'pergel-engine' ),
+				'description' => __( 'Campaigns with a start and an end, under Products → Flash sales.', 'pergel-engine' ),
+				'parts'       => array( 'woo.sales' ),
+			),
+			'delivery' => array(
+				'title'       => __( 'Delivery and shipping', 'pergel-engine' ),
+				'description' => __( 'The delivery date estimate and the free shipping progress.', 'pergel-engine' ),
+				'parts'       => array( 'woo.delivery', 'woo.shipping' ),
+			),
+			'phones'   => array(
+				'title'       => __( 'Bar on phones', 'pergel-engine' ),
+				'description' => __( 'The bar at the bottom of the screen on phones.', 'pergel-engine' ),
+				'parts'       => array( 'woo.phones' ),
+			),
+			'presets'  => array(
+				'title'       => __( 'Ready-made layouts', 'pergel-engine' ),
+				'description' => __( 'Set many shop settings in one go. You see every change before it is made, and can undo it.', 'pergel-engine' ),
+				'parts'       => array(),
+			),
+		);
+	}
+
+	/**
 	 * Sections of each tab and the fields they hold, in display order.
 	 * Schema fields missing here are shown in a last "Other" section.
 	 *
@@ -467,7 +529,7 @@ final class Labels {
 				),
 				'sales_card'        => array(
 					'label' => __( '"Flash sale" badge on product cards', 'pergel-engine' ),
-					'help'  => __( 'With the other badges on the picture. The sale countdown of the cards (Shop layout → Product cards) counts down to the end of the campaign.', 'pergel-engine' ),
+					'help'  => __( 'With the other badges on the picture. The sale countdown of the cards (Shop → Product cards) counts down to the end of the campaign.', 'pergel-engine' ),
 				),
 				'sales_band'        => array(
 					'label' => __( 'Band above the products', 'pergel-engine' ),
