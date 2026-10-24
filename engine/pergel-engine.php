@@ -3,7 +3,7 @@
  * Plugin Name:       Pergel Engine
  * Plugin URI:        https://ariumlab.com/pergel/
  * Description:       Blocks, SEO and AI layers, WooCommerce features and content types for the Pergel theme. Works with any block theme.
- * Version:           1.4.0
+ * Version:           1.4.1
  * Requires at least: 7.1
  * Requires PHP:      8.1
  * Author:            Ariumlab
@@ -23,7 +23,7 @@ namespace Pergel;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSION = '1.4.0';
+const VERSION = '1.4.1';
 const FILE    = __FILE__;
 
 /*
