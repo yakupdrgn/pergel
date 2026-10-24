@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.1 =
+* Product page: the attributes table (weight, size and the product's attributes) can take the Table block's Specifications style (Shop settings, "Under the product" → "Attributes table"). Off by default.
+* Project packages: a child theme's own picture left in its pattern (an icon from the child theme's folder) is no longer reported as sample text; a value still replaces it.
 
 = 1.4.0 =
 * Flash sale campaigns (Products → Flash sales; off until Pergel → Settings → Shop → Flash sales turns them on): a start, an end, a discount and the products or categories. While a campaign runs, its price is written as WooCommerce's own sale price and the earlier one comes back at the end. A box with a countdown on the product page, a card badge, a band on shop pages, a list page, a "Flash sale list" query and a "Running flash sale" block. Products without a price (quote or catalogue mode) are left out.
