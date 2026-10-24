@@ -269,7 +269,11 @@ söyledi. F5'in prova hedefi henüz belirlenmedi. Bitti tanımı (paketten tek s
   aynı yoldan geçer (`sanitize_option_pergel_settings` filtresi her zaman bağlıdır).
 - **Uzunluk sınırı:** Metin alanlarında karakter, URL / e-posta / telefonda bayt olarak ölçülür.
   En kötü durum (her alan en uzun hâlinde, metinler 4 baytlık karakterle) birim testte 20 KB
-  autoload sınırına karşı denetlenir; sonraki gruplar da aynı teste otomatik girer.
+  autoload sınırına karşı denetlenir; sonraki gruplar da aynı teste otomatik girer. 24 Ekim 2026:
+  sınır 24 KB oldu (mağaza üst bilgisi, 5. adım). Ana dal 20.173 baytla doluydu; tek başına 10
+  sosyal bağlantı 5 KB tutar. Gerçek değer pergel-shop'ta yaklaşık 4 KB; WordPress 6.6 bir
+  autoload seçeneğini ancak 150 KB'ta büyük sayar. Testte öğe listeleri artık metin gibi değil,
+  seçeneklerin virgüllü dizisi olarak ölçülür.
 - **Boş değer geçerlidir:** REST şemasında e-posta ve URL alanları `anyOf` ile boş dizeyi de kabul
   eder; boş alan "ayarlanmamış" demektir.
 - **Modül anahtarları ayarın içinde:** `modules.brand|seo|performance`. Anahtarı olmayan
@@ -1689,6 +1693,15 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   Customizer yerine Pergel'in kendi panelinde: Pergel ayarları Customizer'da değil, blok
   temalarında Customizer kapalı. Önizleme gerçek sayfayı kaydedilmemiş değerlerle çizer (kopya
   bir çizim değil), değerler kullanıcıya özel ve kısa ömürlü tutulur, kayıtlı ayar değişmez.
+- **Mağaza üst bilgisi (24 Ekim 2026, kullanıcı):** planın 5. adımı; "sitenin üst başlığı"
+  seçildi (mağaza sayfasının başlık alanı değil). Tema pattern'i yerine motorun çizdiği bir üst
+  bilgi: parçalar ayarlara bağlı (Marka telefonu, iletişim sayfası, satış modları, listeler), bu
+  yüzden statik bir pattern yetmezdi. Yer değiştirme `pre_render_block` ile, çünkü Site
+  düzenleyicide kaydedilmiş başlık şablon süzgeçlerinden geçmiyor. Varsayılan "temanın üst bilgisi";
+  kapsam varsayılanı mağaza sayfaları, çünkü Ariumlab kurumsal sayfalarda kendi başlığını
+  koruyacak. Düğme bağlantısı ayrı alan değil, `woo.contact_url` (teklif ve soru sayfası); ayar
+  bütçesi için de. Unimart hazır ayarı üst bilgiyi açar: açık üst şerit, 15 px satır boşluğu,
+  6 px arama köşesi, koyu arama düğmesi, 60 px vurgu renkli menü çubuğu.
 
 ## Aşamalar ve bitti tanımları
 

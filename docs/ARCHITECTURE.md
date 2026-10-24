@@ -78,7 +78,7 @@ Planlanan modüller ve yüklenme koşulları:
 
 ## Ayar modeli (F2)
 
-Tek option (`pergel_settings`), autoload ≤ 20 KB, REST şemasıyla doğrulanır. Tasarım ayarları bu
+Tek option (`pergel_settings`), autoload ≤ 24 KB, REST şemasıyla doğrulanır. Tasarım ayarları bu
 option'da değil Global Styles'tadır (K5).
 
 - `Settings\Schema` — gruplar ve alanlar (`modules`, `brand`, `seo`, `performance`). Varsayılanlar, temizleme ve REST JSON Schema bu tek tanımdan üretilir.
@@ -767,19 +767,6 @@ görünmez (`Settings\Screen::shown`).
   `settings.js` ile satırı taşır ve yeni yeri ekran okuyucuya söyler. Kart listesi `Cards`'ın,
   özet listesi `Layout::product_page`'in kancasıdır; özet anahtarı `product_` ile başlamaz, liste
   tek başına `ProductPage`'i yüklemez.
-- **Canlı önizleme (`Settings\Preview`):** Mağaza menüsünün sayfalarında (Hazır düzenler hariç)
-  başlığın yanındaki "Önizleme" düğmesi sağda bir panel açar; site 1280px genişlikte çizilir ve
-  panele ölçeklenir, ayarlar sola kayar. `settings.js` formdaki her değişiklikten 600 ms sonra
-  formun değerlerini (kaydetme gibi `{grup: {anahtar: değer}}`) `POST /pergel/v1/preview`'a
-  gönderir (yalnızca `manage_options`, REST çerez nonce'u). Değerler kaydetmedeki gibi şemadan
-  geçer, kayıtlı ayarların üstüne birleştirilir ve kullanıcıya özel bir geçici kayıtta
-  (`pergel_preview_{kullanıcı}`, 15 dk) tutulur; yanıt, `?pergel_preview=<nonce>` taşıyan mağaza
-  ve en yeni ürün adresleridir. Bu argümanla açılan sayfada `Settings\Module` `Preview`'ı yükler:
-  `pre_option_pergel_settings` aynı kullanıcı ve geçerli nonce için geçici kaydı döndürür
-  (eklentiler yüklenirken okunan ayarlar `init`'te yeniden okunur), sayfa önbelleğe alınmaz
-  (`nocache_headers`, `DONOTCACHEPAGE`), `noindex` (etiket ve SEO eklentisi kendi etiketini bassa da geçerli `X-Robots-Tag` başlığı) ve yönetim çubuğu yok. Kayıtlı ayara dokunulmaz.
-  Panel kaydırma yerini korur, Escape ile kapanır; durum satırı ekran okuyucuya söylenir. Rota
-  kaydı sınıfı yüklemez; argümansız sayfalar `Preview`'ı hiç yüklemez.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
   `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
   ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları
@@ -827,6 +814,43 @@ görünmez (`Settings\Screen::shown`).
   (ürün sayfaları `rest_api_init` çalıştırır). Şablonda ilgili ürünler bloğu yoksa tablo ve
   otomatik liste çıkmaz; blok yine çalışır. `Layout::product_page` `Related`'i yalnızca bir
   `related_` ayarı varsayılandan farklıysa yükler.
+- **Canlı önizleme (`Settings\Preview`):** Mağaza menüsünün sayfalarında (Hazır düzenler hariç)
+  başlığın yanındaki "Önizleme" düğmesi sağda bir panel açar; site 1280px genişlikte çizilir ve
+  panele ölçeklenir, ayarlar sola kayar. `settings.js` formdaki her değişiklikten 600 ms sonra
+  formun değerlerini (kaydetme gibi `{grup: {anahtar: değer}}`) `POST /pergel/v1/preview`'a
+  gönderir (yalnızca `manage_options`, REST çerez nonce'u). Değerler kaydetmedeki gibi şemadan
+  geçer, kayıtlı ayarların üstüne birleştirilir ve kullanıcıya özel bir geçici kayıtta
+  (`pergel_preview_{kullanıcı}`, 15 dk) tutulur; yanıt, `?pergel_preview=<nonce>` taşıyan mağaza
+  ve en yeni ürün adresleridir. Bu argümanla açılan sayfada `Settings\Module` `Preview`'ı yükler:
+  `pre_option_pergel_settings` aynı kullanıcı ve geçerli nonce için geçici kaydı döndürür
+  (eklentiler yüklenirken okunan ayarlar `init`'te yeniden okunur), sayfa önbelleğe alınmaz
+  (`nocache_headers`, `DONOTCACHEPAGE`), `noindex` (etiket ve SEO eklentisi kendi etiketini bassa da geçerli `X-Robots-Tag` başlığı) ve yönetim çubuğu yok. Kayıtlı ayara dokunulmaz.
+  Panel kaydırma yerini korur, Escape ile kapanır; durum satırı ekran okuyucuya söylenir. Rota
+  kaydı sınıfı yüklemez; argümansız sayfalar `Preview`'ı hiç yüklemez.
+- **Mağaza üst bilgisi (`Woo\StoreHeader`, 5. adım):** `shop.header_type` "store" iken, mağaza
+  sayfalarında (mağaza, kategori, ürün, sepet, ödeme, hesap) ya da `header_on` "site" ise her
+  sayfada `pre_render_block`, `slug`'ı veya `area`'sı `header` olan Template Part bloğunun yerine
+  Pergel'in üst bilgisini çizer. Site düzenleyicide kaydedilmiş üst bilgi de değişir (veritabanındaki
+  parça dosya süzgeçlerinden geçmez) ve temanınki önce çizilmez. Sarmalayıcı parçanın `tagName`'ini
+  ve `Blocks\Header` sınıflarını (yapışkan, bindirme) korur; etiket `header` değilse satırlar bir
+  `<header>` içindedir. `Woo\Module` sınıfı `wp` kancasında, ayarlar (önizlemenin değerleri dahil)
+  ve sayfa bilinince ve yalnızca üst bilgi açıksa yükler (bütçedeki dosya sayısı); süzgeç yalnızca
+  üst bilginin gösterileceği sayfada eklenir. Üç satır: üst şerit (`header_top`,
+  `header_top_items`: duyuru, Marka sekmesinden e-posta, telefon ve adres, seçilen Navigation menüsü
+  sağda), satır (`header_items`: logo ya da site başlığı, ürün araması, telefon, hesap, istek ve
+  karşılaştırma bağlantıları, toplamlı mini sepet, iletişim sayfasına giden düğme) ve menü çubuğu
+  (`header_bar`, `header_menu`, sağda bir bağlantı; kapalıyken menü logonun ardına gelir). Öğe
+  listeleri `items` alanlarıdır; boş liste `StoreHeader::DEFAULTS` sırasıdır ve ayar ekranında
+  "Varsayılan düzen" olarak görünür, her öğe eklenebilir. Arama core Search bloğudur
+  (`post_type=product`, canlı öneriler çalışır); `header_categories` açıkken alanın önüne üst düzey
+  kategorilerin `product_cat` listesi konur, ürün araması bunu taksonomi sorgusu olarak uygular.
+  Mini sepet `MiniCart::fits()` ile tema üst bilgilerindeki kurala uyar. Menü alanları yeni `menu`
+  tipidir (`wp_navigation` kimliği, 0 = yok / sitenin menüsü). Görünüm değerleri `LookValues` ile
+  sarmalayıcıda `--pergel-sh-*` özel özellikleri olur; boşlar temanın renklerine düşer
+  (`assets/store-header.css`). 1200 px altında hesap ve telefon yalnızca simgedir (metin ekran
+  okuyucuda kalır); 782 px altında arama tam genişlikte alt satıra iner, telefon ve sepet tutarı
+  gizlenir; 600 px altında üst şerit gizlenir. Ayarlar Mağaza menüsünün "Üst bilgi" sayfasındadır;
+  mini sepet ayarı da oraya taşındı.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir
