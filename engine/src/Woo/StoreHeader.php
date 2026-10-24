@@ -26,9 +26,9 @@ use const Pergel\VERSION;
  * The part is swapped on pre_render_block, so a header saved in the Site
  * Editor is swapped too and the theme's header is not drawn first. The
  * part's own options (sticky, overlay) stay: the wrapper gets the classes
- * of Blocks\Header. The filter is added on wp, once the settings (and a
- * preview's values) and the page are known, and only where the header
- * shows.
+ * of Blocks\Header. Woo\Module calls load() on wp, once the settings (and
+ * a preview's values) and the page are known, and only while the header
+ * is on; the filter is added only where it shows.
  */
 final class StoreHeader {
 
@@ -55,28 +55,16 @@ final class StoreHeader {
 	);
 
 	/**
-	 * Hooks the header in.
-	 */
-	public static function register(): void {
-		add_action( 'init', array( self::class, 'register_assets' ) );
-		add_action( 'wp', array( self::class, 'load' ) );
-	}
-
-	/**
-	 * Registers the CSS; core inlines it, it is small. Hooked on init.
-	 */
-	public static function register_assets(): void {
-		wp_register_style( self::STYLE, plugins_url( 'assets/store-header.css', FILE ), array(), VERSION );
-		wp_style_add_data( self::STYLE, 'path', dirname( FILE ) . '/assets/store-header.css' );
-	}
-
-	/**
-	 * Adds the swap where the store header shows. Hooked on wp.
+	 * Registers the CSS and adds the swap where the store header shows.
 	 */
 	public static function load(): void {
-		if ( self::applies() ) {
-			add_filter( 'pre_render_block', array( self::class, 'swap' ), 10, 2 );
+		if ( ! self::applies() ) {
+			return;
 		}
+		// Core inlines the CSS when it is enqueued in time; it is small.
+		wp_register_style( self::STYLE, plugins_url( 'assets/store-header.css', FILE ), array(), VERSION );
+		wp_style_add_data( self::STYLE, 'path', dirname( FILE ) . '/assets/store-header.css' );
+		add_filter( 'pre_render_block', array( self::class, 'swap' ), 10, 2 );
 	}
 
 	/**
@@ -400,19 +388,18 @@ final class StoreHeader {
 				'taxonomy'   => 'product_cat',
 				'parent'     => 0,
 				'hide_empty' => true,
-				'exclude'    => array( (int) get_option( 'default_product_cat', 0 ) ),
 			)
 		);
-		if ( ! is_array( $terms ) || array() === $terms ) {
+		$skip  = (int) get_option( 'default_product_cat', 0 );
+		$terms = is_array( $terms ) ? array_filter( $terms, static fn ( $term ): bool => $term instanceof \WP_Term && $term->term_id !== $skip ) : array();
+		if ( array() === $terms ) {
 			return '';
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read only, to show the searched category.
 		$current = is_search() && isset( $_GET['product_cat'] ) ? sanitize_title( wp_unslash( (string) $_GET['product_cat'] ) ) : '';
 		$options = '<option value="">' . esc_html__( 'All categories', 'pergel-engine' ) . '</option>';
 		foreach ( $terms as $term ) {
-			if ( $term instanceof \WP_Term ) {
-				$options .= sprintf( '<option value="%1$s"%2$s>%3$s</option>', esc_attr( $term->slug ), selected( $current, $term->slug, false ), esc_html( $term->name ) );
-			}
+			$options .= sprintf( '<option value="%1$s"%2$s>%3$s</option>', esc_attr( $term->slug ), selected( $current, $term->slug, false ), esc_html( $term->name ) );
 		}
 		return '<select class="pergel-store-header__categories" name="product_cat" aria-label="' . esc_attr__( 'Category to search', 'pergel-engine' ) . '">' . $options . '</select>';
 	}

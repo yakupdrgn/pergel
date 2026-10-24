@@ -833,8 +833,9 @@ görünmez (`Settings\Screen::shown`).
   Pergel'in üst bilgisini çizer. Site düzenleyicide kaydedilmiş üst bilgi de değişir (veritabanındaki
   parça dosya süzgeçlerinden geçmez) ve temanınki önce çizilmez. Sarmalayıcı parçanın `tagName`'ini
   ve `Blocks\Header` sınıflarını (yapışkan, bindirme) korur; etiket `header` değilse satırlar bir
-  `<header>` içindedir. Süzgeç `wp` kancasında, ayarlar (önizlemenin değerleri dahil) ve sayfa
-  bilinince ve yalnızca üst bilgi gösterilecekse eklenir. Üç satır: üst şerit (`header_top`,
+  `<header>` içindedir. `Woo\Module` sınıfı `wp` kancasında, ayarlar (önizlemenin değerleri dahil)
+  ve sayfa bilinince ve yalnızca üst bilgi açıksa yükler (bütçedeki dosya sayısı); süzgeç yalnızca
+  üst bilginin gösterileceği sayfada eklenir. Üç satır: üst şerit (`header_top`,
   `header_top_items`: duyuru, Marka sekmesinden e-posta, telefon ve adres, seçilen Navigation menüsü
   sağda), satır (`header_items`: logo ya da site başlığı, ürün araması, telefon, hesap, istek ve
   karşılaştırma bağlantıları, toplamlı mini sepet, iletişim sayfasına giden düğme) ve menü çubuğu

@@ -52,7 +52,7 @@ final class Module implements Core\Module {
 		Selling::register();
 		Pages::register();
 		MiniCart::register();
-		StoreHeader::register();
+		add_action( 'wp', array( self::class, 'store_header' ) );
 		Trail::register();
 		Sections::register();
 		Properties::register();
@@ -110,6 +110,16 @@ final class Module implements Core\Module {
 			Markup::register();
 			add_filter( 'woocommerce_enqueue_styles', array( Assets::class, 'styles' ) );
 			add_action( 'wp_enqueue_scripts', array( Assets::class, 'scripts' ), 100 );
+		}
+	}
+
+	/**
+	 * Loads the store header when it is on. Read on wp, so a preview's
+	 * values count; a shop without it does not load the class.
+	 */
+	public static function store_header(): void {
+		if ( 'store' === Settings::get( 'shop.header_type' ) ) {
+			StoreHeader::load();
 		}
 	}
 
