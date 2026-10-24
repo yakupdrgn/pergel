@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T12:34:07+03:00\n"
+"POT-Creation-Date: 2026-10-24T13:05:42+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -580,6 +580,9 @@ msgid "View and paging"
 msgstr ""
 
 msgid "Above the products"
+msgstr ""
+
+msgid "Card look"
 msgstr ""
 
 msgid "Badges"
@@ -1446,6 +1449,138 @@ msgstr ""
 msgid "For products sold on request (Quote sales mode): the card button says \"Request a quote\" and opens the quote form on the product page, instead of \"Read more\"."
 msgstr ""
 
+msgid "Space between cards"
+msgstr ""
+
+msgid "In pixels. Empty keeps the space of the template."
+msgstr ""
+
+msgid "Card background"
+msgstr ""
+
+msgid "Card edge"
+msgstr ""
+
+msgid "The width of the line around each card, in pixels; 0 for none."
+msgstr ""
+
+msgid "Edge colour"
+msgstr ""
+
+msgid "Card corners"
+msgstr ""
+
+msgid "How round the corners are, in pixels; 0 for square."
+msgstr ""
+
+msgid "Space inside the card"
+msgstr ""
+
+msgid "Between the edge and the picture and text, in pixels."
+msgstr ""
+
+msgid "Pointer over a card"
+msgstr ""
+
+msgid "As the card style"
+msgstr ""
+
+msgid "No change"
+msgstr ""
+
+msgid "Shadow"
+msgstr ""
+
+msgid "Accent edge and shadow"
+msgstr ""
+
+msgid "Lifts up"
+msgstr ""
+
+msgid "Picture background"
+msgstr ""
+
+msgid "Behind product pictures with an empty or white background."
+msgstr ""
+
+msgid "Picture corners"
+msgstr ""
+
+msgid "Text alignment"
+msgstr ""
+
+msgid "Centred"
+msgstr ""
+
+msgid "Name size"
+msgstr ""
+
+msgid "The font size of the product name, in pixels."
+msgstr ""
+
+msgid "Name weight"
+msgstr ""
+
+msgid "Regular"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Semibold"
+msgstr ""
+
+msgid "Bold"
+msgstr ""
+
+msgid "Category and brand colour"
+msgstr ""
+
+msgid "Button"
+msgstr ""
+
+msgid "Filled"
+msgstr ""
+
+msgid "Outlined"
+msgstr ""
+
+msgid "Text link"
+msgstr ""
+
+msgid "Button colour"
+msgstr ""
+
+msgid "The fill of a filled button, the line and text of an outlined one. Empty uses the accent colour."
+msgstr ""
+
+msgid "Button shape"
+msgstr ""
+
+msgid "Pill"
+msgstr ""
+
+msgid "Rounded"
+msgstr ""
+
+msgid "Square"
+msgstr ""
+
+msgid "Button width"
+msgstr ""
+
+msgid "Across the card"
+msgstr ""
+
+msgid "As wide as its text"
+msgstr ""
+
+msgid "Button height"
+msgstr ""
+
+msgid "In pixels."
+msgstr ""
+
 msgid "Same as its category or the shop"
 msgstr ""
 
@@ -1468,6 +1603,9 @@ msgid "Use a two-letter country code such as TR."
 msgstr ""
 
 msgid "Choose one of the listed options."
+msgstr ""
+
+msgid "Choose a colour from the list or a custom colour."
 msgstr ""
 
 msgid "The number is out of range."
@@ -1524,10 +1662,16 @@ msgstr ""
 msgid "Install Safe SVG"
 msgstr ""
 
+msgid "Default"
+msgstr ""
+
 msgid "Use this image"
 msgstr ""
 
 msgid "Choose image"
+msgstr ""
+
+msgid "Custom colour"
 msgstr ""
 
 #. translators: %d: pattern id.
@@ -2926,9 +3070,6 @@ msgid "Levels 2 to 4"
 msgstr ""
 
 msgid "Aspect ratio"
-msgstr ""
-
-msgid "Square"
 msgstr ""
 
 msgid "Landscape"

@@ -716,6 +716,17 @@ görünmez (`Settings\Screen::shown`).
   `woocommerce_product_add_to_cart_text`/`_description`/`_url` süzgeçleri düğmeyi "Teklif iste"
   yapar ve ürün sayfasındaki teklif formunun çapasına (`#pergel-quote`, `Cta::QUOTE_ANCHOR`)
   götürür; formun `<details>` öğesi bu çapayla gelindiğinde `callbacks.anchor` ile açılır.
+  Kart görünümü (`Woo\CardLook`, "Ürün kartları" sayfasının "Kart görünümü" bölümü): kartlar arası
+  boşluk, arka plan, kenarlık kalınlığı ve rengi, köşe, iç boşluk, üzerine gelince görünüm, resim
+  arka planı ve köşesi, hiza, ad boyutu ve kalınlığı, kategori/marka rengi, düğme biçimi, rengi,
+  şekli, genişliği ve yüksekliği. Uzunluklar `length` (boş ya da sınırlı tam sayı, px), renkler
+  `color` (boş, tema paletinden bir slug ya da `#rrggbb`) türünde; ekran paleti
+  `wp_get_global_settings` ile tema ve Site düzenleyiciden okur, `[pick]`/`[hex]` olarak gönderir.
+  Palet rengi `var(--wp--preset--color--slug)` olarak yazılır, böylece stil çeşidi ya da Site
+  düzenleyici rengi değiştirince kart da değişir. Yalnızca dolu değerler kural üretir (boş ya da
+  "Kart stiline göre" stilin kendi görünümünü bırakır); kurallar `.pergel-cards.pergel-cards`
+  altında, kart stil dosyasına satır içi eklenir. Bir değer doluysa ızgara stil seçilmemiş olsa da
+  `pergel-cards` alır; `CardLook` yalnızca o zaman yüklenir.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
   `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
   ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları

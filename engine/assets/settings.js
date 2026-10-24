@@ -1,5 +1,6 @@
 /**
- * Pergel settings screen: image fields use the media library.
+ * Pergel settings screen: image fields use the media library; colour
+ * fields show their colour and the picker only for "Custom colour".
  *
  * Plain script, no build step. Loaded only on the Pergel settings page,
  * after wp_enqueue_media().
@@ -42,5 +43,23 @@
 			remove.hidden = true;
 			field.querySelector( '.pergel-image__choose' ).focus();
 		} );
+	} );
+
+	document.querySelectorAll( '.pergel-color' ).forEach( function ( field ) {
+		var pick = field.querySelector( 'select' );
+		var hex = field.querySelector( '.pergel-color__hex' );
+		var swatch = field.querySelector( '.pergel-color__swatch' );
+
+		function show() {
+			var custom = 'custom' === pick.value;
+			var option = pick.options[ pick.selectedIndex ];
+			hex.hidden = ! custom;
+			// An empty background brings back the chequered "not set" look.
+			swatch.style.background = custom ? hex.value : ( option && option.dataset.color ) || '';
+		}
+
+		pick.addEventListener( 'change', show );
+		hex.addEventListener( 'input', show );
+		show();
 	} );
 }() );

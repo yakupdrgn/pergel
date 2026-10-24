@@ -126,7 +126,7 @@ final class ScreenTest extends TestCase {
 					$own[] = $section['group'] . '.' . $field;
 				}
 			}
-			preg_match_all( '/name="' . Settings::OPTION . '\[(\w+)\]\[(\w+)\]"/', $html, $posted, PREG_SET_ORDER );
+			preg_match_all( '/name="' . Settings::OPTION . '\[(\w+)\]\[(\w+)\](?:\[\w+\])?"/', $html, $posted, PREG_SET_ORDER );
 			$names = array_values( array_unique( array_map( static fn ( array $m ): string => $m[1] . '.' . $m[2], $posted ) ) );
 			sort( $names );
 			sort( $own );
@@ -167,6 +167,44 @@ final class ScreenTest extends TestCase {
 	public function test_bool_sends_zero_when_unchecked(): void {
 		$html = self::render( 'modules' );
 		$this->assertStringContainsString( '<input type="hidden" name="pergel_settings[modules][seo]" value="0"><input type="checkbox" id="pergel-modules-seo"', $html );
+	}
+
+	public function test_length_and_colour_fields(): void {
+		if ( ! Screen::shown( Screen::MENU ) ) {
+			$this->markTestSkipped( 'WooCommerce is not active on this site.' );
+		}
+		$stored = static function ( mixed $option ): array {
+			$option         = is_array( $option ) ? $option : array();
+			$option['shop'] = array_merge(
+				is_array( $option['shop'] ?? null ) ? $option['shop'] : array(),
+				array(
+					'card_radius'       => 12,
+					'card_bg'           => '#123abc',
+					'card_border_color' => 'gone-colour',
+				)
+			);
+			return $option;
+		};
+		add_filter( 'option_' . Settings::OPTION, $stored );
+		Settings::flush();
+		try {
+			$html = self::render( Screen::MENU, 'cards' );
+		} finally {
+			remove_filter( 'option_' . Settings::OPTION, $stored );
+			Settings::flush();
+		}
+
+		$this->assertMatchesRegularExpression( '#<input type="number" id="pergel-shop-card_radius" name="pergel_settings\[shop\]\[card_radius\]"[^>]* value="12" min="0" max="40" placeholder="[^"]+">#', $html );
+		$this->assertMatchesRegularExpression( '#name="pergel_settings\[shop\]\[card_padding\]"[^>]* value="" min="0" max="40"#', $html, 'Not set: empty.' );
+
+		// A custom colour: picked, with its value in the colour input.
+		$this->assertMatchesRegularExpression( '#<span class="pergel-color__swatch" aria-hidden="true" style="background:\#123abc"></span><select id="pergel-shop-card_bg" name="pergel_settings\[shop\]\[card_bg\]\[pick\]"#', $html );
+		$this->assertMatchesRegularExpression( '#<option value="custom" selected=\'selected\'>[^<]+</option></select> <input type="color" class="pergel-color__hex" name="pergel_settings\[shop\]\[card_bg\]\[hex\]" value="\#123abc"#', $html );
+		// A colour the theme no longer has stays chosen.
+		$this->assertStringContainsString( '<option value="gone-colour" selected>gone-colour</option>', $html );
+		foreach ( array_keys( Screen::palette() ) as $slug ) {
+			$this->assertStringContainsString( '<option value="' . esc_attr( $slug ) . '" data-color="', $html );
+		}
 	}
 
 	public function test_errors_are_shown_next_to_the_field(): void {

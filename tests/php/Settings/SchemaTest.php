@@ -117,16 +117,22 @@ final class SchemaTest extends TestCase {
 	 * @return array<string, array{0: array{type: string, max?: int, min?: int, options?: list<string>}, 1: mixed, 2: mixed}>
 	 */
 	public static function field_cases(): array {
-		$text  = array( 'type' => 'text' );
-		$url   = array( 'type' => 'url' );
-		$urls  = array(
+		$text   = array( 'type' => 'text' );
+		$url    = array( 'type' => 'url' );
+		$urls   = array(
 			'type' => 'urls',
 			'max'  => 2,
 		);
-		$dates = array(
+		$dates  = array(
 			'type' => 'dates',
 			'max'  => 2,
 		);
+		$length = array(
+			'type' => 'length',
+			'min'  => 0,
+			'max'  => 40,
+		);
+		$color  = array( 'type' => 'color' );
 		return array(
 			'bool true'            => array( array( 'type' => 'bool' ), true, true ),
 			'bool form "1"'        => array( array( 'type' => 'bool' ), '1', true ),
@@ -230,6 +236,32 @@ final class SchemaTest extends TestCase {
 			'dates wrong format'   => array( $dates, '29.10.2026', 'invalid_date' ),
 			'dates too many'       => array( $dates, array( '2026-01-01', '2026-01-02', '2026-01-03' ), 'too_many' ),
 			'dates not list'       => array( $dates, 5, 'invalid_type' ),
+			'length empty'         => array( $length, '', '' ),
+			'length number'        => array( $length, '12', 12 ),
+			'length out of range'  => array( $length, 41, 'out_of_range' ),
+			'length words'         => array( $length, 'big', 'invalid_type' ),
+			'color empty'          => array( $color, '', '' ),
+			'color slug'           => array( $color, ' Accent ', 'accent' ),
+			'color hex'            => array( $color, '#1E64E6', '#1e64e6' ),
+			'color form custom'    => array(
+				$color,
+				array(
+					'pick' => 'custom',
+					'hex'  => '#00ff00',
+				),
+				'#00ff00',
+			),
+			'color form slug'      => array(
+				$color,
+				array(
+					'pick' => 'line',
+					'hex'  => '#000000',
+				),
+				'line',
+			),
+			'color short hex'      => array( $color, '#fff', 'invalid_color' ),
+			'color css'            => array( $color, 'red;}body{', 'invalid_color' ),
+			'color not text'       => array( $color, 5, 'invalid_type' ),
 		);
 	}
 
@@ -281,6 +313,8 @@ final class SchemaTest extends TestCase {
 					'urls'          => array_fill( 0, $max ?? 10, 'https://' . str_repeat( 'a', 492 ) ),
 					'dates'         => array_fill( 0, $max ?? 10, '2026-01-01/2026-12-31' ),
 					'time'          => '23:59',
+					'length'        => $field['max'] ?? 999,
+					'color'         => str_repeat( 'a', 40 ),
 					'country'       => 'TR',
 					'email', 'url', 'tel' => str_repeat(
 						'a',
@@ -336,5 +370,8 @@ final class SchemaTest extends TestCase {
 		$this->assertSame( 'auto', $shop['columns_phone'] );
 		$this->assertSame( 0, $shop['per_page'] );
 		$this->assertSame( 'wide', $shop['width'] );
+		foreach ( \Pergel\Woo\Cards::LOOK as $key ) {
+			$this->assertContains( $shop[ $key ], array( '', 'template' ), "$key is not set by default." );
+		}
 	}
 }

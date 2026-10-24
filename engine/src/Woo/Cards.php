@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
+use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 
 /**
@@ -43,6 +44,18 @@ final class Cards {
 	 * Most colours shown on a card; the rest are counted.
 	 */
 	private const SWATCHES = 6;
+
+	/**
+	 * The card look settings (CardLook), in the shop group.
+	 */
+	public const LOOK = array( 'card_gap', 'card_bg', 'card_border', 'card_border_color', 'card_radius', 'card_padding', 'card_hover_look', 'card_image_bg', 'card_image_radius', 'card_align', 'card_title_size', 'card_title_weight', 'card_meta_color', 'card_button', 'card_button_color', 'card_button_shape', 'card_button_width', 'card_button_height' );
+
+	/**
+	 * Request cache of look().
+	 *
+	 * @var bool|null
+	 */
+	private static ?bool $look = null;
 
 	/**
 	 * Adds the front-end hooks; Layout calls it.
@@ -171,7 +184,8 @@ final class Cards {
 	 */
 	public static function grid( string $html, array $block ): string {
 		$style = self::style();
-		if ( '' === $style || true !== ( $block['attrs']['query']['isProductCollectionBlock'] ?? null ) ) {
+		$look  = self::look();
+		if ( ( '' === $style && ! $look ) || true !== ( $block['attrs']['query']['isProductCollectionBlock'] ?? null ) ) {
 			return $html;
 		}
 		$tags = new \WP_HTML_Tag_Processor( $html );
@@ -179,9 +193,39 @@ final class Cards {
 			return $html;
 		}
 		$tags->add_class( 'pergel-cards' );
-		$tags->add_class( "pergel-card-$style" );
+		if ( '' !== $style ) {
+			$tags->add_class( "pergel-card-$style" );
+		}
 		Layout::card_style();
+		if ( $look ) {
+			CardLook::enqueue();
+		}
 		return $tags->get_updated_html();
+	}
+
+	/**
+	 * Whether a card look setting is set; read here, so grids without one
+	 * do not load CardLook.
+	 */
+	public static function look(): bool {
+		if ( null === self::$look ) {
+			$defaults   = Schema::defaults()['shop'];
+			self::$look = false;
+			foreach ( self::LOOK as $key ) {
+				if ( Settings::get( "shop.$key" ) !== $defaults[ $key ] ) {
+					self::$look = true;
+					break;
+				}
+			}
+		}
+		return self::$look;
+	}
+
+	/**
+	 * Drops the request cache of look(), after the settings change.
+	 */
+	public static function flush(): void {
+		self::$look = null;
 	}
 
 	/**

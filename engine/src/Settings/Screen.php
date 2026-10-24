@@ -112,6 +112,11 @@ final class Screen {
 			. '.pergel-settings__page h3{margin:2em 0 0;padding-top:1.25em;border-top:1px solid #dcdcde;font-size:1.15em}'
 			. '.pergel-settings__page form>h3:first-of-type{margin-top:1em;padding-top:0;border-top:0}'
 			. '@media (max-width:782px){.pergel-settings__area{grid-template-columns:minmax(0,1fr)}.pergel-settings__menu ul{position:static;display:flex;flex-wrap:wrap;gap:4px}}'
+			// Colour fields: a swatch (chequered while not set), the list and the picker.
+			. '.pergel-color{display:inline-flex;align-items:center;gap:8px}'
+			. '.pergel-color__swatch{width:28px;height:28px;flex:none;box-sizing:border-box;border:1px solid #8c8f94;border-radius:50%;background:repeating-conic-gradient(#dcdcde 0 25%,#fff 0 50%) 50%/10px 10px}'
+			. '.pergel-color__hex{width:44px;height:30px;padding:2px}'
+			. '.pergel-color__hex[hidden]{display:none}'
 		);
 	}
 
@@ -548,6 +553,22 @@ final class Screen {
 				);
 				return;
 
+			case 'length':
+				// Empty: the style's own size.
+				printf(
+					'<input type="number" %1$s class="small-text" value="%2$s" min="%3$d" max="%4$d" placeholder="%5$s"> <span aria-hidden="true">px</span>',
+					$attrs, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
+					'' === $value ? '' : (int) $value,
+					(int) ( $field['min'] ?? 0 ),
+					(int) ( $field['max'] ?? 999 ),
+					esc_attr__( 'Default', 'pergel-engine' )
+				);
+				return;
+
+			case 'color':
+				self::color( $id, $name, (string) $value, $aria );
+				return;
+
 			case 'textarea':
 			case 'urls':
 			case 'dates':
@@ -631,6 +652,74 @@ final class Screen {
 			esc_attr( (string) $value ),
 			$max > 0 ? ' maxlength="' . (int) $max . '"' : ''
 		);
+	}
+
+	/**
+	 * A colour field: the default, the theme's colours or a custom one. The
+	 * custom colour's picker shows only while "Custom colour" is chosen
+	 * (settings.js); Schema reads the two values together.
+	 *
+	 * @param string $id    Field id.
+	 * @param string $name  Form name.
+	 * @param string $value Stored colour: '', a palette slug or #rrggbb.
+	 * @param string $aria  Escaped aria attributes.
+	 */
+	private static function color( string $id, string $name, string $value, string $aria ): void {
+		$palette = self::palette();
+		$custom  = str_starts_with( $value, '#' );
+		$known   = '' === $value || $custom || isset( $palette[ $value ] );
+		$shown   = $custom ? $value : ( $palette[ $value ]['color'] ?? '' );
+
+		printf(
+			'<span class="pergel-color"><span class="pergel-color__swatch" aria-hidden="true"%1$s></span><select id="%2$s" name="%3$s"%4$s>',
+			'' === $shown ? '' : ' style="background:' . esc_attr( $shown ) . '"',
+			esc_attr( $id ),
+			esc_attr( $name . '[pick]' ),
+			$aria // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in row().
+		);
+		printf( '<option value=""%1$s>%2$s</option>', selected( $value, '', false ), esc_html__( 'Default', 'pergel-engine' ) );
+		foreach ( $palette as $slug => $color ) {
+			printf(
+				'<option value="%1$s" data-color="%2$s"%3$s>%4$s</option>',
+				esc_attr( $slug ),
+				esc_attr( $color['color'] ),
+				selected( $value, $slug, false ),
+				esc_html( $color['name'] )
+			);
+		}
+		if ( ! $known ) {
+			// A colour the theme no longer has stays chosen until changed.
+			printf( '<option value="%1$s" selected>%1$s</option>', esc_attr( $value ) );
+		}
+		printf(
+			'<option value="custom"%1$s>%2$s</option></select> <input type="color" class="pergel-color__hex" name="%3$s" value="%4$s" aria-label="%5$s"></span>',
+			selected( $custom, true, false ),
+			esc_html__( 'Custom colour', 'pergel-engine' ),
+			esc_attr( $name . '[hex]' ),
+			esc_attr( $custom ? $value : '#000000' ),
+			esc_attr__( 'Custom colour', 'pergel-engine' )
+		);
+	}
+
+	/**
+	 * The theme's colours (theme.json and the Site Editor), by slug.
+	 *
+	 * @return array<string, array{name: string, color: string}>
+	 */
+	public static function palette(): array {
+		$colors = array();
+		$sets   = wp_get_global_settings( array( 'color', 'palette' ) );
+		foreach ( array( 'theme', 'custom' ) as $origin ) {
+			foreach ( is_array( $sets[ $origin ] ?? null ) ? $sets[ $origin ] : array() as $color ) {
+				if ( is_array( $color ) && is_string( $color['slug'] ?? null ) && is_string( $color['color'] ?? null ) ) {
+					$colors[ $color['slug'] ] = array(
+						'name'  => is_string( $color['name'] ?? null ) ? $color['name'] : $color['slug'],
+						'color' => $color['color'],
+					);
+				}
+			}
+		}
+		return $colors;
 	}
 
 	/**

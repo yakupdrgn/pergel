@@ -15,6 +15,7 @@ namespace Pergel\Tests\Integration;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 use Pergel\Woo\BadgeField;
+use Pergel\Woo\CardLook;
 use Pergel\Woo\Cards;
 use Pergel\Woo\CategoryCards;
 use Pergel\Woo\Layout;
@@ -105,6 +106,7 @@ final class CardsTest extends TestCase {
 		remove_filter( 'woocommerce_product_add_to_cart_description', array( Cards::class, 'quote_description' ), 20 );
 		remove_filter( 'woocommerce_product_add_to_cart_url', array( Cards::class, 'quote_url' ), 20 );
 		Modes::flush();
+		Cards::flush();
 		wp_dequeue_style( Layout::CARD_STYLE );
 		wp_dequeue_script_module( Layout::CARDS_SCRIPT );
 		unset( $_POST[ Cards::BADGE_META ] );
@@ -387,6 +389,44 @@ final class CardsTest extends TestCase {
 		$html = do_blocks( $grid );
 		$this->assertStringNotContainsString( '>' . __( 'Request a quote', 'pergel-engine' ) . '<', $html );
 		$this->assertStringNotContainsString( '#pergel-quote', $html );
+	}
+
+	public function test_card_look_makes_rules_only_for_set_values(): void {
+		$this->assertFalse( Cards::look() );
+		Settings::update(
+			array(
+				'shop' => array(
+					'card_border'       => 2,
+					'card_border_color' => 'line',
+					'card_radius'       => 12,
+					'card_image_bg'     => '#f0f0f0',
+					'card_title_weight' => '500',
+					'card_button'       => 'outline',
+					'card_button_shape' => 'pill',
+					'card_button_width' => 'full',
+				),
+			)
+		);
+		Cards::flush();
+		$this->assertTrue( Cards::look() );
+
+		// No card style chosen: the grid is marked for the look alone.
+		$html = do_blocks( self::GRID );
+		$this->assertMatchesRegularExpression( '/class="[^"]*\bpergel-cards\b/', $html );
+		$this->assertStringNotContainsString( 'pergel-card-template', $html );
+		$this->assertTrue( wp_style_is( Layout::CARD_STYLE ) );
+
+		$css = CardLook::css();
+		$this->assertStringContainsString( '.pergel-cards.pergel-cards .wc-block-product{box-sizing:border-box;border:2px solid var(--wp--preset--color--line);border-radius:12px}', $css );
+		$this->assertStringContainsString( '.wc-block-components-product-image{background:#f0f0f0}', $css );
+		$this->assertStringContainsString( '.wp-block-post-title{font-weight:500}', $css );
+		$this->assertStringContainsString( 'background:transparent;color:var(--wp--preset--color--accent);border:2px solid var(--wp--preset--color--accent);border-radius:999px;width:100%', $css );
+		$this->assertStringNotContainsString( 'padding:', $css, 'Space inside is not set.' );
+		$this->assertStringNotContainsString( '.wc-block-product:hover', $css, 'No card rule for the pointer without a hover look.' );
+		$this->assertStringContainsString( $css, implode( '', (array) wp_styles()->get_data( Layout::CARD_STYLE, 'after' ) ) );
+
+		Settings::update( array( 'shop' => array( 'card_border' => 0 ) ) );
+		$this->assertStringContainsString( '.pergel-cards.pergel-cards .wc-block-product{box-sizing:border-box;border:0;border-radius:12px}', CardLook::css() );
 	}
 
 	public function test_badge_text_is_cleaned(): void {
