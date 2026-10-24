@@ -144,7 +144,7 @@ final class Preset {
 				'control_edge'       => 2,
 				'control_edge_color' => 'line',
 				'filter_title_look'  => 'tab',
-				'strip_count'        => 8,
+				'strip_count'        => '8',
 				'strip_picture'      => 'square',
 				'card_title_lines'   => '2',
 				'paging_shape'       => 'circle',

@@ -474,7 +474,7 @@ final class ShopLayoutTest extends TestCase {
 					'control_edge_color' => 'line',
 					'filter_title_look'  => 'tab',
 					'filter_edge'        => 2,
-					'strip_count'        => 8,
+					'strip_count'        => '8',
 					'strip_picture'      => 'square',
 				),
 			)

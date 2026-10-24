@@ -714,10 +714,9 @@ final class Schema {
 					'default' => 'template',
 				),
 				'strip_count'        => array(
-					'type'    => 'int',
-					'min'     => 0,
-					'max'     => 12,
-					'default' => 0,
+					'type'    => 'enum',
+					'options' => array( 'template', '4', '5', '6', '7', '8', '9', '10' ),
+					'default' => 'template',
 				),
 				'strip_picture'      => array(
 					'type'    => 'enum',

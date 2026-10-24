@@ -854,8 +854,18 @@ final class Labels {
 					),
 				),
 				'strip_count'        => array(
-					'label' => __( 'Categories in a row', 'pergel-engine' ),
-					'help'  => __( 'How many share the row on wide screens; more scroll sideways. Fewer on tablets and phones. 0 leaves the style\'s own size.', 'pergel-engine' ),
+					'label'   => __( 'Categories in a row', 'pergel-engine' ),
+					'help'    => __( 'How many share the row on wide screens; more scroll sideways. Fewer on tablets and phones.', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the style', 'pergel-engine' ),
+						'4'        => '4',
+						'5'        => '5',
+						'6'        => '6',
+						'7'        => '7',
+						'8'        => '8',
+						'9'        => '9',
+						'10'       => '10',
+					),
 				),
 				'strip_picture'      => array(
 					'label'   => __( 'Category pictures', 'pergel-engine' ),

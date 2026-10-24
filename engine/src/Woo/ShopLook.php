@@ -215,7 +215,8 @@ final class ShopLook {
 		$strip = '.pergel-category-strip';
 		$rules = array();
 		$count = Settings::get( 'shop.strip_count' );
-		if ( is_int( $count ) && $count > 0 ) {
+		$count = is_string( $count ) && ctype_digit( $count ) ? (int) $count : 0;
+		if ( $count > 0 ) {
 			// Fewer on tablets and phones, where the next one peeks in.
 			$tiles   = static fn ( float $n ): string => "$strip>ul{gap:16px;scroll-snap-type:x mandatory}$strip>ul>.pergel-category-card{flex:0 0 calc((100% - " . ( ceil( $n ) - 1 ) . "*16px)/$n);min-width:0;scroll-snap-align:start;transform:none}";
 			$rules[] = $tiles( (float) $count );
