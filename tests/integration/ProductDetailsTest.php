@@ -335,6 +335,18 @@ final class ProductDetailsTest extends TestCase {
 		$html = do_blocks( $template );
 		$this->assertSame( array( 'Use', 'Care', 'Specifications', 'Reviews' ), self::titles( $html ) );
 		$this->assertStringContainsString( '<p>Keep it dry</p>', $html );
+
+		// A section of the same name takes in the template's one, at its end.
+		wp_update_post(
+			array(
+				'ID'           => $id,
+				'post_content' => "<h2>Use</h2>\nHow to use it\n\n<h2>specifications</h2>\nSize chart",
+			)
+		);
+		$html = do_blocks( $template );
+		$this->assertSame( array( 'Use', 'specifications', 'Reviews' ), self::titles( $html ) );
+		$this->assertMatchesRegularExpression( '#Size chart.*<p[^>]*>Table</p>#s', $html );
+		$this->assertSame( 1, preg_match_all( '#<p[^>]*>Table</p>#', $html ) );
 	}
 
 	public function test_all_open(): void {

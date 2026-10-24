@@ -125,7 +125,23 @@ final class Details {
 		if ( null !== $description ) {
 			$split = self::split( $anchor, $product );
 			if ( count( $split ) > 1 ) {
-				array_splice( $items, $description, 1, $split );
+				// A section of the same name as one of them, as "Specifications"
+				// with the attributes, joins it at its end.
+				$names = array_map( static fn ( array $item ): string => mb_strtolower( self::name( $item ) ), $split );
+				$rest  = array();
+				$at    = 0;
+				foreach ( $items as $index => $item ) {
+					$same = array_search( mb_strtolower( self::name( $item ) ), $names, true );
+					if ( $index === $description ) {
+						$at = count( $rest );
+					} elseif ( is_int( $same ) ) {
+						$split[ $same ] = self::panel( $split[ $same ], array_merge( self::blocks( $split[ $same ] ), self::blocks( $item ) ) );
+					} else {
+						$rest[] = $item;
+					}
+				}
+				array_splice( $rest, $at, 0, $split );
+				$items = $rest;
 			}
 		}
 
@@ -334,11 +350,21 @@ final class Details {
 		$item          = self::retitle( $anchor, $title );
 		$item['attrs'] = array_diff_key( is_array( $item['attrs'] ?? null ) ? $item['attrs'] : array(), array_flip( array( 'anchor', 'className', 'metadata' ) ) );
 		$item          = self::open( $item, false );
-		foreach ( $item['innerBlocks'] as $index => $inner ) {
-			if ( 'core/accordion-panel' !== ( $inner['blockName'] ?? '' ) ) {
+		return self::panel( $item, array_values( array_filter( parse_blocks( $markup ), static fn ( array $block ): bool => null !== $block['blockName'] ) ) );
+	}
+
+	/**
+	 * An accordion item with other blocks in its panel.
+	 *
+	 * @param array<string, mixed>       $item   Accordion item.
+	 * @param list<array<string, mixed>> $blocks Parsed blocks.
+	 * @return array<string, mixed>
+	 */
+	private static function panel( array $item, array $blocks ): array {
+		foreach ( (array) ( $item['innerBlocks'] ?? array() ) as $index => $inner ) {
+			if ( ! is_array( $inner ) || 'core/accordion-panel' !== ( $inner['blockName'] ?? '' ) ) {
 				continue;
 			}
-			$blocks                        = array_values( array_filter( parse_blocks( $markup ), static fn ( array $block ): bool => null !== $block['blockName'] ) );
 			$content                       = is_array( $inner['innerContent'] ?? null ) ? $inner['innerContent'] : array();
 			$first                         = is_string( reset( $content ) ) ? reset( $content ) : '<div class="wp-block-accordion-panel">';
 			$last                          = is_string( end( $content ) ) && count( $content ) > 1 ? end( $content ) : '</div>';
@@ -352,6 +378,40 @@ final class Details {
 			);
 		}
 		return $item;
+	}
+
+	/**
+	 * The blocks in an accordion item's panel.
+	 *
+	 * @param array<string, mixed> $item Accordion item.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function blocks( array $item ): array {
+		$blocks = array();
+		foreach ( (array) ( $item['innerBlocks'] ?? array() ) as $inner ) {
+			if ( is_array( $inner ) && 'core/accordion-panel' === ( $inner['blockName'] ?? '' ) ) {
+				foreach ( (array) ( $inner['innerBlocks'] ?? array() ) as $block ) {
+					if ( is_array( $block ) ) {
+						$blocks[] = $block;
+					}
+				}
+			}
+		}
+		return $blocks;
+	}
+
+	/**
+	 * The plain text title in an accordion item's heading.
+	 *
+	 * @param array<string, mixed> $item Accordion item.
+	 */
+	private static function name( array $item ): string {
+		foreach ( (array) ( $item['innerBlocks'] ?? array() ) as $inner ) {
+			if ( is_array( $inner ) && 'core/accordion-heading' === ( $inner['blockName'] ?? '' ) && 1 === preg_match( '#<span class="wp-block-accordion-heading__toggle-title"[^>]*>(.*?)</span>#s', (string) ( $inner['innerHTML'] ?? '' ), $match ) ) {
+				return trim( html_entity_decode( wp_strip_all_tags( $match[1] ), ENT_QUOTES ) );
+			}
+		}
+		return '';
 	}
 
 	/**

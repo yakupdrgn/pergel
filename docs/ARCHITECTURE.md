@@ -898,7 +898,9 @@ görünmez (`Settings\Screen::shown`).
   çıkar; ilk başlıktan önceki içerik "Açıklama"dır. Bölümler `Details::item` ile ilk bölümün
   biçiminde yapılır ve içerik blok olarak çizilir (`the_content` süzgeçleri çalışmaz). Klasik
   (bloksuz) açıklama H2 etiketlerinden kesilir, parçalar `wpautop` ile bir HTML bloğuna girer.
-  Tek bölüm çıkarsa açıklama olduğu gibi kalır. "Sekmeler" ile her bölüm bir sekmedir.
+  Açıklamadan çıkan bir bölümle aynı adı taşıyan şablon bölümü (örneğin özniteliklerle
+  "Specifications") onun sonuna katılır ve ayrı sekme olmaz. Tek bölüm çıkarsa açıklama olduğu
+  gibi kalır. "Sekmeler" ile her bölüm bir sekmedir.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir
