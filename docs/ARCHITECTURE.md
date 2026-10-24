@@ -777,7 +777,7 @@ görünmez (`Settings\Screen::shown`).
   ve en yeni ürün adresleridir. Bu argümanla açılan sayfada `Settings\Module` `Preview`'ı yükler:
   `pre_option_pergel_settings` aynı kullanıcı ve geçerli nonce için geçici kaydı döndürür
   (eklentiler yüklenirken okunan ayarlar `init`'te yeniden okunur), sayfa önbelleğe alınmaz
-  (`nocache_headers`, `DONOTCACHEPAGE`), `noindex` ve yönetim çubuğu yok. Kayıtlı ayara dokunulmaz.
+  (`nocache_headers`, `DONOTCACHEPAGE`), `noindex` (etiket ve SEO eklentisi kendi etiketini bassa da geçerli `X-Robots-Tag` başlığı) ve yönetim çubuğu yok. Kayıtlı ayara dokunulmaz.
   Panel kaydırma yerini korur, Escape ile kapanır; durum satırı ekran okuyucuya söylenir. Rota
   kaydı sınıfı yüklemez; argümansız sayfalar `Preview`'ı hiç yüklemez.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna

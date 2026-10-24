@@ -52,11 +52,22 @@ final class Preview {
 		// Settings read while plugins load, before the user is known, are
 		// read again.
 		add_action( 'init', array( Settings::class, 'flush' ), 0 );
-		add_action( 'send_headers', 'nocache_headers' );
+		add_action( 'send_headers', array( self::class, 'headers' ) );
 		add_filter( 'wp_robots', 'wp_robots_no_robots' );
 		add_filter( 'show_admin_bar', '__return_false' );
 		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 			define( 'DONOTCACHEPAGE', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- Page cache plugins' own switch.
+		}
+	}
+
+	/**
+	 * Not cached and not indexed. The header holds even where an SEO plugin
+	 * prints its own robots tag instead of wp_robots.
+	 */
+	public static function headers(): void {
+		nocache_headers();
+		if ( ! headers_sent() ) {
+			header( 'X-Robots-Tag: noindex, nofollow' );
 		}
 	}
 
