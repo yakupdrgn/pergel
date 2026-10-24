@@ -155,6 +155,10 @@ final class Preset {
 				'product_brand'      => true,
 				'product_discount'   => true,
 				'product_stock'      => true,
+				// The summary as on the reference: the short description under
+				// the name, then rating and SKU, the price and buying; the
+				// details list goes (the category is above the name).
+				'summary_items'      => 'title,excerpt,rating,sku,price,buying,cta',
 				'product_nav'        => true,
 				'product_buy_now'    => true,
 				'product_coupons'    => true,
@@ -263,7 +267,11 @@ final class Preset {
 			return (string) $choices[ $value ];
 		}
 		if ( null === $value || '' === $value ) {
-			return '—';
+			return isset( $text['items'] ) ? __( 'As in the template', 'pergel-engine' ) : '—';
+		}
+		if ( isset( $text['items'] ) && is_string( $value ) ) {
+			// An item list: the item names, in order.
+			return implode( ' · ', array_map( static fn ( string $key ): string => (string) ( $choices[ $key ] ?? $key ), explode( ',', $value ) ) );
 		}
 		return is_scalar( $value ) ? (string) $value : '—';
 	}

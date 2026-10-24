@@ -126,6 +126,17 @@ final class Screen {
 			. '.pergel-items__list label{flex:1}'
 			. '.pergel-items__note{color:#646970;font-size:12px}'
 			. '.pergel-items__list.is-off{opacity:.55}'
+			// The live preview: a panel on the right with the site drawn at
+			// 1280px and scaled to fit; the settings move aside.
+			. '.pergel-preview{position:fixed;top:var(--wp-admin--admin-bar--height,32px);right:0;bottom:0;z-index:9989;display:flex;flex-direction:column;width:min(50vw,960px);background:#fff;border-left:1px solid #c3c4c7;box-shadow:-4px 0 16px rgb(0 0 0/.08)}'
+			. '.pergel-preview[hidden]{display:none}'
+			. '.pergel-previewing .pergel-settings{margin-right:min(50vw,960px)}'
+			. '.pergel-preview__bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 12px;border-bottom:1px solid #dcdcde}'
+			. '.pergel-preview__state{flex:1;color:#646970}'
+			. '.pergel-preview__frame{position:relative;flex:1;overflow:hidden;background:#f0f0f1}'
+			. '.pergel-preview__frame iframe{position:absolute;top:0;left:0;width:1280px;border:0;background:#fff;transform-origin:0 0}'
+			. '.pergel-settings__page>h2:first-child .pergel-preview__open{margin-left:12px;vertical-align:middle}'
+			. '@media (max-width:960px){.pergel-preview{width:100%}.pergel-previewing .pergel-settings{margin-right:0}}'
 		);
 	}
 
@@ -279,7 +290,12 @@ final class Screen {
 			);
 		}
 		echo '</ul></nav><div class="pergel-settings__page">';
-		echo '<h2>' . esc_html( $page['title'] ) . '</h2>';
+		$preview = 'presets' !== $open;
+		printf(
+			'<h2>%1$s%2$s</h2>',
+			esc_html( $page['title'] ),
+			$preview ? ' <button type="button" class="button pergel-preview__open" aria-expanded="false" aria-controls="pergel-preview">' . esc_html__( 'Preview', 'pergel-engine' ) . '</button>' : ''
+		);
 		if ( '' !== $page['description'] ) {
 			echo '<p>' . esc_html( $page['description'] ) . '</p>';
 		}
@@ -315,6 +331,38 @@ final class Screen {
 		}
 		submit_button();
 		echo '</form></div></div>';
+		self::preview( in_array( $open, array( 'product', 'details' ), true ) ? 'product' : 'shop' );
+	}
+
+	/**
+	 * The live preview panel: settings.js sends the form's unsaved values to
+	 * the preview route whenever one changes, and reloads the page shown.
+	 *
+	 * @param string $page shop or product: the page shown first.
+	 */
+	private static function preview( string $page ): void {
+		printf(
+			'<aside id="pergel-preview" class="pergel-preview" hidden aria-label="%1$s" data-endpoint="%2$s" data-nonce="%3$s" data-page="%4$s" data-busy="%5$s" data-done="%6$s" data-failed="%7$s">'
+			. '<div class="pergel-preview__bar"><strong>%1$s</strong>'
+			. '<select aria-label="%8$s"><option value="shop"%9$s>%10$s</option><option value="product"%11$s>%12$s</option></select>'
+			. '<span class="pergel-preview__state" aria-live="polite"></span>'
+			. '<button type="button" class="button pergel-preview__close">%13$s</button></div>'
+			. '<div class="pergel-preview__frame"><iframe title="%14$s" src="about:blank"></iframe></div></aside>',
+			esc_attr__( 'Preview', 'pergel-engine' ),
+			esc_url( rest_url( 'pergel/v1/preview' ) ),
+			esc_attr( wp_create_nonce( 'wp_rest' ) ),
+			esc_attr( $page ),
+			esc_attr__( 'Updating the preview…', 'pergel-engine' ),
+			esc_attr__( 'Preview shows the unsaved settings. Nothing is saved until you save.', 'pergel-engine' ),
+			esc_attr__( 'The preview could not be updated.', 'pergel-engine' ),
+			esc_attr__( 'Page to preview', 'pergel-engine' ),
+			selected( $page, 'shop', false ),
+			esc_html__( 'Shop page', 'pergel-engine' ),
+			selected( $page, 'product', false ),
+			esc_html__( 'A product page', 'pergel-engine' ),
+			esc_html__( 'Close preview', 'pergel-engine' ),
+			esc_attr__( 'Preview of the unsaved settings', 'pergel-engine' )
+		);
 	}
 
 	/**

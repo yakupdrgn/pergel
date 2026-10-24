@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T15:08:56+03:00\n"
+"POT-Creation-Date: 2026-10-24T15:26:10+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1867,9 +1867,33 @@ msgstr ""
 msgid "Shop settings"
 msgstr ""
 
+msgid "Preview"
+msgstr ""
+
 #. translators: %s: template names, comma separated.
 #, php-format
 msgid "These templates were changed in the Site Editor and no longer hold the theme's product grid, so the settings below do not reach them: %s. Reset the template in the Site Editor to use them again."
+msgstr ""
+
+msgid "Updating the preview…"
+msgstr ""
+
+msgid "Preview shows the unsaved settings. Nothing is saved until you save."
+msgstr ""
+
+msgid "The preview could not be updated."
+msgstr ""
+
+msgid "Page to preview"
+msgstr ""
+
+msgid "A product page"
+msgstr ""
+
+msgid "Close preview"
+msgstr ""
+
+msgid "Preview of the unsaved settings"
 msgstr ""
 
 msgid "Other"

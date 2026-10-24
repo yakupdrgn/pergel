@@ -1682,6 +1682,13 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   olmayan öğe eklenebiliyor (ör. kartta SKU); iç blok taşıyan satın alma formu ve bilgi listesi
   eklenmiyor, çünkü boş eklenince ne çizeceği WooCommerce sürümüne bağlı. Unimart hazır ayarı
   şimdilik listeleri değiştirmiyor (4. adımda gözden geçirilecek).
+- **Hazır ayar ve canlı önizleme (24 Ekim 2026, kullanıcı):** planın 4. adımı. Unimart hazır
+  ayarı artık kart, mağaza sayfası ve ürün sayfası görünüm değerlerini (#72–#74) ve özet sırasını
+  da yazıyor; kart listesi yazılmıyor, çünkü Unimart'ın kart sırası temanınkiyle aynı ve puan zaten
+  "Kartlarda puan" ile adın altına geliyor (ikisi birlikte puanı iki kez çizerdi). Önizleme
+  Customizer yerine Pergel'in kendi panelinde: Pergel ayarları Customizer'da değil, blok
+  temalarında Customizer kapalı. Önizleme gerçek sayfayı kaydedilmemiş değerlerle çizer (kopya
+  bir çizim değil), değerler kullanıcıya özel ve kısa ömürlü tutulur, kayıtlı ayar değişmez.
 
 ## Aşamalar ve bitti tanımları
 

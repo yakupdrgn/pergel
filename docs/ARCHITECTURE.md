@@ -767,6 +767,19 @@ görünmez (`Settings\Screen::shown`).
   `settings.js` ile satırı taşır ve yeni yeri ekran okuyucuya söyler. Kart listesi `Cards`'ın,
   özet listesi `Layout::product_page`'in kancasıdır; özet anahtarı `product_` ile başlamaz, liste
   tek başına `ProductPage`'i yüklemez.
+- **Canlı önizleme (`Settings\Preview`):** Mağaza menüsünün sayfalarında (Hazır düzenler hariç)
+  başlığın yanındaki "Önizleme" düğmesi sağda bir panel açar; site 1280px genişlikte çizilir ve
+  panele ölçeklenir, ayarlar sola kayar. `settings.js` formdaki her değişiklikten 600 ms sonra
+  formun değerlerini (kaydetme gibi `{grup: {anahtar: değer}}`) `POST /pergel/v1/preview`'a
+  gönderir (yalnızca `manage_options`, REST çerez nonce'u). Değerler kaydetmedeki gibi şemadan
+  geçer, kayıtlı ayarların üstüne birleştirilir ve kullanıcıya özel bir geçici kayıtta
+  (`pergel_preview_{kullanıcı}`, 15 dk) tutulur; yanıt, `?pergel_preview=<nonce>` taşıyan mağaza
+  ve en yeni ürün adresleridir. Bu argümanla açılan sayfada `Settings\Module` `Preview`'ı yükler:
+  `pre_option_pergel_settings` aynı kullanıcı ve geçerli nonce için geçici kaydı döndürür
+  (eklentiler yüklenirken okunan ayarlar `init`'te yeniden okunur), sayfa önbelleğe alınmaz
+  (`nocache_headers`, `DONOTCACHEPAGE`), `noindex` ve yönetim çubuğu yok. Kayıtlı ayara dokunulmaz.
+  Panel kaydırma yerini korur, Escape ile kapanır; durum satırı ekran okuyucuya söylenir. Rota
+  kaydı sınıfı yüklemez; argümansız sayfalar `Preview`'ı hiç yüklemez.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
   `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
   ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları
