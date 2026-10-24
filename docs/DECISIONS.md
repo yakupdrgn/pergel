@@ -1650,6 +1650,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   değerler değişmedi; yalnızca ekran bölündü. Bu, "tam kontrol" planının ilk adımı: sonra görünüm
   değerleri, öğe sırası ve görünürlüğü, genişletilmiş Unimart hazır ayarı ve canlı önizleme, mağaza
   başlığı seçimi, ürün sayfasında gerçek sekmeler ve diğer parçalar gelecek.
+- **Kart görünümü değerleri (24 Ekim 2026, kullanıcı):** planın 2. adımı kartlardan başladı.
+  Dört stil (standart, kutulu, üstte, sade) Unimart'ın kartını vermiyordu; kenarlık, köşe, iç
+  boşluk, resim arka planı, ad boyutu, düğme (dolu/çerçeveli, hap/köşeli) ve üzerine gelince
+  görünüm ayrı ayrı ayarlanabilir oldu. Değerler stilin üstüne yazılır, stilin yerini almaz: boş
+  değer bugünkü görünümü korur. Renkler serbest CSS değil, paletten ya da renk seçiciden: paletteki
+  renk Site düzenleyiciyle birlikte değişir, kötü bir değer CSS'i bozamaz. Unimart hazır ayarı bu
+  değerleri de yazar. Sonraki adımlar aynı türlerle filtre kutusu, araç çubuğu, sayfa numaraları
+  ve ürün sayfası.
 
 ## Aşamalar ve bitti tanımları
 
