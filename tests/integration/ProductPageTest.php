@@ -175,6 +175,36 @@ final class ProductPageTest extends TestCase {
 		$this->assertStringContainsString( 'alt=""', $html );
 	}
 
+	public function test_bar_look_from_the_settings(): void {
+		$this->needs_woocommerce();
+		$this->settings( array( 'sticky_cart' => true ) );
+		Settings::update( array( 'shop' => Schema::defaults()['shop'] ) );
+		$product = $this->simple();
+		$product->set_short_description( '<p>Two <strong>lines</strong> about it.</p>' );
+		$product->save();
+
+		$html = $this->bar( $product->get_id() );
+		$this->assertStringNotContainsString( 'is-button-', $html, 'The template\'s look by default.' );
+		$this->assertStringNotContainsString( '--pergel-sticky-', $html );
+		$this->assertStringNotContainsString( '__text', $html );
+
+		Settings::update(
+			array(
+				'shop' => array(
+					'sticky_bg'     => 'surface',
+					'sticky_image'  => 84,
+					'sticky_text'   => true,
+					'sticky_button' => 'outline',
+					'sticky_shape'  => 'pill',
+				),
+			)
+		);
+		$html = $this->bar( $product->get_id() );
+		$this->assertStringContainsString( 'style="--pergel-sticky-bg:var(--wp--preset--color--surface);--pergel-sticky-image:84px"', $html );
+		$this->assertStringContainsString( 'class="is-button-outline is-shape-pill', $html );
+		$this->assertStringContainsString( '<p class="wp-block-pergel-sticky-add-to-cart__text">Two lines about it.</p>', $html );
+	}
+
 	public function test_variable_product_asks_for_its_options_first(): void {
 		$this->needs_woocommerce();
 		$this->settings( array( 'sticky_cart' => true ) );

@@ -94,7 +94,7 @@ final class Labels {
 			'product'  => array(
 				'title'       => __( 'Product page', 'pergel-engine' ),
 				'description' => __( 'The top of the product page: the pictures, the details beside them and buying. A product category and a product can choose some of these for themselves.', 'pergel-engine' ),
-				'parts'       => array( 'shop.product', 'shop.summary', 'shop.boxes', 'shop.buying', 'shop.styling', 'woo.product' ),
+				'parts'       => array( 'shop.product', 'shop.summary', 'shop.boxes', 'shop.buying', 'shop.styling', 'woo.product', 'shop.sticky' ),
 			),
 			'details'  => array(
 				'title'       => __( 'Under the product', 'pergel-engine' ),
@@ -329,7 +329,11 @@ final class Labels {
 				),
 				'related' => array(
 					'title'  => __( 'Related and recently viewed', 'pergel-engine' ),
-					'fields' => array( 'related_style', 'related_count', 'related_title', 'related_compare', 'related_recent' ),
+					'fields' => array( 'related_style', 'related_count', 'related_title', 'related_compare', 'related_recent', 'related_banner', 'related_bg', 'related_edge', 'related_radius', 'related_padding' ),
+				),
+				'sticky'  => array(
+					'title'  => __( 'Sticky bar look', 'pergel-engine' ),
+					'fields' => array( 'sticky_bg', 'sticky_padding', 'sticky_image', 'sticky_text', 'sticky_button', 'sticky_shape' ),
 				),
 			),
 		);
@@ -1115,6 +1119,58 @@ final class Labels {
 						'off'   => __( 'Off', 'pergel-engine' ),
 						'track' => __( 'Remember', 'pergel-engine' ),
 						'show'  => __( 'Remember and show', 'pergel-engine' ),
+					),
+				),
+				'related_banner'     => array(
+					'label' => __( 'Banner beside the related products', 'pergel-engine' ),
+					'help'  => __( 'A pattern as the last card of the related products, in the place of one product, e.g. a brand or a campaign. Make it under Appearance → Editor → Patterns.', 'pergel-engine' ),
+				),
+				'related_bg'         => array(
+					'label' => __( 'Box around the related products', 'pergel-engine' ),
+					'help'  => __( 'A background puts the related products, their title and the banner in a box.', 'pergel-engine' ),
+				),
+				'related_edge'       => array(
+					'label' => __( 'Box edge', 'pergel-engine' ),
+				),
+				'related_radius'     => array(
+					'label' => __( 'Box corners', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'related_padding'    => array(
+					'label' => __( 'Space inside the box', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'sticky_bg'          => array(
+					'label' => __( 'Bar background', 'pergel-engine' ),
+					'help'  => __( 'For the sticky add-to-cart bar turned on above. Empty uses the base colour.', 'pergel-engine' ),
+				),
+				'sticky_padding'     => array(
+					'label' => __( 'Space above and below', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'sticky_image'       => array(
+					'label' => __( 'Picture size', 'pergel-engine' ),
+					'help'  => __( 'In pixels; phones keep a smaller one.', 'pergel-engine' ),
+				),
+				'sticky_text'        => array(
+					'label' => __( 'Short description in the bar', 'pergel-engine' ),
+					'help'  => __( 'Two lines of it under the name, on wide screens.', 'pergel-engine' ),
+				),
+				'sticky_button'      => array(
+					'label'   => __( 'Bar button', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'filled'   => __( 'Filled', 'pergel-engine' ),
+						'outline'  => __( 'Outlined', 'pergel-engine' ),
+					),
+				),
+				'sticky_shape'       => array(
+					'label'   => __( 'Bar button shape', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'pill'     => __( 'Pill', 'pergel-engine' ),
+						'rounded'  => __( 'Rounded', 'pergel-engine' ),
+						'square'   => __( 'Square', 'pergel-engine' ),
 					),
 				),
 				'card_swatches'      => array(

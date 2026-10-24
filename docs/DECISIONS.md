@@ -1720,6 +1720,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   düğmesi; bilgi listesi 14 px, kalın etiketler, satırlar arası 10 px; güvenli ödeme ortada tek
   bir logo resmi ve 15/500 yazı. Hazır ayar üç kutuyu satın alma ve iletişim düğmelerinin altına
   koyar (2 ürün; kategori, durum, tür; yüzey rengi, 12 px, 16 px).
+- **Benzer ürünlerin bannerı ve yapışkan çubuk, 6c (24 Ekim 2026, kullanıcı):** Unimart ölçüldü:
+  benzer ürünler gri bir bantta beyaz bir kutuda (2 px #EAF0FC kenar, 0 16 16 16 köşe, 32 px iç
+  boşluk), 4 sütunun sonuncusu 12 px köşeli, resimle dolu bir banner kartı; yapışkan çubuk beyaz,
+  0 4 30 10 %5 gölge, 116 px yükseklik, 84 px resim, 18/700 ad, 15 px iki satır açıklama, 20/700
+  fiyat, 2 px vurgu kenarlı hap biçimli düğme. Banner bir desen ve bir ürünün yerini alır (satır
+  tam kalır); kutu ve çubuk değerleri ayardır. Hazır ayar kutuyu (temel renk, çizgi rengi kenar,
+  16 px, 32 px) ve çubuğu (temel renk, 16 px, 84 px, kısa açıklama, kenarlı hap düğme) açar;
+  banner siteye özel olduğundan hazır ayarda yok.
 
 ## Aşamalar ve bitti tanımları
 

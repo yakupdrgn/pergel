@@ -87,6 +87,7 @@ final class ProductRelatedTest extends TestCase {
 		}
 		remove_filter( 'render_block_data', array( Related::class, 'collection' ), 10 );
 		remove_filter( 'render_block_woocommerce/product-collection', array( Related::class, 'around' ), 10 );
+		remove_filter( 'render_block_woocommerce/product-template', array( Related::class, 'banner' ), 10 );
 		remove_filter( 'script_module_data_' . Layout::RECENT_SCRIPT, array( Related::class, 'data' ), 10 );
 		wp_dequeue_style( Layout::RELATED_STYLE );
 		wp_dequeue_script_module( Layout::RECENT_SCRIPT );
@@ -200,6 +201,50 @@ final class ProductRelatedTest extends TestCase {
 		$this->assertSame( 4, $block['attrs']['query']['perPage'], 'The template\'s number stays.' );
 		$this->assertSame( array( 'core/heading', 'woocommerce/product-template', 'core/query-pagination' ), self::names( $block ) );
 		$this->assertStringContainsString( '>More from this range</h2>', $block['innerBlocks'][0]['innerHTML'] );
+	}
+
+	public function test_banner_and_box(): void {
+		$product = $this->product( 'Related banner', '10' );
+		$this->product( 'Related beside the banner', '12' );
+		$banner        = wp_insert_post(
+			array(
+				'post_type'    => 'wp_block',
+				'post_status'  => 'publish',
+				'post_title'   => 'Related banner pattern',
+				'post_content' => '<!-- wp:paragraph --><p>Brand week</p><!-- /wp:paragraph -->',
+			)
+		);
+		$this->posts[] = $banner;
+		Settings::update(
+			array(
+				'shop' => array(
+					'related_banner' => $banner,
+					'related_bg'     => 'base',
+					'related_radius' => 16,
+				),
+			)
+		);
+		$this->go_to( $product->get_id() );
+
+		$block = Related::collection( parse_blocks( self::RELATED )[0] );
+		$this->assertSame( 3, $block['attrs']['query']['perPage'], 'The banner takes the place of one product.' );
+
+		$html = do_blocks( str_replace( '"relatedBy":', '"productReference":' . $product->get_id() . ',"relatedBy":', self::RELATED ) );
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		$this->assertTrue( $tags->next_tag() );
+		$this->assertTrue( $tags->has_class( 'pergel-related-box' ) );
+		$this->assertStringStartsWith( '--pergel-related-bg:var(--wp--preset--color--base);--pergel-related-radius:16px;', (string) $tags->get_attribute( 'style' ) );
+		$this->assertMatchesRegularExpression( '#Related beside the banner.*<li class="pergel-related-banner">.*Brand week.*</li></ul>#s', $html, 'The last card.' );
+		$this->assertTrue( wp_style_is( Layout::RELATED_STYLE ) );
+
+		// A pattern that is not published draws nothing.
+		wp_update_post(
+			array(
+				'ID'          => $banner,
+				'post_status' => 'draft',
+			)
+		);
+		$this->assertStringNotContainsString( 'pergel-related-banner', do_blocks( str_replace( '"relatedBy":', '"productReference":' . $product->get_id() . ',"relatedBy":', self::RELATED ) ) );
 	}
 
 	public function test_other_product_collections_are_left_alone(): void {

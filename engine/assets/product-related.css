@@ -114,3 +114,36 @@
 	white-space: nowrap;
 	width: 1px;
 }
+
+/* The box around the related products (shop.related_bg and the rest):
+ * the values arrive as --pergel-related-* custom properties. */
+.pergel-related-box {
+	background: var(--pergel-related-bg, transparent);
+	border: 2px solid var(--pergel-related-edge, transparent);
+	border-radius: var(--pergel-related-radius, 0);
+	box-sizing: border-box;
+	padding: var(--pergel-related-pad, var(--wp--preset--spacing--50, 2rem));
+}
+
+/* The banner pattern as the last card: as wide as a card, as tall as the
+ * row, its content filling it. */
+.pergel-related-banner {
+	border-radius: var(--wp--custom--radius--card, 12px);
+	display: flex;
+	flex-direction: column;
+	list-style: none;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.pergel-related-banner > * {
+	flex: 1;
+	margin: 0;
+}
+
+.pergel-related-banner img {
+	display: block;
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}

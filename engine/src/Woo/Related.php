@@ -36,6 +36,8 @@ use Pergel\Settings\Settings;
  */
 final class Related {
 
+	use LookValues;
+
 	public const COLLECTION = 'woocommerce/product-collection/related';
 
 	public const BLOCK = 'pergel/recently-viewed';
@@ -71,6 +73,9 @@ final class Related {
 		self::$product = $product;
 		add_filter( 'render_block_data', array( self::class, 'collection' ) );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'around' ), 10, 2 );
+		if ( self::banner_id() > 0 ) {
+			add_filter( 'render_block_woocommerce/product-template', array( self::class, 'banner' ), 10, 3 );
+		}
 		if ( 'off' !== Settings::get( 'shop.related_recent' ) ) {
 			self::script();
 		}
@@ -100,9 +105,15 @@ final class Related {
 			return $block;
 		}
 		$count = Layout::get( 'shop.related_count' );
+		$query = is_array( $block['attrs']['query'] ?? null ) ? $block['attrs']['query'] : array();
 		if ( is_int( $count ) && $count > 0 ) {
-			$query                   = is_array( $block['attrs']['query'] ?? null ) ? $block['attrs']['query'] : array();
-			$query['perPage']        = $count;
+			$query['perPage'] = $count;
+		}
+		// The banner takes the place of one product.
+		if ( self::banner_id() > 0 ) {
+			$query['perPage'] = max( 1, (int) ( $query['perPage'] ?? 4 ) - 1 );
+		}
+		if ( $query ) {
 			$block['attrs']['query'] = $query;
 		}
 		$title = Layout::get( 'shop.related_title' );
@@ -257,6 +268,7 @@ final class Related {
 		if ( ! self::related( $block ) ) {
 			return $html;
 		}
+		$html    = self::box( $html );
 		$product = wc_get_product( self::$product );
 		$columns = Layout::get( 'shop.related_compare' );
 		if ( $product instanceof \WC_Product && is_string( $columns ) && ctype_digit( $columns ) ) {
@@ -279,6 +291,73 @@ final class Related {
 			);
 		}
 		return $html;
+	}
+
+	/**
+	 * The box around the related products (shop.related_bg, _edge,
+	 * _radius, _padding): a class and the values that are set, as
+	 * --pergel-related-* custom properties on the block.
+	 *
+	 * @param string $html Rendered block.
+	 */
+	private static function box( string $html ): string {
+		$values = array(
+			'bg'     => self::color( 'related_bg' ),
+			'edge'   => self::color( 'related_edge' ),
+			'radius' => self::px( 'related_radius' ),
+			'pad'    => self::px( 'related_padding' ),
+		);
+		$style  = '';
+		foreach ( $values as $name => $value ) {
+			if ( '' !== $value ) {
+				$style .= "--pergel-related-$name:$value;";
+			}
+		}
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		if ( '' === $style || ! $tags->next_tag() ) {
+			return $html;
+		}
+		$tags->add_class( 'pergel-related-box' );
+		$tags->set_attribute( 'style', $style . (string) $tags->get_attribute( 'style' ) );
+		wp_enqueue_style( Layout::RELATED_STYLE );
+		return $tags->get_updated_html();
+	}
+
+	/**
+	 * The chosen banner pattern; 0 for none.
+	 */
+	private static function banner_id(): int {
+		$id = Layout::get( 'shop.related_banner' );
+		return is_int( $id ) ? $id : 0;
+	}
+
+	/**
+	 * The banner as the last card of the related products: a pattern, as
+	 * wide as a card. Nothing when it is gone or not published.
+	 *
+	 * @param string    $html     Rendered product template (its list).
+	 * @param array     $block    Parsed block.
+	 * @param \WP_Block $instance Block instance.
+	 * @phpstan-param array<string, mixed> $block
+	 */
+	public static function banner( string $html, array $block, \WP_Block $instance ): string {
+		static $drawing = false;
+		$end            = strrpos( $html, '</ul>' );
+		if ( $drawing || false === $end || self::COLLECTION !== ( $instance->context['collection'] ?? '' ) || get_queried_object_id() !== self::$product ) {
+			return $html;
+		}
+		$post = get_post( self::banner_id() );
+		if ( ! $post instanceof \WP_Post || 'wp_block' !== $post->post_type || 'publish' !== $post->post_status ) {
+			return $html;
+		}
+		$drawing = true;
+		$inside  = do_blocks( $post->post_content );
+		$drawing = false;
+		if ( '' === trim( $inside ) ) {
+			return $html;
+		}
+		wp_enqueue_style( Layout::RELATED_STYLE );
+		return substr( $html, 0, $end ) . '<li class="pergel-related-banner">' . $inside . '</li>' . substr( $html, $end );
 	}
 
 	/**

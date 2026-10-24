@@ -1,10 +1,10 @@
 .wp-block-pergel-sticky-add-to-cart {
-	background: var(--wp--preset--color--base, #fff);
+	background: var(--pergel-sticky-bg, var(--wp--preset--color--base, #fff));
 	border-block-start: 1px solid var(--wp--preset--color--line, #d4d4d4);
 	box-shadow: 0 -4px 16px -8px #16181d29;
 	inset-block-end: 0;
 	inset-inline: 0;
-	padding: 0.5rem max(1rem, env(safe-area-inset-right)) calc(0.5rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+	padding: var(--pergel-sticky-pad, 0.5rem) max(1rem, env(safe-area-inset-right)) calc(var(--pergel-sticky-pad, 0.5rem) + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
 	position: fixed;
 	transition: transform 0.2s ease-out, visibility 0.2s;
 	/* Above the page, below the mini cart drawer and dialogs. */
@@ -47,9 +47,9 @@
 .wp-block-pergel-sticky-add-to-cart__image {
 	border-radius: var(--wp--custom--radius--button, 6px);
 	flex: none;
-	height: 3rem;
+	height: var(--pergel-sticky-image, 3rem);
 	object-fit: cover;
-	width: 3rem;
+	width: var(--pergel-sticky-image, 3rem);
 }
 
 .wp-block-pergel-sticky-add-to-cart__info {
@@ -74,6 +74,27 @@
 	font-size: var(--wp--preset--font-size--small, 0.9375rem);
 }
 
+/* The short description: two lines, on wide screens only. */
+.wp-block-pergel-sticky-add-to-cart__text {
+	-webkit-box-orient: vertical;
+	color: var(--wp--preset--color--muted, currentcolor);
+	display: -webkit-box;
+	font-size: var(--wp--preset--font-size--small, 0.9375rem);
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	line-height: 1.5;
+	margin: 0.125rem 0;
+	max-width: 40rem;
+	overflow: hidden;
+}
+
+@media (max-width: 781px) {
+
+	.wp-block-pergel-sticky-add-to-cart__text {
+		display: none;
+	}
+}
+
 .wp-block-pergel-sticky-add-to-cart__price del {
 	color: var(--wp--preset--color--muted, currentcolor);
 }
@@ -87,6 +108,36 @@
 	flex: none;
 	min-height: 44px;
 	white-space: nowrap;
+}
+
+/* The button's look and shape (shop.sticky_button, shop.sticky_shape). */
+.wp-block-pergel-sticky-add-to-cart.is-button-filled .wp-block-pergel-sticky-add-to-cart__button {
+	background: var(--wp--preset--color--accent, currentcolor);
+	border: 2px solid var(--wp--preset--color--accent, currentcolor);
+	color: var(--wp--preset--color--on-accent, #fff);
+}
+
+.wp-block-pergel-sticky-add-to-cart.is-button-outline .wp-block-pergel-sticky-add-to-cart__button {
+	background: transparent;
+	border: 2px solid var(--wp--preset--color--accent, currentcolor);
+	color: var(--wp--preset--color--contrast, currentcolor);
+}
+
+.wp-block-pergel-sticky-add-to-cart.is-button-outline .wp-block-pergel-sticky-add-to-cart__button:hover {
+	background: var(--wp--preset--color--accent, currentcolor);
+	color: var(--wp--preset--color--on-accent, #fff);
+}
+
+.wp-block-pergel-sticky-add-to-cart.is-shape-pill .wp-block-pergel-sticky-add-to-cart__button {
+	border-radius: 999px;
+}
+
+.wp-block-pergel-sticky-add-to-cart.is-shape-rounded .wp-block-pergel-sticky-add-to-cart__button {
+	border-radius: 8px;
+}
+
+.wp-block-pergel-sticky-add-to-cart.is-shape-square .wp-block-pergel-sticky-add-to-cart__button {
+	border-radius: 0;
 }
 
 .wp-block-pergel-sticky-add-to-cart__button:focus-visible {
