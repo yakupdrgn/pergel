@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T13:05:42+03:00\n"
+"POT-Creation-Date: 2026-10-24T13:43:48+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -576,7 +576,13 @@ msgstr ""
 msgid "Product grid"
 msgstr ""
 
+msgid "Filter look"
+msgstr ""
+
 msgid "View and paging"
+msgstr ""
+
+msgid "Toolbar and page numbers look"
 msgstr ""
 
 msgid "Above the products"
@@ -1579,6 +1585,108 @@ msgid "Button height"
 msgstr ""
 
 msgid "In pixels."
+msgstr ""
+
+msgid "Filter box background"
+msgstr ""
+
+msgid "On wide screens, where the filters sit beside the products."
+msgstr ""
+
+msgid "Filter box edge"
+msgstr ""
+
+msgid "The width of the line around the filters, in pixels; 0 for none."
+msgstr ""
+
+msgid "Filter box edge colour"
+msgstr ""
+
+msgid "Filter box corners"
+msgstr ""
+
+msgid "Space inside the filter box"
+msgstr ""
+
+msgid "Filter heading size"
+msgstr ""
+
+msgid "The headings of the filters (Category, Price, ...), in pixels."
+msgstr ""
+
+msgid "Filter heading weight"
+msgstr ""
+
+msgid "As the template"
+msgstr ""
+
+msgid "Between the filters"
+msgstr ""
+
+msgid "Space only"
+msgstr ""
+
+msgid "A line"
+msgstr ""
+
+msgid "Option text size"
+msgstr ""
+
+msgid "The options of each filter, in pixels."
+msgstr ""
+
+msgid "Filter colour"
+msgstr ""
+
+msgid "Ticked boxes, the price slider and the chosen filters above the list. Empty uses the accent colour."
+msgstr ""
+
+msgid "Toolbar background"
+msgstr ""
+
+msgid "The row above the products with the result count and the sorting."
+msgstr ""
+
+msgid "Toolbar edge"
+msgstr ""
+
+msgid "The width of the line around the toolbar, in pixels; 0 for none."
+msgstr ""
+
+msgid "Toolbar edge colour"
+msgstr ""
+
+msgid "Toolbar corners"
+msgstr ""
+
+msgid "Space inside the toolbar"
+msgstr ""
+
+msgid "Menu and button corners"
+msgstr ""
+
+msgid "The sorting and products per page menus and the grid and list buttons, in pixels."
+msgstr ""
+
+msgid "Page number shape"
+msgstr ""
+
+msgid "Circle"
+msgstr ""
+
+msgid "Page number size"
+msgstr ""
+
+msgid "The width and height of each page number, in pixels."
+msgstr ""
+
+msgid "Page number background"
+msgstr ""
+
+msgid "Current page colour"
+msgstr ""
+
+msgid "Empty uses the accent colour."
 msgstr ""
 
 msgid "Same as its category or the shop"

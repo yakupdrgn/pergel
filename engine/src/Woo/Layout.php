@@ -100,6 +100,12 @@ final class Layout {
 	public const LISTING_SCRIPT = 'pergel/shop-listing';
 
 	/**
+	 * The look settings of the filter box, the toolbar and the page numbers
+	 * (ShopLook).
+	 */
+	public const LOOK = array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_divider', 'filter_text_size', 'filter_accent', 'toolbar_bg', 'toolbar_edge', 'toolbar_edge_color', 'toolbar_radius', 'toolbar_padding', 'control_radius', 'paging_shape', 'paging_size', 'paging_bg', 'paging_current' );
+
+	/**
 	 * Templates that hold the main product grid.
 	 */
 	private const TEMPLATES = array( 'archive-product', 'taxonomy-product_cat', 'taxonomy-product_tag', 'product-search-results' );
@@ -148,6 +154,7 @@ final class Layout {
 		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
 		add_filter( Seo::NOINDEX, array( self::class, 'noindex' ) );
 		add_action( 'wp', array( self::class, 'cards' ) );
+		add_action( 'wp', array( self::class, 'look' ) );
 		add_action( 'wp', array( self::class, 'product_page' ) );
 		add_action( 'rest_api_init', array( self::class, 'quick_view' ) );
 		add_action( 'rest_api_init', array( self::class, 'recently_viewed' ) );
@@ -282,6 +289,32 @@ final class Layout {
 		if ( self::listing() || self::cards_chosen() ) {
 			Cards::register();
 		}
+	}
+
+	/**
+	 * Adds the look rules of the filter box, the toolbar and the page
+	 * numbers on listing pages, while one of them is set. Hooked on wp.
+	 */
+	public static function look(): void {
+		if ( self::listing() && self::chosen( self::LOOK ) ) {
+			ShopLook::enqueue();
+		}
+	}
+
+	/**
+	 * Whether one of the given shop settings differs from its default.
+	 *
+	 * @param array $keys Setting keys in the shop group.
+	 * @phpstan-param list<string> $keys
+	 */
+	public static function chosen( array $keys ): bool {
+		$defaults = Schema::defaults()['shop'] ?? array();
+		foreach ( $keys as $key ) {
+			if ( Settings::get( "shop.$key" ) !== ( $defaults[ $key ] ?? null ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

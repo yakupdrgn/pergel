@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-24 10:06+0000\n"
-"PO-Revision-Date: 2026-10-24 10:06+0000\n"
+"POT-Creation-Date: 2026-10-24 10:44+0000\n"
+"PO-Revision-Date: 2026-10-24 10:44+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -556,8 +556,14 @@ msgstr "Hız"
 msgid "Product grid"
 msgstr "Ürün ızgarası"
 
+msgid "Filter look"
+msgstr "Filtre görünümü"
+
 msgid "View and paging"
 msgstr "Görünüm ve sayfalar"
+
+msgid "Toolbar and page numbers look"
+msgstr "Araç çubuğu ve sayfa numaraları görünümü"
 
 msgid "Above the products"
 msgstr "Ürünlerin üstünde"
@@ -1560,6 +1566,108 @@ msgstr "Düğme yüksekliği"
 
 msgid "In pixels."
 msgstr "Piksel olarak."
+
+msgid "Filter box background"
+msgstr "Filtre kutusu arka planı"
+
+msgid "On wide screens, where the filters sit beside the products."
+msgstr "Geniş ekranlarda, filtrelerin ürünlerin yanında durduğu yerde."
+
+msgid "Filter box edge"
+msgstr "Filtre kutusu kenarlığı"
+
+msgid "The width of the line around the filters, in pixels; 0 for none."
+msgstr "Filtrelerin çevresindeki çizginin kalınlığı, piksel olarak; yok için 0."
+
+msgid "Filter box edge colour"
+msgstr "Filtre kutusu kenarlık rengi"
+
+msgid "Filter box corners"
+msgstr "Filtre kutusu köşeleri"
+
+msgid "Space inside the filter box"
+msgstr "Filtre kutusu iç boşluğu"
+
+msgid "Filter heading size"
+msgstr "Filtre başlığı boyutu"
+
+msgid "The headings of the filters (Category, Price, ...), in pixels."
+msgstr "Filtrelerin başlıkları (Kategori, Fiyat, ...), piksel olarak."
+
+msgid "Filter heading weight"
+msgstr "Filtre başlığı kalınlığı"
+
+msgid "As the template"
+msgstr "Şablona göre"
+
+msgid "Between the filters"
+msgstr "Filtrelerin arası"
+
+msgid "Space only"
+msgstr "Yalnızca boşluk"
+
+msgid "A line"
+msgstr "Bir çizgi"
+
+msgid "Option text size"
+msgstr "Seçenek yazı boyutu"
+
+msgid "The options of each filter, in pixels."
+msgstr "Her filtrenin seçenekleri, piksel olarak."
+
+msgid "Filter colour"
+msgstr "Filtre rengi"
+
+msgid "Ticked boxes, the price slider and the chosen filters above the list. Empty uses the accent colour."
+msgstr "İşaretli kutular, fiyat kaydırıcısı ve listenin üstündeki seçili filtreler. Boş bırakılırsa vurgu rengi kullanılır."
+
+msgid "Toolbar background"
+msgstr "Araç çubuğu arka planı"
+
+msgid "The row above the products with the result count and the sorting."
+msgstr "Ürünlerin üstünde sonuç sayısı ve sıralamanın bulunduğu satır."
+
+msgid "Toolbar edge"
+msgstr "Araç çubuğu kenarlığı"
+
+msgid "The width of the line around the toolbar, in pixels; 0 for none."
+msgstr "Araç çubuğunun çevresindeki çizginin kalınlığı, piksel olarak; yok için 0."
+
+msgid "Toolbar edge colour"
+msgstr "Araç çubuğu kenarlık rengi"
+
+msgid "Toolbar corners"
+msgstr "Araç çubuğu köşeleri"
+
+msgid "Space inside the toolbar"
+msgstr "Araç çubuğu iç boşluğu"
+
+msgid "Menu and button corners"
+msgstr "Menü ve düğme köşeleri"
+
+msgid "The sorting and products per page menus and the grid and list buttons, in pixels."
+msgstr "Sıralama ve sayfa başına ürün menüleri ile ızgara ve liste düğmeleri, piksel olarak."
+
+msgid "Page number shape"
+msgstr "Sayfa numarası biçimi"
+
+msgid "Circle"
+msgstr "Daire"
+
+msgid "Page number size"
+msgstr "Sayfa numarası boyutu"
+
+msgid "The width and height of each page number, in pixels."
+msgstr "Her sayfa numarasının genişliği ve yüksekliği, piksel olarak."
+
+msgid "Page number background"
+msgstr "Sayfa numarası arka planı"
+
+msgid "Current page colour"
+msgstr "Geçerli sayfa rengi"
+
+msgid "Empty uses the accent colour."
+msgstr "Boş bırakılırsa vurgu rengi kullanılır."
 
 msgid "Same as its category or the shop"
 msgstr "Kategorisi veya mağazayla aynı"

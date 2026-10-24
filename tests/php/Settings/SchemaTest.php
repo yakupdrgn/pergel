@@ -370,7 +370,7 @@ final class SchemaTest extends TestCase {
 		$this->assertSame( 'auto', $shop['columns_phone'] );
 		$this->assertSame( 0, $shop['per_page'] );
 		$this->assertSame( 'wide', $shop['width'] );
-		foreach ( \Pergel\Woo\Cards::LOOK as $key ) {
+		foreach ( array_merge( \Pergel\Woo\Cards::LOOK, \Pergel\Woo\Layout::LOOK ) as $key ) {
 			$this->assertContains( $shop[ $key ], array( '', 'template' ), "$key is not set by default." );
 		}
 	}
