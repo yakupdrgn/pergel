@@ -612,6 +612,23 @@ final class ProductDetailsTest extends TestCase {
 		$this->assertStringContainsString( sprintf( _n( '%d star', '%d stars', 1, 'pergel-engine' ), 1 ) . '</span><span class="pergel-rating-summary__bar" style="--pergel-share:0%"', $html );
 	}
 
+	public function test_attributes_table_in_the_specifications_style(): void {
+		$id      = $this->product();
+		$product = wc_get_product( $id );
+		$product->set_weight( '2' );
+		$product->save();
+		$block = '<!-- wp:woocommerce/product-specifications /-->';
+
+		$this->go_to( $id );
+		$this->assertStringNotContainsString( 'is-style-pergel-specs', do_blocks( $block ) );
+
+		Settings::update( array( 'shop' => array( 'details_specs' => 'specs' ) ) );
+		$this->go_to( $id );
+		$html = do_blocks( $block );
+		$this->assertMatchesRegularExpression( '#^\s*<figure[^>]*class="[^"]*\bwp-block-woocommerce-product-specifications\b[^"]*\bis-style-pergel-specs\b#', $html );
+		$this->assertTrue( wp_style_is( \Pergel\Blocks\Styles::SPECS_STYLE ) );
+	}
+
 	public function test_own_values_are_cleaned(): void {
 		$own = DetailsFields::clean(
 			array(

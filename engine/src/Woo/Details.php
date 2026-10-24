@@ -26,6 +26,7 @@ namespace Pergel\Woo;
  *   row of tabs that opens them; on phones the sections stay one under the
  *   other, or the row scrolls sideways. "All open": every section open;
  * - the rating summary above the reviews;
+ * - WooCommerce's attributes table in the Specifications table style;
  * - the look of the tabs (shop.tab_*): underline, folders or buttons, a
  *   card around the open section and a band behind them, as custom
  *   properties on the block;
@@ -58,7 +59,30 @@ final class Details {
 		add_filter( 'render_block_woocommerce/product-details', array( self::class, 'tabs' ) );
 		add_filter( 'render_block_woocommerce/product-details', array( self::class, 'side' ), 20 );
 		add_filter( 'render_block_woocommerce/product-reviews', array( self::class, 'rating' ), 10, 3 );
+		if ( 'specs' === Layout::get( 'shop.details_specs' ) ) {
+			add_filter( 'render_block_woocommerce/product-specifications', array( self::class, 'specs' ) );
+		}
 		wp_enqueue_style( Layout::DETAILS_STYLE );
+	}
+
+	/**
+	 * WooCommerce's attributes table (a Table block figure) in the Table
+	 * block's Specifications style, with its CSS.
+	 *
+	 * @param mixed $content Rendered block.
+	 * @return mixed
+	 */
+	public static function specs( mixed $content ): mixed {
+		if ( ! is_string( $content ) ) {
+			return $content;
+		}
+		$tags = new \WP_HTML_Tag_Processor( $content );
+		if ( ! $tags->next_tag() ) {
+			return $content;
+		}
+		$tags->add_class( 'is-style-' . \Pergel\Blocks\Styles::SPECS );
+		wp_enqueue_style( \Pergel\Blocks\Styles::SPECS_STYLE );
+		return $tags->get_updated_html();
 	}
 
 	/**

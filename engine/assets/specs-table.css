@@ -16,6 +16,16 @@
 	vertical-align: top;
 }
 
+/* WooCommerce's attributes table (shop.details_specs): names in the row
+ * headers at the text's weight, values written as paragraphs. */
+.wp-block-woocommerce-product-specifications.is-style-pergel-specs tbody th {
+	font-weight: inherit;
+}
+
+.wp-block-woocommerce-product-specifications.is-style-pergel-specs td > p {
+	margin: 0;
+}
+
 .wp-block-table.is-style-pergel-specs :is(th, td):last-child {
 	padding-inline-end: 0;
 }

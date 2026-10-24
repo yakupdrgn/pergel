@@ -1043,6 +1043,12 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// WooCommerce's attributes table in Pergel's Specifications table style.
+				'details_specs'      => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'specs' ),
+					'default' => 'template',
+				),
 				// A column beside the sections: recently viewed and
 				// recommended products, and a pattern under them.
 				'details_side'       => array(
