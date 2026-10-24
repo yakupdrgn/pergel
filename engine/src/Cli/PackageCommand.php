@@ -24,8 +24,8 @@ final class PackageCommand {
 	 * Reads every file of the package, fills each page's patterns and checks
 	 * the settings and brand tokens, then lists every problem at once with
 	 * its file and place. Problems stop an import. Notes do not: a field that
-	 * keeps the pattern's sample text, an image without alt text, a content
-	 * file no page uses.
+	 * keeps the pattern's sample text (a child theme's own picture is not
+	 * sample text), an image without alt text, a content file no page uses.
 	 *
 	 * ## OPTIONS
 	 *

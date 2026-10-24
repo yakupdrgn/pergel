@@ -226,6 +226,9 @@ kullanılabilir. `wp pergel pattern fields <ad>` alanları örnek değerleriyle 
 - `file` alanı yalnızca `media/` altındaki bir PDF'i (ya da görseli) alır; dosya ortam
   kütüphanesine görsel gibi yüklenir.
 - `null` bloğu kaldırır. Yazılmayan alan pattern'in örnek metnini korur ve not olarak bildirilir.
+  Etkin alt temanın kendi klasöründen gelen bir görsel (ör. alt temanın ikonu) örnek sayılmaz:
+  yazılmazsa not çıkmaz, yine de değer verilerek değiştirilebilir. Pergel'in kendi görselleri
+  örnektir.
 - Site verisi gösteren bloklar (sorgular, gezinme, harita, mağaza blokları, iç içe
   pattern'ler) alan değildir.
 

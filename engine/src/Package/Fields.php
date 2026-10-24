@@ -49,7 +49,8 @@ use Pergel\Forms\Form;
  *   a list of field maps, one per item. Items may hold items.
  * A second field of a kind in the same scope is `text_2`, `heading_2` and
  * so on. Texts take inline Markdown. A null value removes the block; a
- * field left out keeps the pattern's text and is reported.
+ * field left out keeps the pattern's text and is reported, unless it is a
+ * picture the caller calls the site's own (a child theme's icon).
  *
  * Blocks that show site data (queries, navigation, maps, shop blocks,
  * nested patterns, bound paragraphs) have no fields.
@@ -155,12 +156,14 @@ final class Fields {
 	 * @param Closure                    $media Turns an image path or URL, and the alt text written with it (null = none), into an attachment id (0 = none), URL and alt text; a third argument "file" asks for a file field's file.
 	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param array<int, string>         $notes  Fields left with the pattern's content, by path.
+	 * @param Closure|null               $own    Tells whether a picture's URL is the site's own, so one left out is not reported.
+	 * @phpstan-param (Closure(string): bool)|null $own
 	 * @return list<array{blockName: string|null, attrs: array<string, mixed>, innerBlocks: list<array<string, mixed>>, innerHTML: string, innerContent: list<string|null>}> Blocks for serialize_blocks().
 	 * @throws InvalidArgumentException With the field path, for unknown fields and wrong values.
 	 */
-	public static function fill( array $blocks, array $values, Closure $media, array &$notes = array() ): array {
+	public static function fill( array $blocks, array $values, Closure $media, array &$notes = array(), ?Closure $own = null ): array {
 		$root = self::root( $blocks );
-		self::fill_scope( $root, $values, $media, $notes, '' );
+		self::fill_scope( $root, $values, $media, $notes, '', $own );
 		return $root['innerBlocks'];
 	}
 
@@ -724,6 +727,16 @@ final class Fields {
 	}
 
 	/**
+	 * URL of a picture field's image as the pattern has it, '' for none.
+	 *
+	 * @param array<string, mixed> $block Image, cover or media & text block.
+	 */
+	private static function src( array $block ): string {
+		preg_match( '/<img\b[^>]*\bsrc="([^"]*)"/', implode( '', array_filter( $block['innerContent'], 'is_string' ) ), $m );
+		return html_entity_decode( $m[1] ?? '' );
+	}
+
+	/**
 	 * Fills one scope.
 	 *
 	 * @param array<string, mixed> $scope  Scope block, changed in place.
@@ -732,9 +745,11 @@ final class Fields {
 	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param array<int, string>   $notes  Report of fields left as they were.
 	 * @param string               $where  Path of the scope for messages.
+	 * @param Closure|null         $own    Whether a picture's URL is the site's own.
+	 * @phpstan-param (Closure(string): bool)|null $own
 	 * @throws InvalidArgumentException For unknown fields and wrong values.
 	 */
-	private static function fill_scope( array &$scope, array $values, Closure $media, array &$notes, string $where ): void {
+	private static function fill_scope( array &$scope, array $values, Closure $media, array &$notes, string $where, ?Closure $own = null ): void {
 		$slots = self::scan( $scope );
 		$names = array_column( $slots, 'name' );
 		foreach ( array_keys( $values ) as $key ) {
@@ -750,7 +765,9 @@ final class Fields {
 			$at   = $where . $name;
 			if ( ! array_key_exists( $name, $values ) ) {
 				// A form's settings are not sample text: left out, it is the pattern's form.
-				$kept[] = 'form' === $slot['role'] ? array() : array( $at );
+				// Nor is a picture of the site's own, as a child theme's icon.
+				$picture = in_array( $slot['role'], array( 'image', 'background' ), true ) && null !== $own && $own( self::src( self::at( $scope, $slot['path'] ) ) );
+				$kept[]  = 'form' === $slot['role'] || $picture ? array() : array( $at );
 				continue;
 			}
 			$value  = $values[ $name ];
@@ -759,7 +776,7 @@ final class Fields {
 			$block  = &self::ref( $scope, $slot['path'] );
 			if ( 'items' === $slot['role'] ) {
 				$inner = array();
-				self::fill_items( $block, $slot['members'], $value, $media, $inner, $at );
+				self::fill_items( $block, $slot['members'], $value, $media, $inner, $at, $own );
 				$kept[] = $inner;
 			} elseif ( null === $value ) {
 				unset( $block );
@@ -789,9 +806,11 @@ final class Fields {
 	 * @phpstan-param Closure(string, ?string, string=): array{id: int, url: string, alt: string} $media
 	 * @param array<int, string>   $notes     Report.
 	 * @param string               $at        Field path.
+	 * @param Closure|null         $own       Whether a picture's URL is the site's own.
+	 * @phpstan-param (Closure(string): bool)|null $own
 	 * @throws InvalidArgumentException When $values is not a list of maps.
 	 */
-	private static function fill_items( array &$container, array $members, mixed $values, Closure $media, array &$notes, string $at ): void {
+	private static function fill_items( array &$container, array $members, mixed $values, Closure $media, array &$notes, string $at, ?Closure $own = null ): void {
 		if ( null === $values ) {
 			$values = array();
 		}
@@ -826,7 +845,7 @@ final class Fields {
 			if ( ! is_array( $values[ $n ] ) || ( array() !== $values[ $n ] && array_is_list( $values[ $n ] ) ) ) {
 				throw new InvalidArgumentException( sprintf( '%s[%d]: an item is a map of fields', $at, $n + 1 ) );
 			}
-			self::fill_scope( $container['innerBlocks'][ $indexes[ $n ] ], $values[ $n ], $media, $notes, sprintf( '%s[%d].', $at, $n + 1 ) );
+			self::fill_scope( $container['innerBlocks'][ $indexes[ $n ] ], $values[ $n ], $media, $notes, sprintf( '%s[%d].', $at, $n + 1 ), $own );
 		}
 	}
 
