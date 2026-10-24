@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-24 13:09+0000\n"
-"PO-Revision-Date: 2026-10-24 13:09+0000\n"
+"POT-Creation-Date: 2026-10-24 15:41+0000\n"
+"PO-Revision-Date: 2026-10-24 15:41+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -603,6 +603,12 @@ msgstr "Satın alma"
 
 msgid "Product page look"
 msgstr "Ürün sayfası görünümü"
+
+msgid "Beside the sections"
+msgstr "Bölümlerin yanında"
+
+msgid "Tab look"
+msgstr "Sekmelerin görünümü"
 
 msgid "Related and recently viewed"
 msgstr "İlgili ve son bakılan ürünler"
@@ -1435,6 +1441,102 @@ msgstr "Puan özeti"
 msgid "Above the reviews: the average rating and a bar for each number of stars."
 msgstr "Değerlendirmelerin üstünde: ortalama puan ve her yıldız sayısı için bir çubuk."
 
+msgid "Column beside the sections"
+msgstr "Bölümlerin yanındaki sütun"
+
+msgid "A narrow column on the right of the sections on wide screens, under them on narrow ones. Recommended products are the upsells, then products of the same category with the nearest price. Recently viewed products show once the visitor has viewed some; with both, they are two tabs."
+msgstr "Geniş ekranlarda bölümlerin sağında, dar ekranlarda altında dar bir sütun. Önerilen ürünler önce üst satış ürünleri, sonra aynı kategoride fiyatı en yakın ürünlerdir. Son bakılan ürünler, ziyaretçi ürünlere baktıktan sonra görünür; ikisi birlikteyse iki sekme olur."
+
+msgid "Recently viewed and recommended"
+msgstr "Son bakılanlar ve önerilenler"
+
+msgid "Recently viewed"
+msgstr "Son baktıklarınız"
+
+msgid "Recommended"
+msgstr "Önerilenler"
+
+msgid "Products in the column"
+msgstr "Sütundaki ürün sayısı"
+
+msgid "Banner in the column"
+msgstr "Sütundaki banner"
+
+msgid "A pattern under the products of the column, e.g. a campaign. It also shows without them. Make it under Appearance → Editor → Patterns."
+msgstr "Sütundaki ürünlerin altında bir desen, ör. bir kampanya. Ürünler olmadan da görünür. Görünüm → Düzenleyici → Desenler altında hazırlayın."
+
+msgid "Tab style"
+msgstr "Sekme stili"
+
+msgid "For the \"Tabs\" style of the sections. \"Folders\" joins the open tab to a card holding its section; \"Buttons\" makes each tab a rounded button."
+msgstr "Bölümlerin \"Sekmeler\" stili için. \"Klasörler\" açık sekmeyi bölümünün bulunduğu karta bağlar; \"Düğmeler\" her sekmeyi yuvarlak bir düğme yapar."
+
+msgid "Underline"
+msgstr "Alt çizgi"
+
+msgid "Folders"
+msgstr "Klasörler"
+
+msgid "Buttons"
+msgstr "Düğmeler"
+
+msgid "Tab text size"
+msgstr "Sekme yazı boyutu"
+
+msgid "In pixels."
+msgstr "Piksel olarak."
+
+msgid "Tab text weight"
+msgstr "Sekme yazı kalınlığı"
+
+msgid "As the template"
+msgstr "Şablona göre"
+
+msgid "Regular"
+msgstr "Normal"
+
+msgid "Medium"
+msgstr "Orta"
+
+msgid "Semibold"
+msgstr "Yarı kalın"
+
+msgid "Bold"
+msgstr "Kalın"
+
+msgid "Tab text colour"
+msgstr "Sekme yazı rengi"
+
+msgid "Open tab colour"
+msgstr "Açık sekmenin rengi"
+
+msgid "Empty uses the accent colour."
+msgstr "Boş bırakılırsa vurgu rengi kullanılır."
+
+msgid "Tab corners"
+msgstr "Sekme köşeleri"
+
+msgid "How round the tabs and the card are, in pixels."
+msgstr "Sekmelerin ve kartın ne kadar yuvarlak olduğu, piksel olarak."
+
+msgid "Section card background"
+msgstr "Bölüm kartının arka planı"
+
+msgid "Behind the open section. Any card value puts the sections in a card, in every tab style."
+msgstr "Açık bölümün arkasında. Herhangi bir kart değeri, her sekme stilinde bölümleri bir karta koyar."
+
+msgid "Section card edge"
+msgstr "Bölüm kartının kenarı"
+
+msgid "Space inside the card"
+msgstr "Kart iç boşluğu"
+
+msgid "Background around the sections"
+msgstr "Bölümlerin çevresindeki arka plan"
+
+msgid "Behind the tabs, the card and the column beside them."
+msgstr "Sekmelerin, kartın ve yanlarındaki sütunun arkasında."
+
 msgid "Related products"
 msgstr "İlgili ürünler"
 
@@ -1470,9 +1572,6 @@ msgstr "2 benzer ürünle"
 
 msgid "With 3 similar products"
 msgstr "3 benzer ürünle"
-
-msgid "Recently viewed"
-msgstr "Son baktıklarınız"
 
 msgid "The products a visitor looked at last, kept in their browser. \"Remember\" only notes them, for the Recently viewed block placed anywhere; \"Remember and show\" also shows them under the related products."
 msgstr "Ziyaretçinin en son baktığı ürünler, kendi tarayıcısında tutulur. \"Hatırla\" onları yalnızca not eder (herhangi bir yere konan Son bakılan ürünler bloğu için); \"Hatırla ve göster\" ayrıca ilgili ürünlerin altında gösterir."
@@ -1534,9 +1633,6 @@ msgstr "Kart köşeleri"
 msgid "How round the corners are, in pixels; 0 for square."
 msgstr "Köşelerin ne kadar yuvarlak olduğu, piksel olarak; köşeli için 0."
 
-msgid "Space inside the card"
-msgstr "Kart iç boşluğu"
-
 msgid "Between the edge and the picture and text, in pixels."
 msgstr "Kenarlık ile resim ve yazı arasında, piksel olarak."
 
@@ -1582,18 +1678,6 @@ msgstr "Ürün adının yazı boyutu, piksel olarak."
 msgid "Name weight"
 msgstr "Ad kalınlığı"
 
-msgid "Regular"
-msgstr "Normal"
-
-msgid "Medium"
-msgstr "Orta"
-
-msgid "Semibold"
-msgstr "Yarı kalın"
-
-msgid "Bold"
-msgstr "Kalın"
-
 msgid "Category and brand colour"
 msgstr "Kategori ve marka rengi"
 
@@ -1636,9 +1720,6 @@ msgstr "Yazısı kadar"
 msgid "Button height"
 msgstr "Düğme yüksekliği"
 
-msgid "In pixels."
-msgstr "Piksel olarak."
-
 msgid "Filter box background"
 msgstr "Filtre kutusu arka planı"
 
@@ -1668,9 +1749,6 @@ msgstr "Filtrelerin başlıkları (Kategori, Fiyat, ...), piksel olarak."
 
 msgid "Filter heading weight"
 msgstr "Filtre başlığı kalınlığı"
-
-msgid "As the template"
-msgstr "Şablona göre"
 
 msgid "Between the filters"
 msgstr "Filtrelerin arası"
@@ -1737,9 +1815,6 @@ msgstr "Sayfa numarası arka planı"
 
 msgid "Current page colour"
 msgstr "Geçerli sayfa rengi"
-
-msgid "Empty uses the accent colour."
-msgstr "Boş bırakılırsa vurgu rengi kullanılır."
 
 msgid "The store header has a top bar, a row with the logo, a product search with categories, contact, account and cart, and a bar with the menu; each part is set below. The theme's header is the Header template part under Appearance → Editor. A sticky header stays sticky."
 msgstr "Mağaza üst bilgisinde bir üst şerit; logo, kategorili ürün araması, iletişim, hesap ve sepetin olduğu bir satır ve menünün olduğu bir çubuk bulunur; her parça aşağıda ayarlanır. Temanın üst bilgisi, Görünüm → Düzenleyici'deki Üst bilgi şablon parçasıdır. Yapışkan üst bilgi yapışkan kalır."
@@ -2311,6 +2386,9 @@ msgstr "Ek bilgiler"
 
 msgid "Product details"
 msgstr "Ürün ayrıntıları"
+
+msgid "Other products"
+msgstr "Diğer ürünler"
 
 #. translators: %d: number of stars, 1 to 5.
 msgid "%d star"
@@ -3339,9 +3417,6 @@ msgstr "Bu paketi öne çıkar"
 
 msgid "Gives the plan an accent border. Say why in its text too, for example \"Most popular\"."
 msgstr "Pakete vurgu renginde bir kenarlık ekler. Nedenini metninde de belirtin, örneğin \"En popüler\"."
-
-msgid "Buttons"
-msgstr "Düğmeler"
 
 msgid "Show labels"
 msgstr "Etiketleri göster"

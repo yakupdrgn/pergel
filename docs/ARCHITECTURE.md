@@ -851,6 +851,22 @@ görünmez (`Settings\Screen::shown`).
   okuyucuda kalır); 782 px altında arama tam genişlikte alt satıra iner, telefon ve sepet tutarı
   gizlenir; 600 px altında üst şerit gizlenir. Ayarlar Mağaza menüsünün "Üst bilgi" sayfasındadır;
   mini sepet ayarı da oraya taşındı.
+- **Sekme görünümü ve yan sütun (`Woo\Details`, 6a):** "Sekmeler" stilinde `Details::tabs`
+  bloğa `tab_look` sınıfını (`is-look-folder` / `is-look-pills`; "line" sınıfsız, bugünkü alt
+  çizgi), kart (`has-card`: klasörlerde her zaman, diğerlerinde kart değeri varsa) ve zemin
+  (`has-area`) sınıflarını ve dolu değerleri `--pergel-tab-*` özel özellikleri olarak ekler
+  (`LookValues`; `product-details.css` boşlarda bugünkü görünüme düşer). `tab_` anahtarları
+  `details_` ile başlamaz: görünüm tek başına `Details`'i yüklemez, zaten yalnızca sekmelerde işe
+  yarar. `details_side` ("both" / "recent" / "recommended") öncelik 20'deki `Details::side` ile
+  blokla birlikte bir ızgaraya bir `<aside>` koyar (1025 px üstünde sağda 300 px, altında alta);
+  ızgara bloğun hizasını (`alignwide`), `style`'ını (kenar boşlukları ve görünüm değerleri), kartını
+  ve zeminini devralır. Önerilenler `Related::similar` (üst satışlar, sonra aynı kategoride fiyatı
+  en yakın stoktaki ürünler) ve `Related::cards`; son bakılanlar `pergel/recently-viewed` bloğudur.
+  İkisi birlikteyse iki sekme olur: son bakılanlar sekmesi gizli başlar, `product-details.js`
+  listesi dolunca (`MutationObserver`) gösterir ve ziyaretçi sekme seçmediyse açar; oklar,
+  Home/End çalışır. Tek liste başlıkla gösterilir. `details_banner` deseni ürünlerin altındadır.
+  `Layout::recent_on()` son bakılanların rotasını ve bloğu `related_recent` kapalıyken de yan sütun
+  için açar.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

@@ -348,9 +348,17 @@ final class Layout {
 	 * quick_view() for why it is checked here.
 	 */
 	public static function recently_viewed(): void {
-		if ( 'off' !== Settings::get( 'shop.related_recent' ) ) {
+		if ( self::recent_on() ) {
 			Related::routes();
 		}
+	}
+
+	/**
+	 * Whether recently viewed products are kept and shown: the setting under
+	 * the product, or the column beside the sections showing them.
+	 */
+	public static function recent_on(): bool {
+		return 'off' !== Settings::get( 'shop.related_recent' ) || in_array( Settings::get( 'shop.details_side' ), array( 'both', 'recent' ), true );
 	}
 
 	/**

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T16:08:45+03:00\n"
+"POT-Creation-Date: 2026-10-24T18:41:36+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -622,6 +622,12 @@ msgid "Buying"
 msgstr ""
 
 msgid "Product page look"
+msgstr ""
+
+msgid "Beside the sections"
+msgstr ""
+
+msgid "Tab look"
 msgstr ""
 
 msgid "Related and recently viewed"
@@ -1455,6 +1461,102 @@ msgstr ""
 msgid "Above the reviews: the average rating and a bar for each number of stars."
 msgstr ""
 
+msgid "Column beside the sections"
+msgstr ""
+
+msgid "A narrow column on the right of the sections on wide screens, under them on narrow ones. Recommended products are the upsells, then products of the same category with the nearest price. Recently viewed products show once the visitor has viewed some; with both, they are two tabs."
+msgstr ""
+
+msgid "Recently viewed and recommended"
+msgstr ""
+
+msgid "Recently viewed"
+msgstr ""
+
+msgid "Recommended"
+msgstr ""
+
+msgid "Products in the column"
+msgstr ""
+
+msgid "Banner in the column"
+msgstr ""
+
+msgid "A pattern under the products of the column, e.g. a campaign. It also shows without them. Make it under Appearance → Editor → Patterns."
+msgstr ""
+
+msgid "Tab style"
+msgstr ""
+
+msgid "For the \"Tabs\" style of the sections. \"Folders\" joins the open tab to a card holding its section; \"Buttons\" makes each tab a rounded button."
+msgstr ""
+
+msgid "Underline"
+msgstr ""
+
+msgid "Folders"
+msgstr ""
+
+msgid "Buttons"
+msgstr ""
+
+msgid "Tab text size"
+msgstr ""
+
+msgid "In pixels."
+msgstr ""
+
+msgid "Tab text weight"
+msgstr ""
+
+msgid "As the template"
+msgstr ""
+
+msgid "Regular"
+msgstr ""
+
+msgid "Medium"
+msgstr ""
+
+msgid "Semibold"
+msgstr ""
+
+msgid "Bold"
+msgstr ""
+
+msgid "Tab text colour"
+msgstr ""
+
+msgid "Open tab colour"
+msgstr ""
+
+msgid "Empty uses the accent colour."
+msgstr ""
+
+msgid "Tab corners"
+msgstr ""
+
+msgid "How round the tabs and the card are, in pixels."
+msgstr ""
+
+msgid "Section card background"
+msgstr ""
+
+msgid "Behind the open section. Any card value puts the sections in a card, in every tab style."
+msgstr ""
+
+msgid "Section card edge"
+msgstr ""
+
+msgid "Space inside the card"
+msgstr ""
+
+msgid "Background around the sections"
+msgstr ""
+
+msgid "Behind the tabs, the card and the column beside them."
+msgstr ""
+
 msgid "Related products"
 msgstr ""
 
@@ -1489,9 +1591,6 @@ msgid "With 2 similar products"
 msgstr ""
 
 msgid "With 3 similar products"
-msgstr ""
-
-msgid "Recently viewed"
 msgstr ""
 
 msgid "The products a visitor looked at last, kept in their browser. \"Remember\" only notes them, for the Recently viewed block placed anywhere; \"Remember and show\" also shows them under the related products."
@@ -1554,9 +1653,6 @@ msgstr ""
 msgid "How round the corners are, in pixels; 0 for square."
 msgstr ""
 
-msgid "Space inside the card"
-msgstr ""
-
 msgid "Between the edge and the picture and text, in pixels."
 msgstr ""
 
@@ -1602,18 +1698,6 @@ msgstr ""
 msgid "Name weight"
 msgstr ""
 
-msgid "Regular"
-msgstr ""
-
-msgid "Medium"
-msgstr ""
-
-msgid "Semibold"
-msgstr ""
-
-msgid "Bold"
-msgstr ""
-
 msgid "Category and brand colour"
 msgstr ""
 
@@ -1656,9 +1740,6 @@ msgstr ""
 msgid "Button height"
 msgstr ""
 
-msgid "In pixels."
-msgstr ""
-
 msgid "Filter box background"
 msgstr ""
 
@@ -1687,9 +1768,6 @@ msgid "The headings of the filters (Category, Price, ...), in pixels."
 msgstr ""
 
 msgid "Filter heading weight"
-msgstr ""
-
-msgid "As the template"
 msgstr ""
 
 msgid "Between the filters"
@@ -1756,9 +1834,6 @@ msgid "Page number background"
 msgstr ""
 
 msgid "Current page colour"
-msgstr ""
-
-msgid "Empty uses the accent colour."
 msgstr ""
 
 msgid "The store header has a top bar, a row with the logo, a product search with categories, contact, account and cart, and a bar with the menu; each part is set below. The theme's header is the Header template part under Appearance → Editor. A sticky header stays sticky."
@@ -2353,6 +2428,9 @@ msgid "Additional information"
 msgstr ""
 
 msgid "Product details"
+msgstr ""
+
+msgid "Other products"
 msgstr ""
 
 #. translators: %d: number of stars, 1 to 5.
@@ -3421,9 +3499,6 @@ msgid "Highlight this plan"
 msgstr ""
 
 msgid "Gives the plan an accent border. Say why in its text too, for example \"Most popular\"."
-msgstr ""
-
-msgid "Buttons"
 msgstr ""
 
 msgid "Show labels"

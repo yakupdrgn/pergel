@@ -181,6 +181,19 @@ final class Preset {
 				'related_count'      => 8,
 				'related_compare'    => '4',
 				'related_recent'     => 'show',
+				// The sections as on the reference: folder tabs joined to a
+				// white card on a light band, with recently viewed and
+				// recommended products beside them.
+				'details_side'       => 'both',
+				'tab_look'           => 'folder',
+				'tab_size'           => 14,
+				'tab_weight'         => '500',
+				'tab_active'         => 'accent',
+				'tab_radius'         => 16,
+				'tab_panel_bg'       => 'base',
+				'tab_edge_color'     => 'line',
+				'tab_padding'        => 32,
+				'tab_area_bg'        => 'surface',
 			),
 		);
 	}

@@ -921,6 +921,52 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// A column beside the sections: recently viewed and
+				// recommended products, and a pattern under them.
+				'details_side'       => array(
+					'type'    => 'enum',
+					'options' => array( 'none', 'both', 'recent', 'recommended' ),
+					'default' => 'none',
+				),
+				'details_side_count' => array(
+					'type'    => 'int',
+					'min'     => 1,
+					'max'     => 6,
+					'default' => 3,
+				),
+				'details_banner'     => array( 'type' => 'pattern' ),
+				// How the tabs over the sections look; empty or "As in the
+				// template" leaves the theme's look. See Pergel\Woo\Details.
+				'tab_look'           => array(
+					'type'    => 'enum',
+					'options' => array( 'line', 'folder', 'pills' ),
+					'default' => 'line',
+				),
+				'tab_size'           => array(
+					'type' => 'length',
+					'min'  => 12,
+					'max'  => 24,
+				),
+				'tab_weight'         => array(
+					'type'    => 'enum',
+					'options' => array( 'template', '400', '500', '600', '700' ),
+					'default' => 'template',
+				),
+				'tab_color'          => array( 'type' => 'color' ),
+				'tab_active'         => array( 'type' => 'color' ),
+				'tab_radius'         => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 32,
+				),
+				'tab_panel_bg'       => array( 'type' => 'color' ),
+				'tab_edge_color'     => array( 'type' => 'color' ),
+				'tab_padding'        => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 64,
+				),
+				'tab_area_bg'        => array( 'type' => 'color' ),
 				// Related products, the comparison with similar products and
 				// recently viewed ones; see Pergel\Woo\Related.
 				'related_style'      => array(
