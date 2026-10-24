@@ -629,7 +629,16 @@ görünmez (`Settings\Screen::shown`).
   ve liste içi aramayı (`shop.filters_search`, sekizden uzun listeler; aramadan önce
   WooCommerce'in "daha fazla göster"ini açar) `assets/shop-filters.js` tutar ve her yeniden
   çizimde geri koyar. `shop.filter_brand|filter_rating` temanın filtre pattern'ine
-  `pergel/shop/filters` süzgeciyle marka (`product_brand`) ve puan filtresini ekletir.
+  `pergel/shop/filters` süzgeciyle marka (`product_brand`) ve puan filtresini ekletir. Marka
+  filtresi varken pattern, adı ya da etiketi markalarla aynı olan özniteliği (`pa_brand`,
+  "Marka") atlar; böylece iki "Brand" filtresi çıkmaz. `shop.filter_title|filter_icon`
+  pattern'in `pergel-filters__title` başlığına kendi yazısını ve bir ikon koyar (sunucuda).
+  `shop.filter_more: pill` uzun listeleri `filter_rows` satırda keser: sonraki satır solarak
+  görünür (`data-pergel-edge`), gerisi gizlenir (`data-pergel-beyond`), WooCommerce'in "Show N
+  more" bağlantısı gizlenir ve yuvarlak bir More/Less düğmesi gelir. Düğme, gerekirse
+  WooCommerce'in kendi "daha fazla"sına da basar (ilk 15'ten sonrakileri o çizer). Aramada bütün
+  seçenekler görünür; işaretli bir seçenek aşağıdaysa liste açık başlar. Betik yalnızca gerçekten
+  değişen yazıyı yazar: gözlemci (MutationObserver) her yazıyı yeniden çizim sayıp döngüye girer.
 - **Görünüm ve sayfalar (`Woo\Listing`):** `shop.view` ana ızgaraya `pergel-shop-grid
   pergel-view-list` sınıfı koyar; liste mümkünse (`view` liste ya da `view_switch` açık) fiyattan
   sonra `woocommerce/product-summary` (30 kelime) çizilir, ızgarada CSS ile gizlenir.

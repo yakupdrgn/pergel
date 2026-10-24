@@ -1735,6 +1735,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   (Ordering Information, Downloads). İçerik ayrı alanlara taşınmaz: açıklama tek metin kalır,
   grup başlıkları H2, gruba giren bölümler H3 olur ve Pergel açıklamayı H2'lerinden böler
   (`details_split`, genel bir ayar). Cetvel ürün sayfalarından kalkar.
+- **Mağaza farkları, adım 7 (24 Ekim 2026, kullanıcı):** üç PR. 7a filtre kutusu: başlık yazısı
+  ve ikon, uzun listelerde "More" düğmesi, arama kutusu yüksekliği ve kenarı, sayılar sağda, renk
+  noktası ve yıldız boyutu; çift Brand hatası düzeltilir. 7b kartlar ve banner; karşılaştırma için
+  Pergel'in kendi listesi (tarayıcıda tutulur, önbelleğe uygun; S5b karşılaştırma tablosunu
+  kullanır). 7c alt temadaki sabit Unimart CSS'i kalkar, prova hazır ayarla kurulur. Unimart'ın
+  köşe kurdelesi görüntülenme sayacıdır, dışarıda kalır. Renk noktalarını ve yıldızları
+  WooCommerce zaten çiziyor ("Görsel" türündeki öznitelik ve terim rengiyle); Pergel boyut ve
+  renk ayarı verir.
 
 ## Aşamalar ve bitti tanımları
 

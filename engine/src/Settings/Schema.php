@@ -417,6 +417,26 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// The filter box's title and long lists; see Pergel\Woo\Filters.
+				'filter_title'       => array(
+					'type' => 'text',
+					'max'  => 40,
+				),
+				'filter_icon'        => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'filter_more'        => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'pill' ),
+					'default' => 'template',
+				),
+				'filter_rows'        => array(
+					'type'    => 'int',
+					'min'     => 3,
+					'max'     => 15,
+					'default' => 5,
+				),
 				// Toolbar, list view and paging; see Pergel\Woo\Toolbar.
 				'view'               => array(
 					'type'    => 'enum',
@@ -618,6 +638,33 @@ final class Schema {
 					'max'  => 20,
 				),
 				'filter_accent'      => array( 'type' => 'color' ),
+				'filter_input_size'  => array(
+					'type' => 'length',
+					'min'  => 28,
+					'max'  => 56,
+				),
+				'filter_input_edge'  => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 4,
+				),
+				'filter_input_color' => array( 'type' => 'color' ),
+				'filter_counts'      => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'right' ),
+					'default' => 'template',
+				),
+				'filter_swatch'      => array(
+					'type' => 'length',
+					'min'  => 10,
+					'max'  => 32,
+				),
+				'filter_star_size'   => array(
+					'type' => 'length',
+					'min'  => 12,
+					'max'  => 24,
+				),
+				'filter_star_color'  => array( 'type' => 'color' ),
 				'toolbar_bg'         => array( 'type' => 'color' ),
 				'toolbar_edge'       => array(
 					'type' => 'length',

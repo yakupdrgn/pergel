@@ -9,7 +9,9 @@
  * "Filter products" button on narrow ones. An attribute filter needs the
  * attribute's ID, so one is added for each of the first three attributes
  * the store has; the Site Editor can change them. The engine may ask for
- * the brand and rating filters too (filter pergel/shop/filters).
+ * the brand and rating filters too (filter pergel/shop/filters); with the
+ * brand filter, an attribute named like the brands is left out, so the
+ * list does not show two "Brand" filters.
  *
  * @package Pergel
  */
@@ -18,8 +20,19 @@ declare( strict_types=1 );
 
 defined( 'ABSPATH' ) || exit;
 
-$pergel_attributes = function_exists( 'wc_get_attribute_taxonomies' ) ? array_slice( array_values( wc_get_attribute_taxonomies() ), 0, 3 ) : array();
 $pergel_extra      = (array) apply_filters( 'pergel/shop/filters', array() );
+$pergel_brands     = in_array( 'brand', $pergel_extra, true ) ? get_taxonomy( 'product_brand' ) : false;
+$pergel_attributes = function_exists( 'wc_get_attribute_taxonomies' ) ? array_values( wc_get_attribute_taxonomies() ) : array();
+if ( $pergel_brands instanceof WP_Taxonomy ) {
+	$pergel_names      = array_map( 'mb_strtolower', array( 'brand', (string) $pergel_brands->label, (string) $pergel_brands->labels->singular_name ) );
+	$pergel_attributes = array_values(
+		array_filter(
+			$pergel_attributes,
+			static fn ( stdClass $attribute ): bool => ! in_array( mb_strtolower( (string) $attribute->attribute_name ), $pergel_names, true ) && ! in_array( mb_strtolower( (string) $attribute->attribute_label ), $pergel_names, true )
+		)
+	);
+}
+$pergel_attributes = array_slice( $pergel_attributes, 0, 3 );
 ?>
 <!-- wp:woocommerce/product-filters -->
 <div class="wp-block-woocommerce-product-filters wc-block-product-filters"><!-- wp:heading {"className":"pergel-filters__title"} -->

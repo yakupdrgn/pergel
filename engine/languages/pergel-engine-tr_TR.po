@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-24 17:58+0000\n"
-"PO-Revision-Date: 2026-10-24 17:58+0000\n"
+"POT-Creation-Date: 2026-10-24 18:59+0000\n"
+"PO-Revision-Date: 2026-10-24 18:59+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1093,6 +1093,33 @@ msgstr "Puan filtresi"
 msgid "Filters by the average customer rating. Shown only while rated products exist."
 msgstr "Ortalama müşteri puanına göre filtreler. Yalnızca puanlanmış ürünler varken gösterilir."
 
+msgid "Filter box title"
+msgstr "Filtre kutusu başlığı"
+
+msgid "The heading above the filters, such as \"Filter & Refine\". Empty keeps the template's."
+msgstr "Filtrelerin üstündeki başlık, örneğin \"Filtrele ve daralt\". Boş bırakılırsa şablonunki kalır."
+
+msgid "Icon before the filter box title"
+msgstr "Filtre kutusu başlığının önünde ikon"
+
+msgid "Long filter lists"
+msgstr "Uzun filtre listeleri"
+
+msgid "With \"A few rows and a More button\" a long list shows its first rows, fading out, and a rounded More button opens the rest."
+msgstr "\"Birkaç satır ve Daha fazla düğmesi\" ile uzun bir liste ilk satırlarını solarak gösterir; yuvarlak Daha fazla düğmesi gerisini açar."
+
+msgid "As the template (\"Show more\" link)"
+msgstr "Şablondaki gibi (\"Daha fazla göster\" bağlantısı)"
+
+msgid "A few rows and a More button"
+msgstr "Birkaç satır ve Daha fazla düğmesi"
+
+msgid "Rows before More"
+msgstr "Daha fazla düğmesinden önceki satırlar"
+
+msgid "How many options a long list shows before its More button."
+msgstr "Uzun bir listenin Daha fazla düğmesinden önce kaç seçenek göstereceği."
+
 msgid "Products are shown as"
 msgstr "Ürünlerin gösterimi"
 
@@ -1906,6 +1933,45 @@ msgstr "Filtre rengi"
 msgid "Ticked boxes, the price slider and the chosen filters above the list. Empty uses the accent colour."
 msgstr "İşaretli kutular, fiyat kaydırıcısı ve listenin üstündeki seçili filtreler. Boş bırakılırsa vurgu rengi kullanılır."
 
+msgid "Filter search box height"
+msgstr "Filtre arama kutusu yüksekliği"
+
+msgid "The box that narrows down a long list, in pixels. Its corners follow \"Menu and button corners\"."
+msgstr "Uzun bir listeyi daraltan kutu, piksel olarak. Köşeleri \"Menü ve düğme köşeleri\" ayarına uyar."
+
+msgid "Filter search box edge"
+msgstr "Filtre arama kutusu kenarı"
+
+msgid "In pixels; 0 for none."
+msgstr "Piksel olarak; yoksa 0."
+
+msgid "Filter search box edge colour"
+msgstr "Filtre arama kutusu kenar rengi"
+
+msgid "Product counts"
+msgstr "Ürün sayıları"
+
+msgid "Beside the name"
+msgstr "Adın yanında"
+
+msgid "At the end of the row"
+msgstr "Satırın sonunda"
+
+msgid "Colour dot size"
+msgstr "Renk noktası boyutu"
+
+msgid "The dots of colour attributes (attributes of the \"Visual\" type with a colour for each term), in pixels."
+msgstr "Renk özniteliklerinin noktaları (her terimine renk verilmiş \"Görsel\" türündeki öznitelikler), piksel olarak."
+
+msgid "Star size in the rating filter"
+msgstr "Puan filtresinde yıldız boyutu"
+
+msgid "Star colour in the rating filter"
+msgstr "Puan filtresinde yıldız rengi"
+
+msgid "Empty keeps the text colour."
+msgstr "Boş bırakılırsa yazı rengi kalır."
+
 msgid "Toolbar background"
 msgstr "Araç çubuğu arka planı"
 
@@ -1930,8 +1996,8 @@ msgstr "Araç çubuğu iç boşluğu"
 msgid "Menu and button corners"
 msgstr "Menü ve düğme köşeleri"
 
-msgid "The sorting and products per page menus and the grid and list buttons, in pixels."
-msgstr "Sıralama ve sayfa başına ürün menüleri ile ızgara ve liste düğmeleri, piksel olarak."
+msgid "The sorting and products per page menus, the grid and list buttons and the filter search box, in pixels."
+msgstr "Sıralama ve sayfa başına ürün menüleri, ızgara ve liste düğmeleri ve filtre arama kutusu, piksel olarak."
 
 msgid "Page number shape"
 msgstr "Sayfa numarası biçimi"
@@ -2570,6 +2636,14 @@ msgstr "Kendi modunu seçen ürünler dışında, bu kategorinin ve alt kategori
 msgid "Search the options"
 msgstr "Seçeneklerde ara"
 
+msgctxt "filter list"
+msgid "More"
+msgstr "Daha fazla"
+
+msgctxt "filter list"
+msgid "Less"
+msgstr "Daha az"
+
 msgid "Campaign"
 msgstr "Kampanya"
 
@@ -2798,6 +2872,10 @@ msgstr "Sepete ekle"
 
 msgid "View product"
 msgstr "Ürünü gör"
+
+msgctxt "filter box title of the Unimart layout"
+msgid "Filter & Refine"
+msgstr "Filtrele ve daralt"
 
 msgid "The Unimart layout is on. Undo puts back the settings it changed."
 msgstr "Unimart düzeni açık. Geri al, değiştirdiği ayarları eski hâline getirir."

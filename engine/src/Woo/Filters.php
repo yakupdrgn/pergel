@@ -22,8 +22,10 @@ use const Pergel\VERSION;
  * - where the filters sit: left, right, behind a "Filter products" button
  *   (the block's own overlay, on every screen), or nowhere;
  * - whether the filter column stays in view or scrolls on its own;
- * - filter headings that open and close their group, and a search box in
- *   long lists (a small script module, loaded only when one is on);
+ * - filter headings that open and close their group, a search box in
+ *   long lists and long lists cut to a few rows with a More button (a small
+ *   script module, loaded only when one is on);
+ * - the filter box's own title, with an icon;
  * - the brand and rating filters, added to the theme's filter pattern.
  *
  * Every default leaves the template as it is, like Layout.
@@ -31,6 +33,11 @@ use const Pergel\VERSION;
 final class Filters {
 
 	public const SCRIPT = 'pergel/shop-filters';
+
+	/**
+	 * The icon before the filter box's title: three sliders.
+	 */
+	private const ICON = '<svg class="pergel-filters__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>';
 
 	/**
 	 * Filter blocks whose first heading names their group.
@@ -161,8 +168,9 @@ final class Filters {
 	}
 
 	/**
-	 * Marks the filters for the script and loads it, when a filter group can
-	 * fold or a long list gets a search box.
+	 * Puts the filter box's own title in, and marks the filters for the
+	 * script and loads it, when a filter group can fold, a long list gets a
+	 * search box or long lists show a few rows.
 	 *
 	 * @param string $html Rendered block.
 	 */
@@ -170,11 +178,13 @@ final class Filters {
 		if ( ! Layout::listing() ) {
 			return $html;
 		}
+		$html     = self::title( $html );
 		$features = array_keys(
 			array_filter(
 				array(
 					'fold'   => true === Settings::get( 'shop.filters_fold' ),
 					'search' => true === Settings::get( 'shop.filters_search' ),
+					'more'   => 'pill' === Settings::get( 'shop.filter_more' ),
 				)
 			)
 		);
@@ -187,9 +197,39 @@ final class Filters {
 		}
 		$tags->set_attribute( 'data-pergel-filters', implode( ' ', $features ) );
 		$tags->set_attribute( 'data-pergel-search-label', __( 'Search the options', 'pergel-engine' ) );
+		if ( in_array( 'more', $features, true ) ) {
+			$rows = Settings::get( 'shop.filter_rows' );
+			$tags->set_attribute( 'data-pergel-rows', (string) ( is_int( $rows ) ? $rows : 5 ) );
+			$tags->set_attribute( 'data-pergel-more-label', _x( 'More', 'filter list', 'pergel-engine' ) );
+			$tags->set_attribute( 'data-pergel-less-label', _x( 'Less', 'filter list', 'pergel-engine' ) );
+		}
 		wp_enqueue_script_module( self::SCRIPT );
 		Layout::style();
 		return $tags->get_updated_html();
+	}
+
+	/**
+	 * The filter box's own title and icon, in the title heading of the
+	 * theme's filter pattern (class pergel-filters__title).
+	 *
+	 * @param string $html Rendered block.
+	 */
+	private static function title( string $html ): string {
+		$text = Settings::get( 'shop.filter_title' );
+		$text = is_string( $text ) ? trim( $text ) : '';
+		$icon = true === Settings::get( 'shop.filter_icon' );
+		if ( '' === $text && ! $icon ) {
+			return $html;
+		}
+		if ( $icon ) {
+			Layout::style();
+		}
+		return (string) preg_replace_callback(
+			'#(<h([1-6])\b[^>]*\bpergel-filters__title\b[^>]*>)(.*?)(</h\2>)#s',
+			static fn ( array $parts ): string => $parts[1] . ( $icon ? self::ICON : '' ) . ( '' === $text ? $parts[3] : esc_html( $text ) ) . $parts[4],
+			$html,
+			1
+		);
 	}
 
 	/**
