@@ -292,6 +292,51 @@ final class ProductDetailsTest extends TestCase {
 		$this->assertTrue( wp_style_is( Layout::DETAILS_STYLE ) );
 	}
 
+	public function test_description_split_at_its_headings(): void {
+		$id = $this->product();
+		wp_update_post(
+			array(
+				'ID'           => $id,
+				'post_content' => '<!-- wp:paragraph --><p>First words</p><!-- /wp:paragraph -->'
+					. "\n\n" . '<!-- wp:heading --><h2 class="wp-block-heading">Use</h2><!-- /wp:heading -->'
+					. "\n\n" . '<!-- wp:paragraph --><p>How to use it</p><!-- /wp:paragraph -->'
+					. "\n\n" . '<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Cleaning</h3><!-- /wp:heading -->'
+					. "\n\n" . '<!-- wp:group {"tagName":"section"} --><section class="wp-block-group"><!-- wp:heading --><h2 class="wp-block-heading">Care</h2><!-- /wp:heading -->'
+					. "\n\n" . '<!-- wp:paragraph --><p>Keep it dry</p><!-- /wp:paragraph --></section><!-- /wp:group -->',
+			)
+		);
+		Settings::update(
+			array(
+				'shop' => array(
+					'details_style' => 'tabs',
+					'details_split' => true,
+				),
+			)
+		);
+		$this->go_to( $id );
+		$template = str_replace( '<!-- wp:paragraph --><p>About it</p><!-- /wp:paragraph -->', '<!-- wp:woocommerce/product-description /-->', self::template() );
+
+		$html = do_blocks( $template );
+
+		$this->assertSame( array( __( 'Description', 'pergel-engine' ), 'Use', 'Care', 'Specifications', 'Reviews' ), self::titles( $html ) );
+		$this->assertSame( 5, substr_count( $html, 'role="tab"' ) );
+		$this->assertStringContainsString( 'First words', $html );
+		$this->assertStringContainsString( '<h3 class="wp-block-heading">Cleaning</h3>', $html, 'An H3 stays in its section.' );
+		$this->assertMatchesRegularExpression( '#<section class="wp-block-group[^"]*">\s*<p[^>]*>Keep it dry</p>\s*</section>#', $html, 'A group keeps its content without its heading.' );
+		$this->assertStringNotContainsString( '<h2 class="wp-block-heading">', $html, 'The headings name the sections.' );
+
+		// A classic description is cut at its H2 headings too.
+		wp_update_post(
+			array(
+				'ID'           => $id,
+				'post_content' => "<h2>Use</h2>\nHow to use it\n\n<h2>Care</h2>\nKeep it dry",
+			)
+		);
+		$html = do_blocks( $template );
+		$this->assertSame( array( 'Use', 'Care', 'Specifications', 'Reviews' ), self::titles( $html ) );
+		$this->assertStringContainsString( '<p>Keep it dry</p>', $html );
+	}
+
 	public function test_all_open(): void {
 		$id = $this->product();
 		Settings::update( array( 'shop' => array( 'details_style' => 'open' ) ) );

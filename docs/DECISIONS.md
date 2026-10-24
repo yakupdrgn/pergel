@@ -1728,6 +1728,13 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   tam kalır); kutu ve çubuk değerleri ayardır. Hazır ayar kutuyu (temel renk, çizgi rengi kenar,
   16 px, 32 px) ve çubuğu (temel renk, 16 px, 84 px, kısa açıklama, kenarlı hap düğme) açar;
   banner siteye özel olduğundan hazır ayarda yok.
+- **Gerçek sekmeler, 6d (24 Ekim 2026, kullanıcı):** prova'nın açık bölümleri (11 bölüm, kartlar,
+  cetvel) yerine Pergel'in sekmeleri; 11 bölüm 5 sekmede toplanır: Overview (Overview, Key
+  Features, How It Works), Specifications (Specifications, Compatible Labware, Compare the
+  Range), Applications & Care (Typical Applications, Use and Care), FAQ, Ordering & Downloads
+  (Ordering Information, Downloads). İçerik ayrı alanlara taşınmaz: açıklama tek metin kalır,
+  grup başlıkları H2, gruba giren bölümler H3 olur ve Pergel açıklamayı H2'lerinden böler
+  (`details_split`, genel bir ayar). Cetvel ürün sayfalarından kalkar.
 
 ## Aşamalar ve bitti tanımları
 

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T20:41:09+03:00\n"
+"POT-Creation-Date: 2026-10-24T20:58:30+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1503,6 +1503,12 @@ msgstr ""
 msgid "All open"
 msgstr ""
 
+msgid "Description in sections by its headings"
+msgstr ""
+
+msgid "Each H2 heading of the product description starts a section of its own, named after it, in place of the one Description section; with \"Tabs\", a tab each. Content before the first heading stays under \"Description\". The text stays one description in the editor. A category or a product can choose its own."
+msgstr ""
+
 msgid "Tabs on phones"
 msgstr ""
 
@@ -2554,6 +2560,9 @@ msgid "Working days from shipping to delivery, such as 3 or 2-4, for products of
 msgstr ""
 
 msgid "Additional information"
+msgstr ""
+
+msgid "Description"
 msgstr ""
 
 msgid "Product details"

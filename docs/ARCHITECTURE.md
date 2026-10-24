@@ -891,6 +891,14 @@ görünmez (`Settings\Screen::shown`).
   sınıfları, `sticky_bg` / `_padding` / `_image` değerlerini `--pergel-sticky-*` özellikleri olarak
   çubuğa koyar; `sticky_text` kısa açıklamayı adın altına iki satır olarak ekler (782 px altında
   gizli). Boş değerler bugünkü görünümü bırakır.
+- **Açıklamayı başlıklarından bölmek (`Details::split`, 6d):** `details_split` açıkken
+  `Details::accordion` `woocommerce/product-description` tutan bölümü ürünün açıklamasından
+  yapılan bölümlerle değiştirir: her üst düzey H2 başlık bloğu ya da ilk bloğu H2 olan üst düzey
+  blok (bir bölümü tutan grup) yeni bir bölüm başlatır, başlık bölümün adı olur ve içerikten
+  çıkar; ilk başlıktan önceki içerik "Açıklama"dır. Bölümler `Details::item` ile ilk bölümün
+  biçiminde yapılır ve içerik blok olarak çizilir (`the_content` süzgeçleri çalışmaz). Klasik
+  (bloksuz) açıklama H2 etiketlerinden kesilir, parçalar `wpautop` ile bir HTML bloğuna girer.
+  Tek bölüm çıkarsa açıklama olduğu gibi kalır. "Sekmeler" ile her bölüm bir sekmedir.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

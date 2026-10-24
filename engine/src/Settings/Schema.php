@@ -919,6 +919,12 @@ final class Schema {
 					'default' => 'template',
 					'levels'  => array( 'category', 'product' ),
 				),
+				// The description in a section per top-level H2 heading.
+				'details_split'      => array(
+					'type'    => 'bool',
+					'default' => false,
+					'levels'  => array( 'category', 'product' ),
+				),
 				'details_phone'      => array(
 					'type'    => 'enum',
 					'options' => array( 'accordion', 'scroll' ),

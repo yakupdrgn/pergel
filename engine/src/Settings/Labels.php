@@ -317,7 +317,7 @@ final class Labels {
 				),
 				'details' => array(
 					'title'  => __( 'Under the product', 'pergel-engine' ),
-					'fields' => array( 'details_style', 'details_phone', 'details_features', 'details_title', 'details_tab', 'details_title2', 'details_tab2', 'details_qa', 'details_rating' ),
+					'fields' => array( 'details_style', 'details_split', 'details_phone', 'details_features', 'details_title', 'details_tab', 'details_title2', 'details_tab2', 'details_qa', 'details_rating' ),
 				),
 				'side'    => array(
 					'title'  => __( 'Beside the sections', 'pergel-engine' ),
@@ -982,6 +982,10 @@ final class Labels {
 						'tabs'     => __( 'Tabs', 'pergel-engine' ),
 						'open'     => __( 'All open', 'pergel-engine' ),
 					),
+				),
+				'details_split'      => array(
+					'label' => __( 'Description in sections by its headings', 'pergel-engine' ),
+					'help'  => __( 'Each H2 heading of the product description starts a section of its own, named after it, in place of the one Description section; with "Tabs", a tab each. Content before the first heading stays under "Description". The text stays one description in the editor. A category or a product can choose its own.', 'pergel-engine' ),
 				),
 				'details_phone'      => array(
 					'label'   => __( 'Tabs on phones', 'pergel-engine' ),

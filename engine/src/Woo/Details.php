@@ -18,6 +18,8 @@ namespace Pergel\Woo;
  *   Additional information · the product's own tab · the two pattern
  *   tabs · Questions · Reviews; tabs other plugins add through
  *   woocommerce_product_tabs still come after them (WooCommerce adds those);
+ * - with "Description in sections by its headings" on, the description is
+ *   a section per top-level H2 heading, named after it (split());
  * - with the feature list on, a product's own list shows as
  *   "Specifications" and the attribute table as "Additional information";
  * - "Tabs": one section open at a time (the accordion's own autoclose) and a
@@ -119,6 +121,14 @@ final class Details {
 			array_splice( $items, $specs, 0, array( self::item( $anchor, __( 'Specifications', 'pergel-engine' ), self::html( '<ul class="pergel-features">' . $list . '</ul>' ) ) ) );
 		}
 
+		$description = true === Layout::get( 'shop.details_split' ) ? self::holding( $items, 'woocommerce/product-description' ) : null;
+		if ( null !== $description ) {
+			$split = self::split( $anchor, $product );
+			if ( count( $split ) > 1 ) {
+				array_splice( $items, $description, 1, $split );
+			}
+		}
+
 		$extra = array();
 		if ( '' !== $own['tab_name'] && '' !== $own['tab'] ) {
 			$extra[] = self::item( $anchor, $own['tab_name'], self::html( wpautop( $own['tab'] ) ) );
@@ -164,6 +174,90 @@ final class Details {
 		$accordion['innerBlocks']  = $items;
 		$accordion['innerContent'] = array_merge( array( $first ), self::nulls( count( $items ) ), array( $last ) );
 		return $accordion;
+	}
+
+	/**
+	 * The description as sections: one per top-level H2 heading, or per
+	 * top-level block whose first block is one (a group holding a section),
+	 * named after the heading, which leaves the content. What comes before
+	 * the first heading is "Description". A classic description (no blocks)
+	 * is cut at its H2 headings.
+	 *
+	 * @param array<string, mixed> $anchor  The first accordion item.
+	 * @param \WC_Product          $product The product on screen.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function split( array $anchor, \WC_Product $product ): array {
+		$content = (string) get_post_field( 'post_content', $product->get_id(), 'raw' );
+		$titles  = array();
+		$parts   = array();
+		$add     = static function ( string $markup ) use ( &$titles, &$parts ): void {
+			if ( ! $titles ) {
+				$titles[] = __( 'Description', 'pergel-engine' );
+				$parts[]  = array();
+			}
+			$parts[ count( $parts ) - 1 ][] = $markup;
+		};
+		if ( ! has_blocks( $content ) ) {
+			$pieces = preg_split( '#(<h2\b[^>]*>.*?</h2>)#is', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
+			foreach ( is_array( $pieces ) ? $pieces : array() as $piece ) {
+				if ( preg_match( '#^<h2\b#i', $piece ) ) {
+					$titles[] = trim( wp_strip_all_tags( $piece ) );
+					$parts[]  = array();
+				} elseif ( '' !== trim( $piece ) ) {
+					$add( self::html( wpautop( $piece ) ) );
+				}
+			}
+		} else {
+			foreach ( parse_blocks( $content ) as $block ) {
+				if ( null === $block['blockName'] && '' === trim( (string) $block['innerHTML'] ) ) {
+					continue;
+				}
+				[ $title, $block ] = self::heading( $block );
+				if ( null !== $title ) {
+					$titles[] = $title;
+					$parts[]  = array();
+				}
+				if ( null !== $block ) {
+					$add( serialize_block( $block ) );
+				}
+			}
+		}
+		$items = array();
+		foreach ( $titles as $index => $title ) {
+			if ( '' !== $title ) {
+				$items[] = self::item( $anchor, $title, implode( "\n\n", $parts[ $index ] ) );
+			}
+		}
+		return $items;
+	}
+
+	/**
+	 * The title of the H2 heading a top-level block is or starts with, and
+	 * the block without it (null when the block was the heading).
+	 *
+	 * @param array<string, mixed> $block Parsed block.
+	 * @return array{0: string|null, 1: array<string, mixed>|null}
+	 */
+	private static function heading( array $block ): array {
+		$h2 = static fn ( array $inner ): bool => 'core/heading' === ( $inner['blockName'] ?? '' ) && 1 === preg_match( '#^\s*<h2\b#i', (string) ( $inner['innerHTML'] ?? '' ) );
+		if ( $h2( $block ) ) {
+			return array( trim( wp_strip_all_tags( (string) $block['innerHTML'] ) ), null );
+		}
+		$inner = (array) ( $block['innerBlocks'] ?? array() );
+		$first = $inner[0] ?? null;
+		if ( ! is_array( $first ) || ! $h2( $first ) ) {
+			return array( null, $block );
+		}
+		array_shift( $inner );
+		$content = (array) ( $block['innerContent'] ?? array() );
+		$slot    = array_search( null, $content, true );
+		if ( false !== $slot ) {
+			array_splice( $content, (int) $slot, 1 );
+		}
+		$block['innerBlocks']  = $inner;
+		$block['innerContent'] = $content;
+		return array( trim( wp_strip_all_tags( (string) $first['innerHTML'] ) ), $block );
 	}
 
 	/**
