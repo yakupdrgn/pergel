@@ -260,7 +260,7 @@ final class Labels {
 				),
 				'cards'   => array(
 					'title'  => __( 'Product cards', 'pergel-engine' ),
-					'fields' => array( 'card_style', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches', 'card_quote' ),
+					'fields' => array( 'card_style', 'card_items', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches', 'card_quote' ),
 				),
 				'look'    => array(
 					'title'  => __( 'Card look', 'pergel-engine' ),
@@ -276,7 +276,7 @@ final class Labels {
 				),
 				'summary' => array(
 					'title'  => __( 'Beside the pictures', 'pergel-engine' ),
-					'fields' => array( 'product_banner', 'product_category', 'product_brand', 'product_discount', 'product_stock' ),
+					'fields' => array( 'summary_items', 'product_banner', 'product_category', 'product_brand', 'product_discount', 'product_stock' ),
 				),
 				'buying'  => array(
 					'title'  => __( 'Buying', 'pergel-engine' ),
@@ -852,6 +852,23 @@ final class Labels {
 					'label' => __( 'Stock beside the price', 'pergel-engine' ),
 					'help'  => __( 'How many are left, for products whose stock is counted, or "Out of stock".', 'pergel-engine' ),
 				),
+				'summary_items'      => array(
+					'label'   => __( 'What the summary shows', 'pergel-engine' ),
+					'help'    => __( 'Tick what the product page shows beside the pictures and put it in order with the arrows. An item the template keeps in another group stays in that group. A ticked item the template lacks is added; the buying form and the details list can only be shown or hidden.', 'pergel-engine' ),
+					'items'   => 'summary',
+					'choices' => array(
+						'category' => __( 'Category', 'pergel-engine' ),
+						'title'    => __( 'Product name', 'pergel-engine' ),
+						'rating'   => __( 'Rating', 'pergel-engine' ),
+						'price'    => __( 'Price', 'pergel-engine' ),
+						'excerpt'  => __( 'Short description', 'pergel-engine' ),
+						'sku'      => __( 'SKU', 'pergel-engine' ),
+						'stock'    => __( 'Stock', 'pergel-engine' ),
+						'buying'   => __( 'Buying form', 'pergel-engine' ),
+						'cta'      => __( 'Enquiry buttons', 'pergel-engine' ),
+						'meta'     => __( 'Details list (SKU, categories, tags)', 'pergel-engine' ),
+					),
+				),
 				'product_buy_now'    => array(
 					'label' => __( '"Buy now" button', 'pergel-engine' ),
 					'help'  => __( 'Beside "Add to cart", and in the bar at the bottom of the screen: adds the product to the cart and goes straight to the checkout.', 'pergel-engine' ),
@@ -948,6 +965,22 @@ final class Labels {
 				'card_swatches'      => array(
 					'label' => __( 'Colours on cards', 'pergel-engine' ),
 					'help'  => __( 'For products with options: the colours or pictures of the first attribute with the "Color / image" type, under the name. Choosing one shows that option\'s picture on the card.', 'pergel-engine' ),
+				),
+				'card_items'         => array(
+					'label'   => __( 'What a card shows', 'pergel-engine' ),
+					'help'    => __( 'Tick what each card shows and put it in order with the arrows. An item the template keeps in another group, such as the picture in some themes, stays in that group. A ticked item the template lacks is added.', 'pergel-engine' ),
+					'items'   => 'card',
+					'choices' => array(
+						'image'   => __( 'Picture', 'pergel-engine' ),
+						'title'   => __( 'Product name', 'pergel-engine' ),
+						'rating'  => __( 'Rating', 'pergel-engine' ),
+						'price'   => __( 'Price', 'pergel-engine' ),
+						'excerpt' => __( 'Short description', 'pergel-engine' ),
+						'sku'     => __( 'SKU', 'pergel-engine' ),
+						'stock'   => __( 'Stock', 'pergel-engine' ),
+						'button'  => __( 'Button', 'pergel-engine' ),
+						'actions' => __( 'Wishlist and compare buttons', 'pergel-engine' ),
+					),
 				),
 				'card_quote'         => array(
 					'label' => __( '"Request a quote" on cards', 'pergel-engine' ),

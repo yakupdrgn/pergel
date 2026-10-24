@@ -15,6 +15,7 @@ namespace Pergel\Tests\Integration;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 use Pergel\Woo\CouponField;
+use Pergel\Woo\Items;
 use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
 use Pergel\Woo\ProductLook;
@@ -116,6 +117,8 @@ final class ProductLayoutTest extends TestCase {
 		wp_dequeue_style( Layout::PRODUCT_STYLE );
 		wp_dequeue_style( ProductLook::STYLE );
 		wp_dequeue_style( Layout::CARD_STYLE );
+		remove_filter( 'render_block_data', array( Items::class, 'summary' ) );
+		Items::flush();
 		Layout::flush();
 		if ( null !== $this->query ) {
 			$GLOBALS['wp_the_query'] = $this->query; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Puts back the query go_to() replaced.
@@ -173,6 +176,28 @@ final class ProductLayoutTest extends TestCase {
 		$this->assertFalse( has_filter( 'render_block_core/columns', array( ProductPage::class, 'columns' ) ) );
 		$this->assertFalse( wp_style_is( Layout::PRODUCT_STYLE ) );
 		$this->assertFalse( wp_style_is( ProductLook::STYLE ) );
+	}
+
+	public function test_summary_items_are_ordered_and_hidden(): void {
+		[ $id ] = $this->product( 'Page items' );
+		$this->go_to( $id );
+		Layout::product_page();
+		$this->assertFalse( has_filter( 'render_block_data', array( Items::class, 'summary' ) ), 'Without a list nothing is moved.' );
+
+		Settings::update( array( 'shop' => array( 'summary_items' => 'price,title' ) ) );
+		Layout::product_page();
+		$this->assertFalse( has_filter( 'render_block_core/columns', array( ProductPage::class, 'columns' ) ), 'The list alone does not load ProductPage.' );
+
+		$html = do_blocks(
+			'<!-- wp:group --><div class="wp-block-group"><!-- wp:post-title {"level":1} /-->'
+			. '<!-- wp:woocommerce/product-price {"isDescendentOfSingleProductTemplate":true} /--><!-- wp:post-excerpt /--></div><!-- /wp:group -->'
+		);
+		$price = strpos( $html, 'wp-block-woocommerce-product-price' );
+		$title = strpos( $html, '<h1' );
+		$this->assertIsInt( $price );
+		$this->assertIsInt( $title );
+		$this->assertLessThan( $title, $price, 'Price, then name.' );
+		$this->assertStringNotContainsString( 'wp-block-post-excerpt', $html, 'Left out: hidden.' );
 	}
 
 	public function test_look_makes_rules_only_for_set_values(): void {

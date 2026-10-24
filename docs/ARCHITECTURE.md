@@ -750,6 +750,23 @@ görünmez (`Settings\Screen::shown`).
   kurallarını geçecek şekilde yazılır. Anahtarlar `product_` ile başlamaz, böylece yalnızca bir
   görünüm değeri `ProductPage`'i yüklemez; `Layout::product_page` `ProductLook`'u bir değer
   doluysa yükler ve kurallar kendi `pergel-product-look` stilinde basılır.
+  Öğe sırası ve görünürlüğü (`Woo\Items`, "Kartta görünenler" `shop.card_items` ve "Özette
+  görünenler" `shop.summary_items`, alan türü `items`): değer, gösterilecek öğelerin sıralı ve
+  virgülle ayrılmış listesi; boş değer şablonu olduğu gibi bırakır. Bloklar `render_block_data`
+  ile taşınır (CSS `order` değil), böylece ekran okuyucu ve klavye görünen sırayı izler. Kartta
+  `woocommerce/product-template`, özette ürün sayfasında iki özet öğesi tutan ilk blok ele alınır
+  (başka ızgaralar, sorgular ve şablon parçaları içine girilmez). Listede olmayan öğe nerede olursa
+  olsun çıkarılır; kalanlar öğelerin en çoğunu doğrudan tutan grupta, o grubun öğe yerlerine
+  sırayla konur (alt temalarda resim dışarıda, ad ve fiyat bir grupta olabilir: dışarıdaki öğe
+  yerinde kalır). Şablonda olmayan işaretli öğe, kendini çizen bir bloksa (`Items::ADDABLE`),
+  listede kendinden önceki öğenin arkasına eklenir; satın alma formu ve bilgi listesi iç blok
+  taşıdığı için yalnızca gösterilip gizlenir. Her iç blok `innerContent`'te bir `null`'a karşılık
+  geldiğinden çıkarma ve ekleme bu `null`'ları da düzeltir. Ayar ekranı başlangıç sırasını etkin
+  temanın `archive-product` ve `single-product` şablonlarından okur (`Items::in_template`);
+  "Şablondaki gibi" kutusu, sıralı gizli alan ve işaretli öğeler birlikte gönderilir, oklar
+  `settings.js` ile satırı taşır ve yeni yeri ekran okuyucuya söyler. Kart listesi `Cards`'ın,
+  özet listesi `Layout::product_page`'in kancasıdır; özet anahtarı `product_` ile başlamaz, liste
+  tek başına `ProductPage`'i yüklemez.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
   `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
   ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları

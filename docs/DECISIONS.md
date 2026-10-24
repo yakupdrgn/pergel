@@ -1673,6 +1673,15 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   bırakıldı: ürünün altı orada gerçek sekmelere dönüşecek, değerler o yapıya göre seçilecek.
   "Hemen al" kendi görünümünü korur; Unimart'ta tek düğme var ve iki düğmeyi aynı yapmak hangisinin
   asıl olduğunu silerdi.
+- **Öğe sırası ve görünürlüğü (24 Ekim 2026, kullanıcı):** planın 3. adımı. Sıra CSS `order` ile
+  değil blokların yeri değiştirilerek veriliyor: görsel sırayla okuma ve odak sırası ayrışmasın
+  (WCAG 1.3.2, 2.4.3). Ekranda sürükle-bırak yerine her satırda yukarı/aşağı düğmeleri var:
+  klavye ve ekran okuyucuyla da kullanılır, taşınan öğenin yeni yeri duyurulur. Prova'nın alt
+  teması kartta resmi dışarıda, adı, puanı, SKU'yu ve düğmeyi bir grupta tutuyor; bu yüzden sıra
+  öğelerin en çoğunu tutan grupta veriliyor, başka gruptaki öğe yerinde kalıyor. Şablonda
+  olmayan öğe eklenebiliyor (ör. kartta SKU); iç blok taşıyan satın alma formu ve bilgi listesi
+  eklenmiyor, çünkü boş eklenince ne çizeceği WooCommerce sürümüne bağlı. Unimart hazır ayarı
+  şimdilik listeleri değiştirmiyor (4. adımda gözden geçirilecek).
 
 ## Aşamalar ve bitti tanımları
 

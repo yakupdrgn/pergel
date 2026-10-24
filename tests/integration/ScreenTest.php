@@ -207,6 +207,23 @@ final class ScreenTest extends TestCase {
 		}
 	}
 
+	public function test_item_lists(): void {
+		if ( ! Screen::shown( Screen::MENU ) ) {
+			$this->markTestSkipped( 'WooCommerce is not active on this site.' );
+		}
+		$html = self::render( Screen::MENU, 'cards' );
+		$this->assertMatchesRegularExpression( '#<fieldset class="pergel-items"[^>]*><legend class="screen-reader-text">[^<]+</legend><input type="hidden" name="pergel_settings\[shop\]\[card_items\]\[order\]" value="[a-z,]+">#', $html );
+		$this->assertMatchesRegularExpression( '#name="pergel_settings\[shop\]\[card_items\]\[template\]" value="1" checked=\'checked\'#', $html, 'No list yet: as in the template.' );
+		foreach ( array_keys( \Pergel\Woo\Items::CARD ) as $key ) {
+			$this->assertStringContainsString( '<li data-key="' . $key . '"><label><input type="checkbox" name="pergel_settings[shop][card_items][show][]" value="' . $key . '"', $html );
+		}
+		$this->assertSame( 2 * count( \Pergel\Woo\Items::CARD ), substr_count( $html, 'data-move=' ), 'Up and down for each item.' );
+
+		$html = self::render( Screen::MENU, 'product' );
+		$this->assertStringContainsString( 'value="buying"', $html );
+		$this->assertDoesNotMatchRegularExpression( '#value="buying"[^>]*disabled#', $html, 'The theme template has the buying form.' );
+	}
+
 	public function test_errors_are_shown_next_to_the_field(): void {
 		Screen::report(
 			array(

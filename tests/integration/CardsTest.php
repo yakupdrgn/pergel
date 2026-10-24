@@ -18,6 +18,7 @@ use Pergel\Woo\BadgeField;
 use Pergel\Woo\CardLook;
 use Pergel\Woo\Cards;
 use Pergel\Woo\CategoryCards;
+use Pergel\Woo\Items;
 use Pergel\Woo\Layout;
 use Pergel\Woo\Modes;
 use Pergel\Woo\Module as Woo;
@@ -107,6 +108,7 @@ final class CardsTest extends TestCase {
 		remove_filter( 'woocommerce_product_add_to_cart_url', array( Cards::class, 'quote_url' ), 20 );
 		Modes::flush();
 		Cards::flush();
+		remove_filter( 'render_block_data', array( Items::class, 'cards' ) );
 		wp_dequeue_style( Layout::CARD_STYLE );
 		wp_dequeue_script_module( Layout::CARDS_SCRIPT );
 		unset( $_POST[ Cards::BADGE_META ] );
@@ -427,6 +429,27 @@ final class CardsTest extends TestCase {
 
 		Settings::update( array( 'shop' => array( 'card_border' => 0 ) ) );
 		$this->assertStringContainsString( '.pergel-cards.pergel-cards .wc-block-product{box-sizing:border-box;border:0;border-radius:12px}', CardLook::css() );
+	}
+
+	public function test_card_items_are_ordered_hidden_and_added(): void {
+		$this->assertFalse( has_filter( 'render_block_data', array( Items::class, 'cards' ) ), 'Without a list nothing is moved.' );
+		Settings::update( array( 'shop' => array( 'card_items' => 'title,sku,image' ) ) );
+		Cards::register();
+		$product = wc_get_product( $this->product );
+		$this->assertInstanceOf( \WC_Product::class, $product );
+		$product->set_sku( 'CARD-' . wp_generate_password( 6, false ) );
+		$product->save();
+
+		$html  = do_blocks( self::GRID );
+		$title = strpos( $html, 'wp-block-post-title' );
+		$sku   = strpos( $html, 'wp-block-woocommerce-product-sku' );
+		$image = strpos( $html, 'wc-block-components-product-image' );
+		$this->assertIsInt( $title );
+		$this->assertIsInt( $sku, 'The SKU the template lacks is added.' );
+		$this->assertIsInt( $image );
+		$this->assertTrue( $title < $sku && $sku < $image, 'Name, SKU, picture.' );
+		$this->assertStringNotContainsString( 'wc-block-components-product-price', $html, 'Left out: hidden.' );
+		$this->assertStringNotContainsString( 'wp-block-pergel-product-actions', $html );
 	}
 
 	public function test_badge_text_is_cleaned(): void {
