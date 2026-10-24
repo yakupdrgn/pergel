@@ -92,9 +92,11 @@ final class ProductDetailsTest extends TestCase {
 		wp_set_current_user( 0 );
 		remove_filter( 'render_block_data', array( Details::class, 'sections' ), 10 );
 		remove_filter( 'render_block_woocommerce/product-details', array( Details::class, 'tabs' ), 10 );
+		remove_filter( 'render_block_woocommerce/product-details', array( Details::class, 'side' ), 20 );
 		remove_filter( 'render_block_woocommerce/product-reviews', array( Details::class, 'rating' ), 10 );
 		wp_dequeue_style( Layout::DETAILS_STYLE );
 		wp_dequeue_script_module( Layout::DETAILS_SCRIPT );
+		wp_dequeue_script_module( Layout::RECENT_SCRIPT );
 		Layout::flush();
 		if ( null !== $this->query ) {
 			$GLOBALS['wp_the_query'] = $this->query; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Puts back the query go_to() replaced.
@@ -432,6 +434,97 @@ final class ProductDetailsTest extends TestCase {
 
 		$this->assertSame( array( $review ), array_map( 'intval', (array) $all ) );
 		$this->assertSame( array( $question ), array_map( 'intval', (array) $asks ) );
+	}
+
+	public function test_tab_look_values_reach_the_block(): void {
+		$id = $this->product();
+		Settings::update(
+			array(
+				'shop' => array(
+					'details_style' => 'tabs',
+					'tab_look'      => 'folder',
+					'tab_size'      => 14,
+					'tab_weight'    => '500',
+					'tab_active'    => 'accent',
+					'tab_radius'    => 16,
+					'tab_area_bg'   => 'surface',
+				),
+			)
+		);
+		$this->go_to( $id );
+
+		$html = do_blocks( self::template() );
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		$this->assertTrue( $tags->next_tag() );
+		foreach ( array( 'pergel-details', 'is-tabs', 'is-look-folder', 'has-card', 'has-area' ) as $class ) {
+			$this->assertTrue( $tags->has_class( $class ), $class );
+		}
+		$this->assertSame( '--pergel-tab-size:14px;--pergel-tab-weight:500;--pergel-tab-active:var(--wp--preset--color--accent);--pergel-tab-radius:16px;--pergel-tab-area:var(--wp--preset--color--surface);', $tags->get_attribute( 'style' ) );
+
+		// Underlined tabs make a card only with a card value.
+		Settings::update(
+			array(
+				'shop' => array(
+					'tab_look'    => 'line',
+					'tab_area_bg' => '',
+				),
+			)
+		);
+		$html = do_blocks( self::template() );
+		$this->assertStringNotContainsString( 'has-card', $html );
+		$this->assertStringNotContainsString( 'is-look-', $html );
+		Settings::update( array( 'shop' => array( 'tab_padding' => 20 ) ) );
+		$this->assertStringContainsString( 'has-card', do_blocks( self::template() ) );
+	}
+
+	public function test_column_beside_the_sections(): void {
+		$id    = $this->product();
+		$other = new \WC_Product_Simple();
+		$other->set_name( 'Recommended product' );
+		$other->set_status( 'publish' );
+		$other->set_regular_price( '30' );
+		$this->posts[] = $other->save();
+		$product       = wc_get_product( $id );
+		$this->assertInstanceOf( \WC_Product::class, $product );
+		$product->set_upsell_ids( array( $other->get_id() ) );
+		$product->save();
+		$banner = $this->pattern( 'Column campaign' );
+		Settings::update(
+			array(
+				'shop' => array(
+					'details_style'      => 'tabs',
+					'details_side'       => 'both',
+					'details_side_count' => 2,
+					'details_banner'     => $banner,
+					'tab_edge_color'     => 'line',
+				),
+			)
+		);
+		$this->assertTrue( Layout::recent_on(), 'The column keeps recently viewed products.' );
+		$this->go_to( $id );
+
+		$html = do_blocks( self::template() );
+
+		// A grid takes the block's alignment and card; the block keeps its sections.
+		$this->assertStringStartsWith( '<div class="pergel-details-layout alignwide has-card" style="--pergel-tab-edge:var(--wp--preset--color--line);"><div ', $html );
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		$tags->next_tag();
+		$this->assertTrue( $tags->next_tag() );
+		$this->assertTrue( $tags->has_class( 'wp-block-woocommerce-product-details' ) );
+		$this->assertFalse( $tags->has_class( 'alignwide' ) );
+		$this->assertNull( $tags->get_attribute( 'style' ) );
+		$this->assertStringContainsString( '<aside class="pergel-details-side"', $html );
+		$this->assertMatchesRegularExpression( '#<button type="button" role="tab" class="pergel-side-tab" id="([^"]+)-recent-tab" aria-controls="\1-recent" aria-selected="false" tabindex="-1" hidden>#', $html, 'Recently viewed waits for its list.' );
+		$this->assertMatchesRegularExpression( '#id="[^"]+-recommended" aria-labelledby="[^"]+-recommended-tab">.*Recommended product#s', $html );
+		$this->assertStringContainsString( 'data-pergel-recent="2"', $html );
+		$this->assertGreaterThan( strpos( $html, 'pergel-side-box' ), strpos( $html, 'Column campaign' ), 'The banner is under the products.' );
+
+		// One list: a heading instead of tabs.
+		Settings::update( array( 'shop' => array( 'details_side' => 'recommended' ) ) );
+		$html = do_blocks( self::template() );
+		$this->assertStringNotContainsString( 'role="tablist" aria-label="' . __( 'Other products', 'pergel-engine' ), $html );
+		$this->assertStringContainsString( '<h2 class="pergel-side-title">', $html );
+		$this->assertFalse( Layout::recent_on() );
 	}
 
 	public function test_rating_summary_above_the_reviews(): void {

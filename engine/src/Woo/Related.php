@@ -434,7 +434,7 @@ final class Related {
 	 * @param array<string, mixed> $attributes Block attributes.
 	 */
 	public static function block( array $attributes ): string {
-		if ( 'off' === Settings::get( 'shop.related_recent' ) || wp_is_serving_rest_request() ) {
+		if ( ! Layout::recent_on() || wp_is_serving_rest_request() ) {
 			return wp_is_serving_rest_request()
 				? '<div ' . get_block_wrapper_attributes() . '><p>' . esc_html__( 'Shown to visitors who have viewed products: the ones they looked at last. Turn it on with "Recently viewed" under Pergel → Settings → Shop.', 'pergel-engine' ) . '</p></div>'
 				: '';

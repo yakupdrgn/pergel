@@ -99,7 +99,7 @@ final class Labels {
 			'details'  => array(
 				'title'       => __( 'Under the product', 'pergel-engine' ),
 				'description' => __( 'The description, specifications, questions and reviews under the product, then related and recently viewed products.', 'pergel-engine' ),
-				'parts'       => array( 'shop.details', 'shop.related' ),
+				'parts'       => array( 'shop.details', 'shop.side', 'shop.tablook', 'shop.related' ),
 			),
 			'sales'    => array(
 				'title'       => __( 'Flash sales', 'pergel-engine' ),
@@ -314,6 +314,14 @@ final class Labels {
 				'details' => array(
 					'title'  => __( 'Under the product', 'pergel-engine' ),
 					'fields' => array( 'details_style', 'details_phone', 'details_features', 'details_title', 'details_tab', 'details_title2', 'details_tab2', 'details_qa', 'details_rating' ),
+				),
+				'side'    => array(
+					'title'  => __( 'Beside the sections', 'pergel-engine' ),
+					'fields' => array( 'details_side', 'details_side_count', 'details_banner' ),
+				),
+				'tablook' => array(
+					'title'  => __( 'Tab look', 'pergel-engine' ),
+					'fields' => array( 'tab_look', 'tab_size', 'tab_weight', 'tab_color', 'tab_active', 'tab_radius', 'tab_panel_bg', 'tab_edge_color', 'tab_padding', 'tab_area_bg' ),
 				),
 				'related' => array(
 					'title'  => __( 'Related and recently viewed', 'pergel-engine' ),
@@ -949,6 +957,73 @@ final class Labels {
 				'details_rating'     => array(
 					'label' => __( 'Rating summary', 'pergel-engine' ),
 					'help'  => __( 'Above the reviews: the average rating and a bar for each number of stars.', 'pergel-engine' ),
+				),
+				'details_side'       => array(
+					'label'   => __( 'Column beside the sections', 'pergel-engine' ),
+					'help'    => __( 'A narrow column on the right of the sections on wide screens, under them on narrow ones. Recommended products are the upsells, then products of the same category with the nearest price. Recently viewed products show once the visitor has viewed some; with both, they are two tabs.', 'pergel-engine' ),
+					'choices' => array(
+						'none'        => __( 'None', 'pergel-engine' ),
+						'both'        => __( 'Recently viewed and recommended', 'pergel-engine' ),
+						'recent'      => __( 'Recently viewed', 'pergel-engine' ),
+						'recommended' => __( 'Recommended', 'pergel-engine' ),
+					),
+				),
+				'details_side_count' => array(
+					'label' => __( 'Products in the column', 'pergel-engine' ),
+				),
+				'details_banner'     => array(
+					'label' => __( 'Banner in the column', 'pergel-engine' ),
+					'help'  => __( 'A pattern under the products of the column, e.g. a campaign. It also shows without them. Make it under Appearance → Editor → Patterns.', 'pergel-engine' ),
+				),
+				'tab_look'           => array(
+					'label'   => __( 'Tab style', 'pergel-engine' ),
+					'help'    => __( 'For the "Tabs" style of the sections. "Folders" joins the open tab to a card holding its section; "Buttons" makes each tab a rounded button.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'line'   => __( 'Underline', 'pergel-engine' ),
+						'folder' => __( 'Folders', 'pergel-engine' ),
+						'pills'  => __( 'Buttons', 'pergel-engine' ),
+					),
+				),
+				'tab_size'           => array(
+					'label' => __( 'Tab text size', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'tab_weight'         => array(
+					'label'   => __( 'Tab text weight', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'400'      => __( 'Regular', 'pergel-engine' ),
+						'500'      => __( 'Medium', 'pergel-engine' ),
+						'600'      => __( 'Semibold', 'pergel-engine' ),
+						'700'      => __( 'Bold', 'pergel-engine' ),
+					),
+				),
+				'tab_color'          => array(
+					'label' => __( 'Tab text colour', 'pergel-engine' ),
+				),
+				'tab_active'         => array(
+					'label' => __( 'Open tab colour', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the accent colour.', 'pergel-engine' ),
+				),
+				'tab_radius'         => array(
+					'label' => __( 'Tab corners', 'pergel-engine' ),
+					'help'  => __( 'How round the tabs and the card are, in pixels.', 'pergel-engine' ),
+				),
+				'tab_panel_bg'       => array(
+					'label' => __( 'Section card background', 'pergel-engine' ),
+					'help'  => __( 'Behind the open section. Any card value puts the sections in a card, in every tab style.', 'pergel-engine' ),
+				),
+				'tab_edge_color'     => array(
+					'label' => __( 'Section card edge', 'pergel-engine' ),
+				),
+				'tab_padding'        => array(
+					'label' => __( 'Space inside the card', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'tab_area_bg'        => array(
+					'label' => __( 'Background around the sections', 'pergel-engine' ),
+					'help'  => __( 'Behind the tabs, the card and the column beside them.', 'pergel-engine' ),
 				),
 				'related_style'      => array(
 					'label'   => __( 'Related products', 'pergel-engine' ),

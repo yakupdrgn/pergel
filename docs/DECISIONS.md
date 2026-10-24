@@ -1702,6 +1702,14 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   koruyacak. Düğme bağlantısı ayrı alan değil, `woo.contact_url` (teklif ve soru sayfası); ayar
   bütçesi için de. Unimart hazır ayarı üst bilgiyi açar: açık üst şerit, 15 px satır boşluğu,
   6 px arama köşesi, koyu arama düğmesi, 60 px vurgu renkli menü çubuğu.
+- **Ürün sayfası parçaları (24 Ekim 2026, kullanıcı):** planın 6. adımı dörde bölündü: 6a sekme
+  görünümü ve yan sütun, 6b özet kutuları ("Bunları da beğenebilirsiniz", ürün bilgi listesi,
+  güvenli ödeme), 6c benzer ürünlerin yanında banner ve yapışkan çubuğun görünümü, 6d prova'daki
+  ürün açıklamalarını gerçek sekmelere bölmek. İlk 6a. Unimart ölçüldü: sekmeler 14 px / 500,
+  sol üst köşe 16 px, açık sekme beyaz panele bağlı, zemin açık gri, yan sütun 304 px ("Recent
+  View / Recommended" sekmeleri ve altında banner). Sekmeler yeni bir bileşen değil, mevcut
+  akordeon şeridinin görünümü; yan sütun mevcut son bakılanlar bloğunu ve benzer ürün seçimini
+  kullanır. Hazır ayar klasör sekmeleri ve iki listeli sütunu açar.
 
 ## Aşamalar ve bitti tanımları
 

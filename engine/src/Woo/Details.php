@@ -23,13 +23,20 @@ namespace Pergel\Woo;
  * - "Tabs": one section open at a time (the accordion's own autoclose) and a
  *   row of tabs that opens them; on phones the sections stay one under the
  *   other, or the row scrolls sideways. "All open": every section open;
- * - the rating summary above the reviews.
+ * - the rating summary above the reviews;
+ * - the look of the tabs (shop.tab_*): underline, folders or buttons, a
+ *   card around the open section and a band behind them, as custom
+ *   properties on the block;
+ * - a column beside the sections with recently viewed and recommended
+ *   products (two tabs when both show) and a pattern under them.
  *
  * Layout loads this class only on product pages where one of these
  * settings differs from its default, or whose product has a feature list
  * or tab of its own (DetailsFields).
  */
 final class Details {
+
+	use LookValues;
 
 	/**
 	 * The product on screen.
@@ -47,6 +54,7 @@ final class Details {
 		self::$product = $product;
 		add_filter( 'render_block_data', array( self::class, 'sections' ) );
 		add_filter( 'render_block_woocommerce/product-details', array( self::class, 'tabs' ) );
+		add_filter( 'render_block_woocommerce/product-details', array( self::class, 'side' ), 20 );
 		add_filter( 'render_block_woocommerce/product-reviews', array( self::class, 'rating' ), 10, 3 );
 		wp_enqueue_style( Layout::DETAILS_STYLE );
 	}
@@ -358,6 +366,7 @@ final class Details {
 		if ( 'scroll' === Layout::get( 'shop.details_phone' ) ) {
 			$tags->add_class( 'is-phone-scroll' );
 		}
+		self::look( $tags );
 		$html = $tags->get_updated_html();
 		$end  = strpos( $html, '>' );
 		if ( false === $end ) {
@@ -366,6 +375,149 @@ final class Details {
 		wp_enqueue_script_module( Layout::DETAILS_SCRIPT );
 		$strip = sprintf( '<div class="pergel-details-tabs" role="tablist" aria-label="%1$s">%2$s</div>', esc_attr__( 'Product details', 'pergel-engine' ), $buttons );
 		return substr( $html, 0, $end + 1 ) . $strip . substr( $html, $end + 1 );
+	}
+
+	/**
+	 * The look values of the tabs: a class for the style, the card and the
+	 * band, and custom properties for the values set.
+	 *
+	 * @param \WP_HTML_Tag_Processor $tags At the block's wrapper.
+	 */
+	private static function look( \WP_HTML_Tag_Processor $tags ): void {
+		$look = Layout::get( 'shop.tab_look' );
+		if ( 'folder' === $look || 'pills' === $look ) {
+			$tags->add_class( 'is-look-' . $look );
+		}
+		$props = array(
+			'--pergel-tab-size'   => self::px( 'tab_size' ),
+			'--pergel-tab-weight' => self::weight( 'tab_weight' ),
+			'--pergel-tab-color'  => self::color( 'tab_color' ),
+			'--pergel-tab-active' => self::color( 'tab_active' ),
+			'--pergel-tab-radius' => self::px( 'tab_radius' ),
+			'--pergel-tab-panel'  => self::color( 'tab_panel_bg' ),
+			'--pergel-tab-edge'   => self::color( 'tab_edge_color' ),
+			'--pergel-tab-pad'    => self::px( 'tab_padding' ),
+			'--pergel-tab-area'   => self::color( 'tab_area_bg' ),
+		);
+		// Folders always join the open tab to a card; any card value makes
+		// one in the other styles.
+		if ( 'folder' === $look || '' !== $props['--pergel-tab-panel'] . $props['--pergel-tab-edge'] . $props['--pergel-tab-pad'] ) {
+			$tags->add_class( 'has-card' );
+		}
+		if ( '' !== $props['--pergel-tab-area'] ) {
+			$tags->add_class( 'has-area' );
+		}
+		$style = '';
+		foreach ( array_filter( $props ) as $name => $value ) {
+			$style .= $name . ':' . $value . ';';
+		}
+		if ( '' !== $style ) {
+			$before = rtrim( trim( (string) $tags->get_attribute( 'style' ) ), ';' );
+			$tags->set_attribute( 'style', ( '' !== $before ? $before . ';' : '' ) . $style );
+		}
+	}
+
+	/**
+	 * The column beside the sections: recently viewed and recommended
+	 * products, as two tabs when both show, and a pattern under them. A grid
+	 * holds the block and the column and takes over the block's alignment,
+	 * spacing, look values and band.
+	 *
+	 * @param string $html Rendered details block.
+	 */
+	public static function side( string $html ): string {
+		$side    = Layout::get( 'shop.details_side' );
+		$product = get_queried_object_id() === self::$product ? wc_get_product( self::$product ) : null;
+		if ( 'none' === $side || ! $product instanceof \WC_Product ) {
+			return $html;
+		}
+		$count = (int) Layout::get( 'shop.details_side_count' );
+		$parts = array();
+		if ( 'recommended' !== $side ) {
+			$parts['recent'] = array( __( 'Recently viewed', 'pergel-engine' ), do_blocks( get_comment_delimited_block_content( Related::BLOCK, array( 'count' => $count ), '' ) ) );
+		}
+		if ( 'recent' !== $side ) {
+			$list = Related::cards( Related::similar( $product, $count ) );
+			if ( '' !== $list ) {
+				// The cards are the Recently viewed block's.
+				wp_enqueue_style( generate_block_asset_handle( Related::BLOCK, 'style' ) );
+				$parts['recommended'] = array( __( 'Recommended', 'pergel-engine' ), $list );
+			}
+		}
+		$banner = (int) Layout::get( 'shop.details_banner' );
+		$banner = $banner > 0 ? do_blocks( '<!-- wp:block {"ref":' . $banner . '} /-->' ) : '';
+		$column = self::column( $parts );
+		if ( '' === $column && '' === trim( $banner ) ) {
+			return $html;
+		}
+
+		$tags  = new \WP_HTML_Tag_Processor( $html );
+		$outer = array( 'pergel-details-layout' );
+		$style = '';
+		if ( $tags->next_tag() ) {
+			foreach ( array( 'alignwide', 'alignfull', 'has-area' ) as $class ) {
+				if ( $tags->has_class( $class ) ) {
+					$outer[] = $class;
+					$tags->remove_class( $class );
+				}
+			}
+			if ( $tags->has_class( 'has-card' ) ) {
+				$outer[] = 'has-card';
+			}
+			$style = (string) $tags->get_attribute( 'style' );
+			$tags->remove_attribute( 'style' );
+			$html = $tags->get_updated_html();
+		}
+		return sprintf(
+			'<div class="%1$s"%2$s>%3$s<aside class="pergel-details-side" aria-label="%4$s">%5$s%6$s</aside></div>',
+			esc_attr( implode( ' ', $outer ) ),
+			'' !== $style ? ' style="' . esc_attr( $style ) . '"' : '',
+			$html,
+			esc_attr__( 'Other products', 'pergel-engine' ),
+			'' !== $column ? '<div class="pergel-side-box">' . $column . '</div>' : '',
+			$banner
+		);
+	}
+
+	/**
+	 * The products of the column. With both lists, recently viewed is a
+	 * hidden tab that product-details.js shows once its list has products;
+	 * recommended is open until then.
+	 *
+	 * @param array<string, array{0: string, 1: string}> $parts Title and HTML by list.
+	 */
+	private static function column( array $parts ): string {
+		if ( 2 === count( $parts ) ) {
+			$id     = wp_unique_id( 'pergel-side-' );
+			$tabs   = '';
+			$panels = '';
+			foreach ( $parts as $key => $part ) {
+				$recent  = 'recent' === $key;
+				$tabs   .= sprintf(
+					'<button type="button" role="tab" class="pergel-side-tab" id="%1$s-%2$s-tab" aria-controls="%1$s-%2$s" aria-selected="%3$s" tabindex="%4$s"%5$s>%6$s</button>',
+					esc_attr( $id ),
+					esc_attr( $key ),
+					$recent ? 'false' : 'true',
+					$recent ? '-1' : '0',
+					$recent ? ' hidden' : '',
+					esc_html( $part[0] )
+				);
+				$panels .= sprintf(
+					'<div class="pergel-side-panel" role="tabpanel" id="%1$s-%2$s" aria-labelledby="%1$s-%2$s-tab"%3$s>%4$s</div>',
+					esc_attr( $id ),
+					esc_attr( $key ),
+					$recent ? ' hidden' : '',
+					$part[1]
+				);
+			}
+			wp_enqueue_script_module( Layout::DETAILS_SCRIPT );
+			return '<div class="pergel-side-tabs" role="tablist" aria-label="' . esc_attr__( 'Other products', 'pergel-engine' ) . '">' . $tabs . '</div>' . $panels;
+		}
+		if ( isset( $parts['recommended'] ) ) {
+			return '<h2 class="pergel-side-title">' . esc_html( $parts['recommended'][0] ) . '</h2>' . $parts['recommended'][1];
+		}
+		// Recently viewed alone keeps the block's own title.
+		return $parts['recent'][1] ?? '';
 	}
 
 	/**
