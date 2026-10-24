@@ -43,9 +43,44 @@ final class Module implements Core\Module {
 		add_action( 'update_option_' . Settings::OPTION, array( Core\Plugin::class, 'switched' ), 10, 2 );
 		add_action( 'admin_init', array( self::class, 'register_setting' ) );
 		add_action( 'rest_api_init', array( self::class, 'register_setting' ) );
+		add_action( 'rest_api_init', array( self::class, 'preview_route' ) );
+		// Preview::ARG, written out so that other pages do not load the class.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview checks the nonce.
+		if ( isset( $_GET['pergel_preview'] ) && ! is_admin() ) {
+			Preview::register();
+		}
 		if ( is_admin() ) {
 			Screen::register();
 		}
+	}
+
+	/**
+	 * The route the settings screen sends unsaved values to for the live
+	 * preview. Preview loads only when it is called.
+	 */
+	public static function preview_route(): void {
+		register_rest_route(
+			'pergel/v1',
+			'/preview',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( Preview::class, 'save' ),
+				'permission_callback' => array( self::class, 'can_preview' ),
+				'args'                => array(
+					'settings' => array(
+						'type'     => 'object',
+						'required' => true,
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Whether the user may preview settings: who may change them.
+	 */
+	public static function can_preview(): bool {
+		return current_user_can( 'manage_options' );
 	}
 
 	/**
