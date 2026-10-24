@@ -317,7 +317,7 @@ final class Labels {
 				),
 				'details' => array(
 					'title'  => __( 'Under the product', 'pergel-engine' ),
-					'fields' => array( 'details_style', 'details_split', 'details_phone', 'details_features', 'details_title', 'details_tab', 'details_title2', 'details_tab2', 'details_qa', 'details_rating' ),
+					'fields' => array( 'details_style', 'details_split', 'details_phone', 'details_features', 'details_title', 'details_tab', 'details_title2', 'details_tab2', 'details_qa', 'details_rating', 'details_specs' ),
 				),
 				'side'    => array(
 					'title'  => __( 'Beside the sections', 'pergel-engine' ),
@@ -1061,6 +1061,14 @@ final class Labels {
 				'details_rating'     => array(
 					'label' => __( 'Rating summary', 'pergel-engine' ),
 					'help'  => __( 'Above the reviews: the average rating and a bar for each number of stars.', 'pergel-engine' ),
+				),
+				'details_specs'      => array(
+					'label'   => __( 'Attributes table', 'pergel-engine' ),
+					'help'    => __( 'WooCommerce\'s table of the product\'s attributes, weight and size. "Specifications" draws it as the Table block\'s Specifications style: a line under each row, the names muted.', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the style', 'pergel-engine' ),
+						'specs'    => __( 'Specifications', 'pergel-engine' ),
+					),
 				),
 				'details_side'       => array(
 					'label'   => __( 'Column beside the sections', 'pergel-engine' ),
