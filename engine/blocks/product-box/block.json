@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "pergel/product-box",
+	"title": "Product summary box",
+	"category": "pergel",
+	"icon": "index-card",
+	"description": "A box for the product summary: products the visitor may also like, the product's facts, or a picture and a line about safe payment. Their content and look are set under Pergel → Settings → Shop → Product page.",
+	"keywords": [ "you may also like", "facts", "secure checkout", "trust" ],
+	"textdomain": "pergel-engine",
+	"usesContext": [ "postId", "postType" ],
+	"attributes": {
+		"box": {
+			"type": "string",
+			"enum": [ "also", "facts", "trust" ],
+			"default": "facts"
+		}
+	},
+	"supports": {
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

@@ -859,7 +859,40 @@ final class Schema {
 				// product_ so that a list alone does not load ProductPage.
 				'summary_items'      => array(
 					'type'    => 'items',
-					'options' => array( 'category', 'title', 'rating', 'price', 'excerpt', 'sku', 'stock', 'buying', 'cta', 'meta' ),
+					'options' => array( 'category', 'title', 'rating', 'price', 'excerpt', 'sku', 'stock', 'buying', 'cta', 'meta', 'also', 'facts', 'trust' ),
+				),
+				// The boxes of the summary items also, facts and trust; see
+				// Pergel\Woo\ProductBoxes.
+				'also_count'         => array(
+					'type'    => 'int',
+					'min'     => 1,
+					'max'     => 4,
+					'default' => 2,
+				),
+				'also_title'         => array(
+					'type' => 'text',
+					'max'  => 40,
+				),
+				'facts_rows'         => array(
+					'type'    => 'items',
+					'options' => array( 'category', 'tag', 'brand', 'sku', 'stock', 'type', 'weight', 'size' ),
+				),
+				'trust_image'        => array( 'type' => 'image' ),
+				'trust_text'         => array(
+					'type' => 'text',
+					'max'  => 80,
+				),
+				'box_bg'             => array( 'type' => 'color' ),
+				'box_edge'           => array( 'type' => 'color' ),
+				'box_radius'         => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 32,
+				),
+				'box_padding'        => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 48,
 				),
 				'product_nav'        => array(
 					'type'    => 'bool',

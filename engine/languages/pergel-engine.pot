@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T18:41:36+03:00\n"
+"POT-Creation-Date: 2026-10-24T20:13:39+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -616,6 +616,9 @@ msgid "Badges"
 msgstr ""
 
 msgid "Beside the pictures"
+msgstr ""
+
+msgid "Boxes in the summary"
 msgstr ""
 
 msgid "Buying"
@@ -1383,6 +1386,90 @@ msgstr ""
 msgid "Details list (SKU, categories, tags)"
 msgstr ""
 
+msgid "Box: you may also like"
+msgstr ""
+
+msgid "Box: product facts"
+msgstr ""
+
+msgid "Box: safe payment"
+msgstr ""
+
+msgid "\"You may also like\": how many"
+msgstr ""
+
+msgid "The upsells first, then products of the same category with the nearest price. Tick the box in \"What the summary shows\"."
+msgstr ""
+
+msgid "\"You may also like\": title"
+msgstr ""
+
+msgid "You may also like"
+msgstr ""
+
+msgid "Product facts"
+msgstr ""
+
+msgid "The rows of the facts box, in order. A row the product has no value for is left out."
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Brands"
+msgstr ""
+
+msgid "Availability"
+msgstr ""
+
+msgid "Product type"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "Dimensions"
+msgstr ""
+
+msgid "Safe payment: picture"
+msgstr ""
+
+msgid "E.g. the logos of the cards you take, as one picture. Its alternative text is read out."
+msgstr ""
+
+msgid "Safe payment: text"
+msgstr ""
+
+msgid "Under the picture. A shop that only takes quote requests can say something else here, e.g. the warranty."
+msgstr ""
+
+msgid "Guaranteed safe and secure checkout"
+msgstr ""
+
+msgid "Box background"
+msgstr ""
+
+msgid "Empty uses the surface colour."
+msgstr ""
+
+msgid "Box edge"
+msgstr ""
+
+msgid "Empty draws no edge."
+msgstr ""
+
+msgid "Box corners"
+msgstr ""
+
+msgid "In pixels; empty is 12."
+msgstr ""
+
+msgid "Space inside the boxes"
+msgstr ""
+
+msgid "In pixels."
+msgstr ""
+
 msgid "\"Buy now\" button"
 msgstr ""
 
@@ -1501,9 +1588,6 @@ msgid "Buttons"
 msgstr ""
 
 msgid "Tab text size"
-msgstr ""
-
-msgid "In pixels."
 msgstr ""
 
 msgid "Tab text weight"
@@ -2693,15 +2777,6 @@ msgstr ""
 msgid "Links to the wishlist and compare pages. Set the pages under Pergel → Settings → Shop."
 msgstr ""
 
-msgid "Availability"
-msgstr ""
-
-msgid "Weight"
-msgstr ""
-
-msgid "Dimensions"
-msgstr ""
-
 msgid "Buy"
 msgstr ""
 
@@ -2779,13 +2854,35 @@ msgstr ""
 msgid "You are not allowed to change these settings."
 msgstr ""
 
-msgid "You may also like"
-msgstr ""
+msgid "Category:"
+msgid_plural "Categories:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Tag:"
+msgid_plural "Tags:"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Brand:"
 msgid_plural "Brands:"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SKU:"
+msgstr ""
+
+msgid "Availability:"
+msgstr ""
+
+msgid "Product type:"
+msgstr ""
+
+msgid "Weight:"
+msgstr ""
+
+msgid "Dimensions:"
+msgstr ""
 
 #. translators: %s: product name.
 #, php-format
@@ -3010,9 +3107,6 @@ msgid "You cannot change this question."
 msgstr ""
 
 msgid "This product cannot be shown."
-msgstr ""
-
-msgid "SKU:"
 msgstr ""
 
 msgid "View full details"
@@ -3507,6 +3601,21 @@ msgstr ""
 msgid "Words next to the icons, as on the product page. Product cards show icons only."
 msgstr ""
 
+msgid "Box"
+msgstr ""
+
+msgid "Shows"
+msgstr ""
+
+msgid "Safe payment"
+msgstr ""
+
+msgid "Product summary box"
+msgstr ""
+
+msgid "Shows on product pages, for the product on screen."
+msgstr ""
+
 msgid "Product enquiry"
 msgstr ""
 
@@ -3936,6 +4045,30 @@ msgstr ""
 
 msgctxt "block keyword"
 msgid "heart"
+msgstr ""
+
+msgctxt "block title"
+msgid "Product summary box"
+msgstr ""
+
+msgctxt "block description"
+msgid "A box for the product summary: products the visitor may also like, the product's facts, or a picture and a line about safe payment. Their content and look are set under Pergel → Settings → Shop → Product page."
+msgstr ""
+
+msgctxt "block keyword"
+msgid "you may also like"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "facts"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "secure checkout"
+msgstr ""
+
+msgctxt "block keyword"
+msgid "trust"
 msgstr ""
 
 msgctxt "block title"

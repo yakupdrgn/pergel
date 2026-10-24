@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-24 15:41+0000\n"
-"PO-Revision-Date: 2026-10-24 15:41+0000\n"
+"POT-Creation-Date: 2026-10-24 17:14+0000\n"
+"PO-Revision-Date: 2026-10-24 17:14+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -597,6 +597,9 @@ msgstr "Rozetler"
 
 msgid "Beside the pictures"
 msgstr "Resimlerin yanında"
+
+msgid "Boxes in the summary"
+msgstr "Özetteki kutular"
 
 msgid "Buying"
 msgstr "Satın alma"
@@ -1363,6 +1366,90 @@ msgstr "Talep düğmeleri"
 msgid "Details list (SKU, categories, tags)"
 msgstr "Bilgi listesi (stok kodu, kategoriler, etiketler)"
 
+msgid "Box: you may also like"
+msgstr "Kutu: bunlar da ilginizi çekebilir"
+
+msgid "Box: product facts"
+msgstr "Kutu: ürün bilgileri"
+
+msgid "Box: safe payment"
+msgstr "Kutu: güvenli ödeme"
+
+msgid "\"You may also like\": how many"
+msgstr "\"Bunlar da ilginizi çekebilir\": kaç ürün"
+
+msgid "The upsells first, then products of the same category with the nearest price. Tick the box in \"What the summary shows\"."
+msgstr "Önce üst satış ürünleri, sonra aynı kategoride fiyatı en yakın ürünler. Kutuyu \"Özette neler görünsün\" listesinde işaretleyin."
+
+msgid "\"You may also like\": title"
+msgstr "\"Bunlar da ilginizi çekebilir\": başlık"
+
+msgid "You may also like"
+msgstr "Bunlar da ilginizi çekebilir"
+
+msgid "Product facts"
+msgstr "Ürün bilgileri"
+
+msgid "The rows of the facts box, in order. A row the product has no value for is left out."
+msgstr "Bilgi kutusunun satırları, sırasıyla. Ürünün değeri olmayan satır gösterilmez."
+
+msgid "Tags"
+msgstr "Etiketler"
+
+msgid "Brands"
+msgstr "Markalar"
+
+msgid "Availability"
+msgstr "Stok durumu"
+
+msgid "Product type"
+msgstr "Ürün türü"
+
+msgid "Weight"
+msgstr "Ağırlık"
+
+msgid "Dimensions"
+msgstr "Boyutlar"
+
+msgid "Safe payment: picture"
+msgstr "Güvenli ödeme: resim"
+
+msgid "E.g. the logos of the cards you take, as one picture. Its alternative text is read out."
+msgstr "Ör. kabul ettiğiniz kartların logoları, tek bir resim olarak. Resmin alternatif metni sesli okunur."
+
+msgid "Safe payment: text"
+msgstr "Güvenli ödeme: yazı"
+
+msgid "Under the picture. A shop that only takes quote requests can say something else here, e.g. the warranty."
+msgstr "Resmin altında. Yalnızca teklif isteği alan bir mağaza burada başka bir şey yazabilir, ör. garantiyi."
+
+msgid "Guaranteed safe and secure checkout"
+msgstr "Güvenli ödeme garantisi"
+
+msgid "Box background"
+msgstr "Kutu arka planı"
+
+msgid "Empty uses the surface colour."
+msgstr "Boşsa yüzey rengi kullanılır."
+
+msgid "Box edge"
+msgstr "Kutu kenarı"
+
+msgid "Empty draws no edge."
+msgstr "Boşsa kenar çizilmez."
+
+msgid "Box corners"
+msgstr "Kutu köşeleri"
+
+msgid "In pixels; empty is 12."
+msgstr "Piksel olarak; boşsa 12."
+
+msgid "Space inside the boxes"
+msgstr "Kutuların iç boşluğu"
+
+msgid "In pixels."
+msgstr "Piksel olarak."
+
 msgid "\"Buy now\" button"
 msgstr "\"Hemen al\" düğmesi"
 
@@ -1482,9 +1569,6 @@ msgstr "Düğmeler"
 
 msgid "Tab text size"
 msgstr "Sekme yazı boyutu"
-
-msgid "In pixels."
-msgstr "Piksel olarak."
 
 msgid "Tab text weight"
 msgstr "Sekme yazı kalınlığı"
@@ -2637,15 +2721,6 @@ msgstr "Karşılaştırılacak ürünler"
 msgid "Links to the wishlist and compare pages. Set the pages under Pergel → Settings → Shop."
 msgstr "İstek listesi ve karşılaştırma sayfalarına bağlantılar. Sayfaları Pergel → Ayarlar → Mağaza altında seçin."
 
-msgid "Availability"
-msgstr "Stok durumu"
-
-msgid "Weight"
-msgstr "Ağırlık"
-
-msgid "Dimensions"
-msgstr "Boyutlar"
-
 msgid "Buy"
 msgstr "Satın al"
 
@@ -2721,13 +2796,35 @@ msgstr "Unimart düzenini uygula"
 msgid "You are not allowed to change these settings."
 msgstr "Bu ayarları değiştirme izniniz yok."
 
-msgid "You may also like"
-msgstr "Bunlar da ilginizi çekebilir"
+msgid "Category:"
+msgid_plural "Categories:"
+msgstr[0] "Kategori:"
+msgstr[1] "Kategori:"
+
+msgid "Tag:"
+msgid_plural "Tags:"
+msgstr[0] "Etiket:"
+msgstr[1] "Etiket:"
 
 msgid "Brand:"
 msgid_plural "Brands:"
 msgstr[0] "Marka:"
 msgstr[1] "Marka:"
+
+msgid "SKU:"
+msgstr "Stok kodu:"
+
+msgid "Availability:"
+msgstr "Durum:"
+
+msgid "Product type:"
+msgstr "Ürün türü:"
+
+msgid "Weight:"
+msgstr "Ağırlık:"
+
+msgid "Dimensions:"
+msgstr "Boyutlar:"
 
 #. translators: %s: product name.
 msgid "Previous product: %s"
@@ -2938,9 +3035,6 @@ msgstr "Bu soruyu değiştiremezsiniz."
 
 msgid "This product cannot be shown."
 msgstr "Bu ürün gösterilemiyor."
-
-msgid "SKU:"
-msgstr "Stok kodu:"
 
 msgid "View full details"
 msgstr "Tüm ayrıntıları gör"
@@ -3424,6 +3518,21 @@ msgstr "Etiketleri göster"
 msgid "Words next to the icons, as on the product page. Product cards show icons only."
 msgstr "Ürün sayfasındaki gibi simgelerin yanında yazı. Ürün kartları yalnızca simge gösterir."
 
+msgid "Box"
+msgstr "Kutu"
+
+msgid "Shows"
+msgstr "Gösterdiği"
+
+msgid "Safe payment"
+msgstr "Güvenli ödeme"
+
+msgid "Product summary box"
+msgstr "Ürün özeti kutusu"
+
+msgid "Shows on product pages, for the product on screen."
+msgstr "Ürün sayfalarında, ekrandaki ürün için görünür."
+
 msgid "Product enquiry"
 msgstr "Ürün sorusu"
 
@@ -3854,6 +3963,30 @@ msgstr "favoriler"
 msgctxt "block keyword"
 msgid "heart"
 msgstr "kalp"
+
+msgctxt "block title"
+msgid "Product summary box"
+msgstr "Ürün özeti kutusu"
+
+msgctxt "block description"
+msgid "A box for the product summary: products the visitor may also like, the product's facts, or a picture and a line about safe payment. Their content and look are set under Pergel → Settings → Shop → Product page."
+msgstr "Ürün özeti için bir kutu: ziyaretçinin ilgisini çekebilecek ürünler, ürün bilgileri ya da güvenli ödeme için bir resim ve bir satır yazı. İçerikleri ve görünümleri Pergel → Ayarlar → Mağaza → Ürün sayfası altında ayarlanır."
+
+msgctxt "block keyword"
+msgid "you may also like"
+msgstr "bunlar da ilginizi çekebilir"
+
+msgctxt "block keyword"
+msgid "facts"
+msgstr "ürün bilgileri"
+
+msgctxt "block keyword"
+msgid "secure checkout"
+msgstr "güvenli ödeme"
+
+msgctxt "block keyword"
+msgid "trust"
+msgstr "güven"
 
 msgctxt "block title"
 msgid "Product enquiry"

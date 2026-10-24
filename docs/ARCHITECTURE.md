@@ -867,6 +867,19 @@ görünmez (`Settings\Screen::shown`).
   Home/End çalışır. Tek liste başlıkla gösterilir. `details_banner` deseni ürünlerin altındadır.
   `Layout::recent_on()` son bakılanların rotasını ve bloğu `related_recent` kapalıyken de yan sütun
   için açar.
+- **Özet kutuları (`Woo\ProductBoxes`, 6b):** `pergel/product-box` bloğu (`box`: "also" /
+  "facts" / "trust") "Özette neler görünsün" listesinin üç öğesidir; `Items::key` bloğu `box`
+  özniteliğine göre öğe sayar, işaretli ama şablonda olmayan kutuyu `Items::block` o öznitelikle
+  ekler. "also" `Related::similar` ile `also_count` (1–4) benzer ürünü resim, kategori, ad, fiyat
+  ve yuvarlak bir düğmeyle gösterir; düğme ürün satın alınabiliyorsa WooCommerce'in kendi
+  `add_to_cart_url`'üne (satış modu ve `card_quote` süzgeçleri geçerli), değilse ürüne gider.
+  "facts" `facts_rows` sırasıyla kategori, etiket, marka, SKU, durum, ürün türü, ağırlık ve
+  boyutları bir `<dl>` olarak yazar, değeri olmayan satırı atlar; liste boşken kategori, etiket,
+  marka, SKU ve durum (`ProductBoxes::FACTS`, ayar ekranında "Varsayılan düzen"). "trust"
+  `trust_image` resmini ve `trust_text` yazısını gösterir; yazı boşsa "Güvenli ödeme garantisi".
+  `box_*` değerleri her kutuya `--pergel-box-*` olarak yazılır; `style.css` boşlarda yüzey rengi,
+  12 px köşe ve 1rem iç boşluk kullanır. Sınıf yalnızca kutu çizilirken yüklenir. Metin
+  alanlarının etiketindeki `placeholder` ayar ekranında boş değerin ne kullanacağını gösterir.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

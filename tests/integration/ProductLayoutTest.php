@@ -321,6 +321,68 @@ final class ProductLayoutTest extends TestCase {
 		return array_map( static fn ( array $block ): string => (string) $block['blockName'], $gallery['innerBlocks'] );
 	}
 
+	public function test_summary_boxes(): void {
+		[ $id ]    = $this->product( 'Page boxes' );
+		[ $other ] = $this->product( 'Page boxes other' );
+		$product   = wc_get_product( $id );
+		$this->assertInstanceOf( \WC_Product::class, $product );
+		$product->set_upsell_ids( array( $other ) );
+		$product->set_sku( 'BOX-' . wp_generate_password( 6, false ) );
+		$product->set_weight( '1.5' );
+		$product->save();
+		Settings::update(
+			array(
+				'shop' => array(
+					'summary_items' => 'title,price,also,facts,trust',
+					'facts_rows'    => 'sku,weight,size,type',
+					'trust_text'    => 'Ships in 24 hours',
+					'box_bg'        => 'surface',
+					'box_radius'    => 10,
+				),
+			)
+		);
+		$this->go_to( $id );
+		Layout::product_page();
+
+		$html = do_blocks(
+			'<!-- wp:group --><div class="wp-block-group"><!-- wp:post-title {"level":1} /-->'
+			. '<!-- wp:woocommerce/product-price {"isDescendentOfSingleProductTemplate":true} /--></div><!-- /wp:group -->'
+		);
+
+		// Added after the price, in the order of the list.
+		$price = strpos( $html, 'wp-block-woocommerce-product-price' );
+		$also  = strpos( $html, 'class="is-also wp-block-pergel-product-box"' );
+		$facts = strpos( $html, 'class="is-facts wp-block-pergel-product-box"' );
+		$trust = strpos( $html, 'class="is-trust wp-block-pergel-product-box"' );
+		$this->assertIsInt( $price );
+		$this->assertIsInt( $also );
+		$this->assertIsInt( $facts );
+		$this->assertIsInt( $trust );
+		$this->assertLessThan( $also, $price );
+		$this->assertLessThan( $facts, $also );
+		$this->assertLessThan( $trust, $facts );
+		$this->assertStringContainsString( 'style="--pergel-box-bg:var(--wp--preset--color--surface);--pergel-box-radius:10px"', $html );
+
+		// The upsell, with a button that adds it to the cart.
+		$upsell = wc_get_product( $other );
+		$this->assertInstanceOf( \WC_Product::class, $upsell );
+		$this->assertStringContainsString( 'Page boxes other product', $html );
+		$this->assertStringContainsString( 'class="pergel-box__button is-cart" href="' . esc_url( $upsell->add_to_cart_url() ) . '"', $html );
+
+		// Facts with a value only: no dimensions.
+		$this->assertStringContainsString( '<dt>' . esc_html__( 'SKU:', 'pergel-engine' ) . '</dt><dd>' . $product->get_sku() . '</dd>', $html );
+		$this->assertStringContainsString( '<dt>' . esc_html__( 'Weight:', 'pergel-engine' ) . '</dt>', $html );
+		$this->assertStringContainsString( '<dd>' . esc_html( wc_get_product_types()['simple'] ) . '</dd>', $html );
+		$this->assertStringNotContainsString( esc_html__( 'Dimensions:', 'pergel-engine' ), $html );
+		$this->assertStringContainsString( '<p class="pergel-box__trust">Ships in 24 hours</p>', $html );
+
+		// A box the template already holds is that item, not added again.
+		Items::flush();
+		$html = do_blocks( '<!-- wp:group --><div class="wp-block-group"><!-- wp:pergel/product-box {"box":"trust"} /--><!-- wp:post-title {"level":1} /--></div><!-- /wp:group -->' );
+		$this->assertSame( 1, substr_count( $html, 'is-trust' ) );
+		$this->assertLessThan( (int) strpos( $html, 'is-trust' ), (int) strpos( $html, '<h1' ), 'Moved after the name, as listed.' );
+	}
+
 	public function test_buy_now_coupons_and_share(): void {
 		[ $id, $term ] = $this->product( 'Page buying' );
 		$this->coupon( 'pergel-shown', array() );

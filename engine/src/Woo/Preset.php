@@ -167,7 +167,7 @@ final class Preset {
 				// The summary as on the reference: the short description under
 				// the name, then rating and SKU, the price and buying; the
 				// details list goes (the category is above the name).
-				'summary_items'      => 'title,excerpt,rating,sku,price,buying,cta',
+				'summary_items'      => 'title,excerpt,rating,sku,price,buying,cta,also,facts,trust',
 				'product_nav'        => true,
 				'product_buy_now'    => true,
 				'product_coupons'    => true,
@@ -194,6 +194,14 @@ final class Preset {
 				'tab_edge_color'     => 'line',
 				'tab_padding'        => 32,
 				'tab_area_bg'        => 'surface',
+				// Boxes under the buying form: two similar products, the
+				// categories, availability and type, and the payment line,
+				// on a light background with 12 px corners.
+				'also_count'         => 2,
+				'facts_rows'         => 'category,stock,type',
+				'box_bg'             => 'surface',
+				'box_radius'         => 12,
+				'box_padding'        => 16,
 			),
 		);
 	}
