@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T22:09:09+03:00\n"
+"POT-Creation-Date: 2026-10-24T22:30:56+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1302,6 +1302,24 @@ msgstr ""
 msgid "Names only"
 msgstr ""
 
+msgid "Categories in a row"
+msgstr ""
+
+msgid "How many share the row on wide screens; more scroll sideways. Fewer on tablets and phones. 0 leaves the style's own size."
+msgstr ""
+
+msgid "Category pictures"
+msgstr ""
+
+msgid "For \"Round pictures\". \"Square\" fills the tile with the picture on the card picture background, the name under it."
+msgstr ""
+
+msgid "As the style"
+msgstr ""
+
+msgid "Square"
+msgstr ""
+
 msgid "Layout"
 msgstr ""
 
@@ -1776,9 +1794,6 @@ msgstr ""
 msgid "Rounded"
 msgstr ""
 
-msgid "Square"
-msgstr ""
-
 msgid "Colours on cards"
 msgstr ""
 
@@ -1887,6 +1902,24 @@ msgstr ""
 msgid "Name weight"
 msgstr ""
 
+msgid "Product name lines"
+msgstr ""
+
+msgid "A longer name ends with \"…\"."
+msgstr ""
+
+msgid "As many as it needs"
+msgstr ""
+
+msgid "One"
+msgstr ""
+
+msgid "Two"
+msgstr ""
+
+msgid "Three"
+msgstr ""
+
 msgid "Category and brand colour"
 msgstr ""
 
@@ -1942,6 +1975,12 @@ msgid "The headings of the filters (Category, Price, ...), in pixels."
 msgstr ""
 
 msgid "Filter heading weight"
+msgstr ""
+
+msgid "With \"A tab on the box\" the title sits on the box's top edge like a folder tab, in the box's background, edge and corners. On wide screens."
+msgstr ""
+
+msgid "A tab on the box"
 msgstr ""
 
 msgid "Between the filters"
@@ -2028,7 +2067,19 @@ msgstr ""
 msgid "Menu and button corners"
 msgstr ""
 
-msgid "The sorting and products per page menus, the grid and list buttons and the filter search box, in pixels."
+msgid "The sorting and products per page menus, the grid and list buttons, a search box in the toolbar and the filter search box, in pixels."
+msgstr ""
+
+msgid "Menu and button height"
+msgstr ""
+
+msgid "The sorting and products per page menus, the grid and list buttons and a search box in the toolbar, in pixels."
+msgstr ""
+
+msgid "Menu and button edge"
+msgstr ""
+
+msgid "Menu and button edge colour"
 msgstr ""
 
 msgid "Page number shape"

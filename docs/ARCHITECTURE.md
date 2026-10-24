@@ -639,6 +639,13 @@ görünmez (`Settings\Screen::shown`).
   WooCommerce'in kendi "daha fazla"sına da basar (ilk 15'ten sonrakileri o çizer). Aramada bütün
   seçenekler görünür; işaretli bir seçenek aşağıdaysa liste açık başlar. Betik yalnızca gerçekten
   değişen yazıyı yazar: gözlemci (MutationObserver) her yazıyı yeniden çizim sayıp döngüye girer.
+  `shop.filter_title_look: tab` (7c) başlığı geniş ekranda kutunun üst kenarına klasör sekmesi
+  olarak oturtur (kutunun zemini, kenarı ve köşeleriyle; WooCommerce panel sarmalayıcıları
+  `position: static`). Araç çubuğu: `control_height|control_edge|control_edge_color` sıralama ve
+  sayfa başına menülerine, görünüm düğmelerine ve araç çubuğundaki arama kutusuna; köşeleri
+  `control_radius`. Kategori şeridi: `strip_count` satırı paylaşan kutucuk sayısı (tablette en çok
+  6, telefonda 3,4), `strip_picture: square` "Yuvarlak resimler" stilinde kare resim (kart resmi
+  zemini ve köşesiyle). Kartlar: `card_title_lines` ürün adını 1–3 satırda keser.
 - **Görünüm ve sayfalar (`Woo\Listing`):** `shop.view` ana ızgaraya `pergel-shop-grid
   pergel-view-list` sınıfı koyar; liste mümkünse (`view` liste ya da `view_switch` açık) fiyattan
   sonra `woocommerce/product-summary` (30 kelime) çizilir, ızgarada CSS ile gizlenir.

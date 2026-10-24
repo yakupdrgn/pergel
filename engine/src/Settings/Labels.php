@@ -249,7 +249,7 @@ final class Labels {
 				),
 				'refine'  => array(
 					'title'  => __( 'Filter look', 'pergel-engine' ),
-					'fields' => array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_divider', 'filter_text_size', 'filter_counts', 'filter_accent', 'filter_input_size', 'filter_input_edge', 'filter_input_color', 'filter_swatch', 'filter_star_size', 'filter_star_color' ),
+					'fields' => array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_title_look', 'filter_divider', 'filter_text_size', 'filter_counts', 'filter_accent', 'filter_input_size', 'filter_input_edge', 'filter_input_color', 'filter_swatch', 'filter_star_size', 'filter_star_color' ),
 				),
 				'toolbar' => array(
 					'title'  => __( 'View and paging', 'pergel-engine' ),
@@ -257,11 +257,11 @@ final class Labels {
 				),
 				'tools'   => array(
 					'title'  => __( 'Toolbar and page numbers look', 'pergel-engine' ),
-					'fields' => array( 'toolbar_bg', 'toolbar_edge', 'toolbar_edge_color', 'toolbar_radius', 'toolbar_padding', 'control_radius', 'paging_shape', 'paging_size', 'paging_bg', 'paging_current' ),
+					'fields' => array( 'toolbar_bg', 'toolbar_edge', 'toolbar_edge_color', 'toolbar_radius', 'toolbar_padding', 'control_radius', 'control_height', 'control_edge', 'control_edge_color', 'paging_shape', 'paging_size', 'paging_bg', 'paging_current' ),
 				),
 				'header'  => array(
 					'title'  => __( 'Above the products', 'pergel-engine' ),
-					'fields' => array( 'banner', 'category_strip' ),
+					'fields' => array( 'banner', 'category_strip', 'strip_count', 'strip_picture' ),
 				),
 				'store'   => array(
 					'title'  => __( 'Store header', 'pergel-engine' ),
@@ -289,7 +289,7 @@ final class Labels {
 				),
 				'look'    => array(
 					'title'  => __( 'Card look', 'pergel-engine' ),
-					'fields' => array( 'card_gap', 'card_bg', 'card_border', 'card_border_color', 'card_radius', 'card_padding', 'card_hover_look', 'card_image_bg', 'card_image_radius', 'card_align', 'card_title_size', 'card_title_weight', 'card_meta_color', 'card_button', 'card_button_color', 'card_button_shape', 'card_button_width', 'card_button_height' ),
+					'fields' => array( 'card_gap', 'card_bg', 'card_border', 'card_border_color', 'card_radius', 'card_padding', 'card_hover_look', 'card_image_bg', 'card_image_radius', 'card_align', 'card_title_size', 'card_title_weight', 'card_title_lines', 'card_meta_color', 'card_button', 'card_button_color', 'card_button_shape', 'card_button_width', 'card_button_height' ),
 				),
 				'badges'  => array(
 					'title'  => __( 'Badges', 'pergel-engine' ),
@@ -853,6 +853,18 @@ final class Labels {
 						'names'  => __( 'Names only', 'pergel-engine' ),
 					),
 				),
+				'strip_count'        => array(
+					'label' => __( 'Categories in a row', 'pergel-engine' ),
+					'help'  => __( 'How many share the row on wide screens; more scroll sideways. Fewer on tablets and phones. 0 leaves the style\'s own size.', 'pergel-engine' ),
+				),
+				'strip_picture'      => array(
+					'label'   => __( 'Category pictures', 'pergel-engine' ),
+					'help'    => __( 'For "Round pictures". "Square" fills the tile with the picture on the card picture background, the name under it.', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the style', 'pergel-engine' ),
+						'square'   => __( 'Square', 'pergel-engine' ),
+					),
+				),
 				'product_layout'     => array(
 					'label'   => __( 'Layout', 'pergel-engine' ),
 					'help'    => __( 'Where the pictures go on the product page. "Three columns" adds a column of recommended products: the product\'s upsells, else related products. A category or a product can choose its own.', 'pergel-engine' ),
@@ -1289,6 +1301,16 @@ final class Labels {
 						'700'      => __( 'Bold', 'pergel-engine' ),
 					),
 				),
+				'card_title_lines'   => array(
+					'label'   => __( 'Product name lines', 'pergel-engine' ),
+					'help'    => __( 'A longer name ends with "…".', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As many as it needs', 'pergel-engine' ),
+						'1'        => __( 'One', 'pergel-engine' ),
+						'2'        => __( 'Two', 'pergel-engine' ),
+						'3'        => __( 'Three', 'pergel-engine' ),
+					),
+				),
 				'card_meta_color'    => array(
 					'label' => __( 'Category and brand colour', 'pergel-engine' ),
 				),
@@ -1359,6 +1381,14 @@ final class Labels {
 						'700'      => __( 'Bold', 'pergel-engine' ),
 					),
 				),
+				'filter_title_look'  => array(
+					'label'   => __( 'Filter box title', 'pergel-engine' ),
+					'help'    => __( 'With "A tab on the box" the title sits on the box\'s top edge like a folder tab, in the box\'s background, edge and corners. On wide screens.', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'tab'      => __( 'A tab on the box', 'pergel-engine' ),
+					),
+				),
 				'filter_divider'     => array(
 					'label'   => __( 'Between the filters', 'pergel-engine' ),
 					'choices' => array(
@@ -1426,7 +1456,18 @@ final class Labels {
 				),
 				'control_radius'     => array(
 					'label' => __( 'Menu and button corners', 'pergel-engine' ),
-					'help'  => __( 'The sorting and products per page menus, the grid and list buttons and the filter search box, in pixels.', 'pergel-engine' ),
+					'help'  => __( 'The sorting and products per page menus, the grid and list buttons, a search box in the toolbar and the filter search box, in pixels.', 'pergel-engine' ),
+				),
+				'control_height'     => array(
+					'label' => __( 'Menu and button height', 'pergel-engine' ),
+					'help'  => __( 'The sorting and products per page menus, the grid and list buttons and a search box in the toolbar, in pixels.', 'pergel-engine' ),
+				),
+				'control_edge'       => array(
+					'label' => __( 'Menu and button edge', 'pergel-engine' ),
+					'help'  => __( 'In pixels; 0 for none.', 'pergel-engine' ),
+				),
+				'control_edge_color' => array(
+					'label' => __( 'Menu and button edge colour', 'pergel-engine' ),
 				),
 				'paging_shape'       => array(
 					'label'   => __( 'Page number shape', 'pergel-engine' ),

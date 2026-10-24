@@ -60,7 +60,7 @@ final class ShopLook {
 	 * The rules for the values that are set.
 	 */
 	public static function css(): string {
-		return implode( '', array_merge( self::filters(), self::toolbar(), self::paging() ) );
+		return implode( '', array_merge( self::filters(), self::toolbar(), self::paging(), self::strip() ) );
 	}
 
 	/**
@@ -93,6 +93,21 @@ final class ShopLook {
 		}
 		if ( $head ) {
 			$rules[] = "$filters .wp-block-heading:not(.pergel-filters__title){" . implode( ';', $head ) . '}';
+		}
+
+		if ( 'tab' === Settings::get( 'shop.filter_title_look' ) ) {
+			// On the box's top edge like a folder tab, in the box's own look;
+			// WooCommerce's panel wrappers stay in the box on wide screens.
+			$column  = '.pergel-shop-layout:not(.pergel-filters-drawer) .pergel-shop-layout__filters .wc-block-product-filters';
+			$edge    = self::px( 'filter_edge' );
+			$edge    = '' === $edge ? '1px' : $edge;
+			$color   = self::color( 'filter_edge_color' );
+			$color   = '' === $color ? 'var(--wp--preset--color--line)' : $color;
+			$bg      = self::color( 'filter_bg' );
+			$bg      = '' === $bg ? 'var(--wp--preset--color--base)' : $bg;
+			$radius  = self::px( 'filter_radius' );
+			$radius  = '' === $radius ? '12px' : $radius;
+			$rules[] = "@media (min-width:1025px){{$column}{position:relative;margin-top:calc(1.5rem + 18px + $edge)!important;border-top-left-radius:0}{$column} :is(.wc-block-product-filters__overlay,.wc-block-product-filters__overlay-wrapper,.wc-block-product-filters__overlay-dialog,.wc-block-product-filters__overlay-content){position:static}{$column} .pergel-filters__title{position:absolute;left:calc(-1 * $edge);bottom:100%;margin:0!important;padding:10px 24px 8px 16px;line-height:1.5rem;background:$bg;border:$edge solid $color;border-bottom:0;border-radius:$radius $radius 0 0}}";
 		}
 
 		$group = '[class*="wp-block-woocommerce-product-filter-"]';
@@ -169,9 +184,48 @@ final class ShopLook {
 		if ( $box ) {
 			$rules[] = "$products>.wp-block-group:has(.wp-block-woocommerce-catalog-sorting,.wp-block-woocommerce-product-results-count){" . implode( ';', $box ) . '}';
 		}
-		$radius = self::px( 'control_radius' );
+		$controls = "$products :is(.wc-block-catalog-sorting select,.pergel-per-page select,.pergel-view-button,.wp-block-search__inside-wrapper)";
+		$radius   = self::px( 'control_radius' );
 		if ( '' !== $radius ) {
-			$rules[] = "$products :is(.wc-block-catalog-sorting select,.pergel-per-page select,.pergel-view-button){border-radius:$radius}";
+			$rules[] = "$controls{border-radius:$radius}";
+		}
+		$height = self::px( 'control_height' );
+		if ( '' !== $height ) {
+			$rules[] = "$products :is(.wc-block-catalog-sorting select,.pergel-per-page select,.wp-block-search__inside-wrapper){box-sizing:border-box;height:$height;min-height:0}$products .pergel-view-button{box-sizing:border-box;width:$height;height:$height;min-width:0;min-height:0}$products .wp-block-search__input{height:100%;min-height:0;padding-block:0}";
+		}
+		$edge  = self::px( 'control_edge' );
+		$color = self::color( 'control_edge_color' );
+		if ( '0px' === $edge ) {
+			$rules[] = "$controls{border:0}";
+		} elseif ( '' !== $edge || '' !== $color ) {
+			$rules[] = "$controls{border:" . ( '' === $edge ? '1px' : $edge ) . ' solid ' . ( '' === $color ? 'var(--wp--preset--color--line)' : $color ) . '}';
+			// The search box's edge is its wrapper's.
+			$rules[] = "$products .wp-block-search__inside-wrapper .wp-block-search__input{border:0}";
+		}
+		return $rules;
+	}
+
+	/**
+	 * The category strip above the products: how many share the row, and
+	 * square pictures for the "Round pictures" style.
+	 *
+	 * @return list<string>
+	 */
+	private static function strip(): array {
+		$strip = '.pergel-category-strip';
+		$rules = array();
+		$count = Settings::get( 'shop.strip_count' );
+		if ( is_int( $count ) && $count > 0 ) {
+			// Fewer on tablets and phones, where the next one peeks in.
+			$tiles   = static fn ( float $n ): string => "$strip>ul{gap:16px;scroll-snap-type:x mandatory}$strip .pergel-category-card{flex:0 0 calc((100% - " . ( ceil( $n ) - 1 ) . "*16px)/$n);min-width:0;scroll-snap-align:start;transform:none}";
+			$rules[] = $tiles( (float) $count );
+			$rules[] = '@media (max-width:1100px){' . $tiles( (float) min( $count, 6 ) ) . '}';
+			$rules[] = '@media (max-width:781px){' . $tiles( min( (float) $count, 3.4 ) ) . '}';
+		}
+		if ( 'square' === Settings::get( 'shop.strip_picture' ) ) {
+			$bg      = self::color( 'card_image_bg' );
+			$radius  = self::px( 'card_image_radius' );
+			$rules[] = "$strip.is-images .pergel-category-card__link{display:flex;flex-direction:column;gap:12px;width:100%;margin:0}$strip.is-images .pergel-category-card__image{width:100%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:" . ( '' === $radius ? '8px' : $radius ) . ';background:' . ( '' === $bg ? 'var(--wp--preset--color--surface)' : $bg ) . '}';
 		}
 		return $rules;
 	}

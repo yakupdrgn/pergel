@@ -453,7 +453,7 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringContainsString( 'border-top:1px solid var(--wp--preset--color--line)', $css );
 		$this->assertStringContainsString( 'input[type=checkbox].wc-block-product-filter-checkbox-list__input:checked{--wc-product-filter-checkbox-list-option-element:#ff0000', $css );
 		$this->assertStringContainsString( '.wp-block-group:has(.wp-block-woocommerce-catalog-sorting,.wp-block-woocommerce-product-results-count){box-sizing:border-box;background:var(--wp--preset--color--surface)}', $css );
-		$this->assertStringContainsString( '.pergel-view-button){border-radius:6px}', $css );
+		$this->assertStringContainsString( '.pergel-view-button,.wp-block-search__inside-wrapper){border-radius:6px}', $css );
 		$this->assertStringContainsString( '.page-numbers:not(.dots){display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:48px;height:48px;padding:0 .25em;text-decoration:none;border-radius:999px}', $css );
 		$this->assertStringContainsString( '.page-numbers.current{background:var(--wp--preset--color--accent);', $css, 'The current page stands out.' );
 		$this->assertStringNotContainsString( 'font-size', $css, 'No sizes set.' );
@@ -462,6 +462,38 @@ final class ShopLayoutTest extends TestCase {
 		Settings::update( array( 'shop' => array( 'filter_edge' => 0 ) ) );
 		$this->assertStringContainsString( '.wc-block-product-filters{box-sizing:border-box;border:0;border-radius:12px}', ShopLook::css() );
 		$this->assertStringContainsString( '.pergel-filter-search{border-radius:6px}', ShopLook::css(), 'The search box takes the menus\' corners.' );
+	}
+
+	public function test_toolbar_controls_title_tab_and_strip(): void {
+		$this->go_to( array( 'post_type' => 'product' ) );
+		Settings::update(
+			array(
+				'shop' => array(
+					'control_height'     => 36,
+					'control_edge'       => 2,
+					'control_edge_color' => 'line',
+					'filter_title_look'  => 'tab',
+					'filter_edge'        => 2,
+					'strip_count'        => 8,
+					'strip_picture'      => 'square',
+				),
+			)
+		);
+		$this->assertTrue( Layout::chosen( Layout::LOOK ) );
+
+		$css      = ShopLook::css();
+		$products = '.pergel-shop-layout .pergel-shop-layout__products';
+		$this->assertStringContainsString( "$products .pergel-view-button{box-sizing:border-box;width:36px;height:36px;min-width:0;min-height:0}", $css );
+		$this->assertStringContainsString( ".wp-block-search__inside-wrapper){border:2px solid var(--wp--preset--color--line)}", $css );
+		$this->assertStringContainsString( '.pergel-filters__title{position:absolute;left:calc(-1 * 2px);bottom:100%;', $css );
+		$this->assertStringContainsString( 'border:2px solid var(--wp--preset--color--line);border-bottom:0;border-radius:12px 12px 0 0}', $css );
+		$this->assertStringContainsString( '.pergel-category-strip .pergel-category-card{flex:0 0 calc((100% - 7*16px)/8);', $css );
+		$this->assertStringContainsString( '@media (max-width:1100px){.pergel-category-strip>ul{gap:16px;scroll-snap-type:x mandatory}.pergel-category-strip .pergel-category-card{flex:0 0 calc((100% - 5*16px)/6);', $css );
+		$this->assertStringContainsString( 'calc((100% - 3*16px)/3.4)', $css );
+		$this->assertStringContainsString( '.pergel-category-strip.is-images .pergel-category-card__image{width:100%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:8px;background:var(--wp--preset--color--surface)}', $css );
+
+		Settings::update( array( 'shop' => array( 'control_edge' => 0 ) ) );
+		$this->assertStringContainsString( '.wp-block-search__inside-wrapper){border:0}', ShopLook::css() );
 	}
 
 	public function test_filter_list_look(): void {
