@@ -75,7 +75,14 @@
 }
 
 /* Price: the theme's field style, and thumbs that show focus. */
+/* The two price boxes share a narrow column instead of pushing past it. */
+.wc-block-product-filters .wc-block-product-filter-price-slider__content {
+	grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
 .wc-block-product-filters .wc-block-product-filter-price-slider .text input[type="text"] {
+	box-sizing: border-box;
+	width: 100%;
 	font: inherit;
 	color: inherit;
 	background-color: var(--wp--preset--color--base);

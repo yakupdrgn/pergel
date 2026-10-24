@@ -568,6 +568,80 @@ final class Schema {
 					'min'  => 24,
 					'max'  => 64,
 				),
+				// The filter box, the toolbar and the page numbers; empty or
+				// "As the template" leaves their own look. See Pergel\Woo\ShopLook.
+				'filter_bg'          => array( 'type' => 'color' ),
+				'filter_edge'        => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 8,
+				),
+				'filter_edge_color'  => array( 'type' => 'color' ),
+				'filter_radius'      => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 40,
+				),
+				'filter_padding'     => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 48,
+				),
+				'filter_head_size'   => array(
+					'type' => 'length',
+					'min'  => 12,
+					'max'  => 32,
+				),
+				'filter_head_weight' => array(
+					'type'    => 'enum',
+					'options' => array( 'template', '400', '500', '600', '700' ),
+					'default' => 'template',
+				),
+				'filter_divider'     => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'none', 'line' ),
+					'default' => 'template',
+				),
+				'filter_text_size'   => array(
+					'type' => 'length',
+					'min'  => 12,
+					'max'  => 20,
+				),
+				'filter_accent'      => array( 'type' => 'color' ),
+				'toolbar_bg'         => array( 'type' => 'color' ),
+				'toolbar_edge'       => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 8,
+				),
+				'toolbar_edge_color' => array( 'type' => 'color' ),
+				'toolbar_radius'     => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 40,
+				),
+				'toolbar_padding'    => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 32,
+				),
+				'control_radius'     => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 24,
+				),
+				'paging_shape'       => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'square', 'rounded', 'circle' ),
+					'default' => 'template',
+				),
+				'paging_size'        => array(
+					'type' => 'length',
+					'min'  => 28,
+					'max'  => 64,
+				),
+				'paging_bg'          => array( 'type' => 'color' ),
+				'paging_current'     => array( 'type' => 'color' ),
 				'badge_sale'         => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'percent', 'none' ),

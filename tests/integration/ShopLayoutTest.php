@@ -20,6 +20,7 @@ use Pergel\Woo\LayoutFields;
 use Pergel\Woo\Listing;
 use Pergel\Woo\Module as Woo;
 use Pergel\Woo\ShopHeader;
+use Pergel\Woo\ShopLook;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -340,6 +341,57 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertSame( '<form>sort</form>', Listing::toolbar( '<form>sort</form>' ) );
 		$this->assertSame( 16, Layout::per_page( 16 ), 'A number the menu does not offer is ignored.' );
 		$this->assertSame( '', ShopHeader::render( '' ) );
+	}
+
+	public function test_look_makes_rules_only_for_set_values(): void {
+		$this->go_to(
+			array(
+				'post_type'      => 'product',
+				'posts_per_page' => 1,
+			)
+		);
+		$this->assertTrue( Layout::listing() );
+		$this->assertFalse( Layout::chosen( Layout::LOOK ) );
+		Layout::look();
+		$this->assertFalse( wp_style_is( Layout::STYLE ), 'Defaults load nothing.' );
+		$this->assertSame( '', ShopLook::css() );
+
+		Settings::update(
+			array(
+				'shop' => array(
+					'filter_edge'        => 2,
+					'filter_edge_color'  => 'line',
+					'filter_radius'      => 12,
+					'filter_head_weight' => '700',
+					'filter_divider'     => 'line',
+					'filter_accent'      => '#ff0000',
+					'toolbar_bg'         => 'surface',
+					'control_radius'     => 6,
+					'paging_shape'       => 'circle',
+					'paging_size'        => 48,
+				),
+			)
+		);
+		$this->assertTrue( Layout::chosen( Layout::LOOK ) );
+		Layout::look();
+		$this->assertTrue( wp_style_is( Layout::STYLE ) );
+
+		$css = ShopLook::css();
+		$this->assertStringContainsString( $css, implode( '', (array) wp_styles()->get_data( Layout::STYLE, 'after' ) ) );
+		// The box only beside the products, not in the panel.
+		$this->assertStringContainsString( '@media (min-width:1025px){.pergel-shop-layout:not(.pergel-filters-drawer) .pergel-shop-layout__filters .wc-block-product-filters{box-sizing:border-box;border:2px solid var(--wp--preset--color--line);border-radius:12px}', $css );
+		$this->assertStringContainsString( '.wp-block-heading:not(.pergel-filters__title){font-weight:700}', $css );
+		$this->assertStringContainsString( 'border-top:1px solid var(--wp--preset--color--line)', $css );
+		$this->assertStringContainsString( 'input[type=checkbox].wc-block-product-filter-checkbox-list__input:checked{--wc-product-filter-checkbox-list-option-element:#ff0000', $css );
+		$this->assertStringContainsString( '.wp-block-group:has(.wp-block-woocommerce-catalog-sorting,.wp-block-woocommerce-product-results-count){box-sizing:border-box;background:var(--wp--preset--color--surface)}', $css );
+		$this->assertStringContainsString( '.pergel-view-button){border-radius:6px}', $css );
+		$this->assertStringContainsString( '.page-numbers:not(.dots){display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-width:48px;height:48px;padding:0 .25em;text-decoration:none;border-radius:999px}', $css );
+		$this->assertStringContainsString( '.page-numbers.current{background:var(--wp--preset--color--accent);', $css, 'The current page stands out.' );
+		$this->assertStringNotContainsString( 'font-size', $css, 'No sizes set.' );
+		$this->assertStringNotContainsString( 'padding:', str_replace( 'padding:0 .25em', '', $css ), 'No inner space set.' );
+
+		Settings::update( array( 'shop' => array( 'filter_edge' => 0 ) ) );
+		$this->assertStringContainsString( '.wc-block-product-filters{box-sizing:border-box;border:0;border-radius:12px}', ShopLook::css() );
 	}
 
 	public function test_list_view_menu_and_load_more(): void {

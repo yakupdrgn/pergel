@@ -22,6 +22,8 @@ use Pergel\Settings\Settings;
  */
 final class CardLook {
 
+	use LookValues;
+
 	/**
 	 * The grid the rules are for.
 	 */
@@ -116,8 +118,8 @@ final class CardLook {
 			// Preset font size classes use !important.
 			$title[] = "font-size:$size!important";
 		}
-		$weight = Settings::get( 'shop.card_title_weight' );
-		if ( is_string( $weight ) && ctype_digit( $weight ) ) {
+		$weight = self::weight( 'card_title_weight' );
+		if ( '' !== $weight ) {
 			$title[] = "font-weight:$weight";
 		}
 		if ( $title ) {
@@ -206,32 +208,5 @@ final class CardLook {
 			array_unshift( $rules, $button . '{' . implode( ';', $own ) . '}' );
 		}
 		return $rules;
-	}
-
-	/**
-	 * A length setting as CSS, '' when not set.
-	 *
-	 * @param string $key Setting key in the shop group.
-	 */
-	private static function px( string $key ): string {
-		$value = Settings::get( "shop.$key" );
-		return is_int( $value ) ? $value . 'px' : '';
-	}
-
-	/**
-	 * A colour setting as CSS: a palette colour as its preset variable,
-	 * #rrggbb as it is, '' when not set.
-	 *
-	 * @param string $key Setting key in the shop group.
-	 */
-	private static function color( string $key ): string {
-		$value = Settings::get( "shop.$key" );
-		if ( ! is_string( $value ) || '' === $value ) {
-			return '';
-		}
-		if ( preg_match( '/^#[0-9a-f]{6}$/', $value ) ) {
-			return $value;
-		}
-		return preg_match( '/^[a-z0-9][a-z0-9-]*$/', $value ) ? "var(--wp--preset--color--$value)" : '';
 	}
 }

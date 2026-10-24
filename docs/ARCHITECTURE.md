@@ -727,6 +727,19 @@ görünmez (`Settings\Screen::shown`).
   "Kart stiline göre" stilin kendi görünümünü bırakır); kurallar `.pergel-cards.pergel-cards`
   altında, kart stil dosyasına satır içi eklenir. Bir değer doluysa ızgara stil seçilmemiş olsa da
   `pergel-cards` alır; `CardLook` yalnızca o zaman yüklenir.
+  Mağaza sayfası görünümü (`Woo\ShopLook`, "Filtreler" sayfasının "Filtre görünümü" ve "Mağaza
+  sayfası"nın "Araç çubuğu ve sayfa numaraları görünümü" bölümleri): filtre kutusunun zemini,
+  kenarlığı, köşesi ve iç boşluğu, filtre başlıklarının boyutu ve kalınlığı, filtreler arası çizgi,
+  seçenek yazı boyutu ve filtre rengi (WooCommerce'in `--wc-product-filter-*` değişkenleri:
+  işaretli kutu, fiyat kaydırıcısı, seçili filtreler); sonuç sayısı ile sıralamanın satırının
+  kutusu ve menü/düğme köşeleri; sayfa numaralarının biçimi, boyutu, zemini ve geçerli sayfanın
+  rengi. Kutu yalnızca WooCommerce'in filtreleri ürünlerin yanında gösterdiği genişlikte
+  (1024px'ten geniş) ve panel düzeninde değilken çizilir; telefon paneli WooCommerce'inkidir.
+  Araç çubuğu, ürün sütununun sıralamayı ya da sonuç sayısını tutan ilk gruplarından biridir
+  (`:has()`), böylece alt temanın kendi şablonunda da bulunur. `Layout::look` (`wp` kancası)
+  `ShopLook`'u yalnızca listeleme sayfalarında ve bir değer doluysa yükler; kurallar mağaza düzeni
+  CSS'inin arkasına satır içi eklenir. Uzunluk, renk ve kalınlık okuma `Woo\LookValues`
+  özelliğinde, `CardLook` ile ortak.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
   `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
   ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları

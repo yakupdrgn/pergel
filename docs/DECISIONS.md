@@ -1658,6 +1658,15 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   renk Site düzenleyiciyle birlikte değişir, kötü bir değer CSS'i bozamaz. Unimart hazır ayarı bu
   değerleri de yazar. Sonraki adımlar aynı türlerle filtre kutusu, araç çubuğu, sayfa numaraları
   ve ürün sayfası.
+- **Filtre kutusu, araç çubuğu ve sayfa numaraları (24 Ekim 2026, kullanıcı):** 2. adımın ikinci
+  parçası. Değerler Unimart'ın elektronik mağazasında ölçüldü (beyaz kutu, 2px açık kenarlık,
+  12px köşe ve iç boşluk, 15px kalın başlıklar, 15px seçenekler, 6px menüler, 48px yuvarlak
+  sayfa numaraları açık zeminde, geçerli sayfa vurgu renginde) ve hazır ayara yazıldı; araç
+  çubuğu Unimart'ta kutusuz olduğu için hazır ayar onu değiştirmez. Filtre kutusu yalnızca 1024px
+  üstünde: WooCommerce filtreleri bunun altında yan sütunda değil panelde gösteriyor, kutu orada
+  yalnızca "Filtrele" düğmesini çevrelerdi. Denerken temada var olan bir taşma bulundu: iki fiyat
+  kutusu (her biri en çok 6.5em) 16rem'lik sütuna sığmıyor, sütun yatay kayıyordu; fiyat ızgarası
+  artık sütunu paylaşıyor.
 
 ## Aşamalar ve bitti tanımları
 

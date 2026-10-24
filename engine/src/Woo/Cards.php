@@ -9,7 +9,6 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
-use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 
 /**
@@ -208,16 +207,7 @@ final class Cards {
 	 * do not load CardLook.
 	 */
 	public static function look(): bool {
-		if ( null === self::$look ) {
-			$defaults   = Schema::defaults()['shop'];
-			self::$look = false;
-			foreach ( self::LOOK as $key ) {
-				if ( Settings::get( "shop.$key" ) !== $defaults[ $key ] ) {
-					self::$look = true;
-					break;
-				}
-			}
-		}
+		self::$look ??= Layout::chosen( self::LOOK );
 		return self::$look;
 	}
 
