@@ -18,6 +18,8 @@ namespace Pergel\Woo;
  *   Additional information · the product's own tab · the two pattern
  *   tabs · Questions · Reviews; tabs other plugins add through
  *   woocommerce_product_tabs still come after them (WooCommerce adds those);
+ * - with "Description in sections by its headings" on, the description is
+ *   a section per top-level H2 heading, named after it (split());
  * - with the feature list on, a product's own list shows as
  *   "Specifications" and the attribute table as "Additional information";
  * - "Tabs": one section open at a time (the accordion's own autoclose) and a
@@ -119,6 +121,30 @@ final class Details {
 			array_splice( $items, $specs, 0, array( self::item( $anchor, __( 'Specifications', 'pergel-engine' ), self::html( '<ul class="pergel-features">' . $list . '</ul>' ) ) ) );
 		}
 
+		$description = true === Layout::get( 'shop.details_split' ) ? self::holding( $items, 'woocommerce/product-description' ) : null;
+		if ( null !== $description ) {
+			$split = self::split( $anchor, $product );
+			if ( count( $split ) > 1 ) {
+				// A section of the same name as one of them, as "Specifications"
+				// with the attributes, joins it at its end.
+				$names = array_map( static fn ( array $item ): string => mb_strtolower( self::name( $item ) ), $split );
+				$rest  = array();
+				$at    = 0;
+				foreach ( $items as $index => $item ) {
+					$same = array_search( mb_strtolower( self::name( $item ) ), $names, true );
+					if ( $index === $description ) {
+						$at = count( $rest );
+					} elseif ( is_int( $same ) ) {
+						$split[ $same ] = self::panel( $split[ $same ], array_merge( self::blocks( $split[ $same ] ), self::blocks( $item ) ) );
+					} else {
+						$rest[] = $item;
+					}
+				}
+				array_splice( $rest, $at, 0, $split );
+				$items = $rest;
+			}
+		}
+
 		$extra = array();
 		if ( '' !== $own['tab_name'] && '' !== $own['tab'] ) {
 			$extra[] = self::item( $anchor, $own['tab_name'], self::html( wpautop( $own['tab'] ) ) );
@@ -164,6 +190,90 @@ final class Details {
 		$accordion['innerBlocks']  = $items;
 		$accordion['innerContent'] = array_merge( array( $first ), self::nulls( count( $items ) ), array( $last ) );
 		return $accordion;
+	}
+
+	/**
+	 * The description as sections: one per top-level H2 heading, or per
+	 * top-level block whose first block is one (a group holding a section),
+	 * named after the heading, which leaves the content. What comes before
+	 * the first heading is "Description". A classic description (no blocks)
+	 * is cut at its H2 headings.
+	 *
+	 * @param array<string, mixed> $anchor  The first accordion item.
+	 * @param \WC_Product          $product The product on screen.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function split( array $anchor, \WC_Product $product ): array {
+		$content = (string) get_post_field( 'post_content', $product->get_id(), 'raw' );
+		$titles  = array();
+		$parts   = array();
+		$add     = static function ( string $markup ) use ( &$titles, &$parts ): void {
+			if ( ! $titles ) {
+				$titles[] = __( 'Description', 'pergel-engine' );
+				$parts[]  = array();
+			}
+			$parts[ count( $parts ) - 1 ][] = $markup;
+		};
+		if ( ! has_blocks( $content ) ) {
+			$pieces = preg_split( '#(<h2\b[^>]*>.*?</h2>)#is', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
+			foreach ( is_array( $pieces ) ? $pieces : array() as $piece ) {
+				if ( preg_match( '#^<h2\b#i', $piece ) ) {
+					$titles[] = trim( wp_strip_all_tags( $piece ) );
+					$parts[]  = array();
+				} elseif ( '' !== trim( $piece ) ) {
+					$add( self::html( wpautop( $piece ) ) );
+				}
+			}
+		} else {
+			foreach ( parse_blocks( $content ) as $block ) {
+				if ( null === $block['blockName'] && '' === trim( (string) $block['innerHTML'] ) ) {
+					continue;
+				}
+				[ $title, $block ] = self::heading( $block );
+				if ( null !== $title ) {
+					$titles[] = $title;
+					$parts[]  = array();
+				}
+				if ( null !== $block ) {
+					$add( serialize_block( $block ) );
+				}
+			}
+		}
+		$items = array();
+		foreach ( $titles as $index => $title ) {
+			if ( '' !== $title ) {
+				$items[] = self::item( $anchor, $title, implode( "\n\n", $parts[ $index ] ) );
+			}
+		}
+		return $items;
+	}
+
+	/**
+	 * The title of the H2 heading a top-level block is or starts with, and
+	 * the block without it (null when the block was the heading).
+	 *
+	 * @param array<string, mixed> $block Parsed block.
+	 * @return array{0: string|null, 1: array<string, mixed>|null}
+	 */
+	private static function heading( array $block ): array {
+		$h2 = static fn ( array $inner ): bool => 'core/heading' === ( $inner['blockName'] ?? '' ) && 1 === preg_match( '#^\s*<h2\b#i', (string) ( $inner['innerHTML'] ?? '' ) );
+		if ( $h2( $block ) ) {
+			return array( trim( wp_strip_all_tags( (string) $block['innerHTML'] ) ), null );
+		}
+		$inner = (array) ( $block['innerBlocks'] ?? array() );
+		$first = $inner[0] ?? null;
+		if ( ! is_array( $first ) || ! $h2( $first ) ) {
+			return array( null, $block );
+		}
+		array_shift( $inner );
+		$content = (array) ( $block['innerContent'] ?? array() );
+		$slot    = array_search( null, $content, true );
+		if ( false !== $slot ) {
+			array_splice( $content, (int) $slot, 1 );
+		}
+		$block['innerBlocks']  = $inner;
+		$block['innerContent'] = $content;
+		return array( trim( wp_strip_all_tags( (string) $first['innerHTML'] ) ), $block );
 	}
 
 	/**
@@ -240,11 +350,21 @@ final class Details {
 		$item          = self::retitle( $anchor, $title );
 		$item['attrs'] = array_diff_key( is_array( $item['attrs'] ?? null ) ? $item['attrs'] : array(), array_flip( array( 'anchor', 'className', 'metadata' ) ) );
 		$item          = self::open( $item, false );
-		foreach ( $item['innerBlocks'] as $index => $inner ) {
-			if ( 'core/accordion-panel' !== ( $inner['blockName'] ?? '' ) ) {
+		return self::panel( $item, array_values( array_filter( parse_blocks( $markup ), static fn ( array $block ): bool => null !== $block['blockName'] ) ) );
+	}
+
+	/**
+	 * An accordion item with other blocks in its panel.
+	 *
+	 * @param array<string, mixed>       $item   Accordion item.
+	 * @param list<array<string, mixed>> $blocks Parsed blocks.
+	 * @return array<string, mixed>
+	 */
+	private static function panel( array $item, array $blocks ): array {
+		foreach ( (array) ( $item['innerBlocks'] ?? array() ) as $index => $inner ) {
+			if ( ! is_array( $inner ) || 'core/accordion-panel' !== ( $inner['blockName'] ?? '' ) ) {
 				continue;
 			}
-			$blocks                        = array_values( array_filter( parse_blocks( $markup ), static fn ( array $block ): bool => null !== $block['blockName'] ) );
 			$content                       = is_array( $inner['innerContent'] ?? null ) ? $inner['innerContent'] : array();
 			$first                         = is_string( reset( $content ) ) ? reset( $content ) : '<div class="wp-block-accordion-panel">';
 			$last                          = is_string( end( $content ) ) && count( $content ) > 1 ? end( $content ) : '</div>';
@@ -258,6 +378,40 @@ final class Details {
 			);
 		}
 		return $item;
+	}
+
+	/**
+	 * The blocks in an accordion item's panel.
+	 *
+	 * @param array<string, mixed> $item Accordion item.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function blocks( array $item ): array {
+		$blocks = array();
+		foreach ( (array) ( $item['innerBlocks'] ?? array() ) as $inner ) {
+			if ( is_array( $inner ) && 'core/accordion-panel' === ( $inner['blockName'] ?? '' ) ) {
+				foreach ( (array) ( $inner['innerBlocks'] ?? array() ) as $block ) {
+					if ( is_array( $block ) ) {
+						$blocks[] = $block;
+					}
+				}
+			}
+		}
+		return $blocks;
+	}
+
+	/**
+	 * The plain text title in an accordion item's heading.
+	 *
+	 * @param array<string, mixed> $item Accordion item.
+	 */
+	private static function name( array $item ): string {
+		foreach ( (array) ( $item['innerBlocks'] ?? array() ) as $inner ) {
+			if ( is_array( $inner ) && 'core/accordion-heading' === ( $inner['blockName'] ?? '' ) && 1 === preg_match( '#<span class="wp-block-accordion-heading__toggle-title"[^>]*>(.*?)</span>#s', (string) ( $inner['innerHTML'] ?? '' ), $match ) ) {
+				return trim( html_entity_decode( wp_strip_all_tags( $match[1] ), ENT_QUOTES ) );
+			}
+		}
+		return '';
 	}
 
 	/**
