@@ -221,8 +221,11 @@
 		gap: 0.75rem 1rem;
 	}
 
+	/* The theme sizes a default logo by height up to this width. */
 	.pergel-store-header__logo {
-		margin-inline-end: auto;
+		--wp--custom--logo--max-width: 45vw;
+		flex: 1 1 0;
+		min-width: 0;
 	}
 
 	.pergel-store-header .pergel-store-header__search {
