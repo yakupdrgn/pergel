@@ -30,6 +30,16 @@ final class Screen {
 	public const SLUG = 'pergel';
 
 	/**
+	 * The Shop tab, which holds the shop layout group too, in a menu of pages.
+	 */
+	public const MENU = 'woo';
+
+	/**
+	 * The shop layout group: no tab of its own.
+	 */
+	public const LAYOUT = 'shop';
+
+	/**
 	 * Adds the admin hooks.
 	 */
 	public static function register(): void {
@@ -91,6 +101,17 @@ final class Screen {
 			. '.pergel-choice input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}'
 			. '.form-table td fieldset.pergel-choices label.pergel-choice:has(input:checked){border-color:var(--wp-admin-theme-color,#2271b1);box-shadow:0 0 0 1px var(--wp-admin-theme-color,#2271b1);color:var(--wp-admin-theme-color,#2271b1)}'
 			. '.form-table td fieldset.pergel-choices label.pergel-choice:has(input:focus-visible){outline:2px solid var(--wp-admin-theme-color,#2271b1);outline-offset:2px}'
+			// The Shop tab's menu of pages on the left.
+			. '.pergel-settings__area{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;margin-top:20px;align-items:start}'
+			. '.pergel-settings__menu ul{position:sticky;top:52px;margin:0;padding:8px;background:#fff;border:1px solid #c3c4c7;border-radius:4px}'
+			. '.pergel-settings__menu li{margin:0}'
+			. '.pergel-settings__menu a{display:block;padding:8px 12px;border-radius:3px;color:#1d2327;text-decoration:none}'
+			. '.pergel-settings__menu a:hover{background:#f0f0f1;color:var(--wp-admin-theme-color,#2271b1)}'
+			. '.pergel-settings__menu a[aria-current]{background:#f0f6fc;box-shadow:inset 3px 0 0 var(--wp-admin-theme-color,#2271b1);color:var(--wp-admin-theme-color,#2271b1);font-weight:600}'
+			. '.pergel-settings__page>h2:first-child{margin:4px 0 8px;font-size:1.5em}'
+			. '.pergel-settings__page h3{margin:2em 0 0;padding-top:1.25em;border-top:1px solid #dcdcde;font-size:1.15em}'
+			. '.pergel-settings__page form>h3:first-of-type{margin-top:1em;padding-top:0;border-top:0}'
+			. '@media (max-width:782px){.pergel-settings__area{grid-template-columns:minmax(0,1fr)}.pergel-settings__menu ul{position:static;display:flex;flex-wrap:wrap;gap:4px}}'
 		);
 	}
 
@@ -145,6 +166,11 @@ final class Screen {
 		$tabs   = Labels::tabs();
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- tab switch, read only.
 		$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
+		// The shop layout group lives in the Shop tab's menu; old links still open it.
+		$legacy = self::LAYOUT === $tab;
+		if ( $legacy ) {
+			$tab = self::MENU;
+		}
 		if ( ! isset( $groups[ $tab ] ) ) {
 			$tab = (string) array_key_first( $groups );
 		}
@@ -160,6 +186,9 @@ final class Screen {
 
 		echo '<nav class="nav-tab-wrapper" aria-label="' . esc_attr__( 'Settings sections', 'pergel-engine' ) . '">';
 		foreach ( array_keys( $groups ) as $group ) {
+			if ( self::LAYOUT === $group ) {
+				continue;
+			}
 			printf(
 				'<a href="%1$s" class="nav-tab%2$s"%3$s>%4$s</a>',
 				esc_url( add_query_arg( 'tab', $group, admin_url( 'admin.php?page=' . self::SLUG ) ) ),
@@ -170,13 +199,10 @@ final class Screen {
 		}
 		echo '</nav>';
 
-		if ( 'shop' === $tab && Preset::previewing() ) {
-			echo Preset::preview(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Preset.
+		if ( self::MENU === $tab ) {
+			self::menu_page( $groups, $errors, $legacy );
 			echo '</div>';
 			return;
-		}
-		if ( 'shop' === $tab ) {
-			echo Preset::box(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Preset.
 		}
 
 		echo '<form method="post" action="options.php">';
@@ -190,14 +216,6 @@ final class Screen {
 				'<div class="notice notice-info inline"><p>%s</p></div>',
 				/* translators: %s: SEO plugin name. */
 				esc_html( sprintf( __( '%s is active, so these settings are not used now.', 'pergel-engine' ), Detect::name( $seo_plugin ) ) )
-			);
-		}
-		$lost = 'shop' === $tab ? Layout::templates_without_grid() : array();
-		if ( $lost ) {
-			printf(
-				'<div class="notice notice-warning inline"><p>%s</p></div>',
-				/* translators: %s: template names, comma separated. */
-				esc_html( sprintf( __( 'These templates were changed in the Site Editor and no longer hold the theme\'s product grid, so the settings below do not reach them: %s. Reset the template in the Site Editor to use them again.', 'pergel-engine' ), implode( ', ', $lost ) ) )
 			);
 		}
 
@@ -216,20 +234,174 @@ final class Screen {
 	}
 
 	/**
+	 * The Shop tab: its pages listed on the left, the open one beside them.
+	 * A page posts only its own fields; Schema::sanitize() keeps the rest.
+	 *
+	 * @param array<string, array<string, array<string, mixed>>> $groups Shown schema groups.
+	 * @param array<string, string>                              $errors Errors by field path.
+	 * @param bool                                               $legacy Opened with the old shop layout tab link.
+	 * @phpstan-param array<string, array<string, Field>> $groups
+	 */
+	private static function menu_page( array $groups, array $errors, bool $legacy ): void {
+		$pages = self::pages();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- page switch, read only.
+		$open = isset( $_GET['section'] ) ? sanitize_key( wp_unslash( $_GET['section'] ) ) : '';
+		if ( '' === $open && ( $legacy || Preset::previewing() ) ) {
+			$open = Preset::previewing() ? 'presets' : 'listing';
+		}
+		if ( ! isset( $pages[ $open ] ) ) {
+			$open = (string) array_key_first( $pages );
+		}
+		$page = $pages[ $open ];
+
+		echo '<div class="pergel-settings__area">';
+		echo '<nav class="pergel-settings__menu" aria-label="' . esc_attr__( 'Shop settings', 'pergel-engine' ) . '"><ul>';
+		foreach ( $pages as $key => $item ) {
+			printf(
+				'<li><a href="%1$s"%2$s>%3$s</a></li>',
+				esc_url( self::url( $key ) ),
+				$key === $open ? ' aria-current="page"' : '',
+				esc_html( $item['title'] )
+			);
+		}
+		echo '</ul></nav><div class="pergel-settings__page">';
+		echo '<h2>' . esc_html( $page['title'] ) . '</h2>';
+		if ( '' !== $page['description'] ) {
+			echo '<p>' . esc_html( $page['description'] ) . '</p>';
+		}
+
+		if ( 'presets' === $open ) {
+			echo Preset::previewing() ? Preset::preview() : Preset::box(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Preset.
+			echo '</div></div>';
+			return;
+		}
+
+		$lost = in_array( self::LAYOUT, array_column( $page['sections'], 'group' ), true ) ? Layout::templates_without_grid() : array();
+		if ( $lost ) {
+			printf(
+				'<div class="notice notice-warning inline"><p>%s</p></div>',
+				/* translators: %s: template names, comma separated. */
+				esc_html( sprintf( __( 'These templates were changed in the Site Editor and no longer hold the theme\'s product grid, so the settings below do not reach them: %s. Reset the template in the Site Editor to use them again.', 'pergel-engine' ), implode( ', ', $lost ) ) )
+			);
+		}
+
+		echo '<form method="post" action="options.php">';
+		settings_fields( 'pergel' );
+		$values = Settings::all();
+		foreach ( $page['sections'] as $section ) {
+			$group = $section['group'];
+			if ( count( $page['sections'] ) > 1 && $section['title'] !== $page['title'] ) {
+				echo '<h3>' . esc_html( $section['title'] ) . '</h3>';
+			}
+			echo '<table class="form-table" role="presentation"><tbody>';
+			foreach ( $section['fields'] as $key ) {
+				self::row( $group, $key, $groups[ $group ][ $key ], $values[ $group ][ $key ], $errors[ "$group.$key" ] ?? '' );
+			}
+			echo '</tbody></table>';
+		}
+		submit_button();
+		echo '</form></div></div>';
+	}
+
+	/**
+	 * The Shop tab's pages (Labels::menu()) with the shown fields of their
+	 * sections. Sections of the two groups that Labels::menu() does not
+	 * place, and fields that no section holds, go to a last "Other" page.
+	 * Pages left without fields are dropped, except the presets.
+	 *
+	 * @return array<string, array{title: string, description: string, sections: list<array{title: string, group: string, fields: list<string>}>}>
+	 */
+	public static function pages(): array {
+		$sections = array();
+		foreach ( array( self::MENU, self::LAYOUT ) as $group ) {
+			if ( ! self::shown( $group ) ) {
+				continue;
+			}
+			foreach ( self::sections( $group ) as $section ) {
+				$sections[ $group . '.' . $section['key'] ] = array(
+					'title'  => $section['title'],
+					'group'  => $group,
+					'fields' => $section['fields'],
+				);
+			}
+		}
+
+		$pages = array();
+		foreach ( Labels::menu() as $key => $page ) {
+			$held = array();
+			foreach ( $page['parts'] as $part ) {
+				if ( isset( $sections[ $part ] ) ) {
+					$held[] = $sections[ $part ];
+					unset( $sections[ $part ] );
+				}
+			}
+			if ( $held || 'presets' === $key ) {
+				$pages[ $key ] = array(
+					'title'       => $page['title'],
+					'description' => $page['description'],
+					'sections'    => $held,
+				);
+			}
+		}
+		if ( $sections ) {
+			$pages['other'] = array(
+				'title'       => __( 'Other', 'pergel-engine' ),
+				'description' => '',
+				'sections'    => array_values( $sections ),
+			);
+		}
+		return $pages;
+	}
+
+	/**
+	 * The title of the Shop tab page that holds a field, '' if none does.
+	 *
+	 * @param string $group Schema group.
+	 * @param string $key   Field key.
+	 */
+	public static function page_title( string $group, string $key ): string {
+		foreach ( self::pages() as $page ) {
+			foreach ( $page['sections'] as $section ) {
+				if ( $group === $section['group'] && in_array( $key, $section['fields'], true ) ) {
+					return $page['title'];
+				}
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Address of a Shop tab page.
+	 *
+	 * @param string                $page Page key from pages().
+	 * @param array<string, string> $args More query arguments.
+	 */
+	public static function url( string $page, array $args = array() ): string {
+		return add_query_arg(
+			array(
+				'tab'     => self::MENU,
+				'section' => $page,
+			) + $args,
+			admin_url( 'admin.php?page=' . self::SLUG )
+		);
+	}
+
+	/**
 	 * Sections of a tab. Every schema field appears exactly once: fields
 	 * that Labels does not place go to a final "Other" section.
 	 *
 	 * @param string $group Schema group.
-	 * @return list<array{title: string, fields: list<string>}>
+	 * @return list<array{key: string, title: string, fields: list<string>}>
 	 */
 	public static function sections( string $group ): array {
 		$fields   = array_values( array_filter( array_keys( Schema::groups()[ $group ] ?? array() ), static fn ( string $key ): bool => self::shown( $group, $key ) ) );
 		$sections = array();
 		$placed   = array();
-		foreach ( Labels::sections()[ $group ] ?? array() as $section ) {
+		foreach ( Labels::sections()[ $group ] ?? array() as $name => $section ) {
 			$keys = array_values( array_intersect( $section['fields'], $fields ) );
 			if ( $keys ) {
 				$sections[] = array(
+					'key'    => $name,
 					'title'  => $section['title'],
 					'fields' => $keys,
 				);
@@ -239,6 +411,7 @@ final class Screen {
 		$rest = array_values( array_diff( $fields, $placed ) );
 		if ( $rest ) {
 			$sections[] = array(
+				'key'    => 'other',
 				'title'  => __( 'Other', 'pergel-engine' ),
 				'fields' => $rest,
 			);

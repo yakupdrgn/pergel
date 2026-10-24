@@ -14,6 +14,7 @@ use Pergel\Settings\Labels;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Screen;
 use Pergel\Settings\Settings;
+use Pergel\Woo\Preset;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -39,7 +40,7 @@ final class ScreenTest extends TestCase {
 	}
 
 	protected function tearDown(): void {
-		unset( $_GET['tab'] );
+		unset( $_GET['tab'], $_GET['section'] );
 		$GLOBALS['wp_settings_errors'] = array();
 		wp_set_current_user( 0 );
 	}
@@ -47,11 +48,15 @@ final class ScreenTest extends TestCase {
 	/**
 	 * Renders one tab.
 	 *
-	 * @param string $tab Tab id, '' for the default.
+	 * @param string $tab     Tab id, '' for the default.
+	 * @param string $section Page of the Shop tab, '' for its first.
 	 */
-	private static function render( string $tab ): string {
+	private static function render( string $tab, string $section = '' ): string {
 		if ( '' !== $tab ) {
 			$_GET['tab'] = $tab;
+		}
+		if ( '' !== $section ) {
+			$_GET['section'] = $section;
 		}
 		ob_start();
 		Screen::render();
@@ -87,6 +92,9 @@ final class ScreenTest extends TestCase {
 
 	public function test_each_tab_renders_its_fields(): void {
 		foreach ( self::shown() as $group => $fields ) {
+			if ( in_array( $group, array( Screen::MENU, Screen::LAYOUT ), true ) ) {
+				continue;
+			}
 			$html = self::render( $group );
 			$this->assertStringContainsString( "<input type='hidden' name='option_page' value='pergel' />", $html );
 			$this->assertStringContainsString( 'name="_wpnonce"', $html );
@@ -99,6 +107,55 @@ final class ScreenTest extends TestCase {
 				$this->assertStringNotContainsString( Settings::OPTION . "[$other]", $html );
 			}
 		}
+	}
+
+	public function test_shop_tab_pages_hold_every_shop_field_once(): void {
+		if ( ! Screen::shown( Screen::MENU ) ) {
+			$this->markTestSkipped( 'WooCommerce is not active on this site.' );
+		}
+		$this->assertStringNotContainsString( 'tab=' . Screen::LAYOUT . '"', self::render( Screen::MENU ), 'No tab of its own.' );
+
+		$seen = array();
+		foreach ( Screen::pages() as $key => $page ) {
+			$html = self::render( Screen::MENU, $key );
+			$this->assertMatchesRegularExpression( '/nav-tab-active" aria-current="page">' . preg_quote( Labels::tabs()[ Screen::MENU ]['title'], '/' ) . '</', $html );
+			$this->assertStringContainsString( 'aria-current="page">' . esc_html( $page['title'] ) . '</a>', $html, $key );
+			$own = array();
+			foreach ( $page['sections'] as $section ) {
+				foreach ( $section['fields'] as $field ) {
+					$own[] = $section['group'] . '.' . $field;
+				}
+			}
+			preg_match_all( '/name="' . Settings::OPTION . '\[(\w+)\]\[(\w+)\]"/', $html, $posted, PREG_SET_ORDER );
+			$names = array_values( array_unique( array_map( static fn ( array $m ): string => $m[1] . '.' . $m[2], $posted ) ) );
+			sort( $names );
+			sort( $own );
+			$this->assertSame( $own, $names, "Page $key posts only its own fields." );
+			$seen = array_merge( $seen, $own );
+		}
+
+		$shown = array();
+		foreach ( array( Screen::MENU, Screen::LAYOUT ) as $group ) {
+			foreach ( array_keys( self::shown()[ $group ] ?? array() ) as $field ) {
+				$shown[] = "$group.$field";
+			}
+		}
+		sort( $shown );
+		$this->assertSame( count( $seen ), count( array_unique( $seen ) ), 'No field on two pages.' );
+		sort( $seen );
+		$this->assertSame( $shown, $seen, 'Every shop field on a page.' );
+		$this->assertArrayNotHasKey( 'other', Screen::pages(), 'Labels::menu() places every section.' );
+	}
+
+	public function test_old_links_and_presets_page(): void {
+		if ( ! Screen::shown( Screen::MENU ) ) {
+			$this->markTestSkipped( 'WooCommerce is not active on this site.' );
+		}
+		$this->assertStringContainsString( 'aria-current="page">' . esc_html( Labels::menu()['listing']['title'] ) . '</a>', self::render( Screen::LAYOUT ) );
+		$html = self::render( Screen::MENU, 'presets' );
+		$this->assertStringContainsString( 'class="card pergel-preset"', $html );
+		$this->assertStringNotContainsString( 'action="options.php"', $html );
+		$this->assertStringContainsString( 'tab=' . Screen::MENU . '&#038;section=presets&#038;' . Preset::PREVIEW . '=', $html );
 	}
 
 	public function test_default_and_unknown_tab_open_the_first_group(): void {

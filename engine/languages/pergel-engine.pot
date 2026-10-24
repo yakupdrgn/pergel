@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T19:48:17+03:00\n"
+"POT-Creation-Date: 2026-10-24T12:34:07+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -465,6 +465,63 @@ msgstr ""
 msgid "How the shop, product category, product tag and product search pages list products. A product category can choose its own layout on its edit screen; its subcategories follow it. \"As in the template\" and \"Automatic\" keep the layout of the theme template."
 msgstr ""
 
+msgid "General"
+msgstr ""
+
+msgid "How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, the header cart and speed."
+msgstr ""
+
+msgid "Shop page"
+msgstr ""
+
+msgid "Filters"
+msgstr ""
+
+msgid "The filters beside the products on the shop and category pages."
+msgstr ""
+
+msgid "Product cards"
+msgstr ""
+
+msgid "The cards of every product grid: the shop, categories, related products and the grids on other pages."
+msgstr ""
+
+msgid "Product page"
+msgstr ""
+
+msgid "The top of the product page: the pictures, the details beside them and buying. A product category and a product can choose some of these for themselves."
+msgstr ""
+
+msgid "Under the product"
+msgstr ""
+
+msgid "The description, specifications, questions and reviews under the product, then related and recently viewed products."
+msgstr ""
+
+msgid "Flash sales"
+msgstr ""
+
+msgid "Campaigns with a start and an end, under Products → Flash sales."
+msgstr ""
+
+msgid "Delivery and shipping"
+msgstr ""
+
+msgid "The delivery date estimate and the free shipping progress."
+msgstr ""
+
+msgid "Bar on phones"
+msgstr ""
+
+msgid "The bar at the bottom of the screen on phones."
+msgstr ""
+
+msgid "Ready-made layouts"
+msgstr ""
+
+msgid "Set many shop settings in one go. You see every change before it is made, and can undo it."
+msgstr ""
+
 msgid "Address"
 msgstr ""
 
@@ -501,9 +558,6 @@ msgstr ""
 msgid "Wishlist and compare"
 msgstr ""
 
-msgid "Product page"
-msgstr ""
-
 msgid "Delivery estimate"
 msgstr ""
 
@@ -516,25 +570,16 @@ msgstr ""
 msgid "Free shipping progress"
 msgstr ""
 
-msgid "Flash sales"
-msgstr ""
-
 msgid "Speed"
 msgstr ""
 
 msgid "Product grid"
 msgstr ""
 
-msgid "Filters"
-msgstr ""
-
 msgid "View and paging"
 msgstr ""
 
 msgid "Above the products"
-msgstr ""
-
-msgid "Product cards"
 msgstr ""
 
 msgid "Badges"
@@ -544,9 +589,6 @@ msgid "Beside the pictures"
 msgstr ""
 
 msgid "Buying"
-msgstr ""
-
-msgid "Under the product"
 msgstr ""
 
 msgid "Related and recently viewed"
@@ -864,7 +906,7 @@ msgstr ""
 msgid "\"Flash sale\" badge on product cards"
 msgstr ""
 
-msgid "With the other badges on the picture. The sale countdown of the cards (Shop layout → Product cards) counts down to the end of the campaign."
+msgid "With the other badges on the picture. The sale countdown of the cards (Shop → Product cards) counts down to the end of the campaign."
 msgstr ""
 
 msgid "Band above the products"
@@ -1466,6 +1508,9 @@ msgstr ""
 #. translators: %s: SEO plugin name.
 #, php-format
 msgid "%s is active, so these settings are not used now."
+msgstr ""
+
+msgid "Shop settings"
 msgstr ""
 
 #. translators: %s: template names, comma separated.
@@ -2072,7 +2117,7 @@ msgid_plural "Applying it changes %d settings. Product categories and products k
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Tab"
+msgid "Section"
 msgstr ""
 
 msgid "Setting"

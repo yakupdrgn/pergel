@@ -126,6 +126,7 @@ final class PresetTest extends TestCase {
 		$this->assertStringContainsString( '<table class="widefat striped">', $html );
 		$this->assertStringContainsString( 'name="action" value="' . Preset::APPLY . '"', $html );
 		$this->assertSame( array_sum( array_map( 'count', Preset::changes() ) ), substr_count( $html, '<tr><td>' ), 'One row per change.' );
+		$this->assertStringNotContainsString( '<tr><td></td>', $html, 'Each change names the settings page that holds it.' );
 
 		Preset::run();
 		$this->assertStringNotContainsString( '<table', Preset::preview() );

@@ -95,6 +95,13 @@ option'da değil Global Styles'tadır (K5).
   için bir sekme. Form `options.php`'ye gider ve yalnızca açık sekmenin alanlarını gönderir;
   diğer gruplar birleştirerek yazma sayesinde korunur. Hatalı alanlar eski değerini korur,
   hata hem üst bildirimde hem alanın altında (`aria-invalid`, `aria-describedby`) görünür.
+  "Shop" sekmesi (`Screen::MENU`) `woo` ve `shop` gruplarını birlikte tutar ve solda dikey bir
+  menüyle sayfalara böler (`Labels::menu()`: Genel, Mağaza sayfası, Filtreler, Ürün kartları,
+  Ürün sayfası, Ürünün altı, Flaş indirimler, Teslimat ve kargo, Telefon çubuğu, Hazır düzenler;
+  `?tab=woo&section=…`). Her sayfa `Labels::sections()` bölümlerinden oluşur ve yalnızca kendi
+  alanlarını gönderir; gelmeyen alanlar `Schema::sanitize()` içinde kayıtlı değerini korur.
+  `shop` grubunun kendi sekmesi yoktur; eski `?tab=shop` bağlantısı Mağaza sayfasını açar.
+  Menünün yerleştirmediği bölüm ya da alan son "Other" sayfasına düşer (testte yasak).
 - `Settings\Labels` — sekme, bölüm, alan etiketleri ve hata metinleri; şemanın saf PHP
   kalması için ayrı tutulur. Labels'ta yer almayan alan "Other" bölümünde yine gösterilir.
 - `engine/assets/settings.js` — build'siz; görsel alanları için çekirdek medya seçicisi.
@@ -598,7 +605,7 @@ görünmez (`Settings\Screen::shown`).
   öneki taşıyan gizli pattern'lerde (`Patterns\Rules::SHOP_PREFIX`) ve mağaza bölümlerinde
   (`SHOP_SECTION_PREFIX`, aşağıda) izin verir.
 - **Mağaza düzeni (`Woo\Layout`, `Woo\LayoutFields`):** `shop` ayar grubu (Pergel → Ayarlar →
-  Mağaza düzeni; yalnızca WooCommerce açıkken) mağaza, ürün kategorisi, ürün etiketi ve ürün arama
+  Mağaza'nın sayfaları; yalnızca WooCommerce açıkken) mağaza, ürün kategorisi, ürün etiketi ve ürün arama
   sayfalarındaki ana ürün ızgarasına (sorguyu sayfadan alan `inherit:true` Product Collection)
   uygulanır: geniş ekranda sütun (`render_block_context` ile Product Template bağlamına, çünkü
   WordPress alt blokları üst bloğun ayrıştırılmış haliyle kurar), tablet/telefon sütunu (ızgarada
@@ -784,8 +791,8 @@ görünmez (`Settings\Screen::shown`).
   deposu ile sepet/ödeme bloklarının `@wordpress/data` deposu bunu yayınlar) sepeti bir kez okur,
   çubukları ve sepet sayısını değiştirir; WooCommerce'in kilitli `woocommerce` iAPI deposu
   kullanılmaz. `Woo\Module` bu iki sınıfı yalnızca ayarları açıkken yükler.
-- **Unimart hazır ayarı (`Woo\Preset`, S6b):** Mağaza düzeni sekmesinin üstünde bir kutu.
-  "Değişiklikleri önizle" (`?pergel-preset=unimart`) formun yerine değişecek her ayarı sekme,
+- **Unimart hazır ayarı (`Woo\Preset`, S6b):** Mağaza sekmesinin "Hazır düzenler" sayfasında bir
+  kutu. "Değişiklikleri önizle" (`?pergel-preset=unimart`) değişecek her ayarı bulunduğu sayfa,
   ad, şu an ve sonra olarak listeler; "Uygula" `admin-post.php?action=pergel_preset_apply`
   (nonce, `manage_options`) ayarları `Settings::update` ile yazar ve eski değerleri
   `pergel_preset_undo` seçeneğinde (autoload kapalı) tutar; ikinci uygulama ilk eski değerleri

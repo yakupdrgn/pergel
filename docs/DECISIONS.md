@@ -1644,6 +1644,12 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   tek filtrede (`pergel/seo/noindex`), SEO matrisi beş eklentiyle gerçek etiketi okur. Her sayfa
   bu soruyu sorduğu için kancalar zaten yüklü olan `Seo\Module`'de; `Robots` sınıfı yalnızca
   noindex sayfasında yüklenir, dosya bütçesi (`pergel_files`) artmaz.
+- **Mağaza ayarları solda menülü sayfalar (24 Ekim 2026, kullanıcı):** "Shop layout" sekmesi tek
+  sayfada ~7.000px'ti; ızgara, filtre, kart, ürün sayfası ve ürünün altı karışıyordu. Kullanıcı
+  WooCommerce ayarlarına benzer solda dikey menüyü seçti. Şema grupları (`woo`, `shop`) ve kayıtlı
+  değerler değişmedi; yalnızca ekran bölündü. Bu, "tam kontrol" planının ilk adımı: sonra görünüm
+  değerleri, öğe sırası ve görünürlüğü, genişletilmiş Unimart hazır ayarı ve canlı önizleme, mağaza
+  başlığı seçimi, ürün sayfasında gerçek sekmeler ve diğer parçalar gelecek.
 
 ## Aşamalar ve bitti tanımları
 

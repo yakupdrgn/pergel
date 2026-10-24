@@ -11,6 +11,7 @@ namespace Pergel\Woo;
 
 use Pergel\Settings\Labels;
 use Pergel\Settings\Schema;
+use Pergel\Settings\Screen;
 use Pergel\Settings\Settings;
 
 /**
@@ -190,12 +191,11 @@ final class Preset {
 			return $html . '<p>' . esc_html__( 'The settings already match the Unimart layout.', 'pergel-engine' ) . '</p><p>' . $back . '</p>';
 		}
 		$labels = Labels::fields();
-		$tabs   = Labels::tabs();
 		$rows   = '';
 		foreach ( $changes as $group => $fields ) {
 			foreach ( $fields as $key => [ $now, $new ] ) {
 				$text  = $labels[ $group ][ $key ] ?? array();
-				$rows .= '<tr><td>' . esc_html( (string) ( $tabs[ $group ]['title'] ?? $group ) ) . '</td><th scope="row">' . esc_html( (string) ( $text['label'] ?? $key ) ) . '</th>'
+				$rows .= '<tr><td>' . esc_html( Screen::page_title( $group, $key ) ) . '</td><th scope="row">' . esc_html( (string) ( $text['label'] ?? $key ) ) . '</th>'
 					. '<td>' . esc_html( self::shown( $now, $text ) ) . '</td><td><strong>' . esc_html( self::shown( $new, $text ) ) . '</strong></td></tr>';
 			}
 		}
@@ -203,7 +203,7 @@ final class Preset {
 		return $html
 			/* translators: %d: number of settings. */
 			. '<p>' . esc_html( sprintf( _n( 'Applying it changes %d setting. Product categories and products keep their own choices.', 'Applying it changes %d settings. Product categories and products keep their own choices.', $count, 'pergel-engine' ), $count ) ) . '</p>'
-			. '<table class="widefat striped"><thead><tr><th scope="col">' . esc_html__( 'Tab', 'pergel-engine' ) . '</th><th scope="col">' . esc_html__( 'Setting', 'pergel-engine' ) . '</th><th scope="col">' . esc_html__( 'Now', 'pergel-engine' ) . '</th><th scope="col">' . esc_html__( 'After', 'pergel-engine' ) . '</th></tr></thead><tbody>' . $rows . '</tbody></table>'
+			. '<table class="widefat striped"><thead><tr><th scope="col">' . esc_html__( 'Section', 'pergel-engine' ) . '</th><th scope="col">' . esc_html__( 'Setting', 'pergel-engine' ) . '</th><th scope="col">' . esc_html__( 'Now', 'pergel-engine' ) . '</th><th scope="col">' . esc_html__( 'After', 'pergel-engine' ) . '</th></tr></thead><tbody>' . $rows . '</tbody></table>'
 			. '<p>' . self::form( self::APPLY, __( 'Apply the Unimart layout', 'pergel-engine' ), 'button button-primary' ) . ' ' . $back . '</p>';
 	}
 
@@ -341,7 +341,7 @@ final class Preset {
 	}
 
 	/**
-	 * Goes back to the shop layout tab with a note.
+	 * Goes back to the Ready-made layouts page with a note.
 	 *
 	 * @param string $done applied or undone.
 	 */
@@ -351,11 +351,12 @@ final class Preset {
 	}
 
 	/**
-	 * The shop layout tab, with extra query arguments.
+	 * The "Ready-made layouts" page of the Shop settings, with extra query
+	 * arguments.
 	 *
 	 * @param array<string, string> $args Query arguments.
 	 */
 	private static function url( array $args = array() ): string {
-		return add_query_arg( array_merge( array( 'tab' => 'shop' ), $args ), admin_url( 'admin.php?page=pergel' ) );
+		return Screen::url( 'presets', $args );
 	}
 }
