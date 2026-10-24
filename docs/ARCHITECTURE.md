@@ -704,7 +704,11 @@ görünmez (`Settings\Screen::shown`).
   sitelerden betik yüklenmez; bağlantıyı kopyala düğmesi. Kartlarda renkler
   (`shop.card_swatches`): seçenekli üründe ilk `wc-visual` türündeki niteliğin terimleri
   (WooCommerce'in `color`/`image` term meta'sı), resmi olan seçenek kartın resmini değiştiren bir
-  düğme; WooCommerce'in iç (`Internal`) sınıfları kullanılmaz.
+  düğme; WooCommerce'in iç (`Internal`) sınıfları kullanılmaz. Kartlarda "Teklif iste"
+  (`shop.card_quote`): teklif modundaki ve bu istekte fiyatı gizli üründe WooCommerce'in
+  `woocommerce_product_add_to_cart_text`/`_description`/`_url` süzgeçleri düğmeyi "Teklif iste"
+  yapar ve ürün sayfasındaki teklif formunun çapasına (`#pergel-quote`, `Cta::QUOTE_ANCHOR`)
+  götürür; formun `<details>` öğesi bu çapayla gelindiğinde `callbacks.anchor` ile açılır.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
   `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
   ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları

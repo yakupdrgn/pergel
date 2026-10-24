@@ -296,7 +296,7 @@ final class ProductCtaTest extends TestCase {
 		$product = $this->simple();
 		$html    = $this->render( $product->get_id() );
 		$this->assertStringContainsString( 'is-mode-quote', $html );
-		$this->assertStringContainsString( '<details class="wp-block-pergel-product-cta__quote">', $html );
+		$this->assertStringContainsString( '<details id="pergel-quote" class="wp-block-pergel-product-cta__quote" data-wp-init="callbacks.anchor">', $html );
 		$this->assertStringContainsString( 'is-kind-quote', $html );
 		$this->assertStringContainsString( 'Pergel test balance (', $html );
 		$this->assertStringContainsString( 'name="quantity"', $html );
@@ -307,7 +307,7 @@ final class ProductCtaTest extends TestCase {
 		$this->assertSame( 3, substr_count( $html, 'data-wp-on--click="actions.lead"' ) );
 
 		$_GET['pergel_form'] = 'sent';
-		$this->assertStringContainsString( '<details class="wp-block-pergel-product-cta__quote" open>', $this->render( $product->get_id() ) );
+		$this->assertStringContainsString( '<details id="pergel-quote" class="wp-block-pergel-product-cta__quote" data-wp-init="callbacks.anchor" open>', $this->render( $product->get_id() ) );
 
 		$html = $this->render(
 			$product->get_id(),

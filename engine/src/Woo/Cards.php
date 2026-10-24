@@ -55,6 +55,55 @@ final class Cards {
 		add_filter( 'render_block_woocommerce/product-sale-badge', array( self::class, 'sale_badge' ), 10, 3 );
 		add_filter( 'render_block_pergel/product-actions', array( self::class, 'actions' ), 10, 3 );
 		add_filter( 'script_module_data_' . Layout::CARDS_SCRIPT, array( self::class, 'data' ) );
+		if ( true === Settings::get( 'shop.card_quote' ) ) {
+			add_filter( 'woocommerce_product_add_to_cart_text', array( self::class, 'quote_text' ), 20, 2 );
+			add_filter( 'woocommerce_product_add_to_cart_description', array( self::class, 'quote_description' ), 20, 2 );
+			add_filter( 'woocommerce_product_add_to_cart_url', array( self::class, 'quote_url' ), 20, 2 );
+		}
+	}
+
+	/**
+	 * Whether a card's button asks for a quote: the product is sold on
+	 * request and its price is hidden on this request.
+	 *
+	 * @param mixed $product Product.
+	 * @phpstan-assert-if-true \WC_Product $product
+	 */
+	private static function asks( mixed $product ): bool {
+		return $product instanceof \WC_Product && Modes::QUOTE === Modes::of( $product ) && Modes::hidden( $product );
+	}
+
+	/**
+	 * Filter for woocommerce_product_add_to_cart_text.
+	 *
+	 * @param mixed $text    Button text.
+	 * @param mixed $product Product.
+	 */
+	public static function quote_text( mixed $text, mixed $product ): mixed {
+		return self::asks( $product ) ? __( 'Request a quote', 'pergel-engine' ) : $text;
+	}
+
+	/**
+	 * Filter for woocommerce_product_add_to_cart_description (the button's
+	 * accessible name).
+	 *
+	 * @param mixed $text    Description.
+	 * @param mixed $product Product.
+	 */
+	public static function quote_description( mixed $text, mixed $product ): mixed {
+		/* translators: %s: product name. */
+		return self::asks( $product ) ? sprintf( __( 'Request a quote for “%s”', 'pergel-engine' ), wp_strip_all_tags( $product->get_name() ) ) : $text;
+	}
+
+	/**
+	 * Filter for woocommerce_product_add_to_cart_url: the quote form on the
+	 * product page, which opens for its anchor.
+	 *
+	 * @param mixed $url     Button address.
+	 * @param mixed $product Product.
+	 */
+	public static function quote_url( mixed $url, mixed $product ): mixed {
+		return self::asks( $product ) ? get_permalink( $product->get_id() ) . '#' . Cta::QUOTE_ANCHOR : $url;
 	}
 
 	/**

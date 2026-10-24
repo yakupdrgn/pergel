@@ -18,6 +18,7 @@ use Pergel\Woo\BadgeField;
 use Pergel\Woo\Cards;
 use Pergel\Woo\CategoryCards;
 use Pergel\Woo\Layout;
+use Pergel\Woo\Modes;
 use Pergel\Woo\Module as Woo;
 use Pergel\Woo\QuickView;
 use PHPUnit\Framework\TestCase;
@@ -100,6 +101,10 @@ final class CardsTest extends TestCase {
 		if ( $this->product > 0 ) {
 			wp_delete_post( $this->product, true );
 		}
+		remove_filter( 'woocommerce_product_add_to_cart_text', array( Cards::class, 'quote_text' ), 20 );
+		remove_filter( 'woocommerce_product_add_to_cart_description', array( Cards::class, 'quote_description' ), 20 );
+		remove_filter( 'woocommerce_product_add_to_cart_url', array( Cards::class, 'quote_url' ), 20 );
+		Modes::flush();
 		wp_dequeue_style( Layout::CARD_STYLE );
 		wp_dequeue_script_module( Layout::CARDS_SCRIPT );
 		unset( $_POST[ Cards::BADGE_META ] );
@@ -354,6 +359,34 @@ final class CardsTest extends TestCase {
 		$this->assertMatchesRegularExpression( '#^<div class="pergel-card-swatches" role="group" aria-label="[^"]+">#', $html );
 		$this->assertMatchesRegularExpression( '#<button type="button" class="pergel-card-swatch" style="background-color:\#ff0000" title="red" data-pergel-src="[^"]*" data-pergel-srcset="[^"]*" aria-pressed="false"><span class="screen-reader-text">red</span></button>#', $html, 'Red has a picture of its own.' );
 		$this->assertStringContainsString( '<span class="pergel-card-swatch" style="background-color:#0000ff" title="blue">', $html, 'Blue has none.' );
+	}
+
+	public function test_request_a_quote_on_cards(): void {
+		$grid   = '<!-- wp:woocommerce/product-collection {"queryId":0,"query":{"inherit":true,"isProductCollectionBlock":true,"perPage":12,"postType":"product"},"tagName":"div"} -->'
+			. '<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->'
+			. '<!-- wp:post-title {"isLink":true} /--><!-- wp:woocommerce/product-button {"isDescendentOfQueryLoop":true} /-->'
+			. '<!-- /wp:woocommerce/product-template --></div><!-- /wp:woocommerce/product-collection -->';
+		$anchor = esc_url( get_permalink( $this->product ) . '#pergel-quote' );
+
+		Settings::update( array( 'woo' => array( 'sales_mode' => Modes::QUOTE ) ) );
+		Modes::flush();
+		Cards::register();
+		$this->assertStringNotContainsString( '#pergel-quote', do_blocks( $grid ), 'Off by default.' );
+
+		Settings::update( array( 'shop' => array( 'card_quote' => true ) ) );
+		Cards::register();
+		$html = do_blocks( $grid );
+		$this->assertStringContainsString( '>' . __( 'Request a quote', 'pergel-engine' ) . '<', $html );
+		/* translators: %s: product name. */
+		$this->assertStringContainsString( sprintf( __( 'Request a quote for “%s”', 'pergel-engine' ), 'Card test product' ), $html );
+		$this->assertStringContainsString( 'href="' . $anchor . '"', $html );
+
+		// A product that sells keeps its own button.
+		Settings::update( array( 'woo' => array( 'sales_mode' => Modes::SALE ) ) );
+		Modes::flush();
+		$html = do_blocks( $grid );
+		$this->assertStringNotContainsString( '>' . __( 'Request a quote', 'pergel-engine' ) . '<', $html );
+		$this->assertStringNotContainsString( '#pergel-quote', $html );
 	}
 
 	public function test_badge_text_is_cleaned(): void {
