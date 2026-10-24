@@ -266,6 +266,75 @@ final class ShopLayoutTest extends TestCase {
 		);
 		$this->assertSame( $filters, Filters::block_data( $filters ) );
 		$this->assertSame( '<h3 class="wp-block-heading">Price</h3>', Filters::heading( '<h3 class="wp-block-heading">Price</h3>' ) );
+		$box = '<div class="wp-block-woocommerce-product-filters"><h2 class="wp-block-heading pergel-filters__title">Filters</h2></div>';
+		$this->assertSame( $box, Filters::filters( $box ) );
+	}
+
+	public function test_filter_box_title_icon_and_more_button(): void {
+		Settings::update(
+			array(
+				'shop' => array(
+					'filter_title' => 'Filter & Refine',
+					'filter_icon'  => true,
+					'filter_more'  => 'pill',
+					'filter_rows'  => 4,
+				),
+			)
+		);
+		$this->go_to( array( 'post_type' => 'product' ) );
+
+		$html = Filters::filters( '<div class="wp-block-woocommerce-product-filters"><h2 class="wp-block-heading pergel-filters__title">Filters</h2><h3 class="wp-block-heading">Price</h3></div>' );
+
+		$this->assertMatchesRegularExpression( '#<h2 class="wp-block-heading pergel-filters__title"><svg class="pergel-filters__icon"[^>]*aria-hidden="true".*</svg>Filter &amp; Refine</h2><h3 class="wp-block-heading">Price</h3>#s', $html );
+		$this->assertStringContainsString( 'data-pergel-filters="more"', $html );
+		$this->assertStringContainsString( 'data-pergel-rows="4"', $html );
+		$this->assertStringContainsString( 'data-pergel-more-label="', $html );
+		$this->assertContains( Filters::SCRIPT, wp_script_modules()->get_queue() );
+		$this->assertTrue( wp_style_is( Layout::STYLE ), 'The icon has its rule.' );
+
+		// The title alone, in the template's words when only the icon is on.
+		Settings::update(
+			array(
+				'shop' => array(
+					'filter_title' => '',
+					'filter_more'  => 'template',
+				),
+			)
+		);
+		$html = Filters::filters( '<div class="wp-block-woocommerce-product-filters"><h2 class="wp-block-heading pergel-filters__title">Filters</h2></div>' );
+		$this->assertStringContainsString( '</svg>Filters</h2>', $html );
+		$this->assertStringNotContainsString( 'data-pergel-filters', $html );
+	}
+
+	public function test_brand_attribute_is_not_a_second_brand_filter(): void {
+		if ( ! taxonomy_exists( 'product_brand' ) ) {
+			$this->markTestSkipped( 'WooCommerce brands are off.' );
+		}
+		$id = wc_create_attribute(
+			array(
+				'name' => 'Brand',
+				'slug' => 'brand-' . strtolower( wp_generate_password( 4, false ) ),
+			)
+		);
+		$this->assertIsInt( $id );
+		$pattern = dirname( __DIR__, 2 ) . '/theme/patterns/hidden-product-filters.php';
+		$draw    = static function () use ( $pattern ): string {
+			delete_transient( 'wc_attribute_taxonomies' );
+			\WC_Cache_Helper::invalidate_cache_group( 'woocommerce-attributes' );
+			ob_start();
+			include $pattern;
+			return (string) ob_get_clean();
+		};
+		try {
+			$this->assertStringContainsString( '"attributeId":' . $id . ',', $draw(), 'Without the brand filter the attribute stays.' );
+
+			Settings::update( array( 'shop' => array( 'filter_brand' => true ) ) );
+			$html = $draw();
+			$this->assertStringContainsString( '"taxonomy":"product_brand"', $html );
+			$this->assertStringNotContainsString( '"attributeId":' . $id . ',', $html );
+		} finally {
+			wc_delete_attribute( $id );
+		}
 	}
 
 	public function test_filter_area_settings_reach_the_layout(): void {
@@ -392,6 +461,36 @@ final class ShopLayoutTest extends TestCase {
 
 		Settings::update( array( 'shop' => array( 'filter_edge' => 0 ) ) );
 		$this->assertStringContainsString( '.wc-block-product-filters{box-sizing:border-box;border:0;border-radius:12px}', ShopLook::css() );
+		$this->assertStringContainsString( '.pergel-filter-search{border-radius:6px}', ShopLook::css(), 'The search box takes the menus\' corners.' );
+	}
+
+	public function test_filter_list_look(): void {
+		$this->go_to( array( 'post_type' => 'product' ) );
+		Settings::update(
+			array(
+				'shop' => array(
+					'filter_input_size'  => 38,
+					'filter_input_edge'  => 2,
+					'filter_input_color' => 'line',
+					'filter_counts'      => 'right',
+					'filter_swatch'      => 18,
+					'filter_star_size'   => 16,
+					'filter_star_color'  => '#ffb800',
+				),
+			)
+		);
+		$this->assertTrue( Layout::chosen( Layout::LOOK ) );
+
+		$css  = ShopLook::css();
+		$list = '.pergel-shop-layout .wc-block-product-filters .wc-block-product-filter-checkbox-list';
+		$this->assertStringContainsString( '.wc-block-product-filters .pergel-filter-search{height:38px;min-height:38px;padding-block:0;border:2px solid var(--wp--preset--color--line)}', $css );
+		$this->assertStringContainsString( "{$list}__text-wrapper{flex:1 1 auto}{$list}__count{margin-inline-start:auto}", $css );
+		$this->assertStringContainsString( "{$list}__color-swatch{width:18px;height:18px}", $css );
+		$this->assertStringContainsString( "{$list}__stars,{$list}__stars-svg{height:16px}", $css );
+		$this->assertStringContainsString( "{$list}__stars{color:#ffb800}", $css );
+
+		Settings::update( array( 'shop' => array( 'filter_input_edge' => 0 ) ) );
+		$this->assertStringContainsString( '.pergel-filter-search{height:38px;min-height:38px;padding-block:0;border:0}', ShopLook::css() );
 	}
 
 	public function test_list_view_menu_and_load_more(): void {

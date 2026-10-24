@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T20:58:30+03:00\n"
+"POT-Creation-Date: 2026-10-24T21:58:54+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1113,6 +1113,33 @@ msgstr ""
 msgid "Filters by the average customer rating. Shown only while rated products exist."
 msgstr ""
 
+msgid "Filter box title"
+msgstr ""
+
+msgid "The heading above the filters, such as \"Filter & Refine\". Empty keeps the template's."
+msgstr ""
+
+msgid "Icon before the filter box title"
+msgstr ""
+
+msgid "Long filter lists"
+msgstr ""
+
+msgid "With \"A few rows and a More button\" a long list shows its first rows, fading out, and a rounded More button opens the rest."
+msgstr ""
+
+msgid "As the template (\"Show more\" link)"
+msgstr ""
+
+msgid "A few rows and a More button"
+msgstr ""
+
+msgid "Rows before More"
+msgstr ""
+
+msgid "How many options a long list shows before its More button."
+msgstr ""
+
 msgid "Products are shown as"
 msgstr ""
 
@@ -1926,6 +1953,45 @@ msgstr ""
 msgid "Ticked boxes, the price slider and the chosen filters above the list. Empty uses the accent colour."
 msgstr ""
 
+msgid "Filter search box height"
+msgstr ""
+
+msgid "The box that narrows down a long list, in pixels. Its corners follow \"Menu and button corners\"."
+msgstr ""
+
+msgid "Filter search box edge"
+msgstr ""
+
+msgid "In pixels; 0 for none."
+msgstr ""
+
+msgid "Filter search box edge colour"
+msgstr ""
+
+msgid "Product counts"
+msgstr ""
+
+msgid "Beside the name"
+msgstr ""
+
+msgid "At the end of the row"
+msgstr ""
+
+msgid "Colour dot size"
+msgstr ""
+
+msgid "The dots of colour attributes (attributes of the \"Visual\" type with a colour for each term), in pixels."
+msgstr ""
+
+msgid "Star size in the rating filter"
+msgstr ""
+
+msgid "Star colour in the rating filter"
+msgstr ""
+
+msgid "Empty keeps the text colour."
+msgstr ""
+
 msgid "Toolbar background"
 msgstr ""
 
@@ -1950,7 +2016,7 @@ msgstr ""
 msgid "Menu and button corners"
 msgstr ""
 
-msgid "The sorting and products per page menus and the grid and list buttons, in pixels."
+msgid "The sorting and products per page menus, the grid and list buttons and the filter search box, in pixels."
 msgstr ""
 
 msgid "Page number shape"
@@ -2615,6 +2681,14 @@ msgstr ""
 msgid "Search the options"
 msgstr ""
 
+msgctxt "filter list"
+msgid "More"
+msgstr ""
+
+msgctxt "filter list"
+msgid "Less"
+msgstr ""
+
 msgid "Campaign"
 msgstr ""
 
@@ -2854,6 +2928,10 @@ msgid "Add to cart"
 msgstr ""
 
 msgid "View product"
+msgstr ""
+
+msgctxt "filter box title of the Unimart layout"
+msgid "Filter & Refine"
 msgstr ""
 
 msgid "The Unimart layout is on. Undo puts back the settings it changed."

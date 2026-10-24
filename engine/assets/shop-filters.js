@@ -1,13 +1,15 @@
 /**
  * Filter area extras (Pergel\Woo\Filters): filter groups that open and
- * close, and a search box in long option lists.
+ * close, a search box in long option lists, and long lists cut to a few
+ * rows with a More button.
  *
  * The group buttons come with the page. WooCommerce redraws the filters
- * from the server after every choice, so which groups are closed and what
- * was typed are kept here, by group heading, and put back after each
- * redraw. The search box is added here, so it never shows without the
- * script. A search first opens WooCommerce's "show more", so it looks
- * through every option.
+ * from the server after every choice, so which groups are closed, which
+ * lists are opened and what was typed are kept here, by group heading, and
+ * put back after each redraw. The search box and the More button are added
+ * here, so they never show without the script. A search first opens
+ * WooCommerce's "show more", so it looks through every option; More opens
+ * it too.
  */
 
 const LONG = 8;
@@ -22,7 +24,10 @@ const GROUP = [
 	.join( ',' );
 
 const closed = new Set();
+const opened = new Set();
 const typed = new Map();
+const ITEM = '.wc-block-product-filter-checkbox-list__item';
+const SHOW_ALL = '.wc-block-product-filter-checkbox-list__show-more-button';
 
 const fold = ( text ) =>
 	text
@@ -48,9 +53,7 @@ const setOpen = ( group, open ) => {
 const narrow = ( group, query ) => {
 	const words = fold( query );
 	if ( words ) {
-		const more = group.querySelector(
-			'.wc-block-product-filter-checkbox-list__show-more-button:not([hidden])'
-		);
+		const more = group.querySelector( `${ SHOW_ALL }:not([hidden])` );
 		if ( more ) {
 			more.click();
 		}
@@ -103,6 +106,52 @@ const addSearch = ( group, label ) => {
 	}
 };
 
+// A long list shows its first rows and the next one fading out; the rest
+// wait behind the More button. A ticked option further down opens it.
+const cut = ( group, filters ) => {
+	const list = group.querySelector( '.wc-block-product-filter-checkbox-list' );
+	if ( ! list ) {
+		return;
+	}
+	const rows = parseInt( filters.dataset.pergelRows, 10 ) || 5;
+	const items = [ ...list.querySelectorAll( ITEM ) ];
+	const rest = list.querySelector( SHOW_ALL );
+	let button = group.querySelector( '.pergel-filter-more' );
+	if ( items.length <= rows + 1 && ! rest ) {
+		items.forEach( ( item ) => {
+			item.removeAttribute( 'data-pergel-beyond' );
+			item.removeAttribute( 'data-pergel-edge' );
+		} );
+		if ( button ) {
+			button.remove();
+		}
+		return;
+	}
+	const name = nameOf( group );
+	if ( items.slice( rows ).some( ( item ) => item.querySelector( 'input:checked' ) ) ) {
+		opened.add( name );
+	}
+	const open = opened.has( name );
+	items.forEach( ( item, index ) => {
+		item.toggleAttribute( 'data-pergel-beyond', ! open && index > rows );
+		item.toggleAttribute( 'data-pergel-edge', ! open && index === rows );
+	} );
+	if ( ! button ) {
+		button = document.createElement( 'button' );
+		button.type = 'button';
+		button.className = 'pergel-filter-more';
+		list.after( button );
+	}
+	const text = open
+		? filters.dataset.pergelLessLabel || ''
+		: filters.dataset.pergelMoreLabel || '';
+	// Only real changes: the observer below would see a new text as a redraw.
+	if ( button.textContent !== text ) {
+		button.textContent = text;
+	}
+	button.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+};
+
 const enhance = ( filters ) => {
 	const features = ( filters.dataset.pergelFilters || '' ).split( ' ' );
 	const label = filters.dataset.pergelSearchLabel || '';
@@ -112,6 +161,9 @@ const enhance = ( filters ) => {
 		}
 		if ( features.includes( 'search' ) ) {
 			addSearch( group, label );
+		}
+		if ( features.includes( 'more' ) ) {
+			cut( group, filters );
 		}
 	}
 };
@@ -125,6 +177,29 @@ for ( const filters of document.querySelectorAll( '[data-pergel-filters]' ) ) {
 }
 
 document.addEventListener( 'click', ( event ) => {
+	const more =
+		event.target instanceof Element &&
+		event.target.closest( '[data-pergel-filters] .pergel-filter-more' );
+	if ( more ) {
+		const group = more.closest( GROUP );
+		const filters = more.closest( '[data-pergel-filters]' );
+		if ( ! group || ! filters ) {
+			return;
+		}
+		const name = nameOf( group );
+		if ( opened.has( name ) ) {
+			opened.delete( name );
+		} else {
+			opened.add( name );
+			// WooCommerce draws the options past its first fifteen on request.
+			const rest = group.querySelector( `${ SHOW_ALL }:not([hidden])` );
+			if ( rest ) {
+				rest.click();
+			}
+		}
+		cut( group, filters );
+		return;
+	}
 	const button =
 		event.target instanceof Element &&
 		event.target.closest( '[data-pergel-filters] .pergel-filter-toggle' );

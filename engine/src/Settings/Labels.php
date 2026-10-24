@@ -245,11 +245,11 @@ final class Labels {
 				),
 				'filters' => array(
 					'title'  => __( 'Filters', 'pergel-engine' ),
-					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filters_fold', 'filters_search', 'filter_brand', 'filter_rating' ),
+					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filter_title', 'filter_icon', 'filters_fold', 'filters_search', 'filter_more', 'filter_rows', 'filter_brand', 'filter_rating' ),
 				),
 				'refine'  => array(
 					'title'  => __( 'Filter look', 'pergel-engine' ),
-					'fields' => array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_divider', 'filter_text_size', 'filter_accent' ),
+					'fields' => array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_divider', 'filter_text_size', 'filter_counts', 'filter_accent', 'filter_input_size', 'filter_input_edge', 'filter_input_color', 'filter_swatch', 'filter_star_size', 'filter_star_color' ),
 				),
 				'toolbar' => array(
 					'title'  => __( 'View and paging', 'pergel-engine' ),
@@ -721,6 +721,25 @@ final class Labels {
 				'filter_rating'      => array(
 					'label' => __( 'Rating filter', 'pergel-engine' ),
 					'help'  => __( 'Filters by the average customer rating. Shown only while rated products exist.', 'pergel-engine' ),
+				),
+				'filter_title'       => array(
+					'label' => __( 'Filter box title', 'pergel-engine' ),
+					'help'  => __( 'The heading above the filters, such as "Filter & Refine". Empty keeps the template\'s.', 'pergel-engine' ),
+				),
+				'filter_icon'        => array(
+					'label' => __( 'Icon before the filter box title', 'pergel-engine' ),
+				),
+				'filter_more'        => array(
+					'label'   => __( 'Long filter lists', 'pergel-engine' ),
+					'help'    => __( 'With "A few rows and a More button" a long list shows its first rows, fading out, and a rounded More button opens the rest.', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template ("Show more" link)', 'pergel-engine' ),
+						'pill'     => __( 'A few rows and a More button', 'pergel-engine' ),
+					),
+				),
+				'filter_rows'        => array(
+					'label' => __( 'Rows before More', 'pergel-engine' ),
+					'help'  => __( 'How many options a long list shows before its More button.', 'pergel-engine' ),
 				),
 				'view'               => array(
 					'label'   => __( 'Products are shown as', 'pergel-engine' ),
@@ -1348,6 +1367,36 @@ final class Labels {
 					'label' => __( 'Filter colour', 'pergel-engine' ),
 					'help'  => __( 'Ticked boxes, the price slider and the chosen filters above the list. Empty uses the accent colour.', 'pergel-engine' ),
 				),
+				'filter_input_size'  => array(
+					'label' => __( 'Filter search box height', 'pergel-engine' ),
+					'help'  => __( 'The box that narrows down a long list, in pixels. Its corners follow "Menu and button corners".', 'pergel-engine' ),
+				),
+				'filter_input_edge'  => array(
+					'label' => __( 'Filter search box edge', 'pergel-engine' ),
+					'help'  => __( 'In pixels; 0 for none.', 'pergel-engine' ),
+				),
+				'filter_input_color' => array(
+					'label' => __( 'Filter search box edge colour', 'pergel-engine' ),
+				),
+				'filter_counts'      => array(
+					'label'   => __( 'Product counts', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'Beside the name', 'pergel-engine' ),
+						'right'    => __( 'At the end of the row', 'pergel-engine' ),
+					),
+				),
+				'filter_swatch'      => array(
+					'label' => __( 'Colour dot size', 'pergel-engine' ),
+					'help'  => __( 'The dots of colour attributes (attributes of the "Visual" type with a colour for each term), in pixels.', 'pergel-engine' ),
+				),
+				'filter_star_size'   => array(
+					'label' => __( 'Star size in the rating filter', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'filter_star_color'  => array(
+					'label' => __( 'Star colour in the rating filter', 'pergel-engine' ),
+					'help'  => __( 'Empty keeps the text colour.', 'pergel-engine' ),
+				),
 				'toolbar_bg'         => array(
 					'label' => __( 'Toolbar background', 'pergel-engine' ),
 					'help'  => __( 'The row above the products with the result count and the sorting.', 'pergel-engine' ),
@@ -1369,7 +1418,7 @@ final class Labels {
 				),
 				'control_radius'     => array(
 					'label' => __( 'Menu and button corners', 'pergel-engine' ),
-					'help'  => __( 'The sorting and products per page menus and the grid and list buttons, in pixels.', 'pergel-engine' ),
+					'help'  => __( 'The sorting and products per page menus, the grid and list buttons and the filter search box, in pixels.', 'pergel-engine' ),
 				),
 				'paging_shape'       => array(
 					'label'   => __( 'Page number shape', 'pergel-engine' ),

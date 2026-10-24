@@ -115,6 +115,45 @@ final class ShopLook {
 			// The theme colours a ticked box with a longer selector.
 			$rules[] = "$filters input[type=checkbox].wc-block-product-filter-checkbox-list__input:checked{--wc-product-filter-checkbox-list-option-element:$accent;--wc-product-filter-checkbox-list-option-element-border:$accent}";
 		}
+
+		// The search box of long lists (Filters' script); its corners are
+		// the toolbar menus'.
+		$input = array();
+		$size  = self::px( 'filter_input_size' );
+		if ( '' !== $size ) {
+			$input[] = "height:$size;min-height:$size;padding-block:0";
+		}
+		$edge  = self::px( 'filter_input_edge' );
+		$color = self::color( 'filter_input_color' );
+		if ( '0px' === $edge ) {
+			$input[] = 'border:0';
+		} elseif ( '' !== $edge || '' !== $color ) {
+			$input[] = 'border:' . ( '' === $edge ? '1px' : $edge ) . ' solid ' . ( '' === $color ? 'var(--wp--preset--color--muted)' : $color );
+		}
+		$radius = self::px( 'control_radius' );
+		if ( '' !== $radius ) {
+			$input[] = "border-radius:$radius";
+		}
+		if ( $input ) {
+			$rules[] = "$filters .pergel-filter-search{" . implode( ';', $input ) . '}';
+		}
+
+		$list = "$filters .wc-block-product-filter-checkbox-list";
+		if ( 'right' === Settings::get( 'shop.filter_counts' ) ) {
+			$rules[] = "{$list}__label{display:flex}{$list}__text-wrapper{flex:1 1 auto}{$list}__count{margin-inline-start:auto}";
+		}
+		$swatch = self::px( 'filter_swatch' );
+		if ( '' !== $swatch ) {
+			$rules[] = "{$list}__color-swatch{width:$swatch;height:$swatch}";
+		}
+		$star = self::px( 'filter_star_size' );
+		if ( '' !== $star ) {
+			$rules[] = "{$list}__stars,{$list}__stars-svg{height:$star}";
+		}
+		$star_color = self::color( 'filter_star_color' );
+		if ( '' !== $star_color ) {
+			$rules[] = "{$list}__stars{color:$star_color}";
+		}
 		return $rules;
 	}
 

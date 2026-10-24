@@ -103,7 +103,7 @@ final class Layout {
 	 * The look settings of the filter box, the toolbar and the page numbers
 	 * (ShopLook).
 	 */
-	public const LOOK = array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_divider', 'filter_text_size', 'filter_accent', 'toolbar_bg', 'toolbar_edge', 'toolbar_edge_color', 'toolbar_radius', 'toolbar_padding', 'control_radius', 'paging_shape', 'paging_size', 'paging_bg', 'paging_current' );
+	public const LOOK = array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_divider', 'filter_text_size', 'filter_accent', 'filter_input_size', 'filter_input_edge', 'filter_input_color', 'filter_counts', 'filter_swatch', 'filter_star_size', 'filter_star_color', 'toolbar_bg', 'toolbar_edge', 'toolbar_edge_color', 'toolbar_radius', 'toolbar_padding', 'control_radius', 'paging_shape', 'paging_size', 'paging_bg', 'paging_current' );
 
 	/**
 	 * The look settings of the top of the product page (ProductLook).
