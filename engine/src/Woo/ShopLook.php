@@ -107,7 +107,7 @@ final class ShopLook {
 			$bg      = '' === $bg ? 'var(--wp--preset--color--base)' : $bg;
 			$radius  = self::px( 'filter_radius' );
 			$radius  = '' === $radius ? '12px' : $radius;
-			$rules[] = "@media (min-width:1025px){{$column}{position:relative;margin-top:calc(1.5rem + 18px + $edge)!important;border-top-left-radius:0}{$column} :is(.wc-block-product-filters__overlay,.wc-block-product-filters__overlay-wrapper,.wc-block-product-filters__overlay-dialog,.wc-block-product-filters__overlay-content){position:static}{$column} .pergel-filters__title{position:absolute;left:calc(-1 * $edge);bottom:100%;margin:0!important;padding:10px 24px 8px 16px;line-height:1.5rem;background:$bg;border:$edge solid $color;border-bottom:0;border-radius:$radius $radius 0 0}}";
+			$rules[] = "@media (min-width:1025px){{$column}{position:relative;margin-top:calc(1.5rem + 18px + $edge)!important;border-top-left-radius:0}{$column} :is(.wc-block-product-filters__overlay,.wc-block-product-filters__overlay-wrapper,.wc-block-product-filters__overlay-dialog,.wc-block-product-filters__overlay-content){position:static}{$column} .pergel-filters__title{position:absolute;left:calc(-1 * $edge);bottom:100%;margin:0!important;padding:10px 24px 8px 16px;font-size:1rem!important;font-weight:700;line-height:1.5rem;background:$bg;border:$edge solid $color;border-bottom:0;border-radius:$radius $radius 0 0}}";
 		}
 
 		$group = '[class*="wp-block-woocommerce-product-filter-"]';
@@ -217,7 +217,7 @@ final class ShopLook {
 		$count = Settings::get( 'shop.strip_count' );
 		if ( is_int( $count ) && $count > 0 ) {
 			// Fewer on tablets and phones, where the next one peeks in.
-			$tiles   = static fn ( float $n ): string => "$strip>ul{gap:16px;scroll-snap-type:x mandatory}$strip .pergel-category-card{flex:0 0 calc((100% - " . ( ceil( $n ) - 1 ) . "*16px)/$n);min-width:0;scroll-snap-align:start;transform:none}";
+			$tiles   = static fn ( float $n ): string => "$strip>ul{gap:16px;scroll-snap-type:x mandatory}$strip>ul>.pergel-category-card{flex:0 0 calc((100% - " . ( ceil( $n ) - 1 ) . "*16px)/$n);min-width:0;scroll-snap-align:start;transform:none}";
 			$rules[] = $tiles( (float) $count );
 			$rules[] = '@media (max-width:1100px){' . $tiles( (float) min( $count, 6 ) ) . '}';
 			$rules[] = '@media (max-width:781px){' . $tiles( min( (float) $count, 3.4 ) ) . '}';

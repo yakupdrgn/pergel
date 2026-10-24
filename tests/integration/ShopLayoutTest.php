@@ -487,8 +487,8 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringContainsString( ".wp-block-search__inside-wrapper){border:2px solid var(--wp--preset--color--line)}", $css );
 		$this->assertStringContainsString( '.pergel-filters__title{position:absolute;left:calc(-1 * 2px);bottom:100%;', $css );
 		$this->assertStringContainsString( 'border:2px solid var(--wp--preset--color--line);border-bottom:0;border-radius:12px 12px 0 0}', $css );
-		$this->assertStringContainsString( '.pergel-category-strip .pergel-category-card{flex:0 0 calc((100% - 7*16px)/8);', $css );
-		$this->assertStringContainsString( '@media (max-width:1100px){.pergel-category-strip>ul{gap:16px;scroll-snap-type:x mandatory}.pergel-category-strip .pergel-category-card{flex:0 0 calc((100% - 5*16px)/6);', $css );
+		$this->assertStringContainsString( '.pergel-category-strip>ul>.pergel-category-card{flex:0 0 calc((100% - 7*16px)/8);', $css );
+		$this->assertStringContainsString( '@media (max-width:1100px){.pergel-category-strip>ul{gap:16px;scroll-snap-type:x mandatory}.pergel-category-strip>ul>.pergel-category-card{flex:0 0 calc((100% - 5*16px)/6);', $css );
 		$this->assertStringContainsString( 'calc((100% - 3*16px)/3.4)', $css );
 		$this->assertStringContainsString( '.pergel-category-strip.is-images .pergel-category-card__image{width:100%;height:auto;aspect-ratio:1;object-fit:contain;border-radius:8px;background:var(--wp--preset--color--surface)}', $css );
 
