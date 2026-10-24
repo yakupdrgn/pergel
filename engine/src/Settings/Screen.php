@@ -15,6 +15,7 @@ use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
 use Pergel\Woo\Items;
 use Pergel\Woo\Preset;
+use Pergel\Woo\StoreHeader;
 
 use const Pergel\FILE;
 use const Pergel\VERSION;
@@ -663,6 +664,14 @@ final class Screen {
 				echo '</select>';
 				return;
 
+			case 'menu':
+				echo '<select ' . $attrs . '>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
+				foreach ( self::menus( (int) $value, (string) ( $text['none'] ?? __( 'None', 'pergel-engine' ) ) ) as $id => $title ) {
+					printf( '<option value="%1$d"%2$s>%3$s</option>', (int) $id, selected( (int) $value, $id, false ), esc_html( $title ) );
+				}
+				echo '</select>';
+				return;
+
 			case 'int':
 				printf(
 					'<input type="number" %1$s class="small-text" value="%2$d"%3$s%4$s>',
@@ -777,12 +786,20 @@ final class Screen {
 	 * @phpstan-param Field $field
 	 */
 	private static function items( array $field, string $id, string $name, string $value, string $aria, array $text ): void {
-		$kind     = 'summary' === ( $text['items'] ?? 'card' ) ? 'summary' : 'card';
-		$map      = 'card' === $kind ? Items::CARD : Items::SUMMARY;
-		$choices  = is_array( $text['choices'] ?? null ) ? $text['choices'] : array();
-		$template = Items::in_template( $kind );
-		$shown    = '' === $value ? $template : Items::keys( $value, $map );
-		$order    = array_values( array_unique( array_merge( $shown, $template, $field['options'] ?? array() ) ) );
+		$kind    = (string) ( $text['items'] ?? 'card' );
+		$fixed   = StoreHeader::DEFAULTS[ $kind ] ?? null;
+		$choices = is_array( $text['choices'] ?? null ) ? $text['choices'] : array();
+		if ( null !== $fixed ) {
+			// A row of the store header: its own default, and every item can
+			// be added.
+			$template = $fixed;
+			$shown    = '' === $value ? $template : explode( ',', $value );
+		} else {
+			$kind     = 'summary' === $kind ? 'summary' : 'card';
+			$template = Items::in_template( $kind );
+			$shown    = '' === $value ? $template : Items::keys( $value, 'card' === $kind ? Items::CARD : Items::SUMMARY );
+		}
+		$order = array_values( array_unique( array_merge( $shown, $template, $field['options'] ?? array() ) ) );
 
 		printf(
 			'<fieldset class="pergel-items"%1$s><legend class="screen-reader-text">%2$s</legend>'
@@ -796,11 +813,11 @@ final class Screen {
 			esc_attr( $id ),
 			esc_attr( $name . '[template]' ),
 			checked( '' === $value, true, false ),
-			esc_html__( 'As in the template', 'pergel-engine' )
+			esc_html( null !== $fixed ? __( 'Default arrangement', 'pergel-engine' ) : __( 'As in the template', 'pergel-engine' ) )
 		);
 		foreach ( $order as $key ) {
 			$label  = (string) ( $choices[ $key ] ?? $key );
-			$absent = ! in_array( $key, $template, true );
+			$absent = null === $fixed && ! in_array( $key, $template, true );
 			// An item whose block holds blocks of its own cannot be added.
 			$locked = $absent && ! in_array( $key, Items::ADDABLE, true );
 			printf(
@@ -873,6 +890,37 @@ final class Screen {
 		if ( $current > 0 && ! isset( $choices[ $current ] ) ) {
 			/* translators: %d: pattern id. */
 			$choices[ $current ] = sprintf( __( 'Pattern #%d (not found)', 'pergel-engine' ), $current );
+		}
+		return $choices;
+	}
+
+	/**
+	 * Choices of a menu field: none, then the site's menus (Appearance →
+	 * Editor → Navigation) by title. A chosen menu that is gone is listed as
+	 * such, as with patterns.
+	 *
+	 * @param int    $current Chosen menu id.
+	 * @param string $none    Name of the empty choice.
+	 * @return array<int, string>
+	 */
+	public static function menus( int $current, string $none ): array {
+		$choices = array( 0 => $none );
+		$posts   = get_posts(
+			array(
+				'post_type'      => 'wp_navigation',
+				'post_status'    => 'publish',
+				'posts_per_page' => 100,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+				'no_found_rows'  => true,
+			)
+		);
+		foreach ( $posts as $post ) {
+			$choices[ $post->ID ] = '' !== $post->post_title ? $post->post_title : sprintf( '#%d', $post->ID );
+		}
+		if ( $current > 0 && ! isset( $choices[ $current ] ) ) {
+			/* translators: %d: menu id. */
+			$choices[ $current ] = sprintf( __( 'Menu #%d (not found)', 'pergel-engine' ), $current );
 		}
 		return $choices;
 	}

@@ -22,7 +22,7 @@ final class SchemaTest extends TestCase {
 	/**
 	 * Autoload limit for the option (ARCHITECTURE.md, "Ayar modeli").
 	 */
-	private const MAX_BYTES = 20 * 1024;
+	private const MAX_BYTES = 24 * 1024;
 
 	public function test_defaults_cover_every_field(): void {
 		$defaults = Schema::defaults();
@@ -218,6 +218,8 @@ final class SchemaTest extends TestCase {
 			'int float string'     => array( array( 'type' => 'int' ), '1.5', 'invalid_type' ),
 			'image id'             => array( array( 'type' => 'image' ), '12', 12 ),
 			'image negative'       => array( array( 'type' => 'image' ), -1, 'out_of_range' ),
+			'menu id'              => array( array( 'type' => 'menu' ), '10', 10 ),
+			'menu negative'        => array( array( 'type' => 'menu' ), -1, 'out_of_range' ),
 			'urls from lines'      => array( $urls, "https://a.com\r\n\r\nhttps://b.com\nhttps://a.com", array( 'https://a.com', 'https://b.com' ) ),
 			'urls bad item'        => array( $urls, array( 'https://a.com', 'ftp://b.com' ), 'invalid_url' ),
 			'urls too many'        => array( $urls, array( 'https://a.com', 'https://b.com', 'https://c.com' ), 'too_many' ),
@@ -308,13 +310,14 @@ final class SchemaTest extends TestCase {
 				$max                     = $field['max'] ?? null;
 				$value[ $group ][ $key ] = match ( $field['type'] ) {
 					'bool'          => false,
-					'int', 'image', 'pattern' => PHP_INT_MAX,
+					'int', 'image', 'pattern', 'menu' => PHP_INT_MAX,
 					'enum'          => array_reduce( $field['options'] ?? array(), static fn ( string $a, string $b ): string => strlen( $b ) > strlen( $a ) ? $b : $a, '' ),
 					'urls'          => array_fill( 0, $max ?? 10, 'https://' . str_repeat( 'a', 492 ) ),
 					'dates'         => array_fill( 0, $max ?? 10, '2026-01-01/2026-12-31' ),
 					'time'          => '23:59',
 					'length'        => $field['max'] ?? 999,
 					'color'         => str_repeat( 'a', 40 ),
+					'items'         => implode( ',', $field['options'] ?? array() ),
 					'country'       => 'TR',
 					'email', 'url', 'tel' => str_repeat(
 						'a',

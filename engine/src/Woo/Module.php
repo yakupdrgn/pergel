@@ -52,6 +52,7 @@ final class Module implements Core\Module {
 		Selling::register();
 		Pages::register();
 		MiniCart::register();
+		StoreHeader::register();
 		Trail::register();
 		Sections::register();
 		Properties::register();

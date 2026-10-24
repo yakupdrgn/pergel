@@ -53,18 +53,24 @@ final class MiniCart {
 		if ( true !== Settings::get( 'woo.mini_cart' ) || str_contains( (string) ( $context['content'] ?? '' ), 'wp:' . self::BLOCK ) ) {
 			return $hooked;
 		}
+		if ( self::fits() ) {
+			$hooked[] = self::BLOCK;
+		}
+		return $hooked;
+	}
+
+	/**
+	 * Whether a mini cart belongs on this page; the store header asks too.
+	 */
+	public static function fits(): bool {
 		// The cart and checkout pages show the cart already. There the block
 		// prints its legacy markup, and its script module still loads and asks
 		// the Store API for the cart without knowing the API's address.
 		if ( is_cart() || is_checkout() ) {
-			return $hooked;
+			return false;
 		}
 		// Nothing to put in it under a mode that sells nothing to the visitor.
-		if ( Modes::nothing_sells() ) {
-			return $hooked;
-		}
-		$hooked[] = self::BLOCK;
-		return $hooked;
+		return ! Modes::nothing_sells();
 	}
 
 	/**
