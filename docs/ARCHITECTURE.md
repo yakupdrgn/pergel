@@ -740,6 +740,16 @@ görünmez (`Settings\Screen::shown`).
   `ShopLook`'u yalnızca listeleme sayfalarında ve bir değer doluysa yükler; kurallar mağaza düzeni
   CSS'inin arkasına satır içi eklenir. Uzunluk, renk ve kalınlık okuma `Woo\LookValues`
   özelliğinde, `CardLook` ile ortak.
+  Ürün sayfası görünümü (`Woo\ProductLook`, "Ürün sayfası"nın "Ürün sayfası görünümü" bölümü):
+  büyük resmin zemini, kenarlığı ve köşesi (köşe verilince şablonun kendi resim köşesi kalkar),
+  küçük resimlerin köşesi ve seçili küçük resmin çizgisi, `h1` ürün adının boyutu ve kalınlığı,
+  ürünün kendi fiyatının (`data-is-descendent-of-query-loop` olmayan fiyat bloğu, sayfadaki
+  ızgaralar değil) boyutu, kalınlığı ve rengi (eski fiyat soluk kalır), "Sepete ekle"nin dolu ya
+  da çerçeveli görünümü ve rengi, iki satın alma düğmesinin biçimi ve yüksekliği (adet kutusu aynı
+  yüksekliği alır) ve adet kutusunun biçimi. Form seçicisi WooCommerce'in üç sınıflı düğme
+  kurallarını geçecek şekilde yazılır. Anahtarlar `product_` ile başlamaz, böylece yalnızca bir
+  görünüm değeri `ProductPage`'i yüklemez; `Layout::product_page` `ProductLook`'u bir değer
+  doluysa yükler ve kurallar kendi `pergel-product-look` stilinde basılır.
   Ürünün altı (S5a, `Woo\Details`): `woocommerce/product-details` bloğunun akordeonuna
   `render_block_data` ile bölümler eklenir; sıra Açıklama · Teknik özellikler · Ek bilgiler ·
   ürüne özel sekme · iki desen sekmesi (`shop.details_tab`/`details_tab2`, başlıkları

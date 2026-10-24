@@ -1667,6 +1667,12 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   yalnızca "Filtrele" düğmesini çevrelerdi. Denerken temada var olan bir taşma bulundu: iki fiyat
   kutusu (her biri en çok 6.5em) 16rem'lik sütuna sığmıyor, sütun yatay kayıyordu; fiyat ızgarası
   artık sütunu paylaşıyor.
+- **Ürün sayfası görünümü (24 Ekim 2026, kullanıcı):** 2. adımın son parçası. Unimart'ın ürün
+  sayfası ölçüldü (gri resim kutusu ve 8px köşe, 30px kalın ad, vurgu renginde 600 fiyat, 50px hap
+  düğmeler ve hap adet kutusu) ve hazır ayara yazıldı. Sekme başlıklarının görünümü 6. adıma
+  bırakıldı: ürünün altı orada gerçek sekmelere dönüşecek, değerler o yapıya göre seçilecek.
+  "Hemen al" kendi görünümünü korur; Unimart'ta tek düğme var ve iki düğmeyi aynı yapmak hangisinin
+  asıl olduğunu silerdi.
 
 ## Aşamalar ve bitti tanımları
 
