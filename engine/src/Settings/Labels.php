@@ -285,7 +285,7 @@ final class Labels {
 				),
 				'cards'   => array(
 					'title'  => __( 'Product cards', 'pergel-engine' ),
-					'fields' => array( 'card_style', 'card_items', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches', 'card_quote' ),
+					'fields' => array( 'card_style', 'card_items', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches', 'card_actions', 'card_quote' ),
 				),
 				'look'    => array(
 					'title'  => __( 'Card look', 'pergel-engine' ),
@@ -1199,6 +1199,14 @@ final class Labels {
 				'card_swatches'      => array(
 					'label' => __( 'Colours on cards', 'pergel-engine' ),
 					'help'  => __( 'For products with options: the colours or pictures of the first attribute with the "Color / image" type, under the name. Choosing one shows that option\'s picture on the card.', 'pergel-engine' ),
+				),
+				'card_actions'       => array(
+					'label'   => __( 'Wishlist and compare on cards', 'pergel-engine' ),
+					'help'    => __( 'When the wishlist or compare is on. "Text links" puts "Add to compare" and "Add to wishlist" under the card\'s button.', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'Round icon buttons', 'pergel-engine' ),
+						'links'    => __( 'Text links', 'pergel-engine' ),
+					),
 				),
 				'card_items'         => array(
 					'label'   => __( 'What a card shows', 'pergel-engine' ),

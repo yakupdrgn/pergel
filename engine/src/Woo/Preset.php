@@ -103,6 +103,7 @@ final class Preset {
 				'card_countdown'     => true,
 				'quick_view'         => true,
 				'card_swatches'      => true,
+				'card_actions'       => 'links',
 				// The card look measured on the reference, in the site's colours.
 				'card_gap'           => 24,
 				'card_bg'            => 'base',

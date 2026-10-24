@@ -1087,6 +1087,9 @@ görünmez (`Settings\Screen::shown`).
   - Bloklar: `pergel/product-actions` (düğmeler; ürün sayfasında `labels` ile yazılı),
     `pergel/shop-list` (`kind`: `wishlist`|`compare`) ve `pergel/shop-links` (header
     bağlantıları ve sayılar). WooCommerce yoksa kaydedilmezler (`Blocks\Module::SHOP_BLOCKS`).
+  - `shop.card_actions: links` (7b): ürün listelerinde (`queryId` bağlamı) düğmeler kartın
+    düğmesinin altında yazılı bağlantılar olur ("Karşılaştırmaya ekle", "İstek listesine ekle";
+    `is-labelled is-links`). Ürün sayfası etkilenmez.
   - Block hooks (`hooked_block_types`, öncelik 21): düğmeler `woocommerce/product-button` ve
     `woocommerce/add-to-cart-with-options`'dan sonra gelir; sepet formu şablon parçasında
     (`*add-to-cart-with-options`) ve bloğu zaten içeren içerikte eklenmez. Bağlantılar Pergel

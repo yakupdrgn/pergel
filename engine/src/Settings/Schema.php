@@ -522,6 +522,11 @@ final class Schema {
 				),
 				// What a card shows, in order; empty: as the template. See
 				// Pergel\Woo\Items.
+				'card_actions'       => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'links' ),
+					'default' => 'template',
+				),
 				'card_items'         => array(
 					'type'    => 'items',
 					'options' => array( 'image', 'title', 'rating', 'price', 'excerpt', 'sku', 'stock', 'button', 'actions' ),
