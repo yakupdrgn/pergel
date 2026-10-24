@@ -880,6 +880,17 @@ görünmez (`Settings\Screen::shown`).
   `box_*` değerleri her kutuya `--pergel-box-*` olarak yazılır; `style.css` boşlarda yüzey rengi,
   12 px köşe ve 1rem iç boşluk kullanır. Sınıf yalnızca kutu çizilirken yüklenir. Metin
   alanlarının etiketindeki `placeholder` ayar ekranında boş değerin ne kullanacağını gösterir.
+- **Benzer ürünlerin bannerı ve kutusu, yapışkan çubuğun görünümü (6c):** `related_banner` deseni
+  `Related::banner` ile benzer ürünlerin `woocommerce/product-template` listesine son `<li>` olarak
+  eklenir (bağlamdaki `collection` ilgili koleksiyonsa ve sayfa o ürünse); `Related::collection`
+  sayfadaki ürün sayısını bir azaltır, banner bir ürünün yerini alır. `related_bg` / `_edge` /
+  `_radius` / `_padding` `Related::box` ile bloğun ilk etiketine `pergel-related-box` sınıfı ve
+  `--pergel-related-*` özellikleri olarak yazılır (`product-related.css`). Anahtarlar `related_`
+  ile başladığından `Layout::product_page` bunlardan biri doluyken `Related`'i yükler.
+  `StickyCart::render` `sticky_button` / `sticky_shape` değerlerini `is-button-*` / `is-shape-*`
+  sınıfları, `sticky_bg` / `_padding` / `_image` değerlerini `--pergel-sticky-*` özellikleri olarak
+  çubuğa koyar; `sticky_text` kısa açıklamayı adın altına iki satır olarak ekler (782 px altında
+  gizli). Boş değerler bugünkü görünümü bırakır.
 - **Mini sepet (`Woo\MiniCart`):** `hooked_block_types` ile `woocommerce/mini-cart`, kategorisi
   `header` olan `pergel/*` pattern'lerinde `core/navigation`'dan sonra bir kez eklenir; sepet ve
   ödeme sayfasında eklenmez. `woo.mini_cart` ayarına ve satış modlarına bağlı (ziyaretçiye hiçbir

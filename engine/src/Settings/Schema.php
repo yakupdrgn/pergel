@@ -1031,6 +1031,47 @@ final class Schema {
 					'options' => array( 'off', 'track', 'show' ),
 					'default' => 'off',
 				),
+				// A banner as the last card of the related products, and the
+				// box around them; see Pergel\Woo\Related.
+				'related_banner'     => array( 'type' => 'pattern' ),
+				'related_bg'         => array( 'type' => 'color' ),
+				'related_edge'       => array( 'type' => 'color' ),
+				'related_radius'     => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 32,
+				),
+				'related_padding'    => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 64,
+				),
+				// How the sticky add-to-cart bar looks; see Pergel\Woo\StickyCart.
+				'sticky_bg'          => array( 'type' => 'color' ),
+				'sticky_padding'     => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 32,
+				),
+				'sticky_image'       => array(
+					'type' => 'length',
+					'min'  => 32,
+					'max'  => 96,
+				),
+				'sticky_text'        => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
+				'sticky_button'      => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'filled', 'outline' ),
+					'default' => 'template',
+				),
+				'sticky_shape'       => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'pill', 'rounded', 'square' ),
+					'default' => 'template',
+				),
 			),
 		);
 	}

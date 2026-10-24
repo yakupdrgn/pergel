@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T20:13:39+03:00\n"
+"POT-Creation-Date: 2026-10-24T20:41:09+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -634,6 +634,9 @@ msgid "Tab look"
 msgstr ""
 
 msgid "Related and recently viewed"
+msgstr ""
+
+msgid "Sticky bar look"
 msgstr ""
 
 msgid "Brand details in blocks (Block Bindings) and in structured data."
@@ -1686,6 +1689,63 @@ msgstr ""
 msgid "Remember and show"
 msgstr ""
 
+msgid "Banner beside the related products"
+msgstr ""
+
+msgid "A pattern as the last card of the related products, in the place of one product, e.g. a brand or a campaign. Make it under Appearance → Editor → Patterns."
+msgstr ""
+
+msgid "Box around the related products"
+msgstr ""
+
+msgid "A background puts the related products, their title and the banner in a box."
+msgstr ""
+
+msgid "Space inside the box"
+msgstr ""
+
+msgid "Bar background"
+msgstr ""
+
+msgid "For the sticky add-to-cart bar turned on above. Empty uses the base colour."
+msgstr ""
+
+msgid "Space above and below"
+msgstr ""
+
+msgid "Picture size"
+msgstr ""
+
+msgid "In pixels; phones keep a smaller one."
+msgstr ""
+
+msgid "Short description in the bar"
+msgstr ""
+
+msgid "Two lines of it under the name, on wide screens."
+msgstr ""
+
+msgid "Bar button"
+msgstr ""
+
+msgid "Filled"
+msgstr ""
+
+msgid "Outlined"
+msgstr ""
+
+msgid "Bar button shape"
+msgstr ""
+
+msgid "Pill"
+msgstr ""
+
+msgid "Rounded"
+msgstr ""
+
+msgid "Square"
+msgstr ""
+
 msgid "Colours on cards"
 msgstr ""
 
@@ -1785,12 +1845,6 @@ msgstr ""
 msgid "Category and brand colour"
 msgstr ""
 
-msgid "Filled"
-msgstr ""
-
-msgid "Outlined"
-msgstr ""
-
 msgid "Text link"
 msgstr ""
 
@@ -1801,15 +1855,6 @@ msgid "The fill of a filled button, the line and text of an outlined one. Empty 
 msgstr ""
 
 msgid "Button shape"
-msgstr ""
-
-msgid "Pill"
-msgstr ""
-
-msgid "Rounded"
-msgstr ""
-
-msgid "Square"
 msgstr ""
 
 msgid "Button width"

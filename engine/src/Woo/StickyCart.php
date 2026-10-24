@@ -25,6 +25,8 @@ use Pergel\Settings\Settings;
  */
 final class StickyCart {
 
+	use LookValues;
+
 	public const BLOCK = 'pergel/sticky-add-to-cart';
 
 	/**
@@ -83,8 +85,11 @@ final class StickyCart {
 				'loading' => 'lazy',
 			)
 		);
+		$text   = true === Settings::get( 'shop.sticky_text' ) ? wp_strip_all_tags( (string) $product->get_short_description() ) : '';
 		return '<div ' . get_block_wrapper_attributes(
 			array(
+				'class'              => self::classes(),
+				'style'              => self::look(),
 				'data-pergel-sticky' => (string) $product->get_id(),
 				'data-choose'        => $choose,
 				'hidden'             => 'hidden',
@@ -93,11 +98,46 @@ final class StickyCart {
 			. $image
 			. '<div class="wp-block-pergel-sticky-add-to-cart__info">'
 			. '<p class="wp-block-pergel-sticky-add-to-cart__name">' . esc_html( $name ) . '</p>'
+			. ( '' === trim( $text ) ? '' : '<p class="wp-block-pergel-sticky-add-to-cart__text">' . esc_html( $text ) . '</p>' )
 			. '<p class="wp-block-pergel-sticky-add-to-cart__price">' . Price::html( $product->get_price_html() ) . '</p>'
 			. '</div>'
 			. '<button type="button" class="wp-block-pergel-sticky-add-to-cart__button wp-element-button">' . esc_html( '' !== $choose ? $choose : $product->single_add_to_cart_text() ) . '</button>'
 			. self::buy_now()
 			. '</div></div>';
+	}
+
+	/**
+	 * The look classes: the button's style and shape, when chosen.
+	 */
+	private static function classes(): string {
+		$classes = array();
+		$button  = Settings::get( 'shop.sticky_button' );
+		$shape   = Settings::get( 'shop.sticky_shape' );
+		if ( is_string( $button ) && 'template' !== $button ) {
+			$classes[] = "is-button-$button";
+		}
+		if ( is_string( $shape ) && 'template' !== $shape ) {
+			$classes[] = "is-shape-$shape";
+		}
+		return implode( ' ', $classes );
+	}
+
+	/**
+	 * The look values that are set, as --pergel-sticky-* custom properties.
+	 */
+	private static function look(): string {
+		$values = array(
+			'bg'    => self::color( 'sticky_bg' ),
+			'pad'   => self::px( 'sticky_padding' ),
+			'image' => self::px( 'sticky_image' ),
+		);
+		$style  = '';
+		foreach ( $values as $name => $value ) {
+			if ( '' !== $value ) {
+				$style .= "--pergel-sticky-$name:$value;";
+			}
+		}
+		return $style;
 	}
 
 	/**

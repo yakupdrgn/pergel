@@ -202,6 +202,18 @@ final class Preset {
 				'box_bg'             => 'surface',
 				'box_radius'         => 12,
 				'box_padding'        => 16,
+				// The related products in a white box with a light edge, the
+				// sticky bar with the short description and an outlined pill.
+				'related_bg'         => 'base',
+				'related_edge'       => 'line',
+				'related_radius'     => 16,
+				'related_padding'    => 32,
+				'sticky_bg'          => 'base',
+				'sticky_padding'     => 16,
+				'sticky_image'       => 84,
+				'sticky_text'        => true,
+				'sticky_button'      => 'outline',
+				'sticky_shape'       => 'pill',
 			),
 		);
 	}
