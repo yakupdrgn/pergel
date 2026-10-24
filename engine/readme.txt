@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,18 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.0 =
+* Flash sale campaigns (Products → Flash sales; off until Pergel → Settings → Shop → Flash sales turns them on): a start, an end, a discount and the products or categories. While a campaign runs, its price is written as WooCommerce's own sale price and the earlier one comes back at the end. A box with a countdown on the product page, a card badge, a band on shop pages, a list page, a "Flash sale list" query and a "Running flash sale" block. Products without a price (quote or catalogue mode) are left out.
+* "Request a quote" on product cards for products in quote mode; it opens the product page's quote form.
+* The Shop settings are pages with a menu on the left, and a Preview button shows unsaved changes on a real page beside the settings.
+* Look settings, each one "as the style" by default: product cards (background, edge, corners, padding, hover, picture, name, category, button), the filter box (title text and icon, a tab on the box, groups, search box, counts, colour dots, stars, a "More" button for long lists), the toolbar menus and buttons, page numbers, the category strip (tiles in a row, square pictures) and the product page (pictures, name, price, buying, tabs).
+* Choose and order what product cards and the product summary show; new summary boxes: "You may also like", a list of product facts and a secure-checkout box.
+* A store header in place of the theme's header (search with categories, account, wishlist, compare, cart, a button and a menu bar).
+* Under the product: the description can be split into a tab per H2 heading, a column beside the sections (recently viewed, recommended, a banner), a banner beside the related products and the look of the sticky bar.
+* Wishlist and compare buttons on cards can be text links under the card button.
+* SEO: pages Pergel keeps out of search results (ended flash sales, shop pages with a visitor's own products-per-page) now say "noindex" in the robots tag of Rank Math, All in One SEO, The SEO Framework and SEOPress too.
+* Deleting the plugin also removes the shop layout, badge, section, coupon and question data.
 
 = 1.3.0 =
 * Shop layout settings (Pergel → Settings → Shop layout), each one off or "as in the template" by default, most of them also for a product category or a single product: columns per screen size, products per page and page width; the filter area on the left, right or in a panel, sticky, with folding groups, a search in long lists and brand and rating filters; a grid / list switch, a products-per-page menu, "Load more" or loading on scroll; a banner pattern and a strip of subcategories above the products.

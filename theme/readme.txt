@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,10 @@ layers, WooCommerce features and content types come from the companion
 Pergel Engine plugin, so changing the theme never loses content.
 
 == Changelog ==
+
+= 1.4.0 =
+* The product filter pattern does not show a brand attribute as a second brand filter next to Pergel Engine's brand filter.
+* The price filter's boxes stay inside a narrow filter column.
 
 = 1.3.0 =
 * The product filter pattern adds the brand and rating filters when Pergel Engine asks for them.
