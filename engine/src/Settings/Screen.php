@@ -13,6 +13,7 @@ use Pergel\Core\Svg;
 use Pergel\Seo\Detect;
 use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
+use Pergel\Woo\Items;
 use Pergel\Woo\Preset;
 
 use const Pergel\FILE;
@@ -119,6 +120,12 @@ final class Screen {
 			. '.pergel-color__swatch{width:28px;height:28px;flex:none;box-sizing:border-box;border:1px solid #8c8f94;border-radius:50%;background:repeating-conic-gradient(#dcdcde 0 25%,#fff 0 50%) 50%/10px 10px}'
 			. '.pergel-color__hex{width:44px;height:30px;padding:2px}'
 			. '.pergel-color__hex[hidden]{display:none}'
+			// Item lists: one row per item, with its box and arrows.
+			. '.pergel-items__list{max-width:30em;margin:8px 0 0;padding:0;list-style:none}'
+			. '.pergel-items__list li{display:flex;align-items:center;gap:8px;margin:0 0 -1px;padding:4px 8px;border:1px solid #dcdcde;background:#fff}'
+			. '.pergel-items__list label{flex:1}'
+			. '.pergel-items__note{color:#646970;font-size:12px}'
+			. '.pergel-items__list.is-off{opacity:.55}'
 		);
 	}
 
@@ -471,12 +478,13 @@ final class Screen {
 			$describedby[] = "$id-svg";
 		}
 		$cards = 'enum' === $field['type'] && ! empty( $text['cards'] );
+		$set   = $cards || 'items' === $field['type'];
 		$aria  = ( $describedby ? ' aria-describedby="' . esc_attr( implode( ' ', $describedby ) ) . '"' : '' )
-			. ( '' !== $error && 'image' !== $field['type'] && ! $cards ? ' aria-invalid="true"' : '' );
+			. ( '' !== $error && 'image' !== $field['type'] && ! $set ? ' aria-invalid="true"' : '' );
 
 		// An image field has no input to label; its buttons carry the
-		// description. Cards are radio buttons named by their fieldset.
-		$th = 'image' === $field['type'] || $cards ? esc_html( $label ) : '<label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label>';
+		// description. Cards and item lists are named by their fieldset.
+		$th = 'image' === $field['type'] || $set ? esc_html( $label ) : '<label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label>';
 		echo '<tr><th scope="row">' . $th . '</th><td>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
 		if ( $cards ) {
 			self::cards( $group, $key, $field, $name, $value, $aria, $text );
@@ -569,6 +577,10 @@ final class Screen {
 
 			case 'color':
 				self::color( $id, $name, (string) $value, $aria );
+				return;
+
+			case 'items':
+				self::items( $field, $id, $name, (string) $value, $aria, $text );
 				return;
 
 			case 'textarea':
@@ -700,6 +712,69 @@ final class Screen {
 			esc_attr( $name . '[hex]' ),
 			esc_attr( $custom ? $value : '#000000' ),
 			esc_attr__( 'Custom colour', 'pergel-engine' )
+		);
+	}
+
+	/**
+	 * An item list: "As in the template", then one row per item with a box
+	 * and arrows (settings.js moves the rows and keeps the order field up to
+	 * date). Without a list the rows start as the template shows them.
+	 *
+	 * @param array<string, mixed> $field Field definition.
+	 * @param string               $id    Element id.
+	 * @param string               $name  Form name.
+	 * @param string               $value Current value.
+	 * @param string               $aria  Escaped aria attributes.
+	 * @param array<string, mixed> $text  Labels for the field.
+	 * @phpstan-param Field $field
+	 */
+	private static function items( array $field, string $id, string $name, string $value, string $aria, array $text ): void {
+		$kind     = 'summary' === ( $text['items'] ?? 'card' ) ? 'summary' : 'card';
+		$map      = 'card' === $kind ? Items::CARD : Items::SUMMARY;
+		$choices  = is_array( $text['choices'] ?? null ) ? $text['choices'] : array();
+		$template = Items::in_template( $kind );
+		$shown    = '' === $value ? $template : Items::keys( $value, $map );
+		$order    = array_values( array_unique( array_merge( $shown, $template, $field['options'] ?? array() ) ) );
+
+		printf(
+			'<fieldset class="pergel-items"%1$s><legend class="screen-reader-text">%2$s</legend>'
+			. '<input type="hidden" name="%3$s" value="%4$s">'
+			. '<label><input type="checkbox" id="%5$s" class="pergel-items__template" name="%6$s" value="1"%7$s> %8$s</label>'
+			. '<ol class="pergel-items__list">',
+			$aria, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in row().
+			esc_html( (string) ( $text['label'] ?? '' ) ),
+			esc_attr( $name . '[order]' ),
+			esc_attr( implode( ',', $order ) ),
+			esc_attr( $id ),
+			esc_attr( $name . '[template]' ),
+			checked( '' === $value, true, false ),
+			esc_html__( 'As in the template', 'pergel-engine' )
+		);
+		foreach ( $order as $key ) {
+			$label  = (string) ( $choices[ $key ] ?? $key );
+			$absent = ! in_array( $key, $template, true );
+			// An item whose block holds blocks of its own cannot be added.
+			$locked = $absent && ! in_array( $key, Items::ADDABLE, true );
+			printf(
+				'<li data-key="%1$s"><label><input type="checkbox" name="%2$s" value="%1$s"%3$s%4$s> %5$s</label>%6$s'
+				. '<button type="button" class="button button-small" data-move="-1" aria-label="%7$s">&uarr;</button>'
+				. '<button type="button" class="button button-small" data-move="1" aria-label="%8$s">&darr;</button></li>',
+				esc_attr( $key ),
+				esc_attr( $name . '[show][]' ),
+				checked( in_array( $key, $shown, true ), true, false ),
+				$locked ? ' disabled data-locked' : '',
+				esc_html( $label ),
+				$absent ? ' <span class="pergel-items__note">' . esc_html( $locked ? __( 'Not in the template', 'pergel-engine' ) : __( 'Added when ticked', 'pergel-engine' ) ) . '</span>' : '',
+				/* translators: %s: item name, e.g. "Price". */
+				esc_attr( sprintf( __( 'Move %s up', 'pergel-engine' ), $label ) ),
+				/* translators: %s: item name, e.g. "Price". */
+				esc_attr( sprintf( __( 'Move %s down', 'pergel-engine' ), $label ) )
+			);
+		}
+		printf(
+			'</ol><p class="screen-reader-text" aria-live="polite" data-moved="%s"></p></fieldset>',
+			/* translators: 1: item name, 2: its place, 3: number of items. */
+			esc_attr__( '%1$s: %2$s of %3$s', 'pergel-engine' )
 		);
 	}
 

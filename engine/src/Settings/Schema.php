@@ -496,6 +496,12 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// What a card shows, in order; empty: as the template. See
+				// Pergel\Woo\Items.
+				'card_items'         => array(
+					'type'    => 'items',
+					'options' => array( 'image', 'title', 'rating', 'price', 'excerpt', 'sku', 'stock', 'button', 'actions' ),
+				),
 				// How the cards look; empty or "As the card style" leaves the
 				// style's own look. See Pergel\Woo\CardLook.
 				'card_gap'           => array(
@@ -769,6 +775,12 @@ final class Schema {
 				'product_stock'      => array(
 					'type'    => 'bool',
 					'default' => false,
+				),
+				// What the summary beside the pictures shows, in order; not
+				// product_ so that a list alone does not load ProductPage.
+				'summary_items'      => array(
+					'type'    => 'items',
+					'options' => array( 'category', 'title', 'rating', 'price', 'excerpt', 'sku', 'stock', 'buying', 'cta', 'meta' ),
 				),
 				'product_nav'        => array(
 					'type'    => 'bool',
@@ -1059,6 +1071,9 @@ final class Schema {
 			case 'color':
 				return self::color( $raw );
 
+			case 'items':
+				return self::items( $raw, $field['options'] ?? array() );
+
 			case 'urls':
 				return self::urls( $raw, $field['max'] ?? self::MAX_ITEMS );
 
@@ -1249,6 +1264,38 @@ final class Schema {
 	}
 
 	/**
+	 * A list of items in order, comma-separated; '' keeps the template's.
+	 * The settings screen sends the order of all items, the ticked ones
+	 * and "As in the template".
+	 *
+	 * @param mixed $raw     Untrusted value.
+	 * @param array $options The known items.
+	 * @phpstan-param list<string> $options
+	 * @return array{0: string}|string The clean value wrapped in an array, or an error code.
+	 */
+	private static function items( mixed $raw, array $options ): array|string {
+		if ( is_array( $raw ) ) {
+			if ( ! empty( $raw['template'] ) ) {
+				return array( '' );
+			}
+			$order = is_string( $raw['order'] ?? null ) ? explode( ',', $raw['order'] ) : array();
+			$show  = is_array( $raw['show'] ?? null ) ? array_values( array_filter( $raw['show'], 'is_string' ) ) : array();
+			$raw   = implode( ',', array_merge( array_intersect( $order, $show ), array_diff( $show, $order ) ) );
+		}
+		if ( ! is_string( $raw ) ) {
+			return 'invalid_type';
+		}
+		if ( '' === $raw ) {
+			return array( '' );
+		}
+		$keys = explode( ',', $raw );
+		if ( array_diff( $keys, $options ) || count( $keys ) !== count( array_unique( $keys ) ) ) {
+			return 'invalid_choice';
+		}
+		return array( $raw );
+	}
+
+	/**
 	 * JSON Schema for register_setting( show_in_rest ). Empty strings are
 	 * valid everywhere, because an empty field means "not set".
 	 *
@@ -1319,6 +1366,10 @@ final class Schema {
 			'color'   => array(
 				'type'    => 'string',
 				'pattern' => '^(#[0-9a-fA-F]{6}|[a-z0-9][a-z0-9-]{0,39})?$',
+			),
+			'items'   => array(
+				'type'    => 'string',
+				'pattern' => '^([a-z]+(,[a-z]+)*)?$',
 			),
 			'urls'    => array(
 				'type'     => 'array',

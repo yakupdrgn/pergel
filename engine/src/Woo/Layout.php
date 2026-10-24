@@ -358,9 +358,10 @@ final class Layout {
 	 * its default for the product on screen, those of the sections under
 	 * the product when a "details" setting does or the product has a
 	 * feature list or tab of its own, and those of the related products
-	 * when a "related" setting does, and the look rules when a look setting
-	 * is set. With the defaults, product pages load none of ProductPage,
-	 * Details, Related and ProductLook. Hooked on wp.
+	 * when a "related" setting does, the look rules when a look setting is
+	 * set and the summary order when it is chosen. With the defaults,
+	 * product pages load none of ProductPage, Details, Related, ProductLook
+	 * and Items. Hooked on wp.
 	 */
 	public static function product_page(): void {
 		if ( ! is_singular( 'product' ) ) {
@@ -390,6 +391,9 @@ final class Layout {
 		}
 		if ( self::chosen( self::PRODUCT_LOOK ) ) {
 			ProductLook::enqueue();
+		}
+		if ( '' !== Settings::get( 'shop.summary_items' ) ) {
+			add_filter( 'render_block_data', array( Items::class, 'summary' ) );
 		}
 	}
 

@@ -67,6 +67,9 @@ final class Cards {
 		add_filter( 'render_block_woocommerce/product-sale-badge', array( self::class, 'sale_badge' ), 10, 3 );
 		add_filter( 'render_block_pergel/product-actions', array( self::class, 'actions' ), 10, 3 );
 		add_filter( 'script_module_data_' . Layout::CARDS_SCRIPT, array( self::class, 'data' ) );
+		if ( '' !== Settings::get( 'shop.card_items' ) ) {
+			add_filter( 'render_block_data', array( Items::class, 'cards' ) );
+		}
 		if ( true === Settings::get( 'shop.card_quote' ) ) {
 			add_filter( 'woocommerce_product_add_to_cart_text', array( self::class, 'quote_text' ), 20, 2 );
 			add_filter( 'woocommerce_product_add_to_cart_description', array( self::class, 'quote_description' ), 20, 2 );
