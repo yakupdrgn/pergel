@@ -17,6 +17,7 @@ use Pergel\Settings\Settings;
 use Pergel\Woo\CouponField;
 use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
+use Pergel\Woo\ProductLook;
 use Pergel\Woo\ProductPage;
 use PHPUnit\Framework\TestCase;
 
@@ -113,6 +114,7 @@ final class ProductLayoutTest extends TestCase {
 			remove_filter( $hook, array( ProductPage::class, $method ), 10 );
 		}
 		wp_dequeue_style( Layout::PRODUCT_STYLE );
+		wp_dequeue_style( ProductLook::STYLE );
 		wp_dequeue_style( Layout::CARD_STYLE );
 		Layout::flush();
 		if ( null !== $this->query ) {
@@ -170,6 +172,44 @@ final class ProductLayoutTest extends TestCase {
 
 		$this->assertFalse( has_filter( 'render_block_core/columns', array( ProductPage::class, 'columns' ) ) );
 		$this->assertFalse( wp_style_is( Layout::PRODUCT_STYLE ) );
+		$this->assertFalse( wp_style_is( ProductLook::STYLE ) );
+	}
+
+	public function test_look_makes_rules_only_for_set_values(): void {
+		$this->assertSame( '', ProductLook::css() );
+		Settings::update(
+			array(
+				'shop' => array(
+					'picture_bg'     => 'surface',
+					'picture_radius' => 8,
+					'thumb_active'   => 'accent',
+					'title_weight'   => '700',
+					'price_color'    => '#ff0000',
+					'buy_look'       => 'outline',
+					'buy_shape'      => 'pill',
+					'buy_height'     => 50,
+					'qty_shape'      => 'square',
+				),
+			)
+		);
+		[ $id ] = $this->product( 'Page look' );
+		$this->go_to( $id );
+		Layout::product_page();
+
+		$this->assertFalse( has_filter( 'render_block_core/columns', array( ProductPage::class, 'columns' ) ), 'The look alone does not load ProductPage.' );
+		$this->assertTrue( wp_style_is( ProductLook::STYLE ) );
+		$css = ProductLook::css();
+		$this->assertStringContainsString( $css, implode( '', (array) wp_styles()->get_data( ProductLook::STYLE, 'after' ) ) );
+		$this->assertStringContainsString( '.wc-block-product-gallery-large-image{box-sizing:border-box;background:var(--wp--preset--color--surface);border-radius:8px;overflow:hidden}', $css );
+		$this->assertStringContainsString( '__image--is-active{outline:2px solid var(--wp--preset--color--accent)', $css );
+		$this->assertStringContainsString( 'h1.wp-block-post-title{font-weight:700}', $css );
+		$this->assertStringContainsString( ':not([data-is-descendent-of-query-loop]) .wc-block-components-product-price{color:#ff0000}', $css, 'Only the product\'s own price.' );
+		$this->assertStringContainsString( 'background:transparent;color:var(--wp--preset--color--accent);border:2px solid var(--wp--preset--color--accent)', $css );
+		$this->assertStringContainsString( '.pergel-buy-now){border-radius:999px;box-sizing:border-box;min-height:50px', $css, 'Shape and height for both buttons.' );
+		$this->assertStringContainsString( '__quantity-selector{box-sizing:border-box;height:50px}', $css );
+		$this->assertStringContainsString( '__button--minus{border-radius:0 0 0 0}', $css );
+		$this->assertStringNotContainsString( 'font-size', $css, 'No sizes set.' );
+		$this->assertStringNotContainsString( 'border:', str_replace( 'border:2px solid var(--wp--preset--color--accent)', '', $css ), 'No picture edge set.' );
 	}
 
 	public function test_product_then_category_then_site(): void {

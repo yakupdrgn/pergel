@@ -642,6 +642,68 @@ final class Schema {
 				),
 				'paging_bg'          => array( 'type' => 'color' ),
 				'paging_current'     => array( 'type' => 'color' ),
+				// How the top of the product page looks; empty or "As the
+				// template" leaves the template's look. See Pergel\Woo\ProductLook.
+				'picture_bg'         => array( 'type' => 'color' ),
+				'picture_edge'       => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 8,
+				),
+				'picture_edge_color' => array( 'type' => 'color' ),
+				'picture_radius'     => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 40,
+				),
+				'thumb_radius'       => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 40,
+				),
+				'thumb_active'       => array( 'type' => 'color' ),
+				'title_size'         => array(
+					'type' => 'length',
+					'min'  => 16,
+					'max'  => 64,
+				),
+				'title_weight'       => array(
+					'type'    => 'enum',
+					'options' => array( 'template', '400', '500', '600', '700' ),
+					'default' => 'template',
+				),
+				'price_size'         => array(
+					'type' => 'length',
+					'min'  => 14,
+					'max'  => 48,
+				),
+				'price_weight'       => array(
+					'type'    => 'enum',
+					'options' => array( 'template', '400', '500', '600', '700' ),
+					'default' => 'template',
+				),
+				'price_color'        => array( 'type' => 'color' ),
+				'buy_look'           => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'filled', 'outline' ),
+					'default' => 'template',
+				),
+				'buy_color'          => array( 'type' => 'color' ),
+				'buy_shape'          => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'pill', 'rounded', 'square' ),
+					'default' => 'template',
+				),
+				'buy_height'         => array(
+					'type' => 'length',
+					'min'  => 32,
+					'max'  => 72,
+				),
+				'qty_shape'          => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'pill', 'rounded', 'square' ),
+					'default' => 'template',
+				),
 				'badge_sale'         => array(
 					'type'    => 'enum',
 					'options' => array( 'template', 'percent', 'none' ),

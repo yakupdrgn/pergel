@@ -106,6 +106,11 @@ final class Layout {
 	public const LOOK = array( 'filter_bg', 'filter_edge', 'filter_edge_color', 'filter_radius', 'filter_padding', 'filter_head_size', 'filter_head_weight', 'filter_divider', 'filter_text_size', 'filter_accent', 'toolbar_bg', 'toolbar_edge', 'toolbar_edge_color', 'toolbar_radius', 'toolbar_padding', 'control_radius', 'paging_shape', 'paging_size', 'paging_bg', 'paging_current' );
 
 	/**
+	 * The look settings of the top of the product page (ProductLook).
+	 */
+	public const PRODUCT_LOOK = array( 'picture_bg', 'picture_edge', 'picture_edge_color', 'picture_radius', 'thumb_radius', 'thumb_active', 'title_size', 'title_weight', 'price_size', 'price_weight', 'price_color', 'buy_look', 'buy_color', 'buy_shape', 'buy_height', 'qty_shape' );
+
+	/**
 	 * Templates that hold the main product grid.
 	 */
 	private const TEMPLATES = array( 'archive-product', 'taxonomy-product_cat', 'taxonomy-product_tag', 'product-search-results' );
@@ -353,8 +358,9 @@ final class Layout {
 	 * its default for the product on screen, those of the sections under
 	 * the product when a "details" setting does or the product has a
 	 * feature list or tab of its own, and those of the related products
-	 * when a "related" setting does. With the defaults, product pages load
-	 * none of ProductPage, Details and Related. Hooked on wp.
+	 * when a "related" setting does, and the look rules when a look setting
+	 * is set. With the defaults, product pages load none of ProductPage,
+	 * Details, Related and ProductLook. Hooked on wp.
 	 */
 	public static function product_page(): void {
 		if ( ! is_singular( 'product' ) ) {
@@ -381,6 +387,9 @@ final class Layout {
 		}
 		if ( $related ) {
 			Related::register( $id );
+		}
+		if ( self::chosen( self::PRODUCT_LOOK ) ) {
+			ProductLook::enqueue();
 		}
 	}
 

@@ -89,7 +89,7 @@ final class Labels {
 			'product'  => array(
 				'title'       => __( 'Product page', 'pergel-engine' ),
 				'description' => __( 'The top of the product page: the pictures, the details beside them and buying. A product category and a product can choose some of these for themselves.', 'pergel-engine' ),
-				'parts'       => array( 'shop.product', 'shop.summary', 'shop.buying', 'woo.product' ),
+				'parts'       => array( 'shop.product', 'shop.summary', 'shop.buying', 'shop.styling', 'woo.product' ),
 			),
 			'details'  => array(
 				'title'       => __( 'Under the product', 'pergel-engine' ),
@@ -281,6 +281,10 @@ final class Labels {
 				'buying'  => array(
 					'title'  => __( 'Buying', 'pergel-engine' ),
 					'fields' => array( 'product_buy_now', 'product_coupons', 'product_share' ),
+				),
+				'styling' => array(
+					'title'  => __( 'Product page look', 'pergel-engine' ),
+					'fields' => array( 'picture_bg', 'picture_edge', 'picture_edge_color', 'picture_radius', 'thumb_radius', 'thumb_active', 'title_size', 'title_weight', 'price_size', 'price_weight', 'price_color', 'buy_look', 'buy_color', 'buy_shape', 'buy_height', 'qty_shape' ),
 				),
 				'details' => array(
 					'title'  => __( 'Under the product', 'pergel-engine' ),
@@ -1138,6 +1142,95 @@ final class Labels {
 				'paging_current'     => array(
 					'label' => __( 'Current page colour', 'pergel-engine' ),
 					'help'  => __( 'Empty uses the accent colour.', 'pergel-engine' ),
+				),
+				'picture_bg'         => array(
+					'label' => __( 'Picture background', 'pergel-engine' ),
+					'help'  => __( 'Behind the large picture, seen around pictures with an empty background.', 'pergel-engine' ),
+				),
+				'picture_edge'       => array(
+					'label' => __( 'Picture edge', 'pergel-engine' ),
+					'help'  => __( 'The width of the line around the large picture, in pixels; 0 for none.', 'pergel-engine' ),
+				),
+				'picture_edge_color' => array(
+					'label' => __( 'Picture edge colour', 'pergel-engine' ),
+				),
+				'picture_radius'     => array(
+					'label' => __( 'Picture corners', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'thumb_radius'       => array(
+					'label' => __( 'Small picture corners', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'thumb_active'       => array(
+					'label' => __( 'Chosen small picture', 'pergel-engine' ),
+					'help'  => __( 'A line in this colour around the small picture shown large.', 'pergel-engine' ),
+				),
+				'title_size'         => array(
+					'label' => __( 'Product name size', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'title_weight'       => array(
+					'label'   => __( 'Product name weight', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'400'      => __( 'Regular', 'pergel-engine' ),
+						'500'      => __( 'Medium', 'pergel-engine' ),
+						'600'      => __( 'Semibold', 'pergel-engine' ),
+						'700'      => __( 'Bold', 'pergel-engine' ),
+					),
+				),
+				'price_size'         => array(
+					'label' => __( 'Price size', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'price_weight'       => array(
+					'label'   => __( 'Price weight', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'400'      => __( 'Regular', 'pergel-engine' ),
+						'500'      => __( 'Medium', 'pergel-engine' ),
+						'600'      => __( 'Semibold', 'pergel-engine' ),
+						'700'      => __( 'Bold', 'pergel-engine' ),
+					),
+				),
+				'price_color'        => array(
+					'label' => __( 'Price colour', 'pergel-engine' ),
+				),
+				'buy_look'           => array(
+					'label'   => __( 'Add to cart button', 'pergel-engine' ),
+					'help'    => __( 'Buy now keeps its own look; the shape and height below are for both buttons.', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'filled'   => __( 'Filled', 'pergel-engine' ),
+						'outline'  => __( 'Outlined', 'pergel-engine' ),
+					),
+				),
+				'buy_color'          => array(
+					'label' => __( 'Add to cart colour', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the accent colour.', 'pergel-engine' ),
+				),
+				'buy_shape'          => array(
+					'label'   => __( 'Buying button shape', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'pill'     => __( 'Pill', 'pergel-engine' ),
+						'rounded'  => __( 'Rounded', 'pergel-engine' ),
+						'square'   => __( 'Square', 'pergel-engine' ),
+					),
+				),
+				'buy_height'         => array(
+					'label' => __( 'Buying button height', 'pergel-engine' ),
+					'help'  => __( 'In pixels; the quantity box takes the same height.', 'pergel-engine' ),
+				),
+				'qty_shape'          => array(
+					'label'   => __( 'Quantity box shape', 'pergel-engine' ),
+					'choices' => array(
+						'template' => __( 'As the template', 'pergel-engine' ),
+						'pill'     => __( 'Pill', 'pergel-engine' ),
+						'rounded'  => __( 'Rounded', 'pergel-engine' ),
+						'square'   => __( 'Square', 'pergel-engine' ),
+					),
 				),
 			),
 		);
