@@ -248,10 +248,11 @@ final class ProductBoxes {
 				return '' === $type ? null : array( __( 'Product type:', 'pergel-engine' ), esc_html( $type ) );
 
 			case 'weight':
-				return $product->has_weight() ? array( __( 'Weight:', 'pergel-engine' ), esc_html( wc_format_weight( $product->get_weight() ) ) ) : null;
+				return $product->has_weight() ? array( __( 'Weight:', 'pergel-engine' ), esc_html( wc_format_weight( (float) $product->get_weight() ) ) ) : null;
 
 			case 'size':
-				return $product->has_dimensions() ? array( __( 'Dimensions:', 'pergel-engine' ), esc_html( wc_format_dimensions( $product->get_dimensions( false ) ) ) ) : null;
+				$size = $product->get_dimensions( false );
+				return $product->has_dimensions() && is_array( $size ) ? array( __( 'Dimensions:', 'pergel-engine' ), esc_html( wc_format_dimensions( $size ) ) ) : null;
 		}
 		return null;
 	}
