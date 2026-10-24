@@ -442,14 +442,15 @@ final class Package {
 	}
 
 	/**
-	 * Whether a picture is the active child theme's own (an icon from its
-	 * folder), not sample art: a pattern that keeps it is as designed.
+	 * Tells whether a picture is the active child theme's own (an icon from
+	 * its folder), not sample art: a pattern that keeps it is as designed.
 	 * Pergel's own pictures are sample art, with or without a child theme.
 	 *
-	 * @param string $src Image URL from the pattern.
+	 * @return Closure(string): bool
 	 */
-	private static function own_picture( string $src ): bool {
-		return is_child_theme() && '' !== $src && str_starts_with( $src, trailingslashit( get_stylesheet_directory_uri() ) );
+	private static function own_pictures(): Closure {
+		$folder = is_child_theme() ? trailingslashit( get_stylesheet_directory_uri() ) : '';
+		return static fn ( string $src ): bool => '' !== $folder && str_starts_with( $src, $folder );
 	}
 
 	/**
@@ -508,6 +509,7 @@ final class Package {
 		$content = $this->content[ $file ];
 		$parts   = array();
 		$body    = null;
+		$own     = self::own_pictures();
 
 		foreach ( $content['sections'] as $i => $section ) {
 			$where = sprintf( '%s: sections[%d]', $file, $i + 1 );
@@ -537,7 +539,7 @@ final class Package {
 			};
 			$kept  = array();
 			try {
-				$parts[] = serialize_blocks( Fields::fill( $blocks, $section, $image, $kept, self::own_picture( ... ) ) );
+				$parts[] = serialize_blocks( Fields::fill( $blocks, $section, $image, $kept, $own ) );
 			} catch ( InvalidArgumentException $e ) {
 				$this->problems[] = "$where ($name): " . $e->getMessage();
 			}
