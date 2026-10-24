@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-24 12:26+0000\n"
-"PO-Revision-Date: 2026-10-24 12:26+0000\n"
+"POT-Creation-Date: 2026-10-24 13:09+0000\n"
+"PO-Revision-Date: 2026-10-24 13:09+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -448,8 +448,14 @@ msgstr "Mağaza, ürün kategorisi, ürün etiketi ve ürün arama sayfalarında
 msgid "General"
 msgstr "Genel"
 
-msgid "How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, the header cart and speed."
-msgstr "Pergel'in WooCommerce ile nasıl çalıştığı: satış, ürün talepleri, istek ve karşılaştırma listeleri, üst bilgideki sepet ve hız."
+msgid "How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, and speed."
+msgstr "Pergel'in WooCommerce ile nasıl çalıştığı: satış, ürün soruları, istek ve karşılaştırma listeleri ve hız."
+
+msgid "Header"
+msgstr "Üst bilgi"
+
+msgid "The top of every page: the cart in the theme headers, or a store header with a top bar, a product search and a menu bar."
+msgstr "Her sayfanın üstü: tema üst bilgilerindeki sepet ya da üst şeridi, ürün araması ve menü çubuğu olan bir mağaza üst bilgisi."
 
 msgid "Shop page"
 msgstr "Mağaza sayfası"
@@ -541,8 +547,8 @@ msgstr "İstek listesi ve karşılaştırma"
 msgid "Delivery estimate"
 msgstr "Tahmini teslimat"
 
-msgid "Header"
-msgstr "Üst bilgi"
+msgid "Theme headers"
+msgstr "Tema üst bilgileri"
 
 msgid "Bar at the bottom of phones"
 msgstr "Telefonlarda alt çubuk"
@@ -567,6 +573,21 @@ msgstr "Araç çubuğu ve sayfa numaraları görünümü"
 
 msgid "Above the products"
 msgstr "Ürünlerin üstünde"
+
+msgid "Store header"
+msgstr "Mağaza üst bilgisi"
+
+msgid "Top bar"
+msgstr "Üst şerit"
+
+msgid "Header row"
+msgstr "Üst bilgi satırı"
+
+msgid "Menu bar"
+msgstr "Menü çubuğu"
+
+msgid "Store header look"
+msgstr "Mağaza üst bilgisinin görünümü"
 
 msgid "Card look"
 msgstr "Kart görünümü"
@@ -1720,6 +1741,150 @@ msgstr "Geçerli sayfa rengi"
 msgid "Empty uses the accent colour."
 msgstr "Boş bırakılırsa vurgu rengi kullanılır."
 
+msgid "The store header has a top bar, a row with the logo, a product search with categories, contact, account and cart, and a bar with the menu; each part is set below. The theme's header is the Header template part under Appearance → Editor. A sticky header stays sticky."
+msgstr "Mağaza üst bilgisinde bir üst şerit; logo, kategorili ürün araması, iletişim, hesap ve sepetin olduğu bir satır ve menünün olduğu bir çubuk bulunur; her parça aşağıda ayarlanır. Temanın üst bilgisi, Görünüm → Düzenleyici'deki Üst bilgi şablon parçasıdır. Yapışkan üst bilgi yapışkan kalır."
+
+msgid "The theme's header"
+msgstr "Temanın üst bilgisi"
+
+msgid "Show the store header on"
+msgstr "Mağaza üst bilgisinin gösterileceği yer"
+
+msgid "Shop pages are the shop, product categories, products, the cart, the checkout and the account. Other pages keep the theme's header."
+msgstr "Mağaza sayfaları: mağaza, ürün kategorileri, ürünler, sepet, ödeme ve hesap sayfaları. Diğer sayfalarda temanın üst bilgisi kalır."
+
+msgid "Shop pages"
+msgstr "Mağaza sayfaları"
+
+msgid "Every page"
+msgstr "Bütün sayfalar"
+
+msgid "Show the top bar"
+msgstr "Üst şeridi göster"
+
+msgid "A thin bar above the header row. It is hidden on phones."
+msgstr "Üst bilgi satırının üstünde ince bir şerit. Telefonlarda gizlenir."
+
+msgid "What the top bar shows"
+msgstr "Üst şeritte görünenler"
+
+msgid "Tick what the bar shows and put it in order with the arrows. The e-mail address, phone number and address come from the Brand tab; the menu sits on the right."
+msgstr "Şeritte görünecekleri işaretleyin ve oklarla sıralayın. E-posta adresi, telefon numarası ve adres Marka sekmesinden gelir; menü sağda durur."
+
+msgid "Announcement"
+msgstr "Duyuru"
+
+msgid "E-mail address"
+msgstr "E-posta adresi"
+
+msgid "Phone number"
+msgstr "Telefon numarası"
+
+msgid "Empty shows the site tagline."
+msgstr "Boş bırakılırsa sitenin sloganı gösterilir."
+
+msgid "Top bar menu"
+msgstr "Üst şerit menüsü"
+
+msgid "A menu made under Appearance → Editor → Navigation, e.g. with links to delivery and order tracking."
+msgstr "Görünüm → Düzenleyici → Gezinme altında hazırlanan bir menü; ör. teslimat ve sipariş takibi bağlantılarıyla."
+
+msgid "What the header row shows"
+msgstr "Üst bilgi satırında görünenler"
+
+msgid "Tick what the row shows and put it in order with the arrows. Without the menu bar, the menu follows the logo. The cart shows where something sells, and not on the cart and checkout pages."
+msgstr "Satırda görünecekleri işaretleyin ve oklarla sıralayın. Menü çubuğu kapalıysa menü logonun ardından gelir. Sepet, satış yapılan yerlerde görünür; sepet ve ödeme sayfalarında görünmez."
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "Product search"
+msgstr "Ürün araması"
+
+msgid "Account"
+msgstr "Hesap"
+
+msgid "Mini cart"
+msgstr "Mini sepet"
+
+msgid "Category list in the search"
+msgstr "Aramada kategori listesi"
+
+msgid "Visitors can search one top-level product category."
+msgstr "Ziyaretçiler tek bir üst düzey ürün kategorisinde arama yapabilir."
+
+msgid "Text above the phone number"
+msgstr "Telefon numarasının üstündeki metin"
+
+msgid "Empty shows \"Call us\". The number comes from the Brand tab."
+msgstr "Boş bırakılırsa \"Bizi arayın\" yazar. Numara Marka sekmesinden gelir."
+
+msgid "Button text"
+msgstr "Düğme metni"
+
+msgid "Empty shows \"Contact us\". The button opens the contact page set under General → Product enquiries, and shows only with one."
+msgstr "Boş bırakılırsa \"Bize ulaşın\" yazar. Düğme, Genel → Ürün soruları altında belirlenen iletişim sayfasını açar ve yalnızca bu sayfa varsa görünür."
+
+msgid "Put the menu on its own bar"
+msgstr "Menüyü ayrı bir çubuğa koy"
+
+msgid "A coloured bar under the header row. Off puts the menu after the logo."
+msgstr "Üst bilgi satırının altında renkli bir çubuk. Kapalıyken menü logonun ardına gelir."
+
+msgid "Empty shows the site's menu, as the theme's headers do."
+msgstr "Boş bırakılırsa, temanın üst bilgilerinde olduğu gibi sitenin menüsü gösterilir."
+
+msgid "The site's menu"
+msgstr "Sitenin menüsü"
+
+msgid "Link on the right of the bar"
+msgstr "Çubuğun sağındaki bağlantı"
+
+msgid "E.g. \"Today's deals\". It shows with a link address."
+msgstr "Ör. \"Günün fırsatları\". Bağlantı adresi girilince görünür."
+
+msgid "Link address"
+msgstr "Bağlantı adresi"
+
+msgid "Top bar background"
+msgstr "Üst şerit arka planı"
+
+msgid "Empty uses the dark text colour."
+msgstr "Boş bırakılırsa koyu metin rengi kullanılır."
+
+msgid "Top bar text"
+msgstr "Üst şerit metni"
+
+msgid "Empty uses the background colour."
+msgstr "Boş bırakılırsa arka plan rengi kullanılır."
+
+msgid "Header row background"
+msgstr "Üst bilgi satırının arka planı"
+
+msgid "Space above and below the header row"
+msgstr "Üst bilgi satırının üstündeki ve altındaki boşluk"
+
+msgid "Search box corners"
+msgstr "Arama kutusunun köşeleri"
+
+msgid "How round the corners of the field, the category list and the button are, in pixels."
+msgstr "Alanın, kategori listesinin ve düğmenin köşelerinin ne kadar yuvarlak olduğu, piksel olarak."
+
+msgid "Search button colour"
+msgstr "Arama düğmesinin rengi"
+
+msgid "Menu bar background"
+msgstr "Menü çubuğunun arka planı"
+
+msgid "Menu bar text"
+msgstr "Menü çubuğunun metni"
+
+msgid "Empty uses the text colour for the accent colour."
+msgstr "Boş bırakılırsa vurgu rengi üzerindeki metin rengi kullanılır."
+
+msgid "Menu bar height"
+msgstr "Menü çubuğunun yüksekliği"
+
 msgid "Behind the large picture, seen around pictures with an empty background."
 msgstr "Büyük resmin arkasında; arka planı boş resimlerin çevresinde görünür."
 
@@ -1891,6 +2056,9 @@ msgstr "Görsel seç"
 msgid "Custom colour"
 msgstr "Özel renk"
 
+msgid "Default arrangement"
+msgstr "Varsayılan düzen"
+
 msgid "Not in the template"
 msgstr "Şablonda yok"
 
@@ -1912,6 +2080,10 @@ msgstr "%1$s: %3$s içinde %2$s."
 #. translators: %d: pattern id.
 msgid "Pattern #%d (not found)"
 msgstr "Desen #%d (bulunamadı)"
+
+#. translators: %d: menu id.
+msgid "Menu #%d (not found)"
+msgstr "Menü #%d (bulunamadı)"
 
 msgid "Back in stock"
 msgstr "Yeniden stokta"
@@ -1943,9 +2115,6 @@ msgstr "ör. Sınırlı"
 
 msgid "A short label on the product picture in product grids. Leave empty for none."
 msgstr "Ürün ızgaralarında ürün resminin üstünde kısa bir etiket. İstemiyorsanız boş bırakın."
-
-msgid "Account"
-msgstr "Hesap"
 
 msgid "products"
 msgstr "ürün"
@@ -2890,6 +3059,37 @@ msgstr "Bunu siz istemediyseniz bu e-postayı dikkate almayın: onaylanmayan adr
 msgid "Sample product"
 msgstr "Örnek ürün"
 
+msgctxt "header menu label"
+msgid "Top bar"
+msgstr "Üst şerit"
+
+msgid "Call us"
+msgstr "Bizi arayın"
+
+msgid "Log in or sign up"
+msgstr "Giriş yapın veya üye olun"
+
+msgctxt "header menu label"
+msgid "Primary"
+msgstr "Ana menü"
+
+msgctxt "search form label"
+msgid "Search"
+msgstr "Ara"
+
+msgid "Search products…"
+msgstr "Ürün ara…"
+
+msgctxt "search button text"
+msgid "Search"
+msgstr "Ara"
+
+msgid "All categories"
+msgstr "Tüm kategoriler"
+
+msgid "Category to search"
+msgstr "Aranacak kategori"
+
 msgid "There is no flash sale right now. Have a look again soon."
 msgstr "Şu anda flaş indirim yok. Yakında yeniden göz atın."
 
@@ -3085,9 +3285,6 @@ msgstr "Gizlilik politikası sayfasına bağlantı veren zorunlu bir onay kutusu
 
 msgid "Texts"
 msgstr "Metinler"
-
-msgid "Button text"
-msgstr "Düğme metni"
 
 msgid "Leave empty for \"Send message\" or \"Request a quote\"."
 msgstr "Boş bırakılırsa \"Mesaj gönder\" veya \"Teklif iste\" kullanılır."

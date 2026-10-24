@@ -1,0 +1,252 @@
+/*
+ * The store header (Pergel\Woo\StoreHeader): a top bar, the row with the
+ * logo, search and the visitor's links, and the menu bar. The look values
+ * arrive as --pergel-sh-* custom properties on the wrapper; unset ones fall
+ * back to the theme's colours.
+ */
+.pergel-store-header {
+	background: var(--pergel-sh-bg, var(--wp--preset--color--base, #fff));
+	color: var(--wp--preset--color--contrast, #16181d);
+}
+
+.pergel-store-header__wrap {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+	max-width: calc(var(--wp--style--global--wide-size, 1240px) + var(--wp--style--root--padding-left, 1.25rem) + var(--wp--style--root--padding-right, 1.25rem));
+	margin: 0 auto;
+	padding-inline: var(--wp--style--root--padding-left, 1.25rem) var(--wp--style--root--padding-right, 1.25rem);
+}
+
+.pergel-store-header a {
+	text-decoration: none;
+}
+
+.pergel-store-header__icon {
+	flex: none;
+}
+
+/* Top bar */
+.pergel-store-header__top {
+	border-bottom: 1px solid rgb(0 0 0 / 0.08);
+	background: var(--pergel-sh-top-bg, var(--wp--preset--color--contrast, #16181d));
+	color: var(--pergel-sh-top-text, var(--wp--preset--color--base, #fff));
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+}
+
+.pergel-store-header__top .pergel-store-header__wrap {
+	flex-wrap: wrap;
+	gap: 0.25rem 1.5rem;
+	min-height: 40px;
+}
+
+.pergel-store-header__top p {
+	margin: 0;
+}
+
+.pergel-store-header__top a,
+.pergel-store-header__top .wp-block-navigation {
+	color: inherit;
+}
+
+.pergel-store-header__top a:hover {
+	text-decoration: underline;
+}
+
+.pergel-store-header__top .pergel-store-header__menu {
+	margin-inline-start: auto;
+}
+
+.pergel-store-header__top .wp-block-navigation__container {
+	gap: 0.25rem 1.25rem;
+}
+
+.pergel-store-header__link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4em;
+}
+
+.pergel-store-header__link .pergel-store-header__icon {
+	width: 1.1em;
+	height: 1.1em;
+}
+
+/* The row */
+.pergel-store-header__main .pergel-store-header__wrap {
+	flex-wrap: wrap;
+	gap: 0.75rem 1.25rem;
+	padding-block: var(--pergel-sh-pad, 1rem);
+}
+
+.pergel-store-header__logo {
+	flex: none;
+}
+
+.pergel-store-header__logo :where(.wp-block-site-logo, .wp-block-site-title) {
+	margin: 0;
+}
+
+.is-spread .pergel-store-header__logo {
+	margin-inline-end: auto;
+}
+
+.pergel-store-header .pergel-store-header__search {
+	flex: 1 1 260px;
+	min-width: min(100%, 240px);
+	max-width: 640px;
+	margin: 0 auto;
+}
+
+.pergel-store-header__search .wp-block-search__inside-wrapper {
+	align-items: stretch;
+	min-width: 0;
+}
+
+.pergel-store-header__search .wp-block-search__input {
+	min-width: 0;
+}
+
+.pergel-store-header__search .wp-block-search__input,
+.pergel-store-header__categories {
+	box-sizing: border-box;
+	min-height: 44px;
+	border: 1px solid var(--wp--preset--color--line, #dde0e6);
+	border-radius: var(--pergel-sh-radius, 6px);
+	background: var(--wp--preset--color--base, #fff);
+	color: inherit;
+	font: inherit;
+}
+
+.pergel-store-header__categories {
+	flex: none;
+	max-width: 12rem;
+	padding: 0 0.75rem;
+	border-inline-end: 0;
+	border-start-end-radius: 0;
+	border-end-end-radius: 0;
+}
+
+.pergel-store-header__categories + .wp-block-search__input {
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+}
+
+.pergel-store-header .pergel-store-header__search .wp-block-search__button {
+	min-width: 48px;
+	border: 0;
+	border-radius: var(--pergel-sh-radius, 6px);
+	background: var(--pergel-sh-button, var(--wp--preset--color--contrast, #16181d));
+	color: var(--wp--preset--color--base, #fff);
+}
+
+.pergel-store-header__item {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: 0.6rem;
+	color: inherit;
+	line-height: 1.25;
+}
+
+.pergel-store-header__item .pergel-store-header__icon {
+	box-sizing: content-box;
+	padding: 10px;
+	border-radius: 50%;
+	background: var(--wp--preset--color--surface, #f4f5f7);
+}
+
+.pergel-store-header__label {
+	display: flex;
+	flex-direction: column;
+}
+
+.pergel-store-header__label small {
+	color: var(--wp--preset--color--muted, #5b6270);
+	font-size: 0.8125rem;
+}
+
+.pergel-store-header__label strong {
+	font-weight: 600;
+}
+
+.pergel-store-header__cart,
+.pergel-store-header__button,
+.pergel-store-header__main .pergel-store-header__menu {
+	flex: none;
+}
+
+/* Menu bar */
+.pergel-store-header__bar {
+	background: var(--pergel-sh-bar-bg, var(--wp--preset--color--accent, #1f4fd1));
+	color: var(--pergel-sh-bar-text, var(--wp--preset--color--on-accent, #fff));
+}
+
+.pergel-store-header__bar .pergel-store-header__wrap {
+	justify-content: space-between;
+	min-height: var(--pergel-sh-bar-height, 56px);
+}
+
+.pergel-store-header__bar .wp-block-navigation {
+	color: inherit;
+	font-weight: 500;
+}
+
+.pergel-store-header__bar-link {
+	flex: none;
+	color: inherit;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.pergel-store-header__bar-link:hover {
+	text-decoration: underline;
+}
+
+/* Icons only; the text stays for screen readers. */
+@media (max-width: 1199px) {
+	.pergel-store-header__item .pergel-store-header__label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+}
+
+@media (max-width: 781px) {
+	.pergel-store-header__main .pergel-store-header__wrap {
+		gap: 0.75rem 1rem;
+	}
+
+	/* The theme sizes a default logo by height up to this width. */
+	.pergel-store-header__logo {
+		--wp--custom--logo--max-width: 45vw;
+		flex: 1 1 0;
+		min-width: 0;
+	}
+
+	.pergel-store-header .pergel-store-header__search {
+		flex-basis: 100%;
+		order: 9;
+		min-width: 0;
+		max-width: none;
+	}
+
+	.pergel-store-header__item.is-contact,
+	.pergel-store-header__cart .wc-block-mini-cart__amount {
+		display: none;
+	}
+
+	.pergel-store-header__categories {
+		max-width: 8.5rem;
+	}
+}
+
+@media (max-width: 599px) {
+	.pergel-store-header__top {
+		display: none;
+	}
+}

@@ -68,8 +68,13 @@ final class Labels {
 		return array(
 			'general'  => array(
 				'title'       => __( 'General', 'pergel-engine' ),
-				'description' => __( 'How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, the header cart and speed.', 'pergel-engine' ),
-				'parts'       => array( 'woo.selling', 'woo.enquiries', 'woo.lists', 'woo.header', 'woo.speed' ),
+				'description' => __( 'How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, and speed.', 'pergel-engine' ),
+				'parts'       => array( 'woo.selling', 'woo.enquiries', 'woo.lists', 'woo.speed' ),
+			),
+			'header'   => array(
+				'title'       => __( 'Header', 'pergel-engine' ),
+				'description' => __( 'The top of every page: the cart in the theme headers, or a store header with a top bar, a product search and a menu bar.', 'pergel-engine' ),
+				'parts'       => array( 'shop.store', 'shop.topbar', 'shop.mainrow', 'shop.menubar', 'shop.skin', 'woo.header' ),
 			),
 			'listing'  => array(
 				'title'       => __( 'Shop page', 'pergel-engine' ),
@@ -209,7 +214,7 @@ final class Labels {
 					'fields' => array( 'delivery', 'delivery_cutoff', 'delivery_handling', 'delivery_min', 'delivery_max', 'delivery_days', 'delivery_holidays' ),
 				),
 				'header'    => array(
-					'title'  => __( 'Header', 'pergel-engine' ),
+					'title'  => __( 'Theme headers', 'pergel-engine' ),
 					'fields' => array( 'mini_cart' ),
 				),
 				'phones'    => array(
@@ -257,6 +262,26 @@ final class Labels {
 				'header'  => array(
 					'title'  => __( 'Above the products', 'pergel-engine' ),
 					'fields' => array( 'banner', 'category_strip' ),
+				),
+				'store'   => array(
+					'title'  => __( 'Store header', 'pergel-engine' ),
+					'fields' => array( 'header_type', 'header_on' ),
+				),
+				'topbar'  => array(
+					'title'  => __( 'Top bar', 'pergel-engine' ),
+					'fields' => array( 'header_top', 'header_top_items', 'header_text', 'header_top_menu' ),
+				),
+				'mainrow' => array(
+					'title'  => __( 'Header row', 'pergel-engine' ),
+					'fields' => array( 'header_items', 'header_categories', 'header_call', 'header_button' ),
+				),
+				'menubar' => array(
+					'title'  => __( 'Menu bar', 'pergel-engine' ),
+					'fields' => array( 'header_bar', 'header_menu', 'header_bar_text', 'header_bar_url' ),
+				),
+				'skin'    => array(
+					'title'  => __( 'Store header look', 'pergel-engine' ),
+					'fields' => array( 'header_top_bg', 'header_top_color', 'header_bg', 'header_padding', 'search_radius', 'search_button', 'header_bar_bg', 'header_bar_color', 'header_bar_height' ),
 				),
 				'cards'   => array(
 					'title'  => __( 'Product cards', 'pergel-engine' ),
@@ -1175,6 +1200,124 @@ final class Labels {
 				'paging_current'     => array(
 					'label' => __( 'Current page colour', 'pergel-engine' ),
 					'help'  => __( 'Empty uses the accent colour.', 'pergel-engine' ),
+				),
+				'header_type'        => array(
+					'label'   => __( 'Header', 'pergel-engine' ),
+					'help'    => __( 'The store header has a top bar, a row with the logo, a product search with categories, contact, account and cart, and a bar with the menu; each part is set below. The theme\'s header is the Header template part under Appearance → Editor. A sticky header stays sticky.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'theme' => __( 'The theme\'s header', 'pergel-engine' ),
+						'store' => __( 'Store header', 'pergel-engine' ),
+					),
+				),
+				'header_on'          => array(
+					'label'   => __( 'Show the store header on', 'pergel-engine' ),
+					'help'    => __( 'Shop pages are the shop, product categories, products, the cart, the checkout and the account. Other pages keep the theme\'s header.', 'pergel-engine' ),
+					'choices' => array(
+						'shop' => __( 'Shop pages', 'pergel-engine' ),
+						'site' => __( 'Every page', 'pergel-engine' ),
+					),
+				),
+				'header_top'         => array(
+					'label' => __( 'Show the top bar', 'pergel-engine' ),
+					'help'  => __( 'A thin bar above the header row. It is hidden on phones.', 'pergel-engine' ),
+				),
+				'header_top_items'   => array(
+					'label'   => __( 'What the top bar shows', 'pergel-engine' ),
+					'help'    => __( 'Tick what the bar shows and put it in order with the arrows. The e-mail address, phone number and address come from the Brand tab; the menu sits on the right.', 'pergel-engine' ),
+					'items'   => 'top',
+					'choices' => array(
+						'text'    => __( 'Announcement', 'pergel-engine' ),
+						'email'   => __( 'E-mail address', 'pergel-engine' ),
+						'phone'   => __( 'Phone number', 'pergel-engine' ),
+						'address' => __( 'Address', 'pergel-engine' ),
+						'menu'    => __( 'Menu', 'pergel-engine' ),
+					),
+				),
+				'header_text'        => array(
+					'label' => __( 'Announcement', 'pergel-engine' ),
+					'help'  => __( 'Empty shows the site tagline.', 'pergel-engine' ),
+				),
+				'header_top_menu'    => array(
+					'label' => __( 'Top bar menu', 'pergel-engine' ),
+					'help'  => __( 'A menu made under Appearance → Editor → Navigation, e.g. with links to delivery and order tracking.', 'pergel-engine' ),
+				),
+				'header_items'       => array(
+					'label'   => __( 'What the header row shows', 'pergel-engine' ),
+					'help'    => __( 'Tick what the row shows and put it in order with the arrows. Without the menu bar, the menu follows the logo. The cart shows where something sells, and not on the cart and checkout pages.', 'pergel-engine' ),
+					'items'   => 'row',
+					'choices' => array(
+						'logo'    => __( 'Logo', 'pergel-engine' ),
+						'search'  => __( 'Product search', 'pergel-engine' ),
+						'contact' => __( 'Phone number', 'pergel-engine' ),
+						'account' => __( 'Account', 'pergel-engine' ),
+						'lists'   => __( 'Wishlist and compare', 'pergel-engine' ),
+						'cart'    => __( 'Mini cart', 'pergel-engine' ),
+						'button'  => __( 'Button', 'pergel-engine' ),
+					),
+				),
+				'header_categories'  => array(
+					'label' => __( 'Category list in the search', 'pergel-engine' ),
+					'help'  => __( 'Visitors can search one top-level product category.', 'pergel-engine' ),
+				),
+				'header_call'        => array(
+					'label' => __( 'Text above the phone number', 'pergel-engine' ),
+					'help'  => __( 'Empty shows "Call us". The number comes from the Brand tab.', 'pergel-engine' ),
+				),
+				'header_button'      => array(
+					'label' => __( 'Button text', 'pergel-engine' ),
+					'help'  => __( 'Empty shows "Contact us". The button opens the contact page set under General → Product enquiries, and shows only with one.', 'pergel-engine' ),
+				),
+				'header_bar'         => array(
+					'label' => __( 'Put the menu on its own bar', 'pergel-engine' ),
+					'help'  => __( 'A coloured bar under the header row. Off puts the menu after the logo.', 'pergel-engine' ),
+				),
+				'header_menu'        => array(
+					'label' => __( 'Menu', 'pergel-engine' ),
+					'help'  => __( 'Empty shows the site\'s menu, as the theme\'s headers do.', 'pergel-engine' ),
+					'none'  => __( 'The site\'s menu', 'pergel-engine' ),
+				),
+				'header_bar_text'    => array(
+					'label' => __( 'Link on the right of the bar', 'pergel-engine' ),
+					'help'  => __( 'E.g. "Today\'s deals". It shows with a link address.', 'pergel-engine' ),
+				),
+				'header_bar_url'     => array(
+					'label' => __( 'Link address', 'pergel-engine' ),
+				),
+				'header_top_bg'      => array(
+					'label' => __( 'Top bar background', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the dark text colour.', 'pergel-engine' ),
+				),
+				'header_top_color'   => array(
+					'label' => __( 'Top bar text', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the background colour.', 'pergel-engine' ),
+				),
+				'header_bg'          => array(
+					'label' => __( 'Header row background', 'pergel-engine' ),
+				),
+				'header_padding'     => array(
+					'label' => __( 'Space above and below the header row', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
+				),
+				'search_radius'      => array(
+					'label' => __( 'Search box corners', 'pergel-engine' ),
+					'help'  => __( 'How round the corners of the field, the category list and the button are, in pixels.', 'pergel-engine' ),
+				),
+				'search_button'      => array(
+					'label' => __( 'Search button colour', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the dark text colour.', 'pergel-engine' ),
+				),
+				'header_bar_bg'      => array(
+					'label' => __( 'Menu bar background', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the accent colour.', 'pergel-engine' ),
+				),
+				'header_bar_color'   => array(
+					'label' => __( 'Menu bar text', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the text colour for the accent colour.', 'pergel-engine' ),
+				),
+				'header_bar_height'  => array(
+					'label' => __( 'Menu bar height', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
 				),
 				'picture_bg'         => array(
 					'label' => __( 'Picture background', 'pergel-engine' ),

@@ -133,6 +133,15 @@ final class Preset {
 				'paging_shape'       => 'circle',
 				'paging_size'        => 48,
 				'paging_bg'          => 'surface',
+				// The header as on the reference: a light top bar, the row
+				// with the search, then the menu on an accent bar.
+				'header_type'        => 'store',
+				'header_top_bg'      => 'base',
+				'header_top_color'   => 'contrast',
+				'header_padding'     => 15,
+				'search_radius'      => 6,
+				'search_button'      => 'contrast',
+				'header_bar_height'  => 60,
 				'picture_bg'         => 'surface',
 				'picture_radius'     => 8,
 				'thumb_radius'       => 8,

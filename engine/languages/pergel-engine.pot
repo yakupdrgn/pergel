@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T15:26:10+03:00\n"
+"POT-Creation-Date: 2026-10-24T16:08:45+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -468,7 +468,13 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-msgid "How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, the header cart and speed."
+msgid "How Pergel works with WooCommerce: selling, product enquiries, the wishlist and compare lists, and speed."
+msgstr ""
+
+msgid "Header"
+msgstr ""
+
+msgid "The top of every page: the cart in the theme headers, or a store header with a top bar, a product search and a menu bar."
 msgstr ""
 
 msgid "Shop page"
@@ -561,7 +567,7 @@ msgstr ""
 msgid "Delivery estimate"
 msgstr ""
 
-msgid "Header"
+msgid "Theme headers"
 msgstr ""
 
 msgid "Bar at the bottom of phones"
@@ -586,6 +592,21 @@ msgid "Toolbar and page numbers look"
 msgstr ""
 
 msgid "Above the products"
+msgstr ""
+
+msgid "Store header"
+msgstr ""
+
+msgid "Top bar"
+msgstr ""
+
+msgid "Header row"
+msgstr ""
+
+msgid "Menu bar"
+msgstr ""
+
+msgid "Store header look"
 msgstr ""
 
 msgid "Card look"
@@ -1740,6 +1761,150 @@ msgstr ""
 msgid "Empty uses the accent colour."
 msgstr ""
 
+msgid "The store header has a top bar, a row with the logo, a product search with categories, contact, account and cart, and a bar with the menu; each part is set below. The theme's header is the Header template part under Appearance → Editor. A sticky header stays sticky."
+msgstr ""
+
+msgid "The theme's header"
+msgstr ""
+
+msgid "Show the store header on"
+msgstr ""
+
+msgid "Shop pages are the shop, product categories, products, the cart, the checkout and the account. Other pages keep the theme's header."
+msgstr ""
+
+msgid "Shop pages"
+msgstr ""
+
+msgid "Every page"
+msgstr ""
+
+msgid "Show the top bar"
+msgstr ""
+
+msgid "A thin bar above the header row. It is hidden on phones."
+msgstr ""
+
+msgid "What the top bar shows"
+msgstr ""
+
+msgid "Tick what the bar shows and put it in order with the arrows. The e-mail address, phone number and address come from the Brand tab; the menu sits on the right."
+msgstr ""
+
+msgid "Announcement"
+msgstr ""
+
+msgid "E-mail address"
+msgstr ""
+
+msgid "Phone number"
+msgstr ""
+
+msgid "Empty shows the site tagline."
+msgstr ""
+
+msgid "Top bar menu"
+msgstr ""
+
+msgid "A menu made under Appearance → Editor → Navigation, e.g. with links to delivery and order tracking."
+msgstr ""
+
+msgid "What the header row shows"
+msgstr ""
+
+msgid "Tick what the row shows and put it in order with the arrows. Without the menu bar, the menu follows the logo. The cart shows where something sells, and not on the cart and checkout pages."
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "Product search"
+msgstr ""
+
+msgid "Account"
+msgstr ""
+
+msgid "Mini cart"
+msgstr ""
+
+msgid "Category list in the search"
+msgstr ""
+
+msgid "Visitors can search one top-level product category."
+msgstr ""
+
+msgid "Text above the phone number"
+msgstr ""
+
+msgid "Empty shows \"Call us\". The number comes from the Brand tab."
+msgstr ""
+
+msgid "Button text"
+msgstr ""
+
+msgid "Empty shows \"Contact us\". The button opens the contact page set under General → Product enquiries, and shows only with one."
+msgstr ""
+
+msgid "Put the menu on its own bar"
+msgstr ""
+
+msgid "A coloured bar under the header row. Off puts the menu after the logo."
+msgstr ""
+
+msgid "Empty shows the site's menu, as the theme's headers do."
+msgstr ""
+
+msgid "The site's menu"
+msgstr ""
+
+msgid "Link on the right of the bar"
+msgstr ""
+
+msgid "E.g. \"Today's deals\". It shows with a link address."
+msgstr ""
+
+msgid "Link address"
+msgstr ""
+
+msgid "Top bar background"
+msgstr ""
+
+msgid "Empty uses the dark text colour."
+msgstr ""
+
+msgid "Top bar text"
+msgstr ""
+
+msgid "Empty uses the background colour."
+msgstr ""
+
+msgid "Header row background"
+msgstr ""
+
+msgid "Space above and below the header row"
+msgstr ""
+
+msgid "Search box corners"
+msgstr ""
+
+msgid "How round the corners of the field, the category list and the button are, in pixels."
+msgstr ""
+
+msgid "Search button colour"
+msgstr ""
+
+msgid "Menu bar background"
+msgstr ""
+
+msgid "Menu bar text"
+msgstr ""
+
+msgid "Empty uses the text colour for the accent colour."
+msgstr ""
+
+msgid "Menu bar height"
+msgstr ""
+
 msgid "Behind the large picture, seen around pictures with an empty background."
 msgstr ""
 
@@ -1914,6 +2079,9 @@ msgstr ""
 msgid "Custom colour"
 msgstr ""
 
+msgid "Default arrangement"
+msgstr ""
+
 msgid "Not in the template"
 msgstr ""
 
@@ -1938,6 +2106,11 @@ msgstr ""
 #. translators: %d: pattern id.
 #, php-format
 msgid "Pattern #%d (not found)"
+msgstr ""
+
+#. translators: %d: menu id.
+#, php-format
+msgid "Menu #%d (not found)"
 msgstr ""
 
 msgid "Back in stock"
@@ -1970,9 +2143,6 @@ msgid "e.g. Limited"
 msgstr ""
 
 msgid "A short label on the product picture in product grids. Leave empty for none."
-msgstr ""
-
-msgid "Account"
 msgstr ""
 
 msgid "products"
@@ -2971,6 +3141,37 @@ msgstr ""
 msgid "Sample product"
 msgstr ""
 
+msgctxt "header menu label"
+msgid "Top bar"
+msgstr ""
+
+msgid "Call us"
+msgstr ""
+
+msgid "Log in or sign up"
+msgstr ""
+
+msgctxt "header menu label"
+msgid "Primary"
+msgstr ""
+
+msgctxt "search form label"
+msgid "Search"
+msgstr ""
+
+msgid "Search products…"
+msgstr ""
+
+msgctxt "search button text"
+msgid "Search"
+msgstr ""
+
+msgid "All categories"
+msgstr ""
+
+msgid "Category to search"
+msgstr ""
+
 msgid "There is no flash sale right now. Have a look again soon."
 msgstr ""
 
@@ -3166,9 +3367,6 @@ msgid "A required checkbox that links to the privacy policy page (Settings → P
 msgstr ""
 
 msgid "Texts"
-msgstr ""
-
-msgid "Button text"
 msgstr ""
 
 msgid "Leave empty for \"Send message\" or \"Request a quote\"."

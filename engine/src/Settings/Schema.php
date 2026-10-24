@@ -47,7 +47,11 @@ final class Schema {
 	 * alpha-2), enum (options), int (min, max), image (attachment id, 0 =
 	 * none), urls (list of URLs, max = item count), time ("HH:MM", 24-hour),
 	 * dates (list of "YYYY-MM-DD" days or "YYYY-MM-DD/YYYY-MM-DD" ranges,
-	 * max = item count), pattern (synced pattern id, 0 = none).
+	 * max = item count), pattern (synced pattern id, 0 = none), menu
+	 * (Navigation menu id, 0 = none), length (pixels within min and max,
+	 * empty = not set), color (palette slug or #rrggbb, empty = not set),
+	 * items (the options shown, comma separated and in order, empty = as in
+	 * the template).
 	 *
 	 * levels: where else the field can be set ("category", "product"); the
 	 * most specific value wins, see level_values() and Pergel\Woo\Layout.
@@ -648,6 +652,81 @@ final class Schema {
 				),
 				'paging_bg'          => array( 'type' => 'color' ),
 				'paging_current'     => array( 'type' => 'color' ),
+				// The store header in place of the theme's header part; empty
+				// item lists keep its default rows. See Pergel\Woo\StoreHeader.
+				'header_type'        => array(
+					'type'    => 'enum',
+					'options' => array( 'theme', 'store' ),
+					'default' => 'theme',
+				),
+				'header_on'          => array(
+					'type'    => 'enum',
+					'options' => array( 'shop', 'site' ),
+					'default' => 'shop',
+				),
+				'header_top'         => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'header_top_items'   => array(
+					'type'    => 'items',
+					'options' => array( 'text', 'email', 'phone', 'address', 'menu' ),
+				),
+				'header_text'        => array(
+					'type' => 'text',
+					'max'  => 80,
+				),
+				'header_top_menu'    => array( 'type' => 'menu' ),
+				'header_items'       => array(
+					'type'    => 'items',
+					'options' => array( 'logo', 'search', 'contact', 'account', 'lists', 'cart', 'button' ),
+				),
+				'header_categories'  => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'header_call'        => array(
+					'type' => 'text',
+					'max'  => 30,
+				),
+				'header_button'      => array(
+					'type' => 'text',
+					'max'  => 30,
+				),
+				'header_bar'         => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'header_menu'        => array( 'type' => 'menu' ),
+				'header_bar_text'    => array(
+					'type' => 'text',
+					'max'  => 30,
+				),
+				'header_bar_url'     => array(
+					'type' => 'url',
+					'max'  => 200,
+				),
+				'header_top_bg'      => array( 'type' => 'color' ),
+				'header_top_color'   => array( 'type' => 'color' ),
+				'header_bg'          => array( 'type' => 'color' ),
+				'header_padding'     => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 60,
+				),
+				'search_radius'      => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 30,
+				),
+				'search_button'      => array( 'type' => 'color' ),
+				'header_bar_bg'      => array( 'type' => 'color' ),
+				'header_bar_color'   => array( 'type' => 'color' ),
+				'header_bar_height'  => array(
+					'type' => 'length',
+					'min'  => 32,
+					'max'  => 96,
+				),
 				// How the top of the product page looks; empty or "As the
 				// template" leaves the template's look. See Pergel\Woo\ProductLook.
 				'picture_bg'         => array( 'type' => 'color' ),
@@ -936,7 +1015,7 @@ final class Schema {
 		}
 		return match ( $field['type'] ) {
 			'bool'          => false,
-			'int', 'image', 'pattern' => 0,
+			'int', 'image', 'pattern', 'menu' => 0,
 			'urls', 'dates' => array(),
 			default         => '',
 		};
@@ -1045,6 +1124,7 @@ final class Schema {
 			case 'int':
 			case 'image':
 			case 'pattern':
+			case 'menu':
 				$int = is_int( $raw ) ? $raw : filter_var( $raw, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE );
 				if ( null === $int ) {
 					return 'invalid_type';
@@ -1341,7 +1421,7 @@ final class Schema {
 				),
 				static fn ( $v ): bool => null !== $v
 			),
-			'image', 'pattern' => array(
+			'image', 'pattern', 'menu' => array(
 				'type'    => 'integer',
 				'minimum' => 0,
 			),
