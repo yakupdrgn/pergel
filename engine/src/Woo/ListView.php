@@ -9,6 +9,8 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
+use Pergel\Settings\Settings;
+
 /**
  * Draws the three list blocks: the buttons on a product, the list page and
  * the header links. Prices come from the product's price HTML, which the
@@ -39,11 +41,16 @@ final class ListView {
 			return self::placeholder( __( 'Shown on products: buttons that add the product to the wishlist or to compare.', 'pergel-engine' ) );
 		}
 		Lists::enqueue();
-		$labels = true === ( $attributes['labels'] ?? false );
+		// On product cards (a query loop's product) they may be text links under the button.
+		$links  = null !== $block && isset( $block->context['queryId'] ) && 'links' === Settings::get( 'shop.card_actions' );
+		$labels = $links || true === ( $attributes['labels'] ?? false );
 		$name   = $product->get_name();
 		$html   = '';
 		foreach ( $kinds as $kind ) {
-			$text  = 'compare' === $kind ? __( 'Compare', 'pergel-engine' ) : __( 'Wishlist', 'pergel-engine' );
+			$text = 'compare' === $kind ? __( 'Compare', 'pergel-engine' ) : __( 'Wishlist', 'pergel-engine' );
+			if ( $links ) {
+				$text = 'compare' === $kind ? __( 'Add to compare', 'pergel-engine' ) : __( 'Add to wishlist', 'pergel-engine' );
+			}
 			$label = $labels
 				? '<span>' . esc_html( $text ) . '</span>'
 				/* translators: 1: Wishlist or Compare, 2: product name. */
@@ -51,7 +58,7 @@ final class ListView {
 			$html .= '<button type="button" class="wp-block-pergel-product-actions__button is-' . esc_attr( $kind ) . '" data-pergel-list="' . esc_attr( $kind ) . '" data-pergel-product="' . esc_attr( (string) $product->get_id() ) . '" aria-pressed="false" hidden>'
 				. self::icon( $kind ) . $label . '</button>';
 		}
-		return '<div ' . get_block_wrapper_attributes( array( 'class' => $labels ? 'is-labelled' : '' ) ) . '>' . $html . '</div>';
+		return '<div ' . get_block_wrapper_attributes( array( 'class' => trim( ( $labels ? 'is-labelled' : '' ) . ( $links ? ' is-links' : '' ) ) ) ) . '>' . $html . '</div>';
 	}
 
 	/**

@@ -278,6 +278,33 @@ final class ListsTest extends TestCase {
 		$this->assertSame( '', ListView::actions( array(), $block ) );
 	}
 
+	public function test_card_buttons_as_text_links(): void {
+		$this->needs_woocommerce();
+		$this->lists( array( 'compare' => true ) );
+		Settings::update( array( 'shop' => array( 'card_actions' => 'links' ) ) );
+		$product = $this->simple();
+		$parsed  = array(
+			'blockName' => Lists::ACTIONS,
+			'attrs'     => array(),
+		);
+		$card    = new \WP_Block(
+			$parsed,
+			array(
+				'postId'  => $product->get_id(),
+				'queryId' => 0,
+			)
+		);
+
+		$html = ListView::actions( array(), $card );
+		$this->assertStringContainsString( 'is-labelled is-links', $html );
+		$this->assertStringContainsString( '<span>' . __( 'Add to compare', 'pergel-engine' ) . '</span>', $html );
+
+		// Outside a product list, e.g. the product page, they stay as they are.
+		$html = ListView::actions( array(), new \WP_Block( $parsed, array( 'postId' => $product->get_id() ) ) );
+		$this->assertStringNotContainsString( 'is-links', $html );
+		$this->assertStringContainsString( 'pergel-sr', $html );
+	}
+
 	public function test_list_shows_visible_products_in_order_without_hidden_prices(): void {
 		$this->needs_woocommerce();
 		$this->lists( array( 'compare' => true ) );

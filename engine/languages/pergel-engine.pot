@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-24T21:58:54+03:00\n"
+"POT-Creation-Date: 2026-10-24T22:09:09+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1785,6 +1785,18 @@ msgstr ""
 msgid "For products with options: the colours or pictures of the first attribute with the \"Color / image\" type, under the name. Choosing one shows that option's picture on the card."
 msgstr ""
 
+msgid "Wishlist and compare on cards"
+msgstr ""
+
+msgid "When the wishlist or compare is on. \"Text links\" puts \"Add to compare\" and \"Add to wishlist\" under the card's button."
+msgstr ""
+
+msgid "Round icon buttons"
+msgstr ""
+
+msgid "Text links"
+msgstr ""
+
 msgid "What a card shows"
 msgstr ""
 
@@ -2885,6 +2897,12 @@ msgid "Your wishlist is empty. Press the heart on a product to save it here."
 msgstr ""
 
 msgid "Shown on products: buttons that add the product to the wishlist or to compare."
+msgstr ""
+
+msgid "Add to compare"
+msgstr ""
+
+msgid "Add to wishlist"
 msgstr ""
 
 #. translators: 1: Wishlist or Compare, 2: product name.
