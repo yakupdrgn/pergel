@@ -112,6 +112,8 @@ final class Screen {
 			. '.pergel-settings__page h3{margin:2em 0 0;padding-top:1.25em;border-top:1px solid #dcdcde;font-size:1.15em}'
 			. '.pergel-settings__page form>h3:first-of-type{margin-top:1em;padding-top:0;border-top:0}'
 			. '@media (max-width:782px){.pergel-settings__area{grid-template-columns:minmax(0,1fr)}.pergel-settings__menu ul{position:static;display:flex;flex-wrap:wrap;gap:4px}}'
+			// Lengths: wide enough for the "Default" placeholder.
+			. '.pergel-settings input[type=number].pergel-length{width:8em}'
 			// Colour fields: a swatch (chequered while not set), the list and the picker.
 			. '.pergel-color{display:inline-flex;align-items:center;gap:8px}'
 			. '.pergel-color__swatch{width:28px;height:28px;flex:none;box-sizing:border-box;border:1px solid #8c8f94;border-radius:50%;background:repeating-conic-gradient(#dcdcde 0 25%,#fff 0 50%) 50%/10px 10px}'
@@ -556,7 +558,7 @@ final class Screen {
 			case 'length':
 				// Empty: the style's own size.
 				printf(
-					'<input type="number" %1$s class="small-text" value="%2$s" min="%3$d" max="%4$d" placeholder="%5$s"> <span aria-hidden="true">px</span>',
+					'<input type="number" %1$s class="pergel-length" value="%2$s" min="%3$d" max="%4$d" placeholder="%5$s"> <span aria-hidden="true">px</span>',
 					$attrs, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
 					'' === $value ? '' : (int) $value,
 					(int) ( $field['min'] ?? 0 ),
