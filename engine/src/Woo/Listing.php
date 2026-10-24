@@ -328,17 +328,10 @@ final class Listing {
 	}
 
 	/**
-	 * Pages with a visitor's products per page stay out of search results;
-	 * they repeat the normal pages.
-	 *
-	 * @param array<string, bool|string> $robots Robots directives.
-	 * @return array<string, bool|string>
+	 * Whether this is a page with a visitor's products per page: it stays
+	 * out of search results, since it repeats the normal pages.
 	 */
-	public static function robots( array $robots ): array {
-		if ( self::asked() > 0 && Layout::listing() ) {
-			$robots['noindex'] = true;
-			$robots['follow']  = true;
-		}
-		return $robots;
+	public static function noindex(): bool {
+		return self::asked() > 0 && Layout::listing();
 	}
 }

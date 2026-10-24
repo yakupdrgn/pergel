@@ -156,6 +156,17 @@ katman çalışır.
   Ürünlerde teknik özellikler `Woo\Properties` ile Product düğümünün boş `additionalProperty`'sine
   yazılır: WooCommerce'in kendi Product verisi (`woocommerce_structured_data_product`, 30) ve
   Rank Math / Yoast / AIOSEO grafikleri (110).
+- `Seo\Robots` — Pergel'in kendi `noindex` kararları (biten ya da ürünsüz flaş indirim sayfası,
+  ziyaretçinin `per_page` seçtiği mağaza listesi) `pergel/seo/noindex` filtresinde toplanır
+  (yalnızca `true` sayılır) ve sayfayı basanın robots etiketine "noindex, follow" olarak girer:
+  eklenti yoksa ve Yoast SEO'da `wp_robots` (Yoast onu kendi değerleriyle birleştirir); Rank Math
+  `rank_math/frontend/robots` (`index` => `noindex`), AIOSEO `aioseo_robots_meta` (ikisi de
+  çekirdeğin robots filtrelerini siler), SEOPress `seopress_titles_noindex_bypass` (`'1'`, kendi
+  etiketini basar ve çekirdeğinkini boşaltır), TSF `the_seo_framework_robots_meta_array`
+  (yalnızca sorgu argümanı olmadan, yani gösterilen sayfa için). Filtreyi `Seo\Module` kurar ve
+  soruyu kendisi sorar (`Module::noindex()`); `Robots` yalnızca dışarıda tutulan sayfada yüklenir
+  (`pergel_files` bütçesi). SEO panelindeki "arama motorlarından gizle" yedek katmanın işidir ve
+  `Head` üzerinden kalır.
 - `Seo\Meta` — `_pergel_seo_title`, `_pergel_seo_description`, `_pergel_seo_noindex`
   (REST'te, `edit_post` yetkisiyle) ve editörde build'siz "SEO" paneli
   (`engine/assets/seo-panel.js`).
@@ -171,7 +182,8 @@ en fazla bir açıklama / robots / Open Graph ve Twitter etiketi, dizine girecek
 canonical, sayfa başına en fazla bir `Organization` ve bir `WebSite`, eklenti varken Pergel
 JSON-LD'si yok (`class="pergel-schema"`), her `Organization` düğümünde marka telefonu ve sosyal
 profili, SSS sayfasında iki sorulu tek `FAQPage`, diğer sayfalarda hiç `FAQPage`, tek XML site
-haritası (robots.txt'teki de aynısı). CI'da `seo-matrix` işi eklentilerin
+haritası (robots.txt'teki de aynısı), Pergel'in dışarıda tuttuğu sayfada (`?pergel-noindex=1`,
+`tools/seo/noindex.php` çalıştırma süresince mu-plugins'te) `noindex` içeren tek robots etiketi. CI'da `seo-matrix` işi eklentilerin
 wordpress.org'daki son sürümlerini kurar (`INSTALL=1`). Yerelde:
 
 ```bash

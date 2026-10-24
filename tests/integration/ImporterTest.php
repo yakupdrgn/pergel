@@ -358,19 +358,26 @@ final class ImporterTest extends TestCase {
 	}
 
 	public function test_an_attachment_at_the_address_of_a_page_stops_the_import(): void {
-		$id = wp_insert_attachment(
+		$id         = wp_insert_attachment(
 			array(
 				'post_title'     => 'Ek',
 				'post_name'      => 'pergel-test-hakkimizda',
 				'post_mime_type' => 'image/png',
 			)
 		);
-		$about_page = "  - slug: pergel-test-hakkimizda
+		$about_page = '  - slug: pergel-test-hakkimizda
     title: Hakkımızda
     content: content/about.md
-";
-		$this->write( 'sitemap.yaml', str_replace( $about_page, $about_page . "    adopt: true
-", self::SITEMAP ) );
+';
+		$this->write(
+			'sitemap.yaml',
+			str_replace(
+				$about_page,
+				$about_page . '    adopt: true
+',
+				self::SITEMAP
+			)
+		);
 		try {
 			$problems = $this->importer()->preflight();
 		} finally {

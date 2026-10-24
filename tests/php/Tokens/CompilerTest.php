@@ -25,7 +25,12 @@ final class CompilerTest extends TestCase {
 	 * @return array<string, mixed>
 	 */
 	private static function minimal(): array {
-		$dim = static fn ( float $v, string $u = 'rem' ): array => array( '$value' => array( 'value' => $v, 'unit' => $u ) );
+		$dim = static fn ( float $v, string $u = 'rem' ): array => array(
+			'$value' => array(
+				'value' => $v,
+				'unit'  => $u,
+			),
+		);
 		return array(
 			'color'       => array(
 				'$type'     => 'color',
@@ -95,9 +100,9 @@ final class CompilerTest extends TestCase {
 	}
 
 	public function test_fluid_spacing_reaches_min_and_max_at_viewport_edges(): void {
-		$tree                                = self::minimal();
+		$tree                                 = self::minimal();
 		$tree['spacing']['50']['$extensions'] = array( Compiler::EXT => array( 'fluid' => array( 'min' => '1.25rem' ) ) );
-		$size                                = Compiler::compile( $tree, 't.json' )['spacing']['spacingSizes'][3]['size'];
+		$size                                 = Compiler::compile( $tree, 't.json' )['spacing']['spacingSizes'][3]['size'];
 
 		$this->assertSame( 'clamp(1.25rem, 1.1477rem + 0.4545vw, 1.5rem)', $size );
 		// 1.1477rem + 0.4545vw at 360px = 18.36 + 1.64 = 20px (1.25rem); at 1240px = 18.36 + 5.64 = 24px (1.5rem).
@@ -106,8 +111,17 @@ final class CompilerTest extends TestCase {
 	}
 
 	public function test_fluid_font_size_maps_to_theme_json_fluid(): void {
-		$tree                                    = self::minimal();
-		$tree['font-size']['large']['$extensions'] = array( Compiler::EXT => array( 'fluid' => array( 'min' => array( 'value' => 1.125, 'unit' => 'rem' ) ) ) );
+		$tree                                      = self::minimal();
+		$tree['font-size']['large']['$extensions'] = array(
+			Compiler::EXT => array(
+				'fluid' => array(
+					'min' => array(
+						'value' => 1.125,
+						'unit'  => 'rem',
+					),
+				),
+			),
+		);
 
 		$this->assertSame(
 			array(
@@ -136,7 +150,7 @@ final class CompilerTest extends TestCase {
 	}
 
 	public function test_low_contrast_fails_with_ratio(): void {
-		$tree                           = self::minimal();
+		$tree                             = self::minimal();
 		$tree['color']['muted']['$value'] = '#a5a5a5';
 
 		$problems = self::problems( $tree );
@@ -171,8 +185,8 @@ final class CompilerTest extends TestCase {
 	}
 
 	public function test_alias_cycle_is_reported(): void {
-		$tree                     = self::minimal();
-		$tree['radius']           = array(
+		$tree           = self::minimal();
+		$tree['radius'] = array(
 			'$type' => 'dimension',
 			'a'     => array( '$value' => '{radius.b}' ),
 			'b'     => array( '$value' => '{radius.a}' ),
@@ -181,7 +195,15 @@ final class CompilerTest extends TestCase {
 	}
 
 	public function test_dtcg_color_object_and_alpha(): void {
-		$this->assertSame( '#1e64e6', Css::color( array( 'colorSpace' => 'srgb', 'components' => array( 30 / 255, 100 / 255, 230 / 255 ) ) ) );
+		$this->assertSame(
+			'#1e64e6',
+			Css::color(
+				array(
+					'colorSpace' => 'srgb',
+					'components' => array( 30 / 255, 100 / 255, 230 / 255 ),
+				)
+			)
+		);
 		$this->assertSame( '#16181d14', Css::color( '#16181d14' ) );
 		$this->assertEqualsWithDelta( 5.22, Css::contrast( '#ffffff', '#1e64e6' ), 0.01 );
 	}
@@ -291,8 +313,14 @@ final class CompilerTest extends TestCase {
 			$this->assertStringContainsString( 'tokens/caps.json: font-family.body: file:./assets/fonts/missing.woff2 does not exist', $e->problems[0] );
 		}
 
-		$this->assertStringContainsString( 'local woff2 file', implode( "
-", self::problems( Compiler::merge( self::minimal(), $face( '../../a.woff2' ) ) ) ) );
+		$this->assertStringContainsString(
+			'local woff2 file',
+			implode(
+				'
+',
+				self::problems( Compiler::merge( self::minimal(), $face( '../../a.woff2' ) ) )
+			)
+		);
 
 		unlink( "$dir/assets/fonts/a.woff2" );
 		unlink( "$dir/tokens/default.json" );

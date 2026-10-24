@@ -271,7 +271,10 @@ final class BoughtTogetherTest extends TestCase {
 		$product->set_attributes( array( $attribute ) );
 		$product = $this->keep( $product, $cross_sells, '' );
 
-		foreach ( array( 'S' => '15', 'M' => '25' ) as $size => $price ) {
+		foreach ( array(
+			'S' => '15',
+			'M' => '25',
+		) as $size => $price ) {
 			$variation = new \WC_Product_Variation();
 			$variation->set_parent_id( $product->get_id() );
 			$variation->set_attributes( array( 'size' => $size ) );

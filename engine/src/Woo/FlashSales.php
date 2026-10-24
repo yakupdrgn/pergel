@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
+use Pergel\Seo\Module as Seo;
 use Pergel\Settings\Settings;
 
 use const Pergel\FILE;
@@ -105,7 +106,7 @@ final class FlashSales {
 		add_filter( 'render_block_data', array( self::class, 'collection' ) );
 		add_filter( 'render_block_context', array( self::class, 'context' ) );
 		add_filter( 'pre_render_block', array( self::class, 'sections' ), 10, 2 );
-		add_filter( 'wp_robots', array( self::class, 'robots' ) );
+		add_filter( Seo::NOINDEX, array( self::class, 'noindex' ) );
 		if ( true === Settings::get( 'woo.sales_product' ) ) {
 			add_filter( 'render_block_woocommerce/product-price', array( self::class, 'price' ), 30, 3 );
 		}
@@ -516,16 +517,11 @@ final class FlashSales {
 	 * Keeps ended campaigns, and those without products, out of search
 	 * results.
 	 *
-	 * @param array<string, bool|string> $robots Robots directives.
-	 * @return array<string, bool|string>
+	 * @param mixed $noindex Whether the page is kept out so far.
 	 */
-	public static function robots( array $robots ): array {
+	public static function noindex( mixed $noindex ): bool {
 		$id = (int) get_queried_object_id();
-		if ( is_singular( self::TYPE ) && ( 'ended' === self::state( $id ) || self::bare( $id ) ) ) {
-			$robots['noindex'] = true;
-			$robots['follow']  = true;
-		}
-		return $robots;
+		return true === $noindex || ( is_singular( self::TYPE ) && ( 'ended' === self::state( $id ) || self::bare( $id ) ) );
 	}
 
 	/**

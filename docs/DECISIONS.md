@@ -1636,6 +1636,15 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   fiyatı görene çıkar. Hiç ürünü kalmayan kampanya listelerden de çıkar (kullanıcı); sayfası
   açık kalır, çünkü paylaşılmış bağlantı 404 vermesin.
 
+- **Pergel'in noindex'i SEO eklentisinin etiketine (23 Ekim 2026):** prova'da (Rank Math) biten
+  ve ürünsüz kampanya sayfaları `index` görünüyordu: Pergel kararlarını yalnızca `wp_robots`'a
+  yazıyordu, Rank Math ve AIOSEO o filtreleri tümüyle siliyor, TSF ve SEOPress kendi etiketini
+  basıyor (TSF'de iki çelişen etiket çıkıyordu). Beş eklentinin kaynağı okunup her birinin kendi
+  robots filtresi seçildi; Yoast `wp_robots`'u birleştirdiği için çekirdek yolu yeterli. Kararlar
+  tek filtrede (`pergel/seo/noindex`), SEO matrisi beş eklentiyle gerçek etiketi okur. Her sayfa
+  bu soruyu sorduğu için kancalar zaten yüklü olan `Seo\Module`'de; `Robots` sınıfı yalnızca
+  noindex sayfasında yüklenir, dosya bütçesi (`pergel_files`) artmaz.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

@@ -169,7 +169,7 @@ final class SizeGuideTest extends TestCase {
 		);
 		$this->assertSame( $category_guide, SizeGuide::guide( $own )?->ID );
 
-		$page = (int) wp_insert_post(
+		$page             = (int) wp_insert_post(
 			array(
 				'post_type'   => 'page',
 				'post_status' => 'publish',

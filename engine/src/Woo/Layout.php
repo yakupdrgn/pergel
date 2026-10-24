@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Pergel\Woo;
 
+use Pergel\Seo\Module as Seo;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 
@@ -145,7 +146,7 @@ final class Layout {
 		add_filter( 'render_block_woocommerce/catalog-sorting', array( Listing::class, 'toolbar' ) );
 		add_filter( 'render_block_core/term-description', array( self::class, 'above' ) );
 		add_filter( 'render_block_core/columns', array( self::class, 'before_layout' ), 20, 2 );
-		add_filter( 'wp_robots', array( self::class, 'robots' ) );
+		add_filter( Seo::NOINDEX, array( self::class, 'noindex' ) );
 		add_action( 'wp', array( self::class, 'cards' ) );
 		add_action( 'wp', array( self::class, 'product_page' ) );
 		add_action( 'rest_api_init', array( self::class, 'quick_view' ) );
@@ -247,14 +248,13 @@ final class Layout {
 	}
 
 	/**
-	 * Robots directives for pages with a visitor's products per page.
+	 * Keeps pages with a visitor's products per page out of search results.
 	 *
-	 * @param array<string, bool|string> $robots Robots directives.
-	 * @return array<string, bool|string>
+	 * @param mixed $noindex Whether the page is kept out so far.
 	 */
-	public static function robots( array $robots ): array {
+	public static function noindex( mixed $noindex ): bool {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks that the argument is there.
-		return isset( $_GET['per_page'] ) && self::listing() ? Listing::robots( $robots ) : $robots;
+		return true === $noindex || ( isset( $_GET['per_page'] ) && self::listing() && Listing::noindex() );
 	}
 
 	/**

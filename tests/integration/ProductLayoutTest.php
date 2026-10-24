@@ -98,16 +98,16 @@ final class ProductLayoutTest extends TestCase {
 			wp_delete_post( $id, true );
 		}
 		$hooks = array(
-			'render_block_data'                                   => 'gallery_data',
-			'render_block_context'                                => 'zoom',
-			'render_block_woocommerce/product-gallery'            => 'gallery',
+			'render_block_data'                        => 'gallery_data',
+			'render_block_context'                     => 'zoom',
+			'render_block_woocommerce/product-gallery' => 'gallery',
 			'render_block_woocommerce/product-gallery-large-image' => 'large_image',
-			'render_block_core/columns'                           => 'columns',
-			'render_block_core/post-title'                        => 'title',
-			'render_block_woocommerce/product-price'              => 'price',
-			'render_block_pergel/breadcrumb'                      => 'nav',
-			'render_block_woocommerce/add-to-cart-with-options'   => 'buying',
-			'render_block_pergel/product-cta'                     => 'share',
+			'render_block_core/columns'                => 'columns',
+			'render_block_core/post-title'             => 'title',
+			'render_block_woocommerce/product-price'   => 'price',
+			'render_block_pergel/breadcrumb'           => 'nav',
+			'render_block_woocommerce/add-to-cart-with-options' => 'buying',
+			'render_block_pergel/product-cta'          => 'share',
 		);
 		foreach ( $hooks as $hook => $method ) {
 			remove_filter( $hook, array( ProductPage::class, $method ), 10 );

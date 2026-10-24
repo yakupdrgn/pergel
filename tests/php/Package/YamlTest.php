@@ -202,18 +202,18 @@ final class YamlTest extends TestCase {
 	 */
 	public static function refused(): array {
 		return array(
-			'tab indent'          => array( "a:\n\tb: 1", 'line 2: tabs' ),
-			'anchor'              => array( "a: &x 1\nb: *x", 'line 1: "&x 1"' ),
-			'tag'                 => array( 'a: !!str 1', 'line 1: "!!str 1"' ),
-			'two documents'       => array( "a: 1\n---\nb: 2", 'line 2: only one document' ),
-			'repeated key'        => array( "a: 1\na: 2", 'line 2: the key "a" is repeated' ),
-			'continued value'     => array( "a: one\n  two", 'line 2: a value cannot go on' ),
-			'bad indent'          => array( "a:\n    b: 1\n  c: 2", 'line 3: unexpected indentation' ),
-			'unclosed quote'      => array( 'a: "x', 'line 1: a quoted value is not closed' ),
-			'unclosed flow'       => array( 'a: [1, 2', 'line 1: a { } or [ ] list is not closed' ),
-			'text after quote'    => array( 'a: "x" y', 'line 1: unexpected "y"' ),
-			'item in mapping'     => array( "a: 1\n- b", 'line 2: a list item where a key' ),
-			'bad escape'          => array( 'a: "\\q"', 'line 1: unknown escape' ),
+			'tab indent'           => array( "a:\n\tb: 1", 'line 2: tabs' ),
+			'anchor'               => array( "a: &x 1\nb: *x", 'line 1: "&x 1"' ),
+			'tag'                  => array( 'a: !!str 1', 'line 1: "!!str 1"' ),
+			'two documents'        => array( "a: 1\n---\nb: 2", 'line 2: only one document' ),
+			'repeated key'         => array( "a: 1\na: 2", 'line 2: the key "a" is repeated' ),
+			'continued value'      => array( "a: one\n  two", 'line 2: a value cannot go on' ),
+			'bad indent'           => array( "a:\n    b: 1\n  c: 2", 'line 3: unexpected indentation' ),
+			'unclosed quote'       => array( 'a: "x', 'line 1: a quoted value is not closed' ),
+			'unclosed flow'        => array( 'a: [1, 2', 'line 1: a { } or [ ] list is not closed' ),
+			'text after quote'     => array( 'a: "x" y', 'line 1: unexpected "y"' ),
+			'item in mapping'      => array( "a: 1\n- b", 'line 2: a list item where a key' ),
+			'bad escape'           => array( 'a: "\\q"', 'line 1: unknown escape' ),
 			'flow map without ":"' => array( 'a: { b }', 'line 1: "b" in { } needs' ),
 		);
 	}
@@ -241,7 +241,12 @@ final class YamlTest extends TestCase {
 			'plain text'      => array( array( 'Topraktan sofraya', 'media/tarla.jpg', '/urunler/?a=1&b=2', 'http://a.test/x', 'a:b', 'Ç ş ğ ü ö ı İ', 'a - b' ) ),
 			'escapes'         => array( array( "tab\there", "a\x08b\fc", "nul\0", "cr\r\nlf", "\u{1F600}", 'back\\slash' ) ),
 			'blocks'          => array( array( "one\ntwo", "one\ntwo\n", "a\n\n  b\n#c", "x\n\n", "\nx", " x\ny", "x\n  \ny", "x\ny " ) ),
-			'empty'           => array( array( 'a' => array(), 'b' => array( array() ) ) ),
+			'empty'           => array(
+				array(
+					'a' => array(),
+					'b' => array( array() ),
+				),
+			),
 			'nested'          => array(
 				array(
 					'format'   => 1,

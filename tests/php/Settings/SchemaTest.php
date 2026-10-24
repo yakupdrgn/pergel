@@ -117,9 +117,9 @@ final class SchemaTest extends TestCase {
 	 * @return array<string, array{0: array{type: string, max?: int, min?: int, options?: list<string>}, 1: mixed, 2: mixed}>
 	 */
 	public static function field_cases(): array {
-		$text = array( 'type' => 'text' );
-		$url  = array( 'type' => 'url' );
-		$urls = array(
+		$text  = array( 'type' => 'text' );
+		$url   = array( 'type' => 'url' );
+		$urls  = array(
 			'type' => 'urls',
 			'max'  => 2,
 		);
