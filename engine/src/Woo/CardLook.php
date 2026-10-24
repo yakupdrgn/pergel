@@ -122,6 +122,10 @@ final class CardLook {
 		if ( '' !== $weight ) {
 			$title[] = "font-weight:$weight";
 		}
+		$lines = Settings::get( 'shop.card_title_lines' );
+		if ( in_array( $lines, array( '1', '2', '3' ), true ) ) {
+			$title[] = "display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:$lines;line-clamp:$lines;overflow:hidden";
+		}
 		if ( $title ) {
 			$rules[] = "$card .wp-block-post-title{" . implode( ';', $title ) . '}';
 		}

@@ -429,6 +429,9 @@ final class CardsTest extends TestCase {
 
 		Settings::update( array( 'shop' => array( 'card_border' => 0 ) ) );
 		$this->assertStringContainsString( '.pergel-cards.pergel-cards .wc-block-product{box-sizing:border-box;border:0;border-radius:12px}', CardLook::css() );
+
+		Settings::update( array( 'shop' => array( 'card_title_lines' => '2' ) ) );
+		$this->assertStringContainsString( '.wp-block-post-title{font-weight:500;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}', CardLook::css() );
 	}
 
 	public function test_card_items_are_ordered_hidden_and_added(): void {

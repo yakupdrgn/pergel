@@ -47,7 +47,7 @@ final class Cards {
 	/**
 	 * The card look settings (CardLook), in the shop group.
 	 */
-	public const LOOK = array( 'card_gap', 'card_bg', 'card_border', 'card_border_color', 'card_radius', 'card_padding', 'card_hover_look', 'card_image_bg', 'card_image_radius', 'card_align', 'card_title_size', 'card_title_weight', 'card_meta_color', 'card_button', 'card_button_color', 'card_button_shape', 'card_button_width', 'card_button_height' );
+	public const LOOK = array( 'card_gap', 'card_bg', 'card_border', 'card_border_color', 'card_radius', 'card_padding', 'card_hover_look', 'card_image_bg', 'card_image_radius', 'card_align', 'card_title_size', 'card_title_weight', 'card_title_lines', 'card_meta_color', 'card_button', 'card_button_color', 'card_button_shape', 'card_button_width', 'card_button_height' );
 
 	/**
 	 * Request cache of look().

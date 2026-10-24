@@ -581,6 +581,11 @@ final class Schema {
 					'options' => array( 'template', '400', '500', '600', '700' ),
 					'default' => 'template',
 				),
+				'card_title_lines'   => array(
+					'type'    => 'enum',
+					'options' => array( 'template', '1', '2', '3' ),
+					'default' => 'template',
+				),
 				'card_meta_color'    => array( 'type' => 'color' ),
 				'card_button'        => array(
 					'type'    => 'enum',
@@ -691,6 +696,32 @@ final class Schema {
 					'type' => 'length',
 					'min'  => 0,
 					'max'  => 24,
+				),
+				'control_height'     => array(
+					'type' => 'length',
+					'min'  => 28,
+					'max'  => 56,
+				),
+				'control_edge'       => array(
+					'type' => 'length',
+					'min'  => 0,
+					'max'  => 4,
+				),
+				'control_edge_color' => array( 'type' => 'color' ),
+				'filter_title_look'  => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'tab' ),
+					'default' => 'template',
+				),
+				'strip_count'        => array(
+					'type'    => 'enum',
+					'options' => array( 'template', '4', '5', '6', '7', '8', '9', '10' ),
+					'default' => 'template',
+				),
+				'strip_picture'      => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'square' ),
+					'default' => 'template',
 				),
 				'paging_shape'       => array(
 					'type'    => 'enum',
