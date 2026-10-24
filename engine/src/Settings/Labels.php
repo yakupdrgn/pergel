@@ -94,7 +94,7 @@ final class Labels {
 			'product'  => array(
 				'title'       => __( 'Product page', 'pergel-engine' ),
 				'description' => __( 'The top of the product page: the pictures, the details beside them and buying. A product category and a product can choose some of these for themselves.', 'pergel-engine' ),
-				'parts'       => array( 'shop.product', 'shop.summary', 'shop.buying', 'shop.styling', 'woo.product' ),
+				'parts'       => array( 'shop.product', 'shop.summary', 'shop.boxes', 'shop.buying', 'shop.styling', 'woo.product' ),
 			),
 			'details'  => array(
 				'title'       => __( 'Under the product', 'pergel-engine' ),
@@ -302,6 +302,10 @@ final class Labels {
 				'summary' => array(
 					'title'  => __( 'Beside the pictures', 'pergel-engine' ),
 					'fields' => array( 'summary_items', 'product_banner', 'product_category', 'product_brand', 'product_discount', 'product_stock' ),
+				),
+				'boxes'   => array(
+					'title'  => __( 'Boxes in the summary', 'pergel-engine' ),
+					'fields' => array( 'also_count', 'also_title', 'facts_rows', 'trust_image', 'trust_text', 'box_bg', 'box_edge', 'box_radius', 'box_padding' ),
 				),
 				'buying'  => array(
 					'title'  => __( 'Buying', 'pergel-engine' ),
@@ -900,7 +904,58 @@ final class Labels {
 						'buying'   => __( 'Buying form', 'pergel-engine' ),
 						'cta'      => __( 'Enquiry buttons', 'pergel-engine' ),
 						'meta'     => __( 'Details list (SKU, categories, tags)', 'pergel-engine' ),
+						'also'     => __( 'Box: you may also like', 'pergel-engine' ),
+						'facts'    => __( 'Box: product facts', 'pergel-engine' ),
+						'trust'    => __( 'Box: safe payment', 'pergel-engine' ),
 					),
+				),
+				'also_count'         => array(
+					'label' => __( '"You may also like": how many', 'pergel-engine' ),
+					'help'  => __( 'The upsells first, then products of the same category with the nearest price. Tick the box in "What the summary shows".', 'pergel-engine' ),
+				),
+				'also_title'         => array(
+					'label'       => __( '"You may also like": title', 'pergel-engine' ),
+					'placeholder' => __( 'You may also like', 'pergel-engine' ),
+				),
+				'facts_rows'         => array(
+					'label'   => __( 'Product facts', 'pergel-engine' ),
+					'help'    => __( 'The rows of the facts box, in order. A row the product has no value for is left out.', 'pergel-engine' ),
+					'items'   => 'facts',
+					'choices' => array(
+						'category' => __( 'Categories', 'pergel-engine' ),
+						'tag'      => __( 'Tags', 'pergel-engine' ),
+						'brand'    => __( 'Brands', 'pergel-engine' ),
+						'sku'      => __( 'SKU', 'pergel-engine' ),
+						'stock'    => __( 'Availability', 'pergel-engine' ),
+						'type'     => __( 'Product type', 'pergel-engine' ),
+						'weight'   => __( 'Weight', 'pergel-engine' ),
+						'size'     => __( 'Dimensions', 'pergel-engine' ),
+					),
+				),
+				'trust_image'        => array(
+					'label' => __( 'Safe payment: picture', 'pergel-engine' ),
+					'help'  => __( 'E.g. the logos of the cards you take, as one picture. Its alternative text is read out.', 'pergel-engine' ),
+				),
+				'trust_text'         => array(
+					'label'       => __( 'Safe payment: text', 'pergel-engine' ),
+					'help'        => __( 'Under the picture. A shop that only takes quote requests can say something else here, e.g. the warranty.', 'pergel-engine' ),
+					'placeholder' => __( 'Guaranteed safe and secure checkout', 'pergel-engine' ),
+				),
+				'box_bg'             => array(
+					'label' => __( 'Box background', 'pergel-engine' ),
+					'help'  => __( 'Empty uses the surface colour.', 'pergel-engine' ),
+				),
+				'box_edge'           => array(
+					'label' => __( 'Box edge', 'pergel-engine' ),
+					'help'  => __( 'Empty draws no edge.', 'pergel-engine' ),
+				),
+				'box_radius'         => array(
+					'label' => __( 'Box corners', 'pergel-engine' ),
+					'help'  => __( 'In pixels; empty is 12.', 'pergel-engine' ),
+				),
+				'box_padding'        => array(
+					'label' => __( 'Space inside the boxes', 'pergel-engine' ),
+					'help'  => __( 'In pixels.', 'pergel-engine' ),
 				),
 				'product_buy_now'    => array(
 					'label' => __( '"Buy now" button', 'pergel-engine' ),

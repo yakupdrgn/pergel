@@ -1710,6 +1710,16 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   View / Recommended" sekmeleri ve altında banner). Sekmeler yeni bir bileşen değil, mevcut
   akordeon şeridinin görünümü; yan sütun mevcut son bakılanlar bloğunu ve benzer ürün seçimini
   kullanır. Hazır ayar klasör sekmeleri ve iki listeli sütunu açar.
+- **Özet kutuları, 6b (24 Ekim 2026, kullanıcı):** üç kutu "Özette neler görünsün" listesine öğe
+  olarak girer (sabit bir yer değil; diğer öğeler gibi sıralanır ve açılıp kapanır). Güvenli ödeme
+  kutusu ortam kitaplığından seçilen bir resim ve bir yazıdır (ödeme yöntemlerinin simgeleri
+  değil: teklif modundaki bir mağazada boş kalırdı, yazı orada garanti gibi başka bir şey
+  söyleyebilir). Ürün bilgilerinde kategori, etiket, marka, SKU, durum, ürün türü, ağırlık ve
+  boyut satırları seçilip sıralanır. Unimart ölçüldü: kutular #F4F7FD zemin, 12 px köşe, 16 px iç
+  boşluk; "You may also like" 2 ürün, 97 px resim, 14/500 ad, 13/700 fiyat, 32 px yuvarlak sepet
+  düğmesi; bilgi listesi 14 px, kalın etiketler, satırlar arası 10 px; güvenli ödeme ortada tek
+  bir logo resmi ve 15/500 yazı. Hazır ayar üç kutuyu satın alma ve iletişim düğmelerinin altına
+  koyar (2 ürün; kategori, durum, tür; yüzey rengi, 12 px, 16 px).
 
 ## Aşamalar ve bitti tanımları
 

@@ -686,6 +686,59 @@ return array (
     'style' => 'file:./style.css',
     'render' => 'file:./render.php',
   ),
+  'product-box' => 
+  array (
+    'apiVersion' => 3,
+    'name' => 'pergel/product-box',
+    'title' => 'Product summary box',
+    'category' => 'pergel',
+    'icon' => 'index-card',
+    'description' => 'A box for the product summary: products the visitor may also like, the product\'s facts, or a picture and a line about safe payment. Their content and look are set under Pergel → Settings → Shop → Product page.',
+    'keywords' => 
+    array (
+      0 => 'you may also like',
+      1 => 'facts',
+      2 => 'secure checkout',
+      3 => 'trust',
+    ),
+    'textdomain' => 'pergel-engine',
+    'usesContext' => 
+    array (
+      0 => 'postId',
+      1 => 'postType',
+    ),
+    'attributes' => 
+    array (
+      'box' => 
+      array (
+        'type' => 'string',
+        'enum' => 
+        array (
+          0 => 'also',
+          1 => 'facts',
+          2 => 'trust',
+        ),
+        'default' => 'facts',
+      ),
+    ),
+    'supports' => 
+    array (
+      'html' => false,
+      'color' => 
+      array (
+        'text' => true,
+        'background' => true,
+      ),
+      'spacing' => 
+      array (
+        'margin' => true,
+        'padding' => true,
+      ),
+    ),
+    'editorScript' => 'file:./index.js',
+    'style' => 'file:./style.css',
+    'render' => 'file:./render.php',
+  ),
   'product-cta' => 
   array (
     'apiVersion' => 3,

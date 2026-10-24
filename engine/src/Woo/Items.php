@@ -57,13 +57,16 @@ final class Items {
 		'buying'   => array( 'woocommerce/add-to-cart-with-options', 'woocommerce/add-to-cart-form' ),
 		'cta'      => array( 'pergel/product-cta' ),
 		'meta'     => array( 'woocommerce/product-meta' ),
+		'also'     => array( 'pergel/product-box' ),
+		'facts'    => array( 'pergel/product-box' ),
+		'trust'    => array( 'pergel/product-box' ),
 	);
 
 	/**
 	 * Items whose block can be added on its own: the others hold blocks
 	 * of their own (the buying form, the meta group).
 	 */
-	public const ADDABLE = array( 'image', 'title', 'rating', 'price', 'excerpt', 'sku', 'stock', 'button', 'actions', 'category', 'cta' );
+	public const ADDABLE = array( 'image', 'title', 'rating', 'price', 'excerpt', 'sku', 'stock', 'button', 'actions', 'category', 'cta', 'also', 'facts', 'trust' );
 
 	/**
 	 * Blocks whose insides belong to something else: other product grids
@@ -181,6 +184,10 @@ final class Items {
 	private static function key( array $block, string $kind ): ?string {
 		$name = $block['blockName'] ?? null;
 		foreach ( 'card' === $kind ? self::CARD : self::SUMMARY as $key => $names ) {
+			if ( 'pergel/product-box' === $name && ( $block['attrs']['box'] ?? 'facts' ) !== $key ) {
+				// A summary box is the item it shows.
+				continue;
+			}
 			if ( in_array( $name, $names, true ) ) {
 				// Only the category list is the category item.
 				return 'core/post-terms' === $name && 'product_cat' !== ( $block['attrs']['term'] ?? null ) ? null : $key;
@@ -438,6 +445,8 @@ final class Items {
 			) : array( 'level' => 1 );
 		} elseif ( 'core/post-terms' === $name ) {
 			$attrs = array( 'term' => 'product_cat' );
+		} elseif ( 'pergel/product-box' === $name ) {
+			$attrs = array( 'box' => $key );
 		}
 		return array(
 			'blockName'    => $name,

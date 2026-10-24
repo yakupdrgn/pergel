@@ -15,6 +15,7 @@ use Pergel\Woo\Layout;
 use Pergel\Woo\Module as Woo;
 use Pergel\Woo\Items;
 use Pergel\Woo\Preset;
+use Pergel\Woo\ProductBoxes;
 use Pergel\Woo\StoreHeader;
 
 use const Pergel\FILE;
@@ -715,13 +716,16 @@ final class Screen {
 		};
 		$size = in_array( $field['type'], array( 'country', 'time' ), true ) ? 'small-text' : 'regular-text';
 		$max  = 'country' === $field['type'] ? 2 : ( $field['max'] ?? 0 );
+		// A placeholder shows what an empty value uses.
+		$placeholder = (string) ( $text['placeholder'] ?? '' );
 		printf(
-			'<input type="%1$s" %2$s class="%3$s" value="%4$s"%5$s>',
+			'<input type="%1$s" %2$s class="%3$s" value="%4$s"%5$s%6$s>',
 			esc_attr( $type ),
 			$attrs, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
 			esc_attr( $size ),
 			esc_attr( (string) $value ),
-			$max > 0 ? ' maxlength="' . (int) $max . '"' : ''
+			$max > 0 ? ' maxlength="' . (int) $max . '"' : '',
+			'' === $placeholder ? '' : ' placeholder="' . esc_attr( $placeholder ) . '"'
 		);
 	}
 
@@ -787,11 +791,11 @@ final class Screen {
 	 */
 	private static function items( array $field, string $id, string $name, string $value, string $aria, array $text ): void {
 		$kind    = (string) ( $text['items'] ?? 'card' );
-		$fixed   = StoreHeader::DEFAULTS[ $kind ] ?? null;
+		$fixed   = StoreHeader::DEFAULTS[ $kind ] ?? ( 'facts' === $kind ? ProductBoxes::FACTS : null );
 		$choices = is_array( $text['choices'] ?? null ) ? $text['choices'] : array();
 		if ( null !== $fixed ) {
-			// A row of the store header: its own default, and every item can
-			// be added.
+			// A row of the store header or the facts box: its own default,
+			// and every item can be added.
 			$template = $fixed;
 			$shown    = '' === $value ? $template : explode( ',', $value );
 		} else {
