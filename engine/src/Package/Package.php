@@ -27,7 +27,8 @@ use Pergel\Tokens\Invalid;
  *
  * Problems stop an import; notes do not (unless --strict): a field that
  * keeps the pattern's sample text, an image without alt text, a content
- * file no page uses.
+ * file no page uses. A child theme's own picture left in its pattern (an
+ * icon from the child theme's folder) is not sample text.
  *
  * read() needs only PHP. check() fills patterns and checks settings, so it
  * runs inside WordPress.
@@ -441,6 +442,17 @@ final class Package {
 	}
 
 	/**
+	 * Whether a picture is the active child theme's own (an icon from its
+	 * folder), not sample art: a pattern that keeps it is as designed.
+	 * Pergel's own pictures are sample art, with or without a child theme.
+	 *
+	 * @param string $src Image URL from the pattern.
+	 */
+	private static function own_picture( string $src ): bool {
+		return is_child_theme() && '' !== $src && str_starts_with( $src, trailingslashit( get_stylesheet_directory_uri() ) );
+	}
+
+	/**
 	 * Blocks with the root block's width set, in its attributes and in the
 	 * class of its opening tag, the way the editor's width control does.
 	 *
@@ -525,7 +537,7 @@ final class Package {
 			};
 			$kept  = array();
 			try {
-				$parts[] = serialize_blocks( Fields::fill( $blocks, $section, $image, $kept ) );
+				$parts[] = serialize_blocks( Fields::fill( $blocks, $section, $image, $kept, self::own_picture( ... ) ) );
 			} catch ( InvalidArgumentException $e ) {
 				$this->problems[] = "$where ($name): " . $e->getMessage();
 			}

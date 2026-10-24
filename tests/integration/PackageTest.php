@@ -203,6 +203,51 @@ final class PackageTest extends TestCase {
 		}
 	}
 
+	public function test_a_child_theme_picture_left_in_its_pattern_is_not_sample_text(): void {
+		$registry = \WP_Block_Patterns_Registry::get_instance();
+		$theme    = get_stylesheet();
+		$switched = get_option( 'theme_switched' );
+		$child    = get_theme_root() . '/pergel-test-child';
+		$picture  = static fn( string $src ): string => '<!-- wp:image --><figure class="wp-block-image"><img src="' . $src . '" alt=""/></figure><!-- /wp:image -->';
+		mkdir( "$child/patterns", 0777, true );
+		file_put_contents( "$child/style.css", "/*\nTheme Name: Pergel test child\nTemplate: " . get_template() . "\n*/\n" );
+		file_put_contents(
+			"$child/patterns/icons.php",
+			"<?php\n/**\n * Title: Child icons\n * Slug: pergel-test-child/icons\n */\n?>\n"
+			. '<!-- wp:group {"tagName":"section"} --><section class="wp-block-group"><!-- wp:heading --><h2 class="wp-block-heading">Icons</h2><!-- /wp:heading -->'
+			. $picture( '<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/assets/icons/flask.svg' )
+			. $picture( '<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/sample.jpg' )
+			. "</section><!-- /wp:group -->\n"
+		);
+		$registry->register(
+			'pergel-test-child/icons',
+			array(
+				'title'    => 'Child icons',
+				'filePath' => "$child/patterns/icons.php",
+			)
+		);
+		try {
+			switch_theme( 'pergel-test-child' );
+			$package = $this->package(
+				array(
+					'content/home.md' => "---\nsections:\n  - pattern: pergel-test-child/icons\n    heading: Merhaba\n---\n",
+				)
+			);
+			$this->assertSame( array(), $package->problems );
+			// The child theme's icon is as designed; the parent's picture is sample art.
+			$this->assertSame(
+				array( "content/home.md: sections[1] (pergel-test-child/icons): image_2 keeps the pattern's sample text; give it a value, or null to remove it" ),
+				array_values( array_filter( $package->notes, static fn( string $note ): bool => str_contains( $note, 'pergel-test-child/icons' ) ) )
+			);
+		} finally {
+			$registry->unregister( 'pergel-test-child/icons' );
+			switch_theme( $theme );
+			delete_option( 'theme_mods_pergel-test-child' );
+			false === $switched ? delete_option( 'theme_switched' ) : update_option( 'theme_switched', $switched );
+			self::remove( $child );
+		}
+	}
+
 	public function test_page_content_puts_the_body_where_the_markdown_section_is(): void {
 		$package = Package::read( self::FIXTURE );
 		$media   = static fn( string $path ): array => array(
