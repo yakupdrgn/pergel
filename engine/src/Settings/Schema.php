@@ -1043,10 +1043,11 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
-				// WooCommerce's attributes table in Pergel's Specifications table style.
+				// WooCommerce's attributes table in Pergel's Specifications table style,
+				// or in the look of WooCommerce's classic attributes table.
 				'details_specs'      => array(
 					'type'    => 'enum',
-					'options' => array( 'template', 'specs' ),
+					'options' => array( 'template', 'specs', 'classic' ),
 					'default' => 'template',
 				),
 				// A column beside the sections: recently viewed and

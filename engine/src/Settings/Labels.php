@@ -1064,10 +1064,11 @@ final class Labels {
 				),
 				'details_specs'      => array(
 					'label'   => __( 'Attributes table', 'pergel-engine' ),
-					'help'    => __( 'WooCommerce\'s table of the product\'s attributes, weight and size. "Specifications" draws it as the Table block\'s Specifications style: a line under each row, the names muted.', 'pergel-engine' ),
+					'help'    => __( 'WooCommerce\'s table of the product\'s attributes, weight and size. "Specifications" draws it as the Table block\'s Specifications style: a line under each row, the names muted. "WooCommerce classic": dotted lines, the names bold, the values in italics and every other row shaded.', 'pergel-engine' ),
 					'choices' => array(
 						'template' => __( 'As the style', 'pergel-engine' ),
 						'specs'    => __( 'Specifications', 'pergel-engine' ),
+						'classic'  => __( 'WooCommerce classic', 'pergel-engine' ),
 					),
 				),
 				'details_side'       => array(

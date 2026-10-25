@@ -627,6 +627,11 @@ final class ProductDetailsTest extends TestCase {
 		$html = do_blocks( $block );
 		$this->assertMatchesRegularExpression( '#^\s*<figure[^>]*class="[^"]*\bwp-block-woocommerce-product-specifications\b[^"]*\bis-style-pergel-specs\b#', $html );
 		$this->assertTrue( wp_style_is( \Pergel\Blocks\Styles::SPECS_STYLE ) );
+
+		Settings::update( array( 'shop' => array( 'details_specs' => 'classic' ) ) );
+		$html = do_blocks( $block );
+		$this->assertMatchesRegularExpression( '#^\s*<figure[^>]*class="[^"]*\bpergel-specs-classic\b#', $html );
+		$this->assertStringNotContainsString( 'is-style-pergel-specs', $html );
 	}
 
 	public function test_own_values_are_cleaned(): void {

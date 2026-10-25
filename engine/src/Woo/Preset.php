@@ -194,6 +194,7 @@ final class Preset {
 				'details_features'   => true,
 				'details_qa'         => true,
 				'details_rating'     => true,
+				'details_specs'      => 'classic',
 				'related_style'      => 'carousel',
 				'related_count'      => 8,
 				'related_compare'    => '4',
