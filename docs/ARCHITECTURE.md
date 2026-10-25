@@ -798,7 +798,10 @@ görünmez (`Settings\Screen::shown`).
   Telefonda (`details_phone`) bölümler alt alta açılır ya da şerit yana kayar. "Hepsi açık"
   her bölümü `openByDefault` yapar. Puan özeti (`details_rating`) `get_rating_counts()`'tan,
   ek sorgu yok. `details_specs: specs` WooCommerce'in özellik tablosuna (`woocommerce/product-specifications`,
-  bir `wp-block-table` figure'ı) Table bloğunun `is-style-pergel-specs` sınıfını ve CSS'ini verir.
+  bir `wp-block-table` figure'ı) Table bloğunun `is-style-pergel-specs` sınıfını ve CSS'ini verir;
+  `classic` WooCommerce'in klasik özellik tablosunun görünümünü verir (`pergel-specs-classic`: noktalı
+  çizgiler, kalın 150 px adlar, italik değerler, bir satır açık bir satır koyu; Unimart hazır ayarı
+  bunu seçer).
   `Layout::product_page` `Details`'i yalnızca bir `details_` ayarı varsayılandan
   farklıysa ya da ürünün kendi listesi/sekmesi varsa yükler.
   Soru-Cevap (`details_qa`, `Woo\Questions`): soru, ürüne ait `pergel_question` türünde bir

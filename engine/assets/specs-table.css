@@ -26,6 +26,46 @@
 	margin: 0;
 }
 
+/* WooCommerce's attributes table in the look of WooCommerce's classic one
+ * (shop.details_specs: classic): dotted lines in the text colour, bold
+ * names 150px wide, values in italics, every other row shaded. Lines and
+ * shade are the rows', so the names' own colour does not tint them. */
+.wp-block-table.pergel-specs-classic table {
+	border-collapse: collapse;
+	border-top: 1px dotted color-mix(in srgb, currentcolor 10%, transparent);
+	width: 100%;
+}
+
+.wp-block-table.pergel-specs-classic tr {
+	border-bottom: 1px dotted color-mix(in srgb, currentcolor 10%, transparent);
+}
+
+.wp-block-table.pergel-specs-classic :is(th, td) {
+	border: 0;
+	line-height: 1.5;
+	padding: 8px;
+	text-align: start;
+	vertical-align: top;
+}
+
+.wp-block-table.pergel-specs-classic th {
+	color: var(--wp--preset--color--contrast, inherit);
+	font-weight: 700;
+	width: 150px;
+}
+
+.wp-block-table.pergel-specs-classic td {
+	font-style: italic;
+}
+
+.wp-block-table.pergel-specs-classic td > p {
+	margin: 0;
+}
+
+.wp-block-table.pergel-specs-classic tr:nth-child(even) {
+	background: color-mix(in srgb, currentcolor 2.5%, transparent);
+}
+
 .wp-block-table.is-style-pergel-specs :is(th, td):last-child {
 	padding-inline-end: 0;
 }
