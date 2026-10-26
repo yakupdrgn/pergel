@@ -1744,6 +1744,26 @@ yalnızca davranış ve yerleşim incelendi; kod, CSS ve görsel alınmadı.
   WooCommerce zaten çiziyor ("Görsel" türündeki öznitelik ve terim rengiyle); Pergel boyut ve
   renk ayarı verir.
 
+## Pakette video: `media.yaml` `library` ve `poster`, format 4 (26 Ekim 2026, kullanıcı kararları)
+
+Ariumlab'ın ana sayfasındaki spiral giriş beş kısa ürün klibini (`spiral-*.mp4`, posterleriyle)
+ortam kütüphanesinde adıyla arıyor. Paket yalnızca görsel ve PDF taşıyordu, dosyayı da ancak bir
+alan kullanınca kütüphaneye alıyordu; klipler staging'e ve canlıya elle yüklenmek zorundaydı.
+
+- **Biçim (kullanıcı seçimi):** `media.yaml` kaydına iki anahtar. `library: true` dosyayı, onu
+  kullanan alan olmasa da kütüphaneye alır; `poster` videonun öne çıkan görselidir. Ayrı bir
+  `package.yaml` listesi yerine alt metin, lisans ve kütüphane bilgisi aynı kayıtta kalır.
+- **Video:** mp4 ve webm, en fazla 8 MB (kullanıcı seçimi; kısa, sessiz klipler için bol pay).
+  Uzantı yetmez, içerik de denetlenir (mp4 `ftyp`, webm EBML); WordPress'in yüklemesi ayrıca
+  kendi MIME denetimini yapar. Hiçbir alan video almaz; `library: true` olmayan video sorundur.
+- **Format 4.** Eski motor bilinmeyen `media.yaml` anahtarını sorun sayar; yeni özellik olduğu
+  için format numarası arttı ve eski motor paketi açıkça reddeder. Dışa aktarma yine paketi
+  tutan en eski formatta yazar.
+- **İçe aktarma:** kütüphane dosyaları en son alınır (`Importer::library()`); poster öne çıkan
+  görsel olur, panelde değiştirilmişse geri konur (satır `update poster`). Dosya
+  `_pergel_package_library` işaretini taşır; dışa aktarma bu işaretle geri yazar. `library`'den
+  çıkan dosya işaretini kaybeder ve başka alan kullanmıyorsa eskimiş olur.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

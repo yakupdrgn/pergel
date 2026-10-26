@@ -24,7 +24,7 @@ verir. Format hakkında bir şeyden emin değilsen o belgeye bak, tahmin etme.
 1. **Brief'i oku.** Paketteki `brief.md` ve `research/` serbest notlardır (okuyucu yok sayar).
    Eksikse sor: firma adı ve kısa adı (paket `name`), dil (`tr_TR` gibi), sayfalar, hedef
    kitle ve ton, iletişim bilgileri, elindeki görseller.
-2. **`package.yaml`:** `format: 1` (ürün dosyası varsa `format: 2`, logo varsa `format: 3`), `name` (küçük harf, rakam, tire), `title`, `tagline`,
+2. **`package.yaml`:** `format: 1` (ürün dosyası varsa `format: 2`, logo varsa `format: 3`, `media.yaml`'da `library` varsa `format: 4`), `name` (küçük harf, rakam, tire), `title`, `tagline`,
    `locale`, `logo` (site logosu). `settings` ayar ekranının gruplarıdır; anahtarları
    `wp pergel settings get` gösterir. Yalnızca varsayılandan farklı olanları yaz.
 3. **`sitemap.yaml`:** Sayfa ağacı. Ön sayfa `slug: ""`. Adreslerde Türkçe karakter yok
@@ -65,6 +65,8 @@ verir. Format hakkında bir şeyden emin değilsen o belgeye bak, tahmin etme.
    Yalnız ürün içeren pakette `sitemap.yaml` gerekmez.
 6. **`media/` ve `media.yaml`:** Her görsel için `alt` (görselde ne var, bağlamıyla), `source`,
    `license`, varsa `author`. Süs görseli `alt: ""`. Dosya adları küçük harf ve tireli.
+   Hiçbir alanın kullanmadığı ama temanın kütüphanede aradığı dosya (kısa mp4/webm klip, en
+   fazla 8 MB) `library: true` alır; videonun posteri `poster: media/x-poster.jpg`.
 7. **Marka:** Renk, font veya köşe yuvarlaklığı değişecekse `brand/tokens.json` için
    `pergel-brand` skill'ini kullan.
 8. **Denetle:** Notlar dahil temiz olana kadar düzelt.

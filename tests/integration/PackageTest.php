@@ -291,7 +291,7 @@ final class PackageTest extends TestCase {
 	public function test_names_every_problem_with_its_file_and_place(): void {
 		$package = $this->package(
 			array(
-				'package.yaml'      => "format: 4\nname: Örnek\ntitle: \"\"\nlocale: turkish\ncolor: red\nsettings:\n  brand:\n    email: not-an-email\n    logo: media/logo.png\n  store: {}\n",
+				'package.yaml'      => "format: 5\nname: Örnek\ntitle: \"\"\nlocale: turkish\ncolor: red\nsettings:\n  brand:\n    email: not-an-email\n    logo: media/logo.png\n  store: {}\n",
 				'sitemap.yaml'      => <<<'YAML'
 				pages:
 				  - slug: ""
@@ -342,14 +342,14 @@ final class PackageTest extends TestCase {
 
 		$expected = array(
 			'package.yaml: "color" is not known here; known: format, name, title, tagline, locale, logo, settings',
-			'package.yaml: format: this engine reads formats 1 to 3',
+			'package.yaml: format: this engine reads formats 1 to 4',
 			'package.yaml: name: required, in lowercase letters, digits and hyphens (like a-sirketi)',
 			'package.yaml: title: required; it is the site title',
 			'package.yaml: locale: "turkish" is not a locale like tr_TR or en_US',
 			'package.yaml: settings.brand: "logo" is not known here; known: ',
 			'package.yaml: settings: "store" is not known here; known: ',
 			'package.yaml: settings.brand.email: ',
-			'media.yaml: media/tarla.png: "credit" is not known here; known: alt, caption, source, license, author',
+			'media.yaml: media/tarla.png: "credit" is not known here; known: alt, caption, source, license, author, library, poster',
 			'media.yaml: "https://x.test/a.jpg": only images in the package can be used',
 			'sitemap.yaml: pages[3]: slug: "hakkimizda" is used twice at this level',
 			'sitemap.yaml: pages[3]: adopt: true or false is expected',
@@ -448,6 +448,76 @@ final class PackageTest extends TestCase {
 
 		$package = $this->package( array( 'sitemap.yaml' => null ) );
 		$this->assertStringStartsWith( 'sitemap.yaml: ', implode( "\n", $package->problems ) );
+	}
+
+	public function test_media_library_files_need_format_4_and_videos_are_checked(): void {
+		$yaml  = (string) file_get_contents( self::FIXTURE . '/package.yaml' );
+		$media = (string) file_get_contents( self::FIXTURE . '/media.yaml' );
+		$clip  = "media/klip.mp4:\n  alt: Hasat\n  library: true\n  poster: media/tarla.png\n";
+		$files = array(
+			'media.yaml'     => $media . $clip,
+			'media/klip.mp4' => self::mp4(),
+		);
+
+		$package = $this->package( $files );
+		$this->assertSame( array( 'package.yaml: format: a package whose media.yaml puts files in the media library (library: true) is format 4' ), $package->problems );
+
+		$four = array( 'package.yaml' => str_replace( 'format: 1', 'format: 4', $yaml ) );
+		self::remove( $this->copy );
+		$package = $this->package( $four + $files );
+		$this->assertSame( array(), $package->problems );
+		$this->assertSame( array( 'media/klip.mp4' => 'media/tarla.png' ), $package->library );
+		$this->assertSame( array( 'alt' => 'Hasat' ), $package->media['media/klip.mp4'] );
+
+		// A webm clip without a poster; an image may be put in the library too.
+		self::remove( $this->copy );
+		$package = $this->package(
+			$four + array(
+				'media.yaml'      => str_replace( "  alt: \"\"\n", "  alt: \"\"\n  library: true\n", $media ) . "media/klip.webm:\n  library: true\n",
+				'media/klip.webm' => "\x1A\x45\xDF\xA3" . str_repeat( "\0", 4 ) . "\x42\x82\x84webm",
+			)
+		);
+		$this->assertSame( array(), $package->problems );
+		$this->assertSame(
+			array(
+				'media/logo-beyaz.png' => null,
+				'media/klip.webm'      => null,
+			),
+			$package->library
+		);
+
+		$broken = array(
+			"media/klip.mp4:\n  alt: Hasat\n"                               => 'media.yaml: media/klip.mp4: no field takes a video; write library: true to put it in the media library',
+			"media/klip.mp4:\n  library: \"yes\"\n"                         => 'media.yaml: media/klip.mp4: library: true or false is expected',
+			"media/klip.mp4:\n  library: true\n  poster: media/yok.png\n"  => 'media.yaml: media/klip.mp4: poster: "media/yok.png": file not found in the package',
+			"media/klip.mp4:\n  library: true\n  poster: media/klip.mp4\n" => 'media.yaml: media/klip.mp4: poster: "media/klip.mp4": an image is a jpg, jpeg, png, webp, avif, gif file',
+			"media/tarla.png:\n  alt: x\n  poster: media/logo-beyaz.png\n" => 'media.yaml: media/tarla.png: poster: only a video has a poster',
+		);
+		foreach ( $broken as $entry => $problem ) {
+			self::remove( $this->copy );
+			$package = $this->package(
+				$four + array(
+					'media.yaml'     => $entry,
+					'media/klip.mp4' => self::mp4(),
+				)
+			);
+			$this->assertSame( array( $problem ), $package->problems, $entry );
+		}
+
+		// The content is checked, not only the name; and the size.
+		self::remove( $this->copy );
+		$package = $this->package( $four + array( 'media/klip.mp4' => 'not a video' ) + $files );
+		$this->assertSame( array( 'media.yaml: "media/klip.mp4": the file is not an mp4 video' ), $package->problems );
+		self::remove( $this->copy );
+		$package = $this->package( $four + array( 'media/klip.mp4' => self::mp4() . str_repeat( "\0", Package::VIDEO_BYTES ) ) + $files );
+		$this->assertSame( array( 'media.yaml: "media/klip.mp4": a video may be at most 8 MB; this one is 8.0 MB' ), $package->problems );
+	}
+
+	/**
+	 * The smallest mp4 file: a file type box and an empty media data box.
+	 */
+	private static function mp4(): string {
+		return pack( 'N', 24 ) . 'ftypisom' . pack( 'N', 512 ) . 'isomiso2' . pack( 'N', 8 ) . 'mdat';
 	}
 
 	public function test_a_logo_needs_format_3_and_only_a_logo_may_be_svg(): void {

@@ -113,7 +113,7 @@ final class Exporter {
 	/**
 	 * The media.yaml entries: package path => details.
 	 *
-	 * @var array<string, array<string, string>>
+	 * @var array<string, array<string, string|bool>>
 	 */
 	private array $media = array();
 
@@ -203,7 +203,8 @@ final class Exporter {
 		foreach ( $products as $product ) {
 			$this->product( $product );
 		}
-		$this->put( 'package.yaml', $this->site( array() !== $products ), '' );
+		$library = $this->library();
+		$this->put( 'package.yaml', $this->site( array() !== $products, $library ), '' );
 		if ( null !== $sitemap ) {
 			$this->put( 'sitemap.yaml', Yaml::dump( $sitemap ), '' );
 		}
@@ -582,12 +583,13 @@ final class Exporter {
 	 * Package image path for an image on the site, copying it into the
 	 * package on first use; null when it is not in the media library.
 	 *
-	 * @param string $url  URL as the block has it.
-	 * @param int    $id   Attachment ID the block names, 0 when none.
-	 * @param bool   $file Whether a file field's file (a pdf too) is read.
-	 * @param bool   $svg  Whether an svg file is read (a logo).
+	 * @param string $url   URL as the block has it.
+	 * @param int    $id    Attachment ID the block names, 0 when none.
+	 * @param bool   $file  Whether a file field's file (a pdf too) is read.
+	 * @param bool   $svg   Whether an svg file is read (a logo).
+	 * @param bool   $video Whether a video is read (a media library file).
 	 */
-	private function image( string $url, int $id, bool $file = false, bool $svg = false ): ?string {
+	private function image( string $url, int $id, bool $file = false, bool $svg = false, bool $video = false ): ?string {
 		if ( $id <= 0 || 'attachment' !== get_post_type( $id ) ) {
 			$id = attachment_url_to_postid( $url );
 			if ( 0 === $id ) {
@@ -601,7 +603,7 @@ final class Exporter {
 		if ( isset( $this->paths[ $id ] ) ) {
 			return $this->paths[ $id ];
 		}
-		$types = array_merge( Package::IMAGE_TYPES, $file ? Package::FILE_TYPES : array(), $svg ? Package::SVG_TYPES : array() );
+		$types = array_merge( Package::IMAGE_TYPES, $file ? Package::FILE_TYPES : array(), $svg ? Package::SVG_TYPES : array(), $video ? Package::VIDEO_TYPES : array() );
 		$file  = wp_get_original_image_path( $id );
 		$file  = is_string( $file ) && is_file( $file ) ? $file : (string) get_attached_file( $id );
 		if ( ! is_file( $file ) ) {
@@ -634,6 +636,51 @@ final class Exporter {
 		}
 		$this->media[ $path ] = array( 'alt' => $details['alt'] ) + array_filter( $details, static fn( string $value ): bool => '' !== $value );
 		return $path;
+	}
+
+	/**
+	 * The files the package put in the media library (library: true), with
+	 * each video's poster, as media.yaml entries.
+	 *
+	 * @return bool Whether there are any.
+	 */
+	private function library(): bool {
+		$ids   = get_posts(
+			array(
+				'post_type'   => 'attachment',
+				'post_status' => 'inherit',
+				'numberposts' => -1,
+				'fields'      => 'ids',
+				'orderby'     => 'ID',
+				'order'       => 'ASC',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- CLI only, one query per export.
+				'meta_query'  => array(
+					array(
+						'key'   => Importer::META,
+						'value' => $this->name,
+					),
+					array(
+						'key'   => Importer::LIBRARY,
+						'value' => '1',
+					),
+				),
+			)
+		);
+		$found = false;
+		foreach ( $ids as $id ) {
+			$path = $this->image( '', (int) $id, true, false, true );
+			if ( null === $path ) {
+				continue;
+			}
+			$found                           = true;
+			$this->media[ $path ]['library'] = true;
+			$poster                          = (int) get_post_thumbnail_id( (int) $id );
+			$poster                          = $poster > 0 ? $this->image( '', $poster ) : null;
+			if ( null !== $poster ) {
+				$this->media[ $path ]['poster'] = $poster;
+			}
+		}
+		return $found;
 	}
 
 	/**
@@ -674,7 +721,7 @@ final class Exporter {
 			if ( ! isset( $this->images[ $src ] ) ) {
 				throw new InvalidArgumentException( esc_html( "$src is not in the package" ) );
 			}
-			return $this->images[ $src ] + array( 'alt' => $alt ?? $this->media[ $src ]['alt'] );
+			return $this->images[ $src ] + array( 'alt' => $alt ?? (string) $this->media[ $src ]['alt'] );
 		};
 	}
 
@@ -864,12 +911,13 @@ final class Exporter {
 	/**
 	 * The package.yaml text: the site title, tagline, language, logo and the
 	 * Pergel settings that are not their defaults. A package stays at the
-	 * oldest format that holds it (1 without products, 2 without a logo),
-	 * so that older engines still read it.
+	 * oldest format that holds it (1 without products, 2 without a logo, 3
+	 * without media library files), so that older engines still read it.
 	 *
 	 * @param bool $products Whether the package has products.
+	 * @param bool $library  Whether media.yaml puts files in the media library.
 	 */
-	private function site( bool $products ): string {
+	private function site( bool $products, bool $library ): string {
 		$title = html_entity_decode( (string) get_option( 'blogname' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 		if ( '' === trim( $title ) ) {
 			$title         = $this->name;
@@ -885,7 +933,7 @@ final class Exporter {
 			}
 		}
 		$site = array(
-			'format'  => null !== $logo ? Package::LOGO_FORMAT : ( $products ? Package::PRODUCTS_FORMAT : Package::PAGES_FORMAT ),
+			'format'  => $library ? Package::LIBRARY_FORMAT : ( null !== $logo ? Package::LOGO_FORMAT : ( $products ? Package::PRODUCTS_FORMAT : Package::PAGES_FORMAT ) ),
 			'name'    => $this->name,
 			'title'   => $title,
 			'tagline' => html_entity_decode( (string) get_option( 'blogdescription' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
@@ -1033,7 +1081,7 @@ final class Exporter {
 			$iterator = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( "$this->dir/$dir", \FilesystemIterator::SKIP_DOTS ) );
 			foreach ( $iterator as $file ) {
 				$path = substr( str_replace( '\\', '/', (string) $file ), strlen( $this->dir ) + 1 );
-				if ( 'media' !== $dir ? str_ends_with( $path, '.md' ) : in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), array_merge( Package::IMAGE_TYPES, Package::FILE_TYPES ), true ) ) {
+				if ( 'media' !== $dir ? str_ends_with( $path, '.md' ) : in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), array_merge( Package::IMAGE_TYPES, Package::FILE_TYPES, Package::VIDEO_TYPES ), true ) ) {
 					$found[] = $path;
 				}
 			}

@@ -1,6 +1,6 @@
 # Proje paketi formatı (K12)
 
-> Durum: format 2 (v1.1.0: `products/*.md`); ürünsüz paket format 1 kalır. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
+> Durum: format 4 (`media.yaml` `library` ve `poster`; format 2 `products/*.md`, 3 `logo`); ürünsüz paket format 1 kalır. Okuyucu ve denetim F5a'da (`wp pergel package validate`), içe aktarma
 > F5b'de (`wp pergel import`), dışa aktarma F5c'de (`wp pergel export`) tamamlandı. Paketi
 > Claude Code ile hazırlamak için depoda iki skill var (F5e): `pergel-package` ve
 > `pergel-brand` (`.claude/skills/`). Örnek paket `examples/ornek-mimarlik/` CI'da her
@@ -16,18 +16,19 @@ proje/
 ├─ sitemap.yaml           # sayfa ağacı, şablon ve sayfa türü, menü (yalnız ürün paketinde isteğe bağlı)
 ├─ content/*.md           # sayfa başına: frontmatter'da SEO ve bölümler, gövdede Markdown
 ├─ products/<SKU>.md      # format 2: mağazadaki ürünün başlığı, kısa açıklaması, şablonu, fiyatı, içeriği
-├─ media/                 # paketteki görseller (jpg, jpeg, png, webp, avif, gif) ve PDF'ler
-├─ media.yaml             # görsel başına alt metin, açıklama, kaynak, lisans, yazar
+├─ media/                 # paketteki görseller (jpg, jpeg, png, webp, avif, gif), PDF'ler, format 4: kısa klipler (mp4, webm)
+├─ media.yaml             # görsel başına alt metin, açıklama, kaynak, lisans, yazar; format 4: library, poster
 ├─ brand/tokens.json      # W3C Design Tokens; temanın tokens/default.json'unun üzerine yazılır
 ├─ brief.md               # serbest: firma, hedef kitle, ton (okuyucu yok sayar)
 └─ research/              # serbest: rakip analizi, anahtar kelimeler (okuyucu yok sayar)
 ```
 
-Format 2 ürünleri (`products/`), format 3 site logosunu (`logo`) ekler. Henüz olmayanlar: font
+Format 2 ürünleri (`products/`), format 3 site logosunu (`logo`), format 4 `media.yaml`'ın ortam
+kütüphanesine koyduğu dosyaları (`library`, videolar ve `poster`) ekler. Henüz olmayanlar: font
 dosyaları, birden çok dil. Bunlar formatın sonraki sürümleriyle eklenir; `format` numarası
 artar. Motor kendi numarasına kadar her formatı okur, daha yenisini reddeder. Dışa aktarma
-paketi onu tutan en eski formatta yazar (ürünsüz ve logosuz paket 1, logosuz paket 2), böylece
-paket eski motorlarda da okunur.
+paketi onu tutan en eski formatta yazar (ürünsüz ve logosuz paket 1, logosuz paket 2,
+kütüphane dosyası olmayan paket 3), böylece paket eski motorlarda da okunur.
 
 ## Denetim
 
@@ -307,6 +308,25 @@ Anahtarlar: `alt`, `caption`, `source`, `license`, `author`. Bölüm alanında `
 verilen alt metin önce gelir, sonra `media.yaml`. Alt metni olmayan görsel not olarak bildirilir;
 `alt: ""` görselin süs olduğunu söyler. Markdown görselinin alt metni Markdown'daki metindir.
 
+**Ortam kütüphanesi (format 4).** Bir dosya, onu kullanan alan olmasa da `library: true` ile
+ortam kütüphanesine girer; bir temanın deseni onu adıyla bulur (Ariumlab'ın spiral girişi
+`spiral-*.mp4` kliplerini böyle bulur). Hiçbir alan video almadığı için video yalnızca böyle
+pakete girer: `library: true` yazılmamış video sorundur. Videonun `poster`'ı paketteki bir
+görseldir ve videonun öne çıkan görseli olur; panelde değiştirilmişse içe aktarma geri koyar.
+
+```yaml
+media/spiral-amu.mp4:
+  alt: AMU automatic magnet unit
+  library: true
+  poster: media/spiral-amu-poster.jpg
+  license: Ariumlab
+```
+
+Video mp4 veya webm olur, en fazla 8 MB'dir; adına değil içeriğine bakılır (mp4'te `ftyp`
+kutusu, webm'de EBML başlığı). `library` yalnızca `true` veya `false`, `poster` yalnızca bir
+videoda olur. Dosya `library`'den çıkarılırsa artık paketin kütüphane dosyası değildir;
+başka bir alan kullanmıyorsa eskimiş (stale) olarak listelenir.
+
 ## `brand/tokens.json`
 
 Temanın `tokens/default.json` dosyasının üzerine yazılan kısmi bir W3C Design Tokens
@@ -423,8 +443,8 @@ pakete uymayan adres (`ürünler`) dönüştürülür (`urunler`).
 
 **Ürünler.** Paketin doldurduğu her ürün `products/<SKU>.md` olur, yalnız paketin yazdığı
 alanlarla (fiyatı yazmadıysa `price` yok). Geçersiz veya çakışan SKU'lu ürün not olur ve
-dışarıda kalır. Ürün varsa `package.yaml` format 2 (logo da varsa 3), sayfa yoksa `sitemap.yaml`
-yazılmaz.
+dışarıda kalır. Ürün varsa `package.yaml` format 2 (logo da varsa 3, kütüphane dosyası da varsa 4), sayfa yoksa
+`sitemap.yaml` yazılmaz.
 
 **İçerik.** Kök bloğu `metadata.patternName` taşıyan (blok ekleyicinin, içe aktarmanın ve
 starter'ların eklediği) bir bölüm, pattern adı ve alanlarıyla `sections` altına yazılır; diğer
@@ -440,7 +460,8 @@ alanlarla geri verir. Yazılan paket sonunda `package validate` gibi denetlenir;
 adresi veya boyutlu kopyasının adresi). Paketin yaptığı görsel kendi yolunu korur, diğerleri
 `media/<dosya adı>` olur; özgün dosya kopyalanır. `media.yaml`'a alt metin, açıklama, kaynak,
 lisans ve sahibi yazılır. Bölümdeki alt metin görselinkinden farklıysa alan `{ src, alt }`
-olur. Kütüphane dışındaki görsel not olur.
+olur. Kütüphane dışındaki görsel not olur. Paketin `library: true` ile kütüphaneye koyduğu
+dosyalar posterleriyle geri yazılır (paket format 4 olur).
 
 **Menü.** Paketin menüsü, yoksa en yeni `wp_navigation`. Sayfaya giden bağlantı sayfa yolu,
 diğerleri `{ label, url }` olur; site içi adresler köke göre yazılır. Menü sayfa ağacının
