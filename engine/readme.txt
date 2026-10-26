@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.2 =
+* Product page: the attributes table can also take the look of WooCommerce's classic table (Shop settings, "Under the product" → "Attributes table" → "WooCommerce classic"): dotted row lines, bold names, values in italics, every other row shaded. The Unimart preset chooses it.
 
 = 1.4.1 =
 * Product page: the attributes table (weight, size and the product's attributes) can take the Table block's Specifications style (Shop settings, "Under the product" → "Attributes table"). Off by default.
