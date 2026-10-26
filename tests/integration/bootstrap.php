@@ -23,6 +23,18 @@ $_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? 'localhost';
 $_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
+// The tests expect English strings; a site in another language (the local
+// sites are tr_TR) runs them in en_US, as CI does. Set before wp-load.php,
+// so WordPress builds these hooks from the array.
+$GLOBALS['wp_filter']['pre_determine_locale'][10][] = array(
+	'function'      => static fn (): string => 'en_US',
+	'accepted_args' => 1,
+);
+$GLOBALS['wp_filter']['locale'][10][]               = array(
+	'function'      => static fn (): string => 'en_US',
+	'accepted_args' => 1,
+);
+
 require $pergel_wp_dir . '/wp-load.php';
 require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 

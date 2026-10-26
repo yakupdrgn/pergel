@@ -274,10 +274,8 @@ final class ScreenTest extends TestCase {
 	}
 
 	public function test_svg_hint_only_while_svg_uploads_are_off(): void {
-		$off = static function ( array $mimes ): array {
-			unset( $mimes['svg'] );
-			return $mimes;
-		};
+		// Safe SVG adds svgz too, so every extension of the type goes.
+		$off = static fn ( array $mimes ): array => array_diff( $mimes, array( Svg::MIME ) );
 		$on  = static fn ( array $mimes ): array => $mimes + array( 'svg' => Svg::MIME );
 
 		add_filter( 'upload_mimes', $off, 99 );
