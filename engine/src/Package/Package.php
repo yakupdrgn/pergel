@@ -41,9 +41,10 @@ final class Package {
 
 	/**
 	 * Newest package format this engine reads; it reads every format up to it.
-	 * Format 2 adds products/*.md, format 3 the site logo (logo).
+	 * Format 2 adds products/*.md, format 3 the site logo (logo), format 4
+	 * files media.yaml puts in the media library (library, poster).
 	 */
-	public const FORMAT = 3;
+	public const FORMAT = 4;
 
 	/**
 	 * Format of a package with products and no logo.
@@ -54,6 +55,11 @@ final class Package {
 	 * Format of a package with a site logo.
 	 */
 	public const LOGO_FORMAT = 3;
+
+	/**
+	 * Format of a package whose media.yaml puts files in the media library.
+	 */
+	public const LIBRARY_FORMAT = 4;
 
 	/**
 	 * Format of a package without products, which the exporter keeps writing
@@ -76,6 +82,17 @@ final class Package {
 	 * Other file types a package may hold, for file fields (a data sheet).
 	 */
 	public const FILE_TYPES = array( 'pdf' );
+
+	/**
+	 * Video file types a package may hold. No field takes a video; media.yaml
+	 * puts it in the media library (library: true), where a theme finds it.
+	 */
+	public const VIDEO_TYPES = array( 'mp4', 'webm' );
+
+	/**
+	 * Largest video a package may hold, in bytes: short, silent clips.
+	 */
+	public const VIDEO_BYTES = 8 * 1024 * 1024;
 
 	/**
 	 * Page types; all but "page" may be used once.
@@ -169,6 +186,14 @@ final class Package {
 	 * @var array<string, array<string, string>>
 	 */
 	public array $media = array();
+
+	/**
+	 * Files media.yaml puts in the media library although no field may use
+	 * them (library: true): package path => the video's poster image, or null.
+	 *
+	 * @var array<string, string|null>
+	 */
+	public array $library = array();
 
 	/**
 	 * Design tokens from brand/tokens.json, when the package has one.
@@ -635,11 +660,35 @@ final class Package {
 	}
 
 	/**
+	 * Checks a video path: an mp4 or webm file in the package of at most
+	 * 8 MB whose content is that type, not only its name.
+	 *
+	 * @param string $src Path as written.
+	 * @return string The path.
+	 * @throws InvalidArgumentException When the path cannot be used.
+	 */
+	public function video( string $src ): string {
+		$this->path( $src, self::VIDEO_TYPES, 'video' );
+		$file = $this->dir . '/' . $src;
+		$size = (int) filesize( $file );
+		if ( $size > self::VIDEO_BYTES ) {
+			throw new InvalidArgumentException( sprintf( '"%s": a video may be at most %d MB; this one is %.1f MB', $src, self::VIDEO_BYTES / 1048576, $size / 1048576 ) );
+		}
+		// mp4 has its "ftyp" box first, webm the EBML header.
+		$head = (string) file_get_contents( $file, false, null, 0, 12 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local package file, read under WP-CLI.
+		$type = strtolower( pathinfo( $src, PATHINFO_EXTENSION ) );
+		if ( 'webm' === $type ? ! str_starts_with( $head, "\x1A\x45\xDF\xA3" ) : 'ftyp' !== substr( $head, 4, 4 ) ) {
+			throw new InvalidArgumentException( "\"$src\": the file is not an $type video" );
+		}
+		return $src;
+	}
+
+	/**
 	 * Checks a media path.
 	 *
 	 * @param string             $src   Path as written.
 	 * @param array<int, string> $types File extensions allowed.
-	 * @param string             $what  "image" or "file", for messages.
+	 * @param string             $what  "image", "video" or "file", for messages.
 	 * @return string The path.
 	 * @throws InvalidArgumentException When the path cannot be used.
 	 */
@@ -651,7 +700,7 @@ final class Package {
 			throw new InvalidArgumentException( "\"$src\": a path in the package is expected, like media/hero.jpg" );
 		}
 		if ( ! in_array( strtolower( pathinfo( $src, PATHINFO_EXTENSION ) ), $types, true ) ) {
-			throw new InvalidArgumentException( "\"$src\": " . ( 'image' === $what ? 'an image' : 'a file' ) . ' is a ' . implode( ', ', $types ) . ' file' );
+			throw new InvalidArgumentException( "\"$src\": " . ( 'image' === $what ? 'an image' : ( 'video' === $what ? 'a video' : 'a file' ) ) . ' is a ' . implode( ', ', $types ) . ' file' );
 		}
 		if ( ! $this->holds( $src ) ) {
 			throw new InvalidArgumentException( "\"$src\": file not found in the package" );
@@ -771,8 +820,12 @@ final class Package {
 		$data = $this->yaml( 'media.yaml', false );
 		foreach ( $data ?? array() as $path => $meta ) {
 			$where = "media.yaml: $path: ";
+			$type  = strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) );
+			$video = in_array( $type, self::VIDEO_TYPES, true );
 			try {
-				if ( in_array( strtolower( pathinfo( (string) $path, PATHINFO_EXTENSION ) ), self::FILE_TYPES, true ) ) {
+				if ( $video ) {
+					$this->video( (string) $path );
+				} elseif ( in_array( $type, self::FILE_TYPES, true ) ) {
 					$this->file( (string) $path );
 				} else {
 					$this->image( (string) $path, true );
@@ -785,7 +838,10 @@ final class Package {
 				$this->problems[] = $where . 'a map like { alt: ..., source: ..., license: ... } is expected';
 				continue;
 			}
-			$this->keys( $meta, array( 'alt', 'caption', 'source', 'license', 'author' ), $where );
+			$this->keys( $meta, array( 'alt', 'caption', 'source', 'license', 'author', 'library', 'poster' ), $where );
+			$library = $meta['library'] ?? false;
+			$poster  = $meta['poster'] ?? null;
+			unset( $meta['library'], $meta['poster'] );
 			foreach ( $meta as $key => $value ) {
 				if ( ! is_string( $value ) ) {
 					$this->problems[] = $where . "$key: text is expected";
@@ -793,6 +849,31 @@ final class Package {
 				}
 			}
 			$this->media[ (string) $path ] = $meta;
+			if ( ! is_bool( $library ) ) {
+				$this->problems[] = $where . 'library: true or false is expected';
+				continue;
+			}
+			if ( $video && ! $library ) {
+				$this->problems[] = $where . 'no field takes a video; write library: true to put it in the media library';
+				continue;
+			}
+			if ( null !== $poster && ! $video ) {
+				$this->problems[] = $where . 'poster: only a video has a poster';
+				$poster           = null;
+			} elseif ( null !== $poster ) {
+				try {
+					$poster = $this->image( is_string( $poster ) ? $poster : '' );
+				} catch ( InvalidArgumentException $e ) {
+					$this->problems[] = $where . 'poster: ' . $e->getMessage();
+					$poster           = null;
+				}
+			}
+			if ( $library ) {
+				$this->library[ (string) $path ] = $poster;
+			}
+		}
+		if ( array() !== $this->library && $this->format < self::LIBRARY_FORMAT ) {
+			$this->problems[] = 'package.yaml: format: a package whose media.yaml puts files in the media library (library: true) is format ' . self::LIBRARY_FORMAT;
 		}
 	}
 

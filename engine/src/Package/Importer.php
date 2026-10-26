@@ -53,6 +53,7 @@ final class Importer {
 	public const SAVED   = '_pergel_package_saved';
 	public const FILE    = '_pergel_package_file';
 	public const ADOPTED = '_pergel_package_adopted';
+	public const LIBRARY = '_pergel_package_library';
 	public const CREDITS = array(
 		'source'  => '_pergel_media_source',
 		'license' => '_pergel_media_license',
@@ -278,6 +279,7 @@ final class Importer {
 			$this->menu();
 		}
 		$this->products();
+		$this->library();
 		try {
 			$this->theme();
 		} catch ( RuntimeException $e ) {
@@ -622,6 +624,35 @@ final class Importer {
 	}
 
 	/**
+	 * Files media.yaml puts in the media library (library: true), each
+	 * video with its poster as its featured image. The mark tells an export
+	 * to write them back; a file no longer marked loses it.
+	 */
+	private function library(): void {
+		foreach ( $this->package->library as $path => $poster ) {
+			$id        = $this->media()( $path )['id'];
+			$poster_id = null !== $poster ? $this->media()( $poster )['id'] : 0;
+			if ( 0 === $id ) {
+				continue;
+			}
+			if ( (int) get_post_thumbnail_id( $id ) !== $poster_id ) {
+				$this->rows[] = Starter::row( 'update', 'poster', $path, $id, null !== $poster ? basename( $poster ) : '(none)' );
+				if ( ! $this->dry_run ) {
+					$poster_id > 0 ? set_post_thumbnail( $id, $poster_id ) : delete_post_thumbnail( $id );
+				}
+			}
+		}
+		if ( $this->dry_run ) {
+			return;
+		}
+		foreach ( $this->images as $path => $image ) {
+			if ( $image['id'] > 0 ) {
+				isset( $this->package->library[ $path ] ) ? update_post_meta( $image['id'], self::LIBRARY, '1' ) : delete_post_meta( $image['id'], self::LIBRARY );
+			}
+		}
+	}
+
+	/**
 	 * Lists, and with $prune removes, what the package made and no longer has.
 	 * Pages and the menu go to the trash; images are deleted. A product or an
 	 * adopted page is only released: it stays as it is, no longer the
@@ -636,7 +667,7 @@ final class Importer {
 			$stale[]      = $key;
 			$type         = array(
 				'page'          => 'page',
-				'attachment'    => 'image',
+				'attachment'    => str_starts_with( $post->post_mime_type, 'video/' ) ? 'video' : 'image',
 				'wp_navigation' => 'menu',
 			)[ $post->post_type ] ?? $post->post_type;
 			$release      = 'product' === $post->post_type || '' !== (string) get_post_meta( $post->ID, self::ADOPTED, true );
@@ -763,7 +794,7 @@ final class Importer {
 	}
 
 	/**
-	 * Imports, replaces, updates or keeps one image.
+	 * Imports, replaces, updates or keeps one image (or pdf, or video).
 	 *
 	 * @param string $path Package image path.
 	 * @return array{id: int, url: string}
@@ -780,13 +811,14 @@ final class Importer {
 		}
 		$caption  = $details['caption'] ?? '';
 		$existing = $this->owned[ $path ] ?? null;
+		$type     = in_array( strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ), Package::VIDEO_TYPES, true ) ? 'video' : 'image';
 
 		if ( null !== $existing && (string) get_post_meta( $existing->ID, self::FILE, true ) === $sum ) {
 			$same = $existing->post_excerpt === $caption;
 			foreach ( $meta as $meta_key => $value ) {
 				$same = $same && (string) get_post_meta( $existing->ID, $meta_key, true ) === $value;
 			}
-			$this->rows[] = Starter::row( $same ? 'keep' : 'update', 'image', $path, $existing->ID, basename( $path ) );
+			$this->rows[] = Starter::row( $same ? 'keep' : 'update', $type, $path, $existing->ID, basename( $path ) );
 			if ( ! $same && ! $this->dry_run ) {
 				wp_update_post(
 					array(
@@ -807,7 +839,7 @@ final class Importer {
 		// A new file under the same path replaces the old attachment.
 		$action = null === $existing ? 'create' : 'replace';
 		if ( $this->dry_run ) {
-			$this->rows[] = Starter::row( $action, 'image', $path, $existing->ID ?? 0, basename( $path ) );
+			$this->rows[] = Starter::row( $action, $type, $path, $existing->ID ?? 0, basename( $path ) );
 			return array(
 				'id'  => 0,
 				'url' => $path,
@@ -845,7 +877,7 @@ final class Importer {
 		foreach ( $meta as $meta_key => $value ) {
 			update_post_meta( $id, $meta_key, $value );
 		}
-		$this->rows[] = Starter::row( $action, 'image', $path, $id, basename( $path ) );
+		$this->rows[] = Starter::row( $action, $type, $path, $id, basename( $path ) );
 		return array(
 			'id'  => $id,
 			'url' => (string) wp_get_attachment_url( $id ),

@@ -474,6 +474,49 @@ final class ImporterTest extends TestCase {
 		}
 	}
 
+	public function test_a_media_library_video_comes_with_its_poster_and_exports_back(): void {
+		$yaml = (string) file_get_contents( "$this->dir/package.yaml" );
+		$this->write( 'package.yaml', str_replace( 'format: 1', 'format: 4', $yaml ) );
+		$this->write( 'media/klip.mp4', pack( 'N', 24 ) . 'ftypisom' . pack( 'N', 512 ) . 'isomiso2' . pack( 'N', 8 ) . 'mdat' );
+		$this->write( 'media.yaml', (string) file_get_contents( "$this->dir/media.yaml" ) . "media/klip.mp4:\n  alt: Hasat\n  library: true\n  poster: media/tarla.png\n" );
+
+		$rows = $this->import();
+		$this->assertSame( 'video', self::row( $rows, 'media/klip.mp4' )['type'] );
+		$made = $this->made();
+		$clip = $made['media/klip.mp4'];
+		$this->assertSame( 'video/mp4', get_post_mime_type( $clip ) );
+		$this->assertSame( $made['media/tarla.png'], (int) get_post_thumbnail_id( $clip ) );
+		$this->assertSame( 'Hasat', get_post_meta( $clip, '_wp_attachment_image_alt', true ) );
+		$this->assertSame( '1', get_post_meta( $clip, Importer::LIBRARY, true ) );
+		$this->assertSame( 'keep', self::row( $this->import(), 'media/klip.mp4' )['action'] );
+
+		// A poster changed in the panel is put back.
+		delete_post_thumbnail( $clip );
+		$poster = array_values( array_filter( $this->import( true ), static fn( array $row ): bool => 'poster' === $row['type'] ) );
+		$this->assertSame( array( 'update', 'media/klip.mp4' ), array( $poster[0]['action'] ?? '', $poster[0]['key'] ?? '' ) );
+		$this->assertSame( 0, (int) get_post_thumbnail_id( $clip ) );
+		$this->import();
+		$this->assertSame( $made['media/tarla.png'], (int) get_post_thumbnail_id( $clip ) );
+
+		$out = sys_get_temp_dir() . '/pergel-export-' . bin2hex( random_bytes( 4 ) );
+		try {
+			( new Exporter( $out, self::NAME ) )->run();
+			$this->assertStringContainsString( "format: 4\n", (string) file_get_contents( "$out/package.yaml" ) );
+			$this->assertFileEquals( "$this->dir/media/klip.mp4", "$out/media/klip.mp4" );
+			$exported = Package::read( $out );
+			$this->assertSame( array( 'media/klip.mp4' => 'media/tarla.png' ), $exported->library );
+			$this->assertSame( 'Hasat', $exported->media['media/klip.mp4']['alt'] );
+		} finally {
+			if ( is_dir( $out ) ) {
+				self::remove( $out );
+			}
+		}
+
+		// Out of the library: the clip is no longer the package's to keep there.
+		$this->write( 'media.yaml', str_replace( "media/klip.mp4:\n  alt: Hasat\n  library: true\n  poster: media/tarla.png\n", '', (string) file_get_contents( "$this->dir/media.yaml" ) ) );
+		$this->assertSame( 'stale', self::row( $this->import(), 'media/klip.mp4' )['action'] );
+	}
+
 	public function test_an_export_imports_back_unchanged(): void {
 		$this->import();
 		$out = sys_get_temp_dir() . '/pergel-export-' . bin2hex( random_bytes( 4 ) );
