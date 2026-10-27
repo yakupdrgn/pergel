@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,11 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.5 =
+* Shop filters: child categories sit under their parent in the category filter. New setting "Subcategories start closed" (Shop pages → Filters) puts them under an arrow on their parent. After "Clear filters" a long list no longer shows two search boxes and two More buttons. A long list shows its first rows with the More button below them, not over a half-faded row.
+* Shop filters: a filter with one option that every product has, such as a store's only brand, is left out. New setting "Availability filter" turns the stock filter off.
+* Shop toolbar: no products per page menu while products load as the visitor scrolls.
 
 = 1.4.4 =
 * Product page: "Keep the details in view" keeps the shorter column in view. When the details are longer than the pictures, the pictures stay on screen instead of leaving empty space under them.
