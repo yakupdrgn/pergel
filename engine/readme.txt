@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.7 =
+* Shop filters: new setting "Order of the options" (Shop pages → Filters): the store's own order, by name or most products first, for the category, brand and attribute filters. A list whose options all show no longer gets a More button.
 
 = 1.4.6 =
 * Shop filters: new setting "Attribute filters" (Shop pages → Filters) chooses which product attributes the filter box shows, in which order, instead of the store's first three.
