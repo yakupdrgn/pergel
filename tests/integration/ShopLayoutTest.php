@@ -616,6 +616,8 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringContainsString( 'data-pergel-view="list" aria-pressed="true"', $toolbar );
 		// The default numbers: a wide button each, and the plain grid button for narrow screens.
 		$this->assertSame( array( 3, 4, 5 ), Listing::columns() );
+		// The filter column goes above the products wherever WooCommerce shows the panel button.
+		$this->assertMatchesRegularExpression( '/^@media \(width <= \d+(px|em|rem)\)\{\.pergel-shop-layout:has\(\.wc-block-product-filters\.is-mobile-overlay\)\{flex-wrap:wrap!important\}/', Layout::panel_css() );
 		$this->assertStringContainsString( 'class="pergel-view-button pergel-view-button--narrow" data-pergel-view="grid" aria-pressed="false"', $toolbar );
 		$this->assertStringContainsString( 'class="pergel-view-button pergel-view-button--wide" data-pergel-view="grid-5" aria-pressed="false" title="5 per row"', $toolbar );
 		$this->assertStringNotContainsString( 'grid-2', $toolbar );

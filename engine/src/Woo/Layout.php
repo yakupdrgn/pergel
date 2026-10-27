@@ -275,7 +275,33 @@ final class Layout {
 	 * of its classes; the shop templates render before the head is printed.
 	 */
 	public static function style(): void {
-		wp_enqueue_style( self::STYLE );
+		if ( ! wp_style_is( self::STYLE ) ) {
+			wp_enqueue_style( self::STYLE );
+			wp_add_inline_style( self::STYLE, self::panel_css() );
+		}
+	}
+
+	/**
+	 * While WooCommerce shows the filters as a "Filter products" button and
+	 * a panel, the filter column holds only that button: it goes above the
+	 * products, full width and not sticky. WooCommerce takes that width from
+	 * the theme's settings.viewport (tablet, then mobile, else 782px), which
+	 * the stylesheet cannot read, so the rule is written here.
+	 */
+	public static function panel_css(): string {
+		$viewport = wp_get_global_settings( array( 'viewport' ) );
+		$width    = '782px';
+		foreach ( array( 'tablet', 'mobile' ) as $screen ) {
+			if ( is_array( $viewport ) && is_string( $viewport[ $screen ] ?? null ) ) {
+				$width = $viewport[ $screen ];
+				break;
+			}
+		}
+		if ( ! preg_match( '/^\d+(\.\d+)?(px|em|rem)$/', $width ) ) {
+			$width = '782px';
+		}
+		$layout = '.pergel-shop-layout:has(.wc-block-product-filters.is-mobile-overlay)';
+		return "@media (width <= $width){{$layout}{flex-wrap:wrap!important}{$layout}>.wp-block-column{flex-basis:100%!important}{$layout}>.pergel-shop-layout__filters{position:static;max-height:none;overflow:visible;padding-inline-end:0}}";
 	}
 
 	/**

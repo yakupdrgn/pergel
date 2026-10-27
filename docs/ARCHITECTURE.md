@@ -688,7 +688,12 @@ görünmez (`Settings\Screen::shown`).
   sabitleyen temalar (Ariumlab `--al-cols`) ziyaretçinin seçimini ezmesin. Liste kartı Unimart gibi:
   metin solda, resim sağda (%45, 4:3), ilk/son `1fr` boş satırlar metni resme göre ortalar
   (`li::before` ilk satırı tutar), ad `large`, düğme tam genişlik (en çok 28rem); 600px altında resim
-  üstte, tek sütun. `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
+  üstte, tek sütun.
+- **Panel genişliği (`Layout::panel_css`):** WooCommerce filtreleri "Filter products" düğmesi + panel
+  olarak temanın `settings.viewport` değerine kadar gösterir (tablet → mobile → 782px; Pergel teması
+  1024px). Bu genişliğe kadar `.pergel-shop-layout:has(.is-mobile-overlay)` sarılır, sütunlar
+  %100, filtre sütunu yapışkan değil; yoksa 783–1024px'te sol sütunda yalnızca düğme kalıyordu.
+  Değer stil dosyasından okunamadığı için `Layout::style()` ilk çağrıda satır içi yazar. `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
   sorgu argümanları gizli alanlarla) ekler; `shop.paging: scroll` iken eklemez (kaydırdıkça
   yüklenen sayfada "sayfa başına" sayının ziyaretçi için anlamı yok); `Layout::per_page` → `Listing::per_page` ziyaretçinin
   sayısını menüde varsa ya da "daha fazla yükle" açıksa (1–96) kabul eder; `per_page` içeren
