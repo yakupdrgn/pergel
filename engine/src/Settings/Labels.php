@@ -40,7 +40,7 @@ final class Labels {
 			),
 			'forms'       => array(
 				'title'       => __( 'Forms', 'pergel-engine' ),
-				'description' => __( 'Where the messages from the Form block go. Every message is also kept under Pergel → Form messages, so none is lost when an email does not arrive.', 'pergel-engine' ),
+				'description' => __( 'Where the messages from the Form block go. Every message is also kept under Dashboard → Form messages, so none is lost when an email does not arrive.', 'pergel-engine' ),
 			),
 			'search'      => array(
 				'title'       => __( 'Search', 'pergel-engine' ),

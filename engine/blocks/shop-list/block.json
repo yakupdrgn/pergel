@@ -5,7 +5,7 @@
 	"title": "Wishlist or compare list",
 	"category": "pergel",
 	"icon": "list-view",
-	"description": "The products a visitor saved to the wishlist or chose to compare. Put it on the page set under Pergel → Settings → Shop.",
+	"description": "The products a visitor saved to the wishlist or chose to compare. Put it on the page set under Dashboard → Pergel → Shop.",
 	"keywords": [ "wishlist", "compare", "favourites", "comparison" ],
 	"textdomain": "pergel-engine",
 	"attributes": {

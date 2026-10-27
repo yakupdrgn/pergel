@@ -5,7 +5,7 @@
 	"title": "Running flash sale",
 	"category": "pergel",
 	"icon": "megaphone",
-	"description": "A running flash sale with its discount, a countdown to the end and some of its products; the one that ends soonest, or a chosen one. Shows nothing while no campaign runs (Pergel → Settings → Shop → Flash sales).",
+	"description": "A running flash sale with its discount, a countdown to the end and some of its products; the one that ends soonest, or a chosen one. Shows nothing while no campaign runs (Dashboard → Pergel → Shop → Flash sales).",
 	"keywords": [ "flash sale", "campaign", "countdown", "deal" ],
 	"textdomain": "pergel-engine",
 	"attributes": {

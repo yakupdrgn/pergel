@@ -241,7 +241,7 @@ final class Delivery {
 	public static function column(): void {
 		echo '<div class="view">{{ data.' . esc_attr( self::FIELD ) . ' }}</div>'
 			. '<div class="edit"><input type="text" name="' . esc_attr( self::FIELD ) . '" data-attribute="' . esc_attr( self::FIELD ) . '" value="{{ data.' . esc_attr( self::FIELD ) . ' }}" placeholder="2-4" inputmode="numeric" /></div>'
-			. '<div class="wc-shipping-class-modal-help-text">' . esc_html__( 'Working days from shipping to delivery, such as 3 or 2-4, for products of this class. Leave it empty to use Pergel → Settings → Shop.', 'pergel-engine' ) . '</div>';
+			. '<div class="wc-shipping-class-modal-help-text">' . esc_html__( 'Working days from shipping to delivery, such as 3 or 2-4, for products of this class. Leave it empty to use Dashboard → Pergel → Shop.', 'pergel-engine' ) . '</div>';
 	}
 
 	/**

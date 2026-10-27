@@ -515,7 +515,7 @@ final class Related {
 	public static function block( array $attributes ): string {
 		if ( ! Layout::recent_on() || wp_is_serving_rest_request() ) {
 			return wp_is_serving_rest_request()
-				? '<div ' . get_block_wrapper_attributes() . '><p>' . esc_html__( 'Shown to visitors who have viewed products: the ones they looked at last. Turn it on with "Recently viewed" under Pergel → Settings → Shop.', 'pergel-engine' ) . '</p></div>'
+				? '<div ' . get_block_wrapper_attributes() . '><p>' . esc_html__( 'Shown to visitors who have viewed products: the ones they looked at last. Turn it on with "Recently viewed" under Dashboard → Pergel → Shop.', 'pergel-engine' ) . '</p></div>'
 				: '';
 		}
 		self::script();
