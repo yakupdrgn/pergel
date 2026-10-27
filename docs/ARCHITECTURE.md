@@ -91,8 +91,7 @@ option'da değil Global Styles'tadır (K5).
 - `Core\Plugin::boot` bir modülü yalnızca `modules.<id>` anahtarı açıksa (veya hiç yoksa) ve
   `should_load()` doğruysa yükler.
 - Eklenti etkinleştirilirken varsayılanlar autoload ile yazılır; böylece okuma sorgu yapmaz.
-- `Settings\Screen` — yalnızca admin'de yüklenir. Başlangıç (Dashboard) menüsünün altında
-  "Pergel" (`index.php?page=pergel`; 1.4.7'ye kadar üst düzey menüydü), her şema grubu
+- `Settings\Screen` — yalnızca admin'de yüklenir. Üst düzey "Pergel" menüsü (Başlangıç'ın hemen altında, konum 2.5; 1.4.8'de bir sürüm Başlangıç'ın alt menüsüydü), her şema grubu
   için bir sekme. Form `options.php`'ye gider ve yalnızca açık sekmenin alanlarını gönderir;
   diğer gruplar birleştirerek yazma sayesinde korunur. Hatalı alanlar eski değerini korur,
   hata hem üst bildirimde hem alanın altında (`aria-invalid`, `aria-describedby`) görünür.
@@ -364,7 +363,7 @@ bloğunun mesajlarını alır.
   yüklemeden 3 saniye içinde gelen form geri çevrilir; bağlantı başına 10 dakikada 5 mesaj (IP
   yalnızca özetlenerek sayaç anahtarında kullanılır); Turnstile anahtarları varsa doğrulanır;
   sonra alanlar sunucuda doğrulanır. Geçen mesaj önce saklanır, sonra e-postayla gönderilir.
-- **Saklama** (`Forms\Inbox`): gizli `pergel_submission` yazı türü, yönetimde Başlangıç →
+- **Saklama** (`Forms\Inbox`): gizli `pergel_submission` yazı türü, yönetimde Pergel →
   "Form messages" (ad, e-posta, form, sayfa, e-posta gönderildi mi, tarih). Yalnızca yöneticiler görür;
   mesaj elle oluşturulamaz, okunur ve silinir. Kişisel veri dışa aktarma/silme araçlarına bağlıdır ve gizlilik
   politikasına önerilen metin ekler. Yazı türü yalnızca yönetimde, WP-CLI'da ve mesaj
@@ -605,7 +604,7 @@ görünmez (`Settings\Screen::shown`).
   kategori, stok ve ilk üç öznitelik). Pattern kuralları WooCommerce bloklarına yalnızca bu
   öneki taşıyan gizli pattern'lerde (`Patterns\Rules::SHOP_PREFIX`) ve mağaza bölümlerinde
   (`SHOP_SECTION_PREFIX`, aşağıda) izin verir.
-- **Mağaza düzeni (`Woo\Layout`, `Woo\LayoutFields`):** `shop` ayar grubu (Başlangıç → Pergel →
+- **Mağaza düzeni (`Woo\Layout`, `Woo\LayoutFields`):** `shop` ayar grubu (Pergel → Ayarlar →
   Mağaza'nın sayfaları; yalnızca WooCommerce açıkken) mağaza, ürün kategorisi, ürün etiketi ve ürün arama
   sayfalarındaki ana ürün ızgarasına (sorguyu sayfadan alan `inherit:true` Product Collection)
   uygulanır: geniş ekranda sütun (`render_block_context` ile Product Template bağlamına, çünkü

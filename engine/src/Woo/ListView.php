@@ -71,7 +71,7 @@ final class ListView {
 	public static function page( array $attributes ): string {
 		$kind = 'compare' === ( $attributes['kind'] ?? '' ) ? 'compare' : 'wishlist';
 		if ( ! in_array( $kind, Lists::enabled(), true ) ) {
-			return self::placeholder( __( 'Turn on the wishlist and compare under Dashboard → Pergel → Shop to show the list here.', 'pergel-engine' ) );
+			return self::placeholder( __( 'Turn on the wishlist and compare under Pergel → Settings → Shop to show the list here.', 'pergel-engine' ) );
 		}
 		Lists::enqueue();
 		$user  = get_current_user_id();
@@ -100,7 +100,7 @@ final class ListView {
 	public static function links(): string {
 		$kinds = Lists::linked();
 		if ( array() === $kinds ) {
-			return self::placeholder( __( 'Links to the wishlist and compare pages. Set the pages under Dashboard → Pergel → Shop.', 'pergel-engine' ) );
+			return self::placeholder( __( 'Links to the wishlist and compare pages. Set the pages under Pergel → Settings → Shop.', 'pergel-engine' ) );
 		}
 		Lists::enqueue();
 		$html = '';

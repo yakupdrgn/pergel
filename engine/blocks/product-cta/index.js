@@ -40,20 +40,20 @@
 							props,
 							'quote',
 							__( 'Quote form', 'pergel-engine' ),
-							__( 'On products in quote mode. Requests are kept under Dashboard → Form messages.', 'pergel-engine' )
+							__( 'On products in quote mode. Requests are kept under Pergel → Form messages.', 'pergel-engine' )
 						),
 						toggle(
 							props,
 							'whatsapp',
 							__( 'WhatsApp link', 'pergel-engine' ),
-							__( 'Needs the WhatsApp number under Dashboard → Pergel → Shop.', 'pergel-engine' )
+							__( 'Needs the WhatsApp number under Pergel → Settings → Shop.', 'pergel-engine' )
 						),
 						toggle( props, 'phone', __( 'Phone link', 'pergel-engine' ), __( 'The phone number of the brand.', 'pergel-engine' ) ),
 						toggle(
 							props,
 							'contact',
 							__( 'Contact page link', 'pergel-engine' ),
-							__( 'Needs the contact page under Dashboard → Pergel → Shop.', 'pergel-engine' )
+							__( 'Needs the contact page under Pergel → Settings → Shop.', 'pergel-engine' )
 						),
 						toggle(
 							props,

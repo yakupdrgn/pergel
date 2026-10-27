@@ -5,7 +5,7 @@
 	"title": "Recently viewed products",
 	"category": "pergel",
 	"icon": "backup",
-	"description": "The products a visitor looked at last, kept in their browser; hidden until there are some. Turn it on with \"Recently viewed\" under Dashboard → Pergel → Shop.",
+	"description": "The products a visitor looked at last, kept in their browser; hidden until there are some. Turn it on with \"Recently viewed\" under Pergel → Settings → Shop.",
 	"keywords": [ "recently viewed", "history", "last seen", "products" ],
 	"textdomain": "pergel-engine",
 	"attributes": {

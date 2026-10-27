@@ -9,8 +9,10 @@ declare( strict_types=1 );
 
 namespace Pergel\Forms;
 
+use Pergel\Settings\Screen;
+
 /**
- * A hidden post type under the Dashboard menu keeps every message. Only
+ * A hidden post type under the Pergel menu keeps every message. Only
  * administrators see it; nobody can create or edit an entry by hand, only
  * read and delete it. The messages take part in the personal data export
  * and erasure tools by the sender's email address.
@@ -56,7 +58,7 @@ final class Inbox {
 				),
 				'public'              => false,
 				'show_ui'             => true,
-				'show_in_menu'        => 'index.php',
+				'show_in_menu'        => Screen::SLUG,
 				'show_in_rest'        => false,
 				'show_in_nav_menus'   => false,
 				'show_in_admin_bar'   => false,
