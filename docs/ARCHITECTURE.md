@@ -705,7 +705,10 @@ görünmez (`Settings\Screen::shown`).
   şablonuna, şablon çizilirken uygulanır (K10). Değer sırası: ürünün kendi değeri (post meta
   `pergel_shop`, ürün düzenleme ekranındaki "Ürün sayfası yerleşimi" kutusu), sonra gezinti yolunun
   gösterdiği kategori ve üstleri, sonra site (`Layout::get`). Yerleşim, galeriyi tutan
-  `core/columns`'a sınıf ekler (`is-pictures-left|right|three`, `is-sticky-details`); üç sütunda
+  `core/columns`'a sınıf ekler (`is-pictures-left|right|three`, `is-sticky-details`).
+  `is-sticky-details` iki sütunu da yapışkan yapar; yalnızca kısa olan hareket edebilir, çünkü uzun
+  olan satır kadar yüksektir. Ayrıntılar uzunsa resimler ekranda kalır (Ariumlab'de ayrıntılar
+  1178 px, galeri 585 px idi ve galerinin altı boş kalıyordu). Üç sütunda
   önerilen ürünler (yukarı satış, yoksa benzer ürünler) üçüncü sütun olarak eklenir. Küçük
   resimlerin yeri `render_block_data` ile galeri bloğunun `layout` özniteliği ve iç blok sırasıyla
   değişir (her iç bloğun `innerContent`'te bir `null`'ı var, sırayla doldurulur); "Bütün resimler"
