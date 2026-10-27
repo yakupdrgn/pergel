@@ -417,6 +417,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				'filter_attributes'  => array(
+					'type' => 'text',
+					'max'  => 200,
+				),
 				'filter_brand'       => array(
 					'type'    => 'bool',
 					'default' => false,

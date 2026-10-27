@@ -140,6 +140,7 @@ final class Layout {
 		add_action( 'pre_get_comments', array( self::class, 'hide_questions' ) );
 		// Also for the editors, so the theme's filter pattern looks the same there.
 		add_filter( 'pergel/shop/filters', array( Filters::class, 'groups' ) );
+		add_filter( 'pergel/shop/filter_attributes', array( Filters::class, 'attributes' ), 10, 2 );
 		if ( is_admin() ) {
 			LayoutFields::register();
 			BadgeField::register();

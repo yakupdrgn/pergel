@@ -337,6 +337,49 @@ final class ShopLayoutTest extends TestCase {
 		}
 	}
 
+	public function test_chosen_attribute_filters_in_their_order(): void {
+		$suffix = strtolower( wp_generate_password( 4, false ) );
+		$first  = wc_create_attribute(
+			array(
+				'name' => 'Wells',
+				'slug' => 'zz-wells-' . $suffix,
+			)
+		);
+		$second = wc_create_attribute(
+			array(
+				'name' => 'Volume',
+				'slug' => 'aa-volume-' . $suffix,
+			)
+		);
+		$this->assertIsInt( $first );
+		$this->assertIsInt( $second );
+		$pattern = dirname( __DIR__, 2 ) . '/theme/patterns/hidden-product-filters.php';
+		$draw    = static function () use ( $pattern ): string {
+			delete_transient( 'wc_attribute_taxonomies' );
+			\WC_Cache_Helper::invalidate_cache_group( 'woocommerce-attributes' );
+			ob_start();
+			include $pattern;
+			return (string) ob_get_clean();
+		};
+		try {
+			Settings::update( array( 'shop' => array( 'filter_attributes' => "pa_zz-wells-$suffix, nothing-here, aa-volume-$suffix" ) ) );
+			$html = $draw();
+			$this->assertSame( 2, substr_count( $html, 'wp:woocommerce/product-filter-attribute {' ), 'Only the named attributes.' );
+			$at_first  = strpos( $html, '"attributeId":' . $first . ',' );
+			$at_second = strpos( $html, '"attributeId":' . $second . ',' );
+			$this->assertIsInt( $at_first );
+			$this->assertIsInt( $at_second );
+			$this->assertLessThan( $at_second, $at_first, 'In the order of the setting.' );
+
+			// Empty: the pattern's own first three.
+			Settings::update( array( 'shop' => array( 'filter_attributes' => '' ) ) );
+			$this->assertNull( Filters::attributes( null, array( (object) array( 'attribute_name' => 'x' ) ) ) );
+		} finally {
+			wc_delete_attribute( $first );
+			wc_delete_attribute( $second );
+		}
+	}
+
 	public function test_filter_area_settings_reach_the_layout(): void {
 		Settings::update(
 			array(
