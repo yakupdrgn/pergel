@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.8
+Stable tag: 1.4.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,13 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.9 =
+* Admin: Pergel is again a menu of its own, placed right under Dashboard (also above menus that plugins such as Site Kit put there). Form messages are back in it.
+* Shop: new setting "Products per row visitors can choose" (Shop pages → Product grid), 2 to 6, by default 3, 4 and 5. With the grid and list buttons on, the toolbar shows the list button and one button per number on screens 1024 pixels and wider; narrower screens keep one grid button.
+* Shop: the list view shows the name, short description and button beside a large picture, and the picture on top on phones. It now works with themes that fix their grid columns, and cards without a price get the short description after the name.
+* Shop: on tablets, while WooCommerce shows the "Filter products" button, the filter column goes above the products instead of keeping a side column with only the button.
+* Product pages: the comparison table shows a shadow on the side with more products to scroll to; breadcrumb links have a larger tap area on touch screens.
 
 = 1.4.8 =
 * Admin: the Pergel settings and the form messages are under the Dashboard menu (Dashboard → Pergel, Dashboard → Form messages) instead of a "Pergel" menu of their own. The old address still opens the settings.
