@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.4 =
+* Product page: "Keep the details in view" keeps the shorter column in view. When the details are longer than the pictures, the pictures stay on screen instead of leaving empty space under them.
 
 = 1.4.3 =
 * Project packages (format 4): a media.yaml entry with "library: true" puts the file in the media library even when no field uses it, so a theme can find it by name; "poster" gives a video its featured image. Packages may carry short mp4 or webm clips this way (at most 8 MB, checked by content). Export writes them back.
