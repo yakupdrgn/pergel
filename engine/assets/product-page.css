@@ -10,7 +10,10 @@
 		flex-direction: row-reverse;
 	}
 
-	.pergel-product-layout.is-sticky-details > .wp-block-column:not(:has(.wc-block-product-gallery, .pergel-product-pictures, .woocommerce-product-gallery)):not(.pergel-product-side) {
+	/* Both columns are sticky, but only the shorter one can move: the taller
+	 * one is as high as the row. So the details stay in view beside a long
+	 * gallery, and the pictures stay in view beside long details. */
+	.pergel-product-layout.is-sticky-details > .wp-block-column:not(.pergel-product-side) {
 		position: sticky;
 		top: calc(var(--wp-admin--admin-bar--height, 0px) + var(--wp--preset--spacing--40));
 		align-self: flex-start;

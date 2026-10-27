@@ -900,7 +900,7 @@ final class Labels {
 				),
 				'product_sticky'     => array(
 					'label' => __( 'Keep the details in view', 'pergel-engine' ),
-					'help'  => __( 'The name, price and button stay on screen while the pictures scroll past. Wide screens only.', 'pergel-engine' ),
+					'help'  => __( 'The name, price and button stay on screen while the pictures scroll past. When the details are longer than the pictures, the pictures stay instead. Wide screens only.', 'pergel-engine' ),
 				),
 				'product_zoom'       => array(
 					'label' => __( 'Zoom on hover', 'pergel-engine' ),
