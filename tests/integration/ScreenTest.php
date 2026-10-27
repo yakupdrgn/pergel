@@ -136,7 +136,7 @@ final class ScreenTest extends TestCase {
 					$own[] = $section['group'] . '.' . $field;
 				}
 			}
-			preg_match_all( '/name="' . Settings::OPTION . '\[(\w+)\]\[(\w+)\](?:\[\w+\])?"/', $html, $posted, PREG_SET_ORDER );
+			preg_match_all( '/name="' . Settings::OPTION . '\[(\w+)\]\[(\w+)\](?:\[\w*\])?"/', $html, $posted, PREG_SET_ORDER );
 			$names = array_values( array_unique( array_map( static fn ( array $m ): string => $m[1] . '.' . $m[2], $posted ) ) );
 			sort( $names );
 			sort( $own );

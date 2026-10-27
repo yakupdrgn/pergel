@@ -321,47 +321,164 @@
 	outline-offset: 2px;
 }
 
-/* List view: one product per row, the picture beside the text. The
- * server's view applies until the visitor picks one with the buttons. */
-.pergel-shop-grid .pergel-list-summary {
+/* Products per row the visitor picked, on wide screens; narrower ones
+ * show the plain grid button instead of the numbers. Themes that fix
+ * their grid with !important would keep their columns, so the visitor's
+ * choice is !important too. */
+.pergel-view-button--wide {
 	display: none;
+}
+
+@media (min-width: 1024px) {
+	.pergel-view-button--narrow {
+		display: none;
+	}
+
+	.pergel-view-button--wide {
+		display: inline-flex;
+	}
+
+	html[data-pergel-view="grid-2"] .pergel-shop-grid {
+		--pergel-view-columns: 2;
+	}
+
+	html[data-pergel-view="grid-3"] .pergel-shop-grid {
+		--pergel-view-columns: 3;
+	}
+
+	html[data-pergel-view="grid-4"] .pergel-shop-grid {
+		--pergel-view-columns: 4;
+	}
+
+	html[data-pergel-view="grid-5"] .pergel-shop-grid {
+		--pergel-view-columns: 5;
+	}
+
+	html[data-pergel-view="grid-6"] .pergel-shop-grid {
+		--pergel-view-columns: 6;
+	}
+
+	html[data-pergel-view^="grid-"] .pergel-shop-grid > .wc-block-product-template {
+		grid-template-columns: repeat(var(--pergel-view-columns), minmax(0, 1fr)) !important;
+	}
+}
+
+/* List view: one product per row, the name, price and button beside a
+ * large picture on the inline end that fills its 4:3 box, the name
+ * larger than in the grid; on phones the picture goes on top.
+ * The empty first and last rows centre the text against the picture.
+ * The server's view applies until the visitor picks one with the buttons. */
+.pergel-shop-grid .pergel-list-summary,
+.pergel-shop-grid .wp-block-woocommerce-product-summary:has(> .pergel-list-summary) {
+	display: none;
+}
+
+html:not([data-pergel-view]) .pergel-view-list .wp-block-woocommerce-product-summary:has(> .pergel-list-summary),
+html[data-pergel-view="list"] .pergel-shop-grid .wp-block-woocommerce-product-summary:has(> .pergel-list-summary) {
+	display: block;
 }
 
 html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template,
 html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template {
-	grid-template-columns: minmax(0, 1fr);
-	row-gap: var(--wp--preset--spacing--50);
+	grid-template-columns: minmax(0, 1fr) !important;
+	row-gap: var(--wp--preset--spacing--40);
 }
 
 html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li,
 html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li {
-	display: grid;
-	grid-template-columns: clamp(6rem, 28%, 13rem) minmax(0, 1fr);
-	align-content: start;
-	column-gap: var(--wp--preset--spacing--40);
+	display: grid !important;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 45%);
+	grid-template-rows: 1fr repeat(10, auto) 1fr;
+	align-items: start;
+	column-gap: var(--wp--preset--spacing--50);
+	row-gap: 0;
 	width: 100%;
 	text-align: start;
 }
 
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li::before,
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li::before {
+	content: "";
+	grid-column: 1;
+	grid-row: 1;
+}
+
 html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li > *,
 html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li > * {
-	grid-column: 2;
+	grid-column: 1;
 	margin-inline: 0;
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li > :not(.wc-block-components-product-image, :last-child),
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li > :not(.wc-block-components-product-image, :last-child) {
+	margin-block: 0 var(--wp--preset--spacing--20);
 }
 
 html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li > .wc-block-components-product-image,
 html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li > .wc-block-components-product-image {
-	grid-column: 1;
-	grid-row: 1 / span 6;
-	align-self: start;
+	grid-column: 2;
+	grid-row: 1 / -1;
+	align-self: center;
+	width: 100%;
 	margin: 0;
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li > .wc-block-components-product-image img,
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li > .wc-block-components-product-image img {
+	aspect-ratio: 4 / 3 !important;
+	object-fit: cover !important;
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li :is(.wp-block-post-title, .wc-block-components-product-name),
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li :is(.wp-block-post-title, .wc-block-components-product-name) {
+	font-size: 1.25rem !important; /* Over the card title size, which is for the grid. */
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li :is(.wc-block-components-product-button, .wp-block-button),
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li :is(.wc-block-components-product-button, .wp-block-button) {
+	align-self: stretch;
+	width: 100%;
+	max-width: 28rem;
+}
+
+html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li :is(.wc-block-components-product-button__button, .wp-block-button__link),
+html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li :is(.wc-block-components-product-button__button, .wp-block-button__link) {
+	width: 100%;
+	justify-content: center;
 }
 
 html:not([data-pergel-view]) .pergel-view-list .pergel-list-summary,
 html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
-	display: block;
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
 	color: var(--wp--preset--color--muted);
 	font-size: var(--wp--preset--font-size--small);
+}
+
+.pergel-shop-grid .pergel-list-summary > * {
+	margin-block: 0;
+}
+
+@media (max-width: 599px) {
+	html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li,
+	html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: none;
+	}
+
+	html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li::before,
+	html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li::before {
+		content: none;
+	}
+
+	html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template > li > .wc-block-components-product-image,
+	html[data-pergel-view="list"] .pergel-shop-grid > .wc-block-product-template > li > .wc-block-components-product-image {
+		grid-column: 1;
+		grid-row: 1;
+		margin-block-end: var(--wp--preset--spacing--30);
+	}
 }
 
 /* Load more: the button replaces the page numbers on the first page. */

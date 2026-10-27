@@ -606,7 +606,13 @@ final class ShopLayoutTest extends TestCase {
 		$html = do_blocks( self::FULL_GRID );
 		$this->assertStringContainsString( 'pergel-shop-grid', $html );
 		$this->assertStringContainsString( 'pergel-view-list', $html );
-		$this->assertStringContainsString( 'pergel-list-summary', $html );
+		$this->assertSame( 1, substr_count( $html, 'pergel-list-summary' ), 'After the price only.' );
+		// A card without a price has it after the name, once; grids after the main one do not.
+		$plain = str_replace( '<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->', '', self::FULL_GRID );
+		$html  = do_blocks( $plain );
+		$this->assertMatchesRegularExpression( '/<\/h2>\s*<div[^>]*wp-block-woocommerce-product-summary[^>]*><div class="wc-block-components-product-summary pergel-list-summary"/', $html );
+		$this->assertSame( 1, substr_count( $html, 'pergel-list-summary' ) );
+		$this->assertStringNotContainsString( 'pergel-list-summary', do_blocks( '<!-- wp:post-title /-->' ) );
 		$this->assertMatchesRegularExpression( '/<a class="pergel-load-more__button[^"]*" href="[^"]+" data-pergel-more="more" data-pergel-step="16"/', $html );
 		$this->assertTrue( wp_style_is( Layout::STYLE ) );
 
@@ -614,6 +620,40 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringStartsWith( '<div class="pergel-shop-toolbar"><form>sort</form>', $toolbar );
 		$this->assertStringContainsString( '<option value="12">12</option><option value="48">48</option>', $toolbar );
 		$this->assertStringContainsString( 'data-pergel-view="list" aria-pressed="true"', $toolbar );
+		// The default numbers: a wide button each, and the plain grid button for narrow screens.
+		$this->assertSame( array( 3, 4, 5 ), Listing::columns() );
+		// The filter column goes above the products wherever WooCommerce shows the panel button.
+		$this->assertMatchesRegularExpression( '/^@media \(width <= \d+(px|em|rem)\)\{\.pergel-shop-layout:has\(\.wc-block-product-filters\.is-mobile-overlay\)\{flex-wrap:wrap!important\}/', Layout::panel_css() );
+		$this->assertStringContainsString( 'class="pergel-view-button pergel-view-button--narrow" data-pergel-view="grid" aria-pressed="false"', $toolbar );
+		$this->assertStringContainsString( 'class="pergel-view-button pergel-view-button--wide" data-pergel-view="grid-5" aria-pressed="false" title="5 per row"', $toolbar );
+		$this->assertStringNotContainsString( 'grid-2', $toolbar );
+
+		// A grid of 4 starts on the 4 button; with no number, one grid button for all screens.
+		Settings::update(
+			array(
+				'shop' => array(
+					'view'         => 'grid',
+					'columns'      => '4',
+					'view_columns' => '4,2',
+				),
+			)
+		);
+		$this->assertSame( array( 2, 4 ), Listing::columns() );
+		$toolbar = Listing::toolbar( '<form>sort</form>' );
+		$this->assertStringContainsString( 'data-pergel-default="grid-4"', $toolbar );
+		$this->assertStringContainsString( 'data-pergel-view="grid-4" aria-pressed="true"', $toolbar );
+		$this->assertStringContainsString( 'data-pergel-view="grid" aria-pressed="true"', $toolbar );
+		Settings::update(
+			array(
+				'shop' => array(
+					'view'         => 'list',
+					'view_columns' => '',
+				),
+			)
+		);
+		$toolbar = Listing::toolbar( '<form>sort</form>' );
+		$this->assertStringContainsString( 'class="pergel-view-button" data-pergel-view="grid"', $toolbar );
+		$this->assertStringNotContainsString( 'pergel-view-button--', $toolbar );
 
 		// Loading while scrolling: no per page menu, the view buttons stay.
 		Settings::update( array( 'shop' => array( 'paging' => 'scroll' ) ) );

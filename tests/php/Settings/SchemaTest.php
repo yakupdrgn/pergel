@@ -133,6 +133,10 @@ final class SchemaTest extends TestCase {
 			'max'  => 40,
 		);
 		$color  = array( 'type' => 'color' );
+		$set    = array(
+			'type'    => 'set',
+			'options' => array( '2', '3', '4', '5' ),
+		);
 		return array(
 			'bool true'            => array( array( 'type' => 'bool' ), true, true ),
 			'bool form "1"'        => array( array( 'type' => 'bool' ), '1', true ),
@@ -238,6 +242,11 @@ final class SchemaTest extends TestCase {
 			'dates wrong format'   => array( $dates, '29.10.2026', 'invalid_date' ),
 			'dates too many'       => array( $dates, array( '2026-01-01', '2026-01-02', '2026-01-03' ), 'too_many' ),
 			'dates not list'       => array( $dates, 5, 'invalid_type' ),
+			'set form boxes'       => array( $set, array( '', '5', '3' ), '3,5' ),
+			'set string'           => array( $set, '4, 2', '2,4' ),
+			'set none ticked'      => array( $set, array( '' ), '' ),
+			'set unknown choice'   => array( $set, array( '7' ), 'invalid_choice' ),
+			'set not list'         => array( $set, 5, 'invalid_type' ),
 			'length empty'         => array( $length, '', '' ),
 			'length number'        => array( $length, '12', 12 ),
 			'length out of range'  => array( $length, 41, 'out_of_range' ),
@@ -317,7 +326,7 @@ final class SchemaTest extends TestCase {
 					'time'          => '23:59',
 					'length'        => $field['max'] ?? 999,
 					'color'         => str_repeat( 'a', 40 ),
-					'items'         => implode( ',', $field['options'] ?? array() ),
+					'items', 'set'  => implode( ',', $field['options'] ?? array() ),
 					'country'       => 'TR',
 					'email', 'url', 'tel' => str_repeat(
 						'a',

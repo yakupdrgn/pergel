@@ -547,7 +547,7 @@ final class Screen {
 		if ( $svg_hint ) {
 			$describedby[] = "$id-svg";
 		}
-		$cards = 'enum' === $field['type'] && ! empty( $text['cards'] );
+		$cards = in_array( $field['type'], array( 'enum', 'set' ), true ) && ! empty( $text['cards'] );
 		$set   = $cards || 'items' === $field['type'];
 		$aria  = ( $describedby ? ' aria-describedby="' . esc_attr( implode( ' ', $describedby ) ) . '"' : '' )
 			. ( '' !== $error && 'image' !== $field['type'] && ! $set ? ' aria-invalid="true"' : '' );
@@ -577,7 +577,8 @@ final class Screen {
 	}
 
 	/**
-	 * An enum field as a row of picture cards, one radio button each.
+	 * An enum field as a row of picture cards, one radio button each; a set
+	 * field the same with checkboxes.
 	 *
 	 * @param string               $group Schema group.
 	 * @param string               $key   Field key.
@@ -595,14 +596,21 @@ final class Screen {
 			$aria, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in row().
 			esc_html( (string) ( $text['label'] ?? $key ) )
 		);
+		$many = 'set' === $field['type'];
+		if ( $many ) {
+			// Sent when no box is ticked, so "none" can be saved.
+			printf( '<input type="hidden" name="%s[]" value="">', esc_attr( $name ) );
+		}
+		$ticked = $many ? explode( ',', (string) $value ) : array( $value );
 		foreach ( $field['options'] ?? array() as $option ) {
 			printf(
-				'<label class="pergel-choice"><input type="radio" name="%1$s" value="%2$s"%3$s>%4$s<span>%5$s</span></label>',
-				esc_attr( $name ),
+				'<label class="pergel-choice"><input type="%6$s" name="%1$s" value="%2$s"%3$s>%4$s<span>%5$s</span></label>',
+				esc_attr( $many ? $name . '[]' : $name ),
 				esc_attr( $option ),
-				checked( $value, $option, false ),
+				checked( in_array( $option, $ticked, true ), true, false ),
 				Pictures::get( $group, $key, $option ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fixed SVG built from numbers.
-				esc_html( (string) ( $choices[ $option ] ?? $option ) )
+				esc_html( (string) ( $choices[ $option ] ?? $option ) ),
+				$many ? 'checkbox' : 'radio'
 			);
 		}
 		echo '</fieldset>';

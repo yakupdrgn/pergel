@@ -29,7 +29,7 @@ final class Pictures {
 	 */
 	public static function get( string $group, string $key, string $option ): string {
 		$shapes = match ( "$group.$key" ) {
-			'shop.columns', 'shop.columns_tablet', 'shop.columns_phone' => self::grid( $option ),
+			'shop.columns', 'shop.columns_tablet', 'shop.columns_phone', 'shop.view_columns' => self::grid( $option ),
 			'shop.width' => self::width( $option ),
 			'shop.filters', 'shop.drawer_side' => self::filters( $option ),
 			'shop.filters_sticky' => self::sticky( $option ),

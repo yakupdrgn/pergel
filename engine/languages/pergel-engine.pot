@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-27T17:51:09+03:00\n"
+"POT-Creation-Date: 2026-10-27T18:38:21+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -1018,6 +1018,12 @@ msgid "On wide screens. Narrower screens show fewer products per row unless you 
 msgstr ""
 
 msgid "As in the template"
+msgstr ""
+
+msgid "Products per row visitors can choose"
+msgstr ""
+
+msgid "A button for each ticked number next to the list button, on screens 1024 pixels and wider; narrower screens keep one grid button. Shown when \"Grid and list buttons\" is on. Their choice is kept in their browser."
 msgstr ""
 
 msgid "Products per row on tablets"
@@ -2958,6 +2964,11 @@ msgid "Show"
 msgstr ""
 
 msgid "Apply"
+msgstr ""
+
+#. translators: %d: number of products in a row, 2 to 6.
+#, php-format
+msgid "%d per row"
 msgstr ""
 
 msgid "Loading products…"

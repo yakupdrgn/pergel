@@ -18,8 +18,9 @@ use const Pergel\VERSION;
  * The "View and paging" shop settings:
  *
  * - products as a grid or a list (the list adds the short description);
- * - grid and list buttons beside the sorting menu, the visitor's choice
- *   kept in their browser;
+ * - list and grid buttons beside the sorting menu, with a button for each
+ *   products per row the visitor may pick on wide screens; their choice
+ *   is kept in their browser;
  * - a products per page menu beside the sorting menu (a plain form, like
  *   WooCommerce's sorting), left out while products load on scrolling;
  * - a "Load more" button, or loading while scrolling, after the products.
@@ -57,15 +58,51 @@ final class Listing {
 	private static int $step = 0;
 
 	/**
+	 * Whether the short description follows the name, the card having no
+	 * price to follow; set when the main grid starts, unset when it ends
+	 * (the name block does not get the query to tell the main grid by).
+	 *
+	 * @var bool
+	 */
+	private static bool $after_title = false;
+
+	/**
 	 * Hooks for the products of the main grid: the short description and
 	 * the "Load more" link. Layout calls it when the main grid of a listing
 	 * page starts, so other pages never load this class.
+	 *
+	 * @param array $template The grid's Product Template block, parsed.
+	 * @phpstan-param array<string, mixed> $template
 	 */
-	public static function prepare(): void {
-		if ( ! has_filter( 'render_block_woocommerce/product-price', array( self::class, 'summary' ) ) ) {
-			add_filter( 'render_block_woocommerce/product-price', array( self::class, 'summary' ), 10, 3 );
-			add_filter( 'render_block_core/query-pagination', array( self::class, 'more' ), 10, 3 );
+	public static function prepare( array $template = array() ): void {
+		// Cards without a price get the short description after the name.
+		self::$after_title = array() !== $template && ! self::holds( $template, 'woocommerce/product-price' );
+		foreach ( array(
+			'woocommerce/product-price'    => array( 'summary', 3 ),
+			'core/post-title'              => array( 'title_summary', 3 ),
+			'woocommerce/product-template' => array( 'grid_done', 1 ),
+			'core/query-pagination'        => array( 'more', 3 ),
+		) as $name => [ $method, $args ] ) {
+			if ( ! has_filter( "render_block_$name", array( self::class, $method ) ) ) {
+				add_filter( "render_block_$name", array( self::class, $method ), 10, $args );
+			}
 		}
+	}
+
+	/**
+	 * Whether a parsed block holds a block of this name.
+	 *
+	 * @param array  $block Parsed block.
+	 * @param string $name  Block name.
+	 * @phpstan-param array<string, mixed> $block
+	 */
+	private static function holds( array $block, string $name ): bool {
+		foreach ( is_array( $block['innerBlocks'] ?? null ) ? $block['innerBlocks'] : array() as $inner ) {
+			if ( is_array( $inner ) && ( ( $inner['blockName'] ?? null ) === $name || self::holds( $inner, $name ) ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -215,21 +252,55 @@ final class Listing {
 	}
 
 	/**
-	 * The grid and list buttons; hidden until the script shows them.
+	 * Products per row the visitor can pick, from the setting.
+	 *
+	 * @return list<int>
+	 */
+	public static function columns(): array {
+		$value = (string) Settings::get( 'shop.view_columns' );
+		return '' === $value ? array() : array_map( 'intval', explode( ',', $value ) );
+	}
+
+	/**
+	 * The list button, then the grid buttons: one per products per row
+	 * chosen in the settings, for wide screens, and one plain grid button
+	 * for narrower screens (or for all, with no number chosen). Hidden
+	 * until the script shows them.
 	 */
 	private static function buttons(): string {
+		$columns = self::columns();
+		$wide    = Layout::get( 'shop.columns' );
 		$view    = 'list' === Layout::get( 'shop.view' ) ? 'list' : 'grid';
+		if ( 'grid' === $view && is_string( $wide ) && in_array( (int) $wide, $columns, true ) ) {
+			$view = 'grid-' . $wide;
+		}
+		$options = array(
+			'list' => array( __( 'List', 'pergel-engine' ), '<path d="M3 3h5v5H3zM10 4h7v1.5h-7zM10 6.5h5V8h-5zM3 12h5v5H3zM10 13h7v1.5h-7zM10 15.5h5V17h-5z"/>', '' ),
+			'grid' => array( __( 'Grid', 'pergel-engine' ), '<path d="M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z"/>', $columns ? ' pergel-view-button--narrow' : '' ),
+		);
+		foreach ( $columns as $count ) {
+			$tile  = ( 16 - 1.5 * ( $count - 1 ) ) / $count;
+			$shape = '';
+			for ( $i = 0; $i < $count; $i++ ) {
+				$x      = round( 2 + $i * ( $tile + 1.5 ), 2 );
+				$shape .= sprintf( '<rect x="%1$s" y="3" width="%2$s" height="6.25" rx="0.75"/><rect x="%1$s" y="10.75" width="%2$s" height="6.25" rx="0.75"/>', $x, round( $tile, 2 ) );
+			}
+			$options[ "grid-$count" ] = array(
+				/* translators: %d: number of products in a row, 2 to 6. */
+				sprintf( __( '%d per row', 'pergel-engine' ), $count ),
+				$shape,
+				' pergel-view-button--wide',
+			);
+		}
 		$buttons = '';
-		foreach ( array(
-			'grid' => array( __( 'Grid', 'pergel-engine' ), '<path d="M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z"/>' ),
-			'list' => array( __( 'List', 'pergel-engine' ), '<path d="M3 3h5v5H3zM10 4h7v1.5h-7zM10 6.5h5V8h-5zM3 12h5v5H3zM10 13h7v1.5h-7zM10 15.5h5V17h-5z"/>' ),
-		) as $option => [ $label, $shape ] ) {
+		foreach ( $options as $option => [ $label, $shape, $class ] ) {
 			$buttons .= sprintf(
-				'<button type="button" class="pergel-view-button" data-pergel-view="%1$s" aria-pressed="%2$s" title="%3$s"><svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">%4$s</svg><span class="screen-reader-text">%3$s</span></button>',
+				'<button type="button" class="pergel-view-button%5$s" data-pergel-view="%1$s" aria-pressed="%2$s" title="%3$s"><svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">%4$s</svg><span class="screen-reader-text">%3$s</span></button>',
 				esc_attr( $option ),
-				$option === $view ? 'true' : 'false',
+				$option === $view || ( 'grid' === $option && str_starts_with( $view, 'grid-' ) ) ? 'true' : 'false',
 				esc_attr( $label ),
-				$shape
+				$shape,
+				esc_attr( $class )
 			);
 		}
 		return sprintf(
@@ -238,6 +309,28 @@ final class Listing {
 			esc_attr( $view ),
 			$buttons
 		);
+	}
+
+	/**
+	 * The short description after the name, in cards without a price.
+	 *
+	 * @param string    $html     Rendered name.
+	 * @param array     $block    Parsed block.
+	 * @param \WP_Block $instance Block instance.
+	 * @phpstan-param array<string, mixed> $block
+	 */
+	public static function title_summary( string $html, array $block, \WP_Block $instance ): string {
+		return self::$after_title && self::list_possible() ? $html . self::summary_block( $instance ) : $html;
+	}
+
+	/**
+	 * Ends the short description after the name with the main grid.
+	 *
+	 * @param string $html Rendered Product Template.
+	 */
+	public static function grid_done( string $html ): string {
+		self::$after_title = false;
+		return $html;
 	}
 
 	/**
@@ -253,6 +346,15 @@ final class Listing {
 		if ( ! self::main_grid( $instance ) || ! self::list_possible() ) {
 			return $html;
 		}
+		return $html . self::summary_block( $instance );
+	}
+
+	/**
+	 * The short description of the product a block shows, for the list.
+	 *
+	 * @param \WP_Block $instance A block of the product's card.
+	 */
+	private static function summary_block( \WP_Block $instance ): string {
 		$summary = new \WP_Block(
 			array(
 				'blockName'    => 'woocommerce/product-summary',
@@ -268,7 +370,7 @@ final class Listing {
 			),
 			$instance->context
 		);
-		return $html . $summary->render();
+		return $summary->render();
 	}
 
 	/**
@@ -322,7 +424,7 @@ final class Listing {
 	public static function head(): void {
 		wp_print_inline_script_tag(
 			sprintf(
-				'try{var v=localStorage.getItem(%s);if(v==="grid"||v==="list"){document.documentElement.dataset.pergelView=v}}catch(e){}',
+				'try{var v=localStorage.getItem(%s);if(/^(grid|list|grid-[2-6])$/.test(v)){document.documentElement.dataset.pergelView=v}}catch(e){}',
 				wp_json_encode( self::STORE )
 			)
 		);

@@ -465,6 +465,12 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				// Products per row the visitor can pick next to the list button.
+				'view_columns'       => array(
+					'type'    => 'set',
+					'options' => array( '2', '3', '4', '5', '6' ),
+					'default' => '3,4,5',
+				),
 				'per_page_menu'      => array(
 					'type' => 'text',
 					'max'  => 40,
@@ -1387,6 +1393,9 @@ final class Schema {
 			case 'items':
 				return self::items( $raw, $field['options'] ?? array() );
 
+			case 'set':
+				return self::set( $raw, $field['options'] ?? array() );
+
 			case 'urls':
 				return self::urls( $raw, $field['max'] ?? self::MAX_ITEMS );
 
@@ -1609,6 +1618,40 @@ final class Schema {
 	}
 
 	/**
+	 * Ticked choices, as a comma-separated string in the options' order:
+	 * the form sends a list of boxes (with an empty one, so none ticked
+	 * still arrives), a package or the REST API the string.
+	 *
+	 * @param mixed $raw     Untrusted value.
+	 * @param array $options The known choices.
+	 * @phpstan-param list<string> $options
+	 * @return array{0: string}|string The clean value wrapped in an array, or an error code.
+	 */
+	private static function set( mixed $raw, array $options ): array|string {
+		if ( is_string( $raw ) ) {
+			$raw = '' === trim( $raw ) ? array() : array_map( 'trim', explode( ',', $raw ) );
+		}
+		if ( ! is_array( $raw ) ) {
+			return 'invalid_type';
+		}
+		$keys = array();
+		foreach ( $raw as $key ) {
+			if ( ! is_string( $key ) && ! is_int( $key ) ) {
+				return 'invalid_type';
+			}
+			$key = (string) $key;
+			if ( '' === $key ) {
+				continue;
+			}
+			if ( ! in_array( $key, $options, true ) ) {
+				return 'invalid_choice';
+			}
+			$keys[] = $key;
+		}
+		return array( implode( ',', array_values( array_intersect( $options, $keys ) ) ) );
+	}
+
+	/**
 	 * JSON Schema for register_setting( show_in_rest ). Empty strings are
 	 * valid everywhere, because an empty field means "not set".
 	 *
@@ -1683,6 +1726,10 @@ final class Schema {
 			'items'   => array(
 				'type'    => 'string',
 				'pattern' => '^([a-z]+(,[a-z]+)*)?$',
+			),
+			'set'     => array(
+				'type'    => 'string',
+				'pattern' => '^([a-z0-9]+(,[a-z0-9]+)*)?$',
 			),
 			'urls'    => array(
 				'type'     => 'array',
