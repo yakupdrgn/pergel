@@ -117,18 +117,10 @@
 	margin-bottom: 0;
 }
 
-/* Long lists: a few rows, the next one fading out, and a More button; a
- * search looks through every option. WooCommerce's own link goes. */
+/* Long lists: a few rows and a More button below them; a search looks
+ * through every option. WooCommerce's own link goes. */
 :is(.wp-block-woocommerce-product-filter-taxonomy, .wp-block-woocommerce-product-filter-status, .wp-block-woocommerce-product-filter-attribute, .wp-block-woocommerce-product-filter-rating):not(.is-pergel-searching) .wc-block-product-filter-checkbox-list__item[data-pergel-beyond] {
 	display: none;
-}
-
-:is(.wp-block-woocommerce-product-filter-taxonomy, .wp-block-woocommerce-product-filter-status, .wp-block-woocommerce-product-filter-attribute, .wp-block-woocommerce-product-filter-rating):not(.is-pergel-searching) .wc-block-product-filter-checkbox-list__item[data-pergel-edge] {
-	max-height: 1.25em;
-	overflow: hidden;
-	pointer-events: none;
-	-webkit-mask-image: linear-gradient(#000, transparent);
-	mask-image: linear-gradient(#000, transparent);
 }
 
 [data-pergel-filters~="more"] .wc-block-product-filter-checkbox-list__show-more,
@@ -140,7 +132,7 @@
 	display: flex;
 	gap: 0.4em;
 	align-items: center;
-	margin: -0.25em auto 0;
+	margin: 0.5em auto 0;
 	padding: 0.3em 0.9em 0.3em 1em;
 	border: 0;
 	border-radius: 999px;
@@ -170,6 +162,19 @@
 .wc-block-product-filters .pergel-filter-more:focus-visible {
 	outline: 2px solid currentcolor;
 	outline-offset: 2px;
+}
+
+/* A child category sits under its parent. */
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__item[data-pergel-depth="1"] {
+	padding-inline-start: 1.5em;
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__item[data-pergel-depth="2"] {
+	padding-inline-start: 3em;
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__item:is([data-pergel-depth="3"], [data-pergel-depth="4"], [data-pergel-depth="5"]) {
+	padding-inline-start: 4.5em;
 }
 
 /* The icon before the filter box's own title. */

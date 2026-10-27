@@ -631,13 +631,25 @@ görünmez (`Settings\Screen::shown`).
   çizimde geri koyar. `shop.filter_brand|filter_rating` temanın filtre pattern'ine
   `pergel/shop/filters` süzgeciyle marka (`product_brand`) ve puan filtresini ekletir. Marka
   filtresi varken pattern, adı ya da etiketi markalarla aynı olan özniteliği (`pa_brand`,
-  "Marka") atlar; böylece iki "Brand" filtresi çıkmaz. `shop.filter_title|filter_icon`
+  "Marka") atlar; böylece iki "Brand" filtresi çıkmaz. `shop.filter_stock: false` Availability
+  (stok) filtresini çizmez (`render_block_woocommerce/product-filter-status`). Tek seçeneği olan,
+  işaretli olmayan ve o seçeneği sayfadaki her üründe bulunan (sayısı ana sorgunun `found_posts`'una
+  eşit) kategori/marka/öznitelik/stok filtresi hiç çizilmez (`Filters::lonely`): tek markalı bir
+  mağazada Brand filtresi hiçbir şeyi süzmez. Kategori listesinde WooCommerce seçeneklerle `depth`
+  gönderir ama hepsini aynı hizada çizer; `Filters::depth` her seçeneğe (sunucunun çizdiği ve
+  `<template>` içindekine) `data-wp-bind--data-pergel-depth="context.item.depth"` bağlar, böylece
+  her yeniden çizimde de dolar ve `shop-layout.css` alt kategoriyi 1,5em içeriden başlatır.
+  `shop.filter_title|filter_icon`
   pattern'in `pergel-filters__title` başlığına kendi yazısını ve bir ikon koyar (sunucuda).
-  `shop.filter_more: pill` uzun listeleri `filter_rows` satırda keser: sonraki satır solarak
-  görünür (`data-pergel-edge`), gerisi gizlenir (`data-pergel-beyond`), WooCommerce'in "Show N
-  more" bağlantısı gizlenir ve yuvarlak bir More/Less düğmesi gelir. Düğme, gerekirse
+  `shop.filter_more: pill` uzun listeleri `filter_rows` satırda keser: gerisi gizlenir
+  (`data-pergel-beyond`; 1.4.5'e kadar bir sonraki satır solarak görünüyordu ve düğme onun üstüne
+  biniyordu), WooCommerce'in "Show N more" bağlantısı gizlenir ve listenin altına yuvarlak bir
+  More/Less düğmesi gelir. Düğme, gerekirse
   WooCommerce'in kendi "daha fazla"sına da basar (ilk 15'ten sonrakileri o çizer). Aramada bütün
-  seçenekler görünür; işaretli bir seçenek aşağıdaysa liste açık başlar. Betik yalnızca gerçekten
+  seçenekler görünür; işaretli bir seçenek aşağıdaysa liste açık başlar. WordPress'in router'ı
+  ilk sayfanın işaretlemesini sayfa hazır olduğundaki haliyle (bizim arama kutumuz ve düğmemizle)
+  saklar ve filtreler temizlenince geri koyar; bizimki de yerinde kalır. Bu yüzden betik
+  yalnızca kendi yaptığı kutu ve düğmeyi (`WeakSet`) sayar, kopyaları siler. Betik yalnızca gerçekten
   değişen yazıyı yazar: gözlemci (MutationObserver) her yazıyı yeniden çizim sayıp döngüye girer.
   `shop.filter_title_look: tab` (7c) başlığı geniş ekranda kutunun üst kenarına klasör sekmesi
   olarak oturtur (kutunun zemini, kenarı ve köşeleriyle; WooCommerce panel sarmalayıcıları
@@ -653,7 +665,8 @@ görünmez (`Settings\Screen::shown`).
   `.pergel-shop-toolbar`) betik açana kadar gizli ızgara/liste düğmeleri koyar; ziyaretçinin seçimi
   `localStorage['pergel-shop-view']` → `<html data-pergel-view>`, head'deki küçük satır içi betik
   sayfa çizilmeden uygular. `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
-  sorgu argümanları gizli alanlarla) ekler; `Layout::per_page` → `Listing::per_page` ziyaretçinin
+  sorgu argümanları gizli alanlarla) ekler; `shop.paging: scroll` iken eklemez (kaydırdıkça
+  yüklenen sayfada "sayfa başına" sayının ziyaretçi için anlamı yok); `Layout::per_page` → `Listing::per_page` ziyaretçinin
   sayısını menüde varsa ya da "daha fazla yükle" açıksa (1–96) kabul eder; `per_page` içeren
   sayfalar `noindex, follow`. `shop.paging` more/scroll sayfa numaralarından sonra sonraki sayfaya
   giden gerçek bir bağlantı ekler; `assets/shop-listing.js` bunu Interactivity router'ın

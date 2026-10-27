@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-27 07:06+0000\n"
-"PO-Revision-Date: 2026-10-27 07:06+0000\n"
+"POT-Creation-Date: 2026-10-27 12:16+0000\n"
+"PO-Revision-Date: 2026-10-27 12:16+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1081,6 +1081,12 @@ msgstr "Uzun filtre listelerinde arama kutusu"
 msgid "Lists with more than eight options, such as categories or brands, get a box that narrows them down as the visitor types."
 msgstr "Kategori veya marka gibi sekizden fazla seçeneği olan listelere, ziyaretçi yazdıkça listeyi daraltan bir kutu eklenir."
 
+msgid "Availability filter"
+msgstr "Stok durumu filtresi"
+
+msgid "Filters by stock: in stock, out of stock, on backorder. A shop that only takes quote requests may not need it."
+msgstr "Stoka göre süzer: stokta, stokta yok, ön siparişte. Yalnızca teklif isteği alan bir mağazanın buna ihtiyacı olmayabilir."
+
 msgid "Brand filter"
 msgstr "Marka filtresi"
 
@@ -1105,8 +1111,8 @@ msgstr "Filtre kutusu başlığının önünde ikon"
 msgid "Long filter lists"
 msgstr "Uzun filtre listeleri"
 
-msgid "With \"A few rows and a More button\" a long list shows its first rows, fading out, and a rounded More button opens the rest."
-msgstr "\"Birkaç satır ve Daha fazla düğmesi\" ile uzun bir liste ilk satırlarını solarak gösterir; yuvarlak Daha fazla düğmesi gerisini açar."
+msgid "With \"A few rows and a More button\" a long list shows its first rows, and a rounded More button below them opens the rest."
+msgstr "\"Birkaç satır ve Daha fazla düğmesi\" ile uzun bir liste ilk satırlarını gösterir; altlarındaki yuvarlak Daha fazla düğmesi gerisini açar."
 
 msgid "As the template (\"Show more\" link)"
 msgstr "Şablondaki gibi (\"Daha fazla göster\" bağlantısı)"
@@ -1141,8 +1147,8 @@ msgstr "Ziyaretçiler sıralama menüsünün yanında ızgara ile liste arasınd
 msgid "Products per page menu"
 msgstr "Sayfa başına ürün menüsü"
 
-msgid "Numbers visitors can choose from next to the sorting menu, separated by commas, e.g. 12, 24, 48. Up to six numbers from 1 to 96. Leave empty for no menu."
-msgstr "Ziyaretçilerin sıralama menüsünün yanında seçebileceği sayılar, virgülle ayrılmış, ör. 12, 24, 48. 1 ile 96 arasında en çok altı sayı. Menü istemiyorsanız boş bırakın."
+msgid "Numbers visitors can choose from next to the sorting menu, separated by commas, e.g. 12, 24, 48. Up to six numbers from 1 to 96. Leave empty for no menu. Not shown while products load as the visitor scrolls."
+msgstr "Ziyaretçilerin sıralama menüsünün yanında seçebileceği sayılar, virgülle ayrılmış, ör. 12, 24, 48. 1 ile 96 arasında en çok altı sayı. Menü istemiyorsanız boş bırakın. Ürünler kaydırdıkça yüklenirken gösterilmez."
 
 msgid "More products"
 msgstr "Sonraki ürünler"

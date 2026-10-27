@@ -409,6 +409,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				'filter_stock'       => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
 				'filter_brand'       => array(
 					'type'    => 'bool',
 					'default' => false,

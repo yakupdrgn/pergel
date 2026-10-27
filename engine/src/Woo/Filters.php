@@ -26,7 +26,10 @@ use const Pergel\VERSION;
  *   long lists and long lists cut to a few rows with a More button (a small
  *   script module, loaded only when one is on);
  * - the filter box's own title, with an icon;
- * - the brand and rating filters, added to the theme's filter pattern.
+ * - the brand and rating filters, added to the theme's filter pattern,
+ *   and the Availability filter, which can go;
+ * - child categories set in under their parent in the category list;
+ * - a filter with one option that every product has is left out.
  *
  * Every default leaves the template as it is, like Layout.
  */
@@ -61,6 +64,11 @@ final class Filters {
 		foreach ( self::GROUPS as $block ) {
 			add_filter( "render_block_$block", array( self::class, 'heading' ) );
 		}
+		foreach ( array( 'taxonomy', 'status', 'attribute' ) as $kind ) {
+			add_filter( "render_block_woocommerce/product-filter-$kind", array( self::class, 'lonely' ), 5 );
+		}
+		add_filter( 'render_block_woocommerce/product-filter-status', array( self::class, 'stock' ) );
+		add_filter( 'render_block_woocommerce/product-filter-checkbox-list', array( self::class, 'depth' ) );
 		add_action( 'init', array( self::class, 'register_assets' ) );
 	}
 
@@ -230,6 +238,61 @@ final class Filters {
 			$html,
 			1
 		);
+	}
+
+	/**
+	 * Drops a filter that filters nothing: one option, not ticked, that
+	 * every product of the page has, such as the only brand of a store.
+	 *
+	 * @param string $html Rendered block.
+	 */
+	public static function lonely( string $html ): string {
+		global $wp_query;
+		if ( ! Layout::listing() || ! $wp_query instanceof \WP_Query ) {
+			return $html;
+		}
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		if ( ! $tags->next_tag() ) {
+			return $html;
+		}
+		$context = $tags->get_attribute( 'data-wp-context' );
+		$context = is_string( $context ) ? json_decode( $context, true ) : null;
+		$items   = is_array( $context ) && isset( $context['items'] ) && is_array( $context['items'] ) ? $context['items'] : array();
+		if ( 1 !== count( $items ) || ! is_array( $items[0] ) ) {
+			return $html;
+		}
+		$item = $items[0];
+		return empty( $item['selected'] ) && isset( $item['count'] ) && (int) $item['count'] === (int) $wp_query->found_posts ? '' : $html;
+	}
+
+	/**
+	 * Drops the Availability filter when shop.filter_stock is off.
+	 *
+	 * @param string $html Rendered block.
+	 */
+	public static function stock( string $html ): string {
+		return false === Settings::get( 'shop.filter_stock' ) && Layout::listing() ? '' : $html;
+	}
+
+	/**
+	 * Marks each option of a category list with its depth, so a child
+	 * category sits under its parent. WooCommerce sends the depth with the
+	 * options but draws them all alike. A binding, not a plain attribute:
+	 * WooCommerce draws the options again from the same data after each
+	 * choice, and the binding fills those in too.
+	 *
+	 * @param string $html Rendered block.
+	 */
+	public static function depth( string $html ): string {
+		if ( ! Layout::listing() || ! str_contains( $html, 'depth' ) ) {
+			return $html;
+		}
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		while ( $tags->next_tag( array( 'class_name' => 'wc-block-product-filter-checkbox-list__item' ) ) ) {
+			$tags->set_attribute( 'data-wp-bind--data-pergel-depth', 'context.item.depth' );
+		}
+		Layout::style();
+		return $tags->get_updated_html();
 	}
 
 	/**
