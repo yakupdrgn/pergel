@@ -417,6 +417,11 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				'filter_order'       => array(
+					'type'    => 'enum',
+					'options' => array( 'template', 'menu_order', 'name', 'count' ),
+					'default' => 'template',
+				),
 				'filter_attributes'  => array(
 					'type' => 'text',
 					'max'  => 200,

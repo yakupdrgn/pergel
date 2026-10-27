@@ -635,7 +635,12 @@ görünmez (`Settings\Screen::shown`).
   ilk üç özniteliğini (WooCommerce adlarına göre sıralı) koyar; `shop.filter_attributes`
   (virgüllü öznitelik kısa adları, ör. `features, volume, wells, color`; `pa_` öneki olabilir)
   doluysa `pergel/shop/filter_attributes` süzgeciyle (`Filters::attributes`) yalnızca onları, o
-  sırayla koyar; bilinmeyen adlar atlanır. `shop.filter_stock: false` Availability
+  sırayla koyar; bilinmeyen adlar atlanır. `shop.filter_order` (menu_order|name|count) kategori,
+  marka ve öznitelik filtrelerine WooCommerce'in `sortOrder` özniteliğini verir; bunu Product
+  Filters bloğunun `render_block_data`'sında iç bloklara yazar, çünkü iç bloklar üst bloğun
+  ayrıştırılmış iç bloklarından kurulur (iç bloğun kendi `render_block_data`'sı geç kalır).
+  "Mağazanın kendi sırası" Ürünler → Kategoriler ve öznitelik terimlerindeki sürükle-bırak
+  sırasıdır. `shop.filter_stock: false` Availability
   (stok) filtresini çizmez (`render_block_woocommerce/product-filter-status`). Tek seçeneği olan,
   işaretli olmayan ve o seçeneği sayfadaki her üründe bulunan (sayısı ana sorgunun `found_posts`'una
   eşit) kategori/marka/öznitelik/stok filtresi hiç çizilmez (`Filters::lonely`): tek markalı bir

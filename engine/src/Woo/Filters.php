@@ -27,7 +27,7 @@ use const Pergel\VERSION;
  *   script module, loaded only when one is on);
  * - the filter box's own title, with an icon;
  * - which product attributes the theme's filter pattern filters by, in
- *   which order;
+ *   which order, and the order of the options in them;
  * - the brand and rating filters, added to the theme's filter pattern,
  *   and the Availability filter, which can go;
  * - child categories set in under their parent in the category list,
@@ -189,9 +189,19 @@ final class Filters {
 	}
 
 	/**
+	 * WooCommerce's sort orders for shop.filter_order.
+	 */
+	private const ORDERS = array(
+		'menu_order' => 'menu_order-asc',
+		'name'       => 'name-asc',
+		'count'      => 'count-desc',
+	);
+
+	/**
 	 * The Product Filters block's overlay: on every screen for the panel,
 	 * and from the chosen side. The block has no context for its children,
-	 * so its attributes can still change before it renders.
+	 * so its attributes can still change before it renders. Also the order
+	 * of the options in the category, brand and attribute filters.
 	 *
 	 * @param array<string, mixed> $block Parsed block.
 	 * @return array<string, mixed>
@@ -200,6 +210,11 @@ final class Filters {
 		if ( 'woocommerce/product-filters' !== ( $block['blockName'] ?? '' ) || ! Layout::listing() ) {
 			return $block;
 		}
+		$order = Settings::get( 'shop.filter_order' );
+		if ( is_string( $order ) && isset( self::ORDERS[ $order ] ) && is_array( $block['innerBlocks'] ?? null ) ) {
+			// The filters are built from this block's inner blocks after this filter.
+			$block['innerBlocks'] = self::sort_order( $block['innerBlocks'], self::ORDERS[ $order ] );
+		}
 		if ( 'drawer' === Layout::get( 'shop.filters' ) ) {
 			$block['attrs']['overlayMode'] = 'always';
 		}
@@ -207,6 +222,30 @@ final class Filters {
 			$block['attrs']['overlayPosition'] = 'right';
 		}
 		return $block;
+	}
+
+	/**
+	 * The sort order on the category, brand and attribute filters among
+	 * parsed blocks.
+	 *
+	 * @param array<mixed> $blocks Parsed blocks.
+	 * @param string       $order  WooCommerce's sort order.
+	 * @return array<mixed>
+	 */
+	private static function sort_order( array $blocks, string $order ): array {
+		foreach ( $blocks as $index => $inner ) {
+			if ( ! is_array( $inner ) ) {
+				continue;
+			}
+			if ( in_array( $inner['blockName'] ?? '', array( 'woocommerce/product-filter-taxonomy', 'woocommerce/product-filter-attribute' ), true ) ) {
+				$inner['attrs']              = is_array( $inner['attrs'] ?? null ) ? $inner['attrs'] : array();
+				$inner['attrs']['sortOrder'] = $order;
+			} elseif ( is_array( $inner['innerBlocks'] ?? null ) ) {
+				$inner['innerBlocks'] = self::sort_order( $inner['innerBlocks'], $order );
+			}
+			$blocks[ $index ] = $inner;
+		}
+		return $blocks;
 	}
 
 	/**

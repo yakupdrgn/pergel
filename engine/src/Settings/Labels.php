@@ -245,7 +245,7 @@ final class Labels {
 				),
 				'filters' => array(
 					'title'  => __( 'Filters', 'pergel-engine' ),
-					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filter_title', 'filter_icon', 'filters_fold', 'filters_search', 'filter_tree', 'filter_more', 'filter_rows', 'filter_attributes', 'filter_stock', 'filter_brand', 'filter_rating' ),
+					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filter_title', 'filter_icon', 'filters_fold', 'filters_search', 'filter_tree', 'filter_more', 'filter_rows', 'filter_attributes', 'filter_order', 'filter_stock', 'filter_brand', 'filter_rating' ),
 				),
 				'refine'  => array(
 					'title'  => __( 'Filter look', 'pergel-engine' ),
@@ -717,6 +717,16 @@ final class Labels {
 				'filters_search'     => array(
 					'label' => __( 'Search box in long filter lists', 'pergel-engine' ),
 					'help'  => __( 'Lists with more than eight options, such as categories or brands, get a box that narrows them down as the visitor types.', 'pergel-engine' ),
+				),
+				'filter_order'       => array(
+					'label'   => __( 'Order of the options', 'pergel-engine' ),
+					'help'    => __( 'In the category, brand and attribute filters. "The store\'s own order" is the order set by dragging under Products → Categories and in each attribute\'s terms.', 'pergel-engine' ),
+					'choices' => array(
+						'template'   => __( 'As the template (most products first)', 'pergel-engine' ),
+						'menu_order' => __( 'The store\'s own order', 'pergel-engine' ),
+						'name'       => __( 'By name', 'pergel-engine' ),
+						'count'      => __( 'Most products first', 'pergel-engine' ),
+					),
 				),
 				'filter_attributes'  => array(
 					'label' => __( 'Attribute filters', 'pergel-engine' ),
