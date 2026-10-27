@@ -8,7 +8,8 @@
  * WooCommerce shows these as a column on wide screens and behind a
  * "Filter products" button on narrow ones. An attribute filter needs the
  * attribute's ID, so one is added for each of the first three attributes
- * the store has; the Site Editor can change them. The engine may ask for
+ * the store has, or for the attributes the engine names, in its order
+ * (filter pergel/shop/filter_attributes); the Site Editor can change them. The engine may ask for
  * the brand and rating filters too (filter pergel/shop/filters); with the
  * brand filter, an attribute named like the brands is left out, so the
  * list does not show two "Brand" filters.
@@ -32,7 +33,8 @@ if ( $pergel_brands instanceof WP_Taxonomy ) {
 		)
 	);
 }
-$pergel_attributes = array_slice( $pergel_attributes, 0, 3 );
+$pergel_chosen     = apply_filters( 'pergel/shop/filter_attributes', null, $pergel_attributes );
+$pergel_attributes = is_array( $pergel_chosen ) ? array_values( array_filter( $pergel_chosen, static fn ( mixed $attribute ): bool => $attribute instanceof stdClass ) ) : array_slice( $pergel_attributes, 0, 3 );
 ?>
 <!-- wp:woocommerce/product-filters -->
 <div class="wp-block-woocommerce-product-filters wc-block-product-filters"><!-- wp:heading {"className":"pergel-filters__title"} -->

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.4.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-27 12:55+0000\n"
-"PO-Revision-Date: 2026-10-27 12:55+0000\n"
+"POT-Creation-Date: 2026-10-27 13:08+0000\n"
+"PO-Revision-Date: 2026-10-27 13:08+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1086,6 +1086,12 @@ msgstr "Uzun filtre listelerinde arama kutusu"
 
 msgid "Lists with more than eight options, such as categories or brands, get a box that narrows them down as the visitor types."
 msgstr "Kategori veya marka gibi sekizden fazla seçeneği olan listelere, ziyaretçi yazdıkça listeyi daraltan bir kutu eklenir."
+
+msgid "Attribute filters"
+msgstr "Özellik filtreleri"
+
+msgid "The product attributes to filter by, in this order, separated by commas, e.g. features, volume, wells, color (the attribute slugs, under Products → Attributes). Leave empty for the store's first three attributes."
+msgstr "Süzülecek ürün özellikleri, bu sırayla, virgülle ayrılmış, ör. features, volume, wells, color (özelliklerin kısa adları, Ürünler → Özellikler altında). Mağazanın ilk üç özelliği için boş bırakın."
 
 msgid "Availability filter"
 msgstr "Stok durumu filtresi"

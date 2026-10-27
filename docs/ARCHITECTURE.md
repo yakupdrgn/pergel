@@ -631,7 +631,11 @@ görünmez (`Settings\Screen::shown`).
   çizimde geri koyar. `shop.filter_brand|filter_rating` temanın filtre pattern'ine
   `pergel/shop/filters` süzgeciyle marka (`product_brand`) ve puan filtresini ekletir. Marka
   filtresi varken pattern, adı ya da etiketi markalarla aynı olan özniteliği (`pa_brand`,
-  "Marka") atlar; böylece iki "Brand" filtresi çıkmaz. `shop.filter_stock: false` Availability
+  "Marka") atlar; böylece iki "Brand" filtresi çıkmaz. Pattern öznitelik filtresi olarak mağazanın
+  ilk üç özniteliğini (WooCommerce adlarına göre sıralı) koyar; `shop.filter_attributes`
+  (virgüllü öznitelik kısa adları, ör. `features, volume, wells, color`; `pa_` öneki olabilir)
+  doluysa `pergel/shop/filter_attributes` süzgeciyle (`Filters::attributes`) yalnızca onları, o
+  sırayla koyar; bilinmeyen adlar atlanır. `shop.filter_stock: false` Availability
   (stok) filtresini çizmez (`render_block_woocommerce/product-filter-status`). Tek seçeneği olan,
   işaretli olmayan ve o seçeneği sayfadaki her üründe bulunan (sayısı ana sorgunun `found_posts`'una
   eşit) kategori/marka/öznitelik/stok filtresi hiç çizilmez (`Filters::lonely`): tek markalı bir

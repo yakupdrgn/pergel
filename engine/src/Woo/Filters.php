@@ -26,6 +26,8 @@ use const Pergel\VERSION;
  *   long lists and long lists cut to a few rows with a More button (a small
  *   script module, loaded only when one is on);
  * - the filter box's own title, with an icon;
+ * - which product attributes the theme's filter pattern filters by, in
+ *   which order;
  * - the brand and rating filters, added to the theme's filter pattern,
  *   and the Availability filter, which can go;
  * - child categories set in under their parent in the category list,
@@ -71,6 +73,37 @@ final class Filters {
 		add_filter( 'render_block_woocommerce/product-filter-status', array( self::class, 'stock' ) );
 		add_filter( 'render_block_woocommerce/product-filter-checkbox-list', array( self::class, 'depth' ) );
 		add_action( 'init', array( self::class, 'register_assets' ) );
+	}
+
+	/**
+	 * Filter for pergel/shop/filter_attributes: the attributes named in
+	 * shop.filter_attributes, in that order, from the ones the theme's
+	 * filter pattern may use. Null (the pattern's own choice) when the
+	 * setting is empty. Layout adds it everywhere, like groups().
+	 *
+	 * @param mixed $chosen     The choice so far.
+	 * @param mixed $attributes WooCommerce's attribute rows.
+	 * @return mixed
+	 */
+	public static function attributes( mixed $chosen, mixed $attributes = array() ): mixed {
+		$names = preg_split( '/[\s,;]+/', strtolower( (string) Settings::get( 'shop.filter_attributes' ) ), -1, PREG_SPLIT_NO_EMPTY );
+		if ( ! $names || ! is_array( $attributes ) ) {
+			return $chosen;
+		}
+		$by_name = array();
+		foreach ( $attributes as $attribute ) {
+			if ( $attribute instanceof \stdClass && isset( $attribute->attribute_name ) ) {
+				$by_name[ strtolower( (string) $attribute->attribute_name ) ] = $attribute;
+			}
+		}
+		$list = array();
+		foreach ( $names as $name ) {
+			$name = (string) preg_replace( '/^pa_/', '', $name );
+			if ( isset( $by_name[ $name ] ) ) {
+				$list[ $name ] = $by_name[ $name ];
+			}
+		}
+		return array_values( $list );
 	}
 
 	/**
