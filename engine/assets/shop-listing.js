@@ -1,5 +1,5 @@
 /**
- * Product listing extras (Pergel\Woo\Listing): grid and list buttons, the
+ * Product listing extras (Pergel\Woo\Listing): list and grid buttons, the
  * products per page menu, and loading more products on the same page.
  *
  * The view is a data attribute on <html>, so WooCommerce redrawing the
@@ -13,23 +13,54 @@
 const STORE = 'pergel-shop-view';
 const root = document.documentElement;
 
-/* Grid and list buttons. */
+/* List and grid buttons. The view is "list", "grid" (the products per row
+ * of the page) or "grid-N" (N per row on wide screens; shop-layout.css
+ * applies it from 1024px, and narrower screens show one grid button). */
 
 const setView = ( view ) => {
 	root.dataset.pergelView = view;
 	for ( const button of document.querySelectorAll(
 		'.pergel-view-button'
 	) ) {
+		const own = button.dataset.pergelView;
 		button.setAttribute(
 			'aria-pressed',
-			button.dataset.pergelView === view ? 'true' : 'false'
+			own === view || ( own === 'grid' && view.startsWith( 'grid-' ) )
+				? 'true'
+				: 'false'
 		);
 	}
 };
 
+// The view to start with: the visitor's last one while its button is
+// there, else the page's. A plain grid presses the button of the number
+// of products a row shows now.
+const firstView = ( group ) => {
+	const has = ( view ) =>
+		!! group.querySelector(
+			`.pergel-view-button[data-pergel-view="${ CSS.escape( view ) }"]`
+		);
+	let view = root.dataset.pergelView;
+	if ( ! view || ! has( view ) ) {
+		view = group.dataset.pergelDefault || 'grid';
+	}
+	if ( view === 'grid' ) {
+		const grid = document.querySelector(
+			'.pergel-shop-grid > .wc-block-product-template'
+		);
+		const count = grid
+			? getComputedStyle( grid ).gridTemplateColumns.split( ' ' ).length
+			: 0;
+		if ( has( `grid-${ count }` ) ) {
+			view = `grid-${ count }`;
+		}
+	}
+	return view;
+};
+
 for ( const group of document.querySelectorAll( '.pergel-view-switch' ) ) {
 	group.hidden = false;
-	setView( root.dataset.pergelView || group.dataset.pergelDefault || 'grid' );
+	setView( firstView( group ) );
 	group.addEventListener( 'click', ( event ) => {
 		const button =
 			event.target instanceof Element &&

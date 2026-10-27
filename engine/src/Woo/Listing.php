@@ -18,8 +18,9 @@ use const Pergel\VERSION;
  * The "View and paging" shop settings:
  *
  * - products as a grid or a list (the list adds the short description);
- * - grid and list buttons beside the sorting menu, the visitor's choice
- *   kept in their browser;
+ * - list and grid buttons beside the sorting menu, with a button for each
+ *   products per row the visitor may pick on wide screens; their choice
+ *   is kept in their browser;
  * - a products per page menu beside the sorting menu (a plain form, like
  *   WooCommerce's sorting), left out while products load on scrolling;
  * - a "Load more" button, or loading while scrolling, after the products.
@@ -215,21 +216,55 @@ final class Listing {
 	}
 
 	/**
-	 * The grid and list buttons; hidden until the script shows them.
+	 * Products per row the visitor can pick, from the setting.
+	 *
+	 * @return list<int>
+	 */
+	public static function columns(): array {
+		$value = (string) Settings::get( 'shop.view_columns' );
+		return '' === $value ? array() : array_map( 'intval', explode( ',', $value ) );
+	}
+
+	/**
+	 * The list button, then the grid buttons: one per products per row
+	 * chosen in the settings, for wide screens, and one plain grid button
+	 * for narrower screens (or for all, with no number chosen). Hidden
+	 * until the script shows them.
 	 */
 	private static function buttons(): string {
+		$columns = self::columns();
+		$wide    = Layout::get( 'shop.columns' );
 		$view    = 'list' === Layout::get( 'shop.view' ) ? 'list' : 'grid';
+		if ( 'grid' === $view && is_string( $wide ) && in_array( (int) $wide, $columns, true ) ) {
+			$view = 'grid-' . $wide;
+		}
+		$options = array(
+			'list' => array( __( 'List', 'pergel-engine' ), '<path d="M3 3h5v5H3zM10 4h7v1.5h-7zM10 6.5h5V8h-5zM3 12h5v5H3zM10 13h7v1.5h-7zM10 15.5h5V17h-5z"/>', '' ),
+			'grid' => array( __( 'Grid', 'pergel-engine' ), '<path d="M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z"/>', $columns ? ' pergel-view-button--narrow' : '' ),
+		);
+		foreach ( $columns as $count ) {
+			$tile  = ( 16 - 1.5 * ( $count - 1 ) ) / $count;
+			$shape = '';
+			for ( $i = 0; $i < $count; $i++ ) {
+				$x      = round( 2 + $i * ( $tile + 1.5 ), 2 );
+				$shape .= sprintf( '<rect x="%1$s" y="3" width="%2$s" height="6.25" rx="0.75"/><rect x="%1$s" y="10.75" width="%2$s" height="6.25" rx="0.75"/>', $x, round( $tile, 2 ) );
+			}
+			$options[ "grid-$count" ] = array(
+				/* translators: %d: number of products in a row, 2 to 6. */
+				sprintf( __( '%d per row', 'pergel-engine' ), $count ),
+				$shape,
+				' pergel-view-button--wide',
+			);
+		}
 		$buttons = '';
-		foreach ( array(
-			'grid' => array( __( 'Grid', 'pergel-engine' ), '<path d="M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z"/>' ),
-			'list' => array( __( 'List', 'pergel-engine' ), '<path d="M3 3h5v5H3zM10 4h7v1.5h-7zM10 6.5h5V8h-5zM3 12h5v5H3zM10 13h7v1.5h-7zM10 15.5h5V17h-5z"/>' ),
-		) as $option => [ $label, $shape ] ) {
+		foreach ( $options as $option => [ $label, $shape, $class ] ) {
 			$buttons .= sprintf(
-				'<button type="button" class="pergel-view-button" data-pergel-view="%1$s" aria-pressed="%2$s" title="%3$s"><svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">%4$s</svg><span class="screen-reader-text">%3$s</span></button>',
+				'<button type="button" class="pergel-view-button%5$s" data-pergel-view="%1$s" aria-pressed="%2$s" title="%3$s"><svg viewBox="0 0 20 20" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">%4$s</svg><span class="screen-reader-text">%3$s</span></button>',
 				esc_attr( $option ),
-				$option === $view ? 'true' : 'false',
+				$option === $view || ( 'grid' === $option && str_starts_with( $view, 'grid-' ) ) ? 'true' : 'false',
 				esc_attr( $label ),
-				$shape
+				$shape,
+				esc_attr( $class )
 			);
 		}
 		return sprintf(
@@ -322,7 +357,7 @@ final class Listing {
 	public static function head(): void {
 		wp_print_inline_script_tag(
 			sprintf(
-				'try{var v=localStorage.getItem(%s);if(v==="grid"||v==="list"){document.documentElement.dataset.pergelView=v}}catch(e){}',
+				'try{var v=localStorage.getItem(%s);if(/^(grid|list|grid-[2-6])$/.test(v)){document.documentElement.dataset.pergelView=v}}catch(e){}',
 				wp_json_encode( self::STORE )
 			)
 		);

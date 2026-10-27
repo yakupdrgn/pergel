@@ -677,9 +677,18 @@ görünmez (`Settings\Screen::shown`).
   pergel-view-list` sınıfı koyar; liste mümkünse (`view` liste ya da `view_switch` açık) fiyattan
   sonra `woocommerce/product-summary` (30 kelime) çizilir, ızgarada CSS ile gizlenir.
   `shop.view_switch` sıralama menüsünün yanına (`render_block_woocommerce/catalog-sorting`,
-  `.pergel-shop-toolbar`) betik açana kadar gizli ızgara/liste düğmeleri koyar; ziyaretçinin seçimi
-  `localStorage['pergel-shop-view']` → `<html data-pergel-view>`, head'deki küçük satır içi betik
-  sayfa çizilmeden uygular. `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
+  `.pergel-shop-toolbar`) betik açana kadar gizli liste/ızgara düğmeleri koyar: önce liste, sonra
+  `shop.view_columns` (yeni `set` tipi: onay kutulu kartlar, `ad[]` + boş gizli alan, "2,3,4"
+  biçiminde seçenek sırasıyla saklanır; varsayılan `3,4,5`) içindeki her sayı için
+  `grid-N` düğmesi (1024px ve üstü) ve dar ekranlar için tek `grid` düğmesi (sayı seçilmemişse her
+  ekranda). Ziyaretçinin seçimi (`list|grid|grid-N`) `localStorage['pergel-shop-view']` →
+  `<html data-pergel-view>`, head'deki küçük satır içi betik sayfa çizilmeden uygular; düğmesi
+  artık olmayan bir seçim sayfanın görünümüne döner, düz `grid` o an satırdaki ürün sayısının
+  düğmesini basılı gösterir. `grid-N` ve liste kuralları `!important`: ızgarasını `!important` ile
+  sabitleyen temalar (Ariumlab `--al-cols`) ziyaretçinin seçimini ezmesin. Liste kartı Unimart gibi:
+  metin solda, resim sağda (%45, 4:3), ilk/son `1fr` boş satırlar metni resme göre ortalar
+  (`li::before` ilk satırı tutar), ad `large`, düğme tam genişlik (en çok 28rem); 600px altında resim
+  üstte, tek sütun. `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
   sorgu argümanları gizli alanlarla) ekler; `shop.paging: scroll` iken eklemez (kaydırdıkça
   yüklenen sayfada "sayfa başına" sayının ziyaretçi için anlamı yok); `Layout::per_page` → `Listing::per_page` ziyaretçinin
   sayısını menüde varsa ya da "daha fazla yükle" açıksa (1–96) kabul eder; `per_page` içeren

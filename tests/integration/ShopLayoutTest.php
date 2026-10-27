@@ -614,6 +614,38 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringStartsWith( '<div class="pergel-shop-toolbar"><form>sort</form>', $toolbar );
 		$this->assertStringContainsString( '<option value="12">12</option><option value="48">48</option>', $toolbar );
 		$this->assertStringContainsString( 'data-pergel-view="list" aria-pressed="true"', $toolbar );
+		// The default numbers: a wide button each, and the plain grid button for narrow screens.
+		$this->assertSame( array( 3, 4, 5 ), Listing::columns() );
+		$this->assertStringContainsString( 'class="pergel-view-button pergel-view-button--narrow" data-pergel-view="grid" aria-pressed="false"', $toolbar );
+		$this->assertStringContainsString( 'class="pergel-view-button pergel-view-button--wide" data-pergel-view="grid-5" aria-pressed="false" title="5 per row"', $toolbar );
+		$this->assertStringNotContainsString( 'grid-2', $toolbar );
+
+		// A grid of 4 starts on the 4 button; with no number, one grid button for all screens.
+		Settings::update(
+			array(
+				'shop' => array(
+					'view'         => 'grid',
+					'columns'      => '4',
+					'view_columns' => '4,2',
+				),
+			)
+		);
+		$this->assertSame( array( 2, 4 ), Listing::columns() );
+		$toolbar = Listing::toolbar( '<form>sort</form>' );
+		$this->assertStringContainsString( 'data-pergel-default="grid-4"', $toolbar );
+		$this->assertStringContainsString( 'data-pergel-view="grid-4" aria-pressed="true"', $toolbar );
+		$this->assertStringContainsString( 'data-pergel-view="grid" aria-pressed="true"', $toolbar );
+		Settings::update(
+			array(
+				'shop' => array(
+					'view'         => 'list',
+					'view_columns' => '',
+				),
+			)
+		);
+		$toolbar = Listing::toolbar( '<form>sort</form>' );
+		$this->assertStringContainsString( 'class="pergel-view-button" data-pergel-view="grid"', $toolbar );
+		$this->assertStringNotContainsString( 'pergel-view-button--', $toolbar );
 
 		// Loading while scrolling: no per page menu, the view buttons stay.
 		Settings::update( array( 'shop' => array( 'paging' => 'scroll' ) ) );

@@ -237,7 +237,7 @@ final class Labels {
 			'shop'        => array(
 				'grid'    => array(
 					'title'  => __( 'Product grid', 'pergel-engine' ),
-					'fields' => array( 'columns', 'columns_tablet', 'columns_phone', 'per_page' ),
+					'fields' => array( 'columns', 'view_columns', 'columns_tablet', 'columns_phone', 'per_page' ),
 				),
 				'page'    => array(
 					'title'  => __( 'Page', 'pergel-engine' ),
@@ -638,6 +638,18 @@ final class Labels {
 						'4'        => '4',
 						'5'        => '5',
 						'6'        => '6',
+					),
+				),
+				'view_columns'       => array(
+					'label'   => __( 'Products per row visitors can choose', 'pergel-engine' ),
+					'help'    => __( 'A button for each ticked number next to the list button, on screens 1024 pixels and wider; narrower screens keep one grid button. Shown when "Grid and list buttons" is on. Their choice is kept in their browser.', 'pergel-engine' ),
+					'cards'   => true,
+					'choices' => array(
+						'2' => '2',
+						'3' => '3',
+						'4' => '4',
+						'5' => '5',
+						'6' => '6',
 					),
 				),
 				'columns_tablet'     => array(
