@@ -21,3 +21,12 @@
 	content: "/" / "";
 	opacity: 0.6;
 }
+
+/* On touch screens the links get a taller tap area without moving the line. */
+@media (pointer: coarse) {
+	.wp-block-pergel-breadcrumb a {
+		display: inline-block;
+		padding-block: 0.6em;
+		margin-block: -0.6em;
+	}
+}

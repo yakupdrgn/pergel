@@ -696,7 +696,11 @@ görünmez (`Settings\Screen::shown`).
   olarak temanın `settings.viewport` değerine kadar gösterir (tablet → mobile → 782px; Pergel teması
   1024px). Bu genişliğe kadar `.pergel-shop-layout:has(.is-mobile-overlay)` sarılır, sütunlar
   %100, filtre sütunu yapışkan değil; yoksa 783–1024px'te sol sütunda yalnızca düğme kalıyordu.
-  Değer stil dosyasından okunamadığı için `Layout::style()` ilk çağrıda satır içi yazar. `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
+  Değer stil dosyasından okunamadığı için `Layout::style()` ilk çağrıda satır içi yazar.
+- **Dokunmatik ayrıntılar:** karşılaştırma tablosunun kaydırma kutusu, kaydırılacak ürün olan
+  tarafta gölge gösterir (`background-attachment: local` örtüler + `scroll` gölgeler; CSS'ten
+  ibaret). `pergel/breadcrumb` bağlantıları `pointer: coarse` ekranlarda satırı oynatmadan
+  ~40px dokunma alanı alır (dolgu + eksi kenar boşluğu). `shop.per_page_menu` aynı yere düz bir GET formu (`per_page`, diğer
   sorgu argümanları gizli alanlarla) ekler; `shop.paging: scroll` iken eklemez (kaydırdıkça
   yüklenen sayfada "sayfa başına" sayının ziyaretçi için anlamı yok); `Layout::per_page` → `Listing::per_page` ziyaretçinin
   sayısını menüde varsa ya da "daha fazla yükle" açıksa (1–96) kabul eder; `per_page` içeren

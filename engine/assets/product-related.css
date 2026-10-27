@@ -16,6 +16,13 @@
 	overflow-x: auto;
 	/* Keeps the hidden texts inside, so they do not widen the page. */
 	position: relative;
+	/* A shadow on the side with more products to scroll to: the page
+	 * coloured covers move with the table and hide it at either end. */
+	background:
+		linear-gradient(to right, var(--wp--preset--color--base, #fff) 40%, transparent) left / 2rem 100% no-repeat local,
+		linear-gradient(to left, var(--wp--preset--color--base, #fff) 40%, transparent) right / 2rem 100% no-repeat local,
+		radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 0.16), transparent) left / 0.875rem 100% no-repeat scroll,
+		radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.16), transparent) right / 0.875rem 100% no-repeat scroll;
 }
 
 .pergel-compare__scroll:focus-visible {
