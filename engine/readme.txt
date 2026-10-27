@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.6 =
+* Shop filters: new setting "Attribute filters" (Shop pages → Filters) chooses which product attributes the filter box shows, in which order, instead of the store's first three.
 
 = 1.4.5 =
 * Shop filters: child categories sit under their parent in the category filter. New setting "Subcategories start closed" (Shop pages → Filters) puts them under an arrow on their parent. After "Clear filters" a long list no longer shows two search boxes and two More buttons. A long list shows its first rows with the More button below them, not over a half-faded row.

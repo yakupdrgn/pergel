@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,9 @@ layers, WooCommerce features and content types come from the companion
 Pergel Engine plugin, so changing the theme never loses content.
 
 == Changelog ==
+
+= 1.4.6 =
+* Product filters: the attribute filters can come from the engine's "Attribute filters" setting.
 
 = 1.4.5 =
 * Product filters: no rule under the filter box title when the first filter is hidden.
