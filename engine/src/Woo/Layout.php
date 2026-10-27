@@ -612,7 +612,7 @@ final class Layout {
 		if ( 'woocommerce/product-template' !== ( $block['blockName'] ?? '' ) || null === $parent_block || ! self::main_grid( $parent_block->parsed_block ) || ! self::listing() ) {
 			return $context;
 		}
-		Listing::prepare();
+		Listing::prepare( $block );
 		$columns = self::get( 'shop.columns' );
 		if ( is_string( $columns ) && ctype_digit( $columns ) ) {
 			$layout                   = is_array( $context['displayLayout'] ?? null ) ? $context['displayLayout'] : array();

@@ -675,7 +675,10 @@ görünmez (`Settings\Screen::shown`).
   zemini ve köşesiyle). Kartlar: `card_title_lines` ürün adını 1–3 satırda keser.
 - **Görünüm ve sayfalar (`Woo\Listing`):** `shop.view` ana ızgaraya `pergel-shop-grid
   pergel-view-list` sınıfı koyar; liste mümkünse (`view` liste ya da `view_switch` açık) fiyattan
-  sonra `woocommerce/product-summary` (30 kelime) çizilir, ızgarada CSS ile gizlenir.
+  sonra `woocommerce/product-summary` (30 kelime) çizilir, ızgarada CSS ile gizlenir (sarmalayıcısıyla);
+  kartta fiyat yoksa (Ariumlab) ürün adından sonra: `Listing::prepare( $template )` şablonda fiyat
+  arar, `core/post-title` `query` bağlamı almadığı için ana ızgara bir bayrakla izlenir
+  (`render_block_woocommerce/product-template` bitince kapanır). Listede 3 satırla kesilir.
   `shop.view_switch` sıralama menüsünün yanına (`render_block_woocommerce/catalog-sorting`,
   `.pergel-shop-toolbar`) betik açana kadar gizli liste/ızgara düğmeleri koyar: önce liste, sonra
   `shop.view_columns` (yeni `set` tipi: onay kutulu kartlar, `ad[]` + boş gizli alan, "2,3,4"

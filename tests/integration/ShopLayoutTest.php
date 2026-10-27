@@ -606,7 +606,13 @@ final class ShopLayoutTest extends TestCase {
 		$html = do_blocks( self::FULL_GRID );
 		$this->assertStringContainsString( 'pergel-shop-grid', $html );
 		$this->assertStringContainsString( 'pergel-view-list', $html );
-		$this->assertStringContainsString( 'pergel-list-summary', $html );
+		$this->assertSame( 1, substr_count( $html, 'pergel-list-summary' ), 'After the price only.' );
+		// A card without a price has it after the name, once; grids after the main one do not.
+		$plain = str_replace( '<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->', '', self::FULL_GRID );
+		$html  = do_blocks( $plain );
+		$this->assertMatchesRegularExpression( '/<\/h2>\s*<div[^>]*wp-block-woocommerce-product-summary[^>]*><div class="wc-block-components-product-summary pergel-list-summary"/', $html );
+		$this->assertSame( 1, substr_count( $html, 'pergel-list-summary' ) );
+		$this->assertStringNotContainsString( 'pergel-list-summary', do_blocks( '<!-- wp:post-title /-->' ) );
 		$this->assertMatchesRegularExpression( '/<a class="pergel-load-more__button[^"]*" href="[^"]+" data-pergel-more="more" data-pergel-step="16"/', $html );
 		$this->assertTrue( wp_style_is( Layout::STYLE ) );
 

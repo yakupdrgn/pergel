@@ -58,15 +58,51 @@ final class Listing {
 	private static int $step = 0;
 
 	/**
+	 * Whether the short description follows the name, the card having no
+	 * price to follow; set when the main grid starts, unset when it ends
+	 * (the name block does not get the query to tell the main grid by).
+	 *
+	 * @var bool
+	 */
+	private static bool $after_title = false;
+
+	/**
 	 * Hooks for the products of the main grid: the short description and
 	 * the "Load more" link. Layout calls it when the main grid of a listing
 	 * page starts, so other pages never load this class.
+	 *
+	 * @param array $template The grid's Product Template block, parsed.
+	 * @phpstan-param array<string, mixed> $template
 	 */
-	public static function prepare(): void {
-		if ( ! has_filter( 'render_block_woocommerce/product-price', array( self::class, 'summary' ) ) ) {
-			add_filter( 'render_block_woocommerce/product-price', array( self::class, 'summary' ), 10, 3 );
-			add_filter( 'render_block_core/query-pagination', array( self::class, 'more' ), 10, 3 );
+	public static function prepare( array $template = array() ): void {
+		// Cards without a price get the short description after the name.
+		self::$after_title = array() !== $template && ! self::holds( $template, 'woocommerce/product-price' );
+		foreach ( array(
+			'woocommerce/product-price'    => array( 'summary', 3 ),
+			'core/post-title'              => array( 'title_summary', 3 ),
+			'woocommerce/product-template' => array( 'grid_done', 1 ),
+			'core/query-pagination'        => array( 'more', 3 ),
+		) as $name => [ $method, $args ] ) {
+			if ( ! has_filter( "render_block_$name", array( self::class, $method ) ) ) {
+				add_filter( "render_block_$name", array( self::class, $method ), 10, $args );
+			}
 		}
+	}
+
+	/**
+	 * Whether a parsed block holds a block of this name.
+	 *
+	 * @param array  $block Parsed block.
+	 * @param string $name  Block name.
+	 * @phpstan-param array<string, mixed> $block
+	 */
+	private static function holds( array $block, string $name ): bool {
+		foreach ( is_array( $block['innerBlocks'] ?? null ) ? $block['innerBlocks'] : array() as $inner ) {
+			if ( is_array( $inner ) && ( ( $inner['blockName'] ?? null ) === $name || self::holds( $inner, $name ) ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -276,6 +312,28 @@ final class Listing {
 	}
 
 	/**
+	 * The short description after the name, in cards without a price.
+	 *
+	 * @param string    $html     Rendered name.
+	 * @param array     $block    Parsed block.
+	 * @param \WP_Block $instance Block instance.
+	 * @phpstan-param array<string, mixed> $block
+	 */
+	public static function title_summary( string $html, array $block, \WP_Block $instance ): string {
+		return self::$after_title && self::list_possible() ? $html . self::summary_block( $instance ) : $html;
+	}
+
+	/**
+	 * Ends the short description after the name with the main grid.
+	 *
+	 * @param string $html Rendered Product Template.
+	 */
+	public static function grid_done( string $html ): string {
+		self::$after_title = false;
+		return $html;
+	}
+
+	/**
 	 * The short description after the price, in grids that can show the
 	 * list; the grid view hides it.
 	 *
@@ -288,6 +346,15 @@ final class Listing {
 		if ( ! self::main_grid( $instance ) || ! self::list_possible() ) {
 			return $html;
 		}
+		return $html . self::summary_block( $instance );
+	}
+
+	/**
+	 * The short description of the product a block shows, for the list.
+	 *
+	 * @param \WP_Block $instance A block of the product's card.
+	 */
+	private static function summary_block( \WP_Block $instance ): string {
 		$summary = new \WP_Block(
 			array(
 				'blockName'    => 'woocommerce/product-summary',
@@ -303,7 +370,7 @@ final class Listing {
 			),
 			$instance->context
 		);
-		return $html . $summary->render();
+		return $summary->render();
 	}
 
 	/**

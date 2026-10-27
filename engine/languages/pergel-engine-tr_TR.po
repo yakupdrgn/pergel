@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.4.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-27 14:12+0000\n"
-"PO-Revision-Date: 2026-10-27 14:12+0000\n"
+"POT-Creation-Date: 2026-10-27 15:34+0000\n"
+"PO-Revision-Date: 2026-10-27 15:34+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -999,6 +999,12 @@ msgstr "Geniş ekranlarda. Aşağıda bir sayı seçmezseniz daha dar ekranlarda
 
 msgid "As in the template"
 msgstr "Şablondaki gibi"
+
+msgid "Products per row visitors can choose"
+msgstr "Ziyaretçinin seçebileceği satırdaki ürün sayıları"
+
+msgid "A button for each ticked number next to the list button, on screens 1024 pixels and wider; narrower screens keep one grid button. Shown when \"Grid and list buttons\" is on. Their choice is kept in their browser."
+msgstr "Liste düğmesinin yanında, işaretli her sayı için bir düğme; 1024 piksel ve daha geniş ekranlarda. Daha dar ekranlarda tek ızgara düğmesi kalır. \"Izgara ve liste düğmeleri\" açıkken gösterilir. Ziyaretçinin seçimi tarayıcısında saklanır."
 
 msgid "Products per row on tablets"
 msgstr "Tablette bir satırdaki ürün sayısı"
@@ -2905,6 +2911,10 @@ msgstr "Göster"
 
 msgid "Apply"
 msgstr "Uygula"
+
+#. translators: %d: number of products in a row, 2 to 6.
+msgid "%d per row"
+msgstr "Satırda %d"
 
 msgid "Loading products…"
 msgstr "Ürünler yükleniyor…"

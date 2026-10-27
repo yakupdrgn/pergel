@@ -368,8 +368,14 @@
  * larger than in the grid; on phones the picture goes on top.
  * The empty first and last rows centre the text against the picture.
  * The server's view applies until the visitor picks one with the buttons. */
-.pergel-shop-grid .pergel-list-summary {
+.pergel-shop-grid .pergel-list-summary,
+.pergel-shop-grid .wp-block-woocommerce-product-summary:has(> .pergel-list-summary) {
 	display: none;
+}
+
+html:not([data-pergel-view]) .pergel-view-list .wp-block-woocommerce-product-summary:has(> .pergel-list-summary),
+html[data-pergel-view="list"] .pergel-shop-grid .wp-block-woocommerce-product-summary:has(> .pergel-list-summary) {
+	display: block;
 }
 
 html:not([data-pergel-view]) .pergel-view-list > .wc-block-product-template,
@@ -449,6 +455,10 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 	-webkit-line-clamp: 3;
 	color: var(--wp--preset--color--muted);
 	font-size: var(--wp--preset--font-size--small);
+}
+
+.pergel-shop-grid .pergel-list-summary > * {
+	margin-block: 0;
 }
 
 @media (max-width: 599px) {
