@@ -5,7 +5,7 @@
 	"title": "Delivery estimate",
 	"category": "pergel",
 	"icon": "calendar-alt",
-	"description": "The estimated delivery dates of the product, and before the cut-off time that an order ships today. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves.",
+	"description": "The estimated delivery dates of the product, and before the cut-off time that an order ships today. Turn it on under Dashboard → Pergel → Shop; product pages then show it under the add-to-cart button by themselves.",
 	"keywords": [ "delivery", "shipping", "date", "cut-off", "estimate" ],
 	"textdomain": "pergel-engine",
 	"usesContext": [ "postId", "postType" ],

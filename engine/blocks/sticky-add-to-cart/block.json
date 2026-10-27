@@ -5,7 +5,7 @@
 	"title": "Sticky add-to-cart bar",
 	"category": "pergel",
 	"icon": "cart",
-	"description": "A bar at the bottom of the screen with the product's image, name, price and add-to-cart button, shown while the add-to-cart form is out of view. Turn it on under Pergel → Settings → Shop; product pages then show it by themselves.",
+	"description": "A bar at the bottom of the screen with the product's image, name, price and add-to-cart button, shown while the add-to-cart form is out of view. Turn it on under Dashboard → Pergel → Shop; product pages then show it by themselves.",
 	"keywords": [ "sticky", "cart", "add to cart", "bar", "buy" ],
 	"textdomain": "pergel-engine",
 	"usesContext": [ "postId", "postType" ],
