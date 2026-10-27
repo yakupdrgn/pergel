@@ -612,6 +612,12 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertTrue( wp_style_is( Layout::STYLE ) );
 		$flat = '<div class="wc-block-product-filter-checkbox-list"><div class="wc-block-product-filter-checkbox-list__item"></div></div>';
 		$this->assertSame( $flat, Filters::depth( $flat ) );
+
+		// Subcategories closed under an arrow: the script's feature and its label.
+		Settings::update( array( 'shop' => array( 'filter_tree' => true ) ) );
+		$box = Filters::filters( '<div class="wp-block-woocommerce-product-filters"><h2 class="wp-block-heading pergel-filters__title">Filters</h2></div>' );
+		$this->assertStringContainsString( 'data-pergel-filters="tree"', $box );
+		$this->assertStringContainsString( 'data-pergel-branch-label="Subcategories"', $box );
 	}
 
 	public function test_banner_and_category_strip(): void {

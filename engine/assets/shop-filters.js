@@ -1,7 +1,7 @@
 /**
  * Filter area extras (Pergel\Woo\Filters): filter groups that open and
- * close, a search box in long option lists, and long lists cut to a few
- * rows with a More button.
+ * close, a search box in long option lists, subcategories closed under an
+ * arrow, and long lists cut to a few rows with a More button.
  *
  * The group buttons come with the page. WooCommerce redraws the filters
  * from the server after every choice, so which groups are closed, which
@@ -30,6 +30,7 @@ const GROUP = [
 
 const closed = new Set();
 const opened = new Set();
+const branches = new Set();
 const typed = new Map();
 const ours = new WeakSet();
 const ITEM = '.wc-block-product-filter-checkbox-list__item';
@@ -126,6 +127,60 @@ const addSearch = ( group, label ) => {
 	}
 };
 
+const depthOf = ( item ) => parseInt( item.dataset.pergelDepth || '0', 10 );
+
+// Subcategories start closed under their parent's arrow (Filters::depth
+// gives each option its depth). WooCommerce draws only its first fifteen
+// options, so the rest are asked for first: every top category shows. A
+// ticked subcategory keeps its parents open.
+const tree = ( group, label ) => {
+	const rest = group.querySelector( `${ SHOW_ALL }:not([hidden])` );
+	const items = [ ...group.querySelectorAll( ITEM ) ];
+	if ( ! items.some( ( item ) => depthOf( item ) > 0 ) ) {
+		return;
+	}
+	// The options it adds arrive as a redraw, which comes back here.
+	if ( rest ) {
+		rest.click();
+	}
+	const name = nameOf( group );
+	const open = [];
+	items.forEach( ( item, index ) => {
+		const depth = depthOf( item );
+		open.length = depth;
+		item.toggleAttribute( 'data-pergel-folded', open.includes( false ) );
+		let end = index + 1;
+		while ( end < items.length && depthOf( items[ end ] ) > depth ) {
+			end++;
+		}
+		let button = own( item, '.pergel-filter-branch' );
+		if ( end === index + 1 ) {
+			if ( button ) {
+				button.remove();
+			}
+			open[ depth ] = true;
+			return;
+		}
+		const value = item.querySelector( 'input' )?.value || '';
+		const key = `${ name }|${ value }`;
+		if ( items.slice( index + 1, end ).some( ( child ) => child.querySelector( 'input:checked' ) ) ) {
+			branches.add( key );
+		}
+		open[ depth ] = branches.has( key );
+		if ( ! button ) {
+			button = document.createElement( 'button' );
+			button.type = 'button';
+			button.className = 'pergel-filter-branch';
+			button.dataset.key = key;
+			const text = item.querySelector( '.wc-block-product-filter-checkbox-list__text' );
+			button.setAttribute( 'aria-label', `${ label }: ${ text ? text.textContent.trim() : value }` );
+			ours.add( button );
+			item.append( button );
+		}
+		button.setAttribute( 'aria-expanded', open[ depth ] ? 'true' : 'false' );
+	} );
+};
+
 // A long list shows its first rows; the rest wait behind the More button.
 // A ticked option further down opens it.
 const cut = ( group, filters ) => {
@@ -134,7 +189,12 @@ const cut = ( group, filters ) => {
 		return;
 	}
 	const rows = parseInt( filters.dataset.pergelRows, 10 ) || 5;
-	const items = [ ...list.querySelectorAll( ITEM ) ];
+	const items = [ ...list.querySelectorAll( ITEM ) ].filter(
+		( item ) => ! item.hasAttribute( 'data-pergel-folded' )
+	);
+	list.querySelectorAll( `${ ITEM }[data-pergel-folded]` ).forEach( ( item ) =>
+		item.removeAttribute( 'data-pergel-beyond' )
+	);
 	const rest = list.querySelector( SHOW_ALL );
 	let button = own( group, '.pergel-filter-more' );
 	if ( items.length <= rows + 1 && ! rest ) {
@@ -179,6 +239,9 @@ const enhance = ( filters ) => {
 		if ( features.includes( 'search' ) ) {
 			addSearch( group, label );
 		}
+		if ( features.includes( 'tree' ) ) {
+			tree( group, filters.dataset.pergelBranchLabel || '' );
+		}
 		if ( features.includes( 'more' ) ) {
 			cut( group, filters );
 		}
@@ -194,6 +257,27 @@ for ( const filters of document.querySelectorAll( '[data-pergel-filters]' ) ) {
 }
 
 document.addEventListener( 'click', ( event ) => {
+	const branch =
+		event.target instanceof Element &&
+		event.target.closest( '[data-pergel-filters] .pergel-filter-branch' );
+	if ( branch ) {
+		const group = branch.closest( GROUP );
+		const filters = branch.closest( '[data-pergel-filters]' );
+		if ( ! group || ! filters ) {
+			return;
+		}
+		const key = branch.dataset.key || '';
+		if ( branches.has( key ) ) {
+			branches.delete( key );
+		} else {
+			branches.add( key );
+		}
+		tree( group, filters.dataset.pergelBranchLabel || '' );
+		if ( filters.dataset.pergelFilters.split( ' ' ).includes( 'more' ) ) {
+			cut( group, filters );
+		}
+		return;
+	}
 	const more =
 		event.target instanceof Element &&
 		event.target.closest( '[data-pergel-filters] .pergel-filter-more' );

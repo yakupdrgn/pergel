@@ -28,7 +28,8 @@ use const Pergel\VERSION;
  * - the filter box's own title, with an icon;
  * - the brand and rating filters, added to the theme's filter pattern,
  *   and the Availability filter, which can go;
- * - child categories set in under their parent in the category list;
+ * - child categories set in under their parent in the category list,
+ *   closed under an arrow if wished;
  * - a filter with one option that every product has is left out.
  *
  * Every default leaves the template as it is, like Layout.
@@ -192,6 +193,7 @@ final class Filters {
 				array(
 					'fold'   => true === Settings::get( 'shop.filters_fold' ),
 					'search' => true === Settings::get( 'shop.filters_search' ),
+					'tree'   => true === Settings::get( 'shop.filter_tree' ),
 					'more'   => 'pill' === Settings::get( 'shop.filter_more' ),
 				)
 			)
@@ -205,6 +207,9 @@ final class Filters {
 		}
 		$tags->set_attribute( 'data-pergel-filters', implode( ' ', $features ) );
 		$tags->set_attribute( 'data-pergel-search-label', __( 'Search the options', 'pergel-engine' ) );
+		if ( in_array( 'tree', $features, true ) ) {
+			$tags->set_attribute( 'data-pergel-branch-label', __( 'Subcategories', 'pergel-engine' ) );
+		}
 		if ( in_array( 'more', $features, true ) ) {
 			$rows = Settings::get( 'shop.filter_rows' );
 			$tags->set_attribute( 'data-pergel-rows', (string) ( is_int( $rows ) ? $rows : 5 ) );

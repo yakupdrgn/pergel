@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-27 12:16+0000\n"
-"PO-Revision-Date: 2026-10-27 12:16+0000\n"
+"POT-Creation-Date: 2026-10-27 12:47+0000\n"
+"PO-Revision-Date: 2026-10-27 12:47+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1074,6 +1074,12 @@ msgstr "Filtre grupları açılıp kapanır"
 
 msgid "Each filter heading becomes a button that hides or shows its options. All groups start open."
 msgstr "Her filtre başlığı, seçeneklerini gizleyen veya gösteren bir düğmeye dönüşür. Bütün gruplar açık başlar."
+
+msgid "Subcategories start closed"
+msgstr "Alt kategoriler kapalı başlasın"
+
+msgid "In the category filter, a category with subcategories gets an arrow that opens them. A ticked subcategory keeps its parent open, and a search looks through all of them."
+msgstr "Kategori filtresinde alt kategorisi olan bir kategoriye onları açan bir ok gelir. İşaretli bir alt kategori üstünü açık tutar; arama hepsine bakar."
 
 msgid "Search box in long filter lists"
 msgstr "Uzun filtre listelerinde arama kutusu"
