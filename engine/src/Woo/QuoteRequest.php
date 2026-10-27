@@ -18,7 +18,7 @@ final class QuoteRequest {
 	/**
 	 * Builds the request.
 	 *
-	 * @param int    $entry     Stored message (Dashboard → Form messages).
+	 * @param int    $entry     Stored message (Pergel → Form messages).
 	 * @param int    $product   Product id.
 	 * @param int    $variation Variation id; 0 for a product without options.
 	 * @param string $sku       SKU of the variation or the product; may be empty.

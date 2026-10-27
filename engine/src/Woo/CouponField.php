@@ -41,7 +41,7 @@ final class CouponField {
 				'id'          => self::META,
 				'label'       => __( 'Show on product pages', 'pergel-engine' ),
 				'value'       => 'yes' === $coupon->get_meta( self::META ) ? 'yes' : 'no',
-				'description' => __( 'List this coupon on the pages of the products it applies to, with a button that copies the code (Dashboard → Pergel → Shop → Coupons).', 'pergel-engine' ),
+				'description' => __( 'List this coupon on the pages of the products it applies to, with a button that copies the code (Pergel → Settings → Shop → Coupons).', 'pergel-engine' ),
 			)
 		);
 	}

@@ -95,7 +95,7 @@ final class DetailsFields {
 			esc_html__( 'Feature list', 'pergel-engine' ),
 			esc_attr( self::NAME ),
 			esc_textarea( implode( "\n", $own['features'] ) ),
-			esc_html__( 'One feature on each line. Shown as "Specifications" under the product when the feature list is on in Dashboard → Pergel → Shop.', 'pergel-engine' )
+			esc_html__( 'One feature on each line. Shown as "Specifications" under the product when the feature list is on in Pergel → Settings → Shop.', 'pergel-engine' )
 		);
 		printf(
 			'<p><label for="pergel-details-tab-name"><strong>%1$s</strong></label></p><input type="text" class="widefat" id="pergel-details-tab-name" name="%2$s[tab_name]" value="%3$s" maxlength="%4$d" aria-describedby="pergel-details-tab-help"><p class="description" id="pergel-details-tab-help">%5$s</p>',

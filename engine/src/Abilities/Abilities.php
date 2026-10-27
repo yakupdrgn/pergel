@@ -190,7 +190,7 @@ final class Abilities {
 			'pergel/get-settings',
 			array(
 				'label'       => __( 'Get the Pergel settings', 'pergel-engine' ),
-				'description' => __( 'Returns the settings under Dashboard → Pergel by group: the module switches, the brand details, SEO, performance, forms, search and shop.', 'pergel-engine' ),
+				'description' => __( 'Returns the settings under Pergel → Settings by group: the module switches, the brand details, SEO, performance, forms, search and shop.', 'pergel-engine' ),
 				'capability'  => 'manage_options',
 				'output'      => array( 'type' => 'object' ),
 				'run'         => array( Settings::class, 'all' ),

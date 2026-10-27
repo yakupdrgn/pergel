@@ -46,20 +46,47 @@ final class Screen {
 	 * Adds the admin hooks.
 	 */
 	public static function register(): void {
-		// Before the post type submenus (priority 10), so Pergel comes before Form messages.
+		// Before the post type submenus (priority 10), so Settings stays the first item.
 		add_action( 'admin_menu', array( self::class, 'menu' ), 9 );
+		// Plugins such as Site Kit move their menu under Dashboard; Pergel goes back on top of them.
+		add_filter( 'custom_menu_order', '__return_true' );
+		add_filter( 'menu_order', array( self::class, 'menu_order' ), 20 );
 		add_action( 'pergel/settings/invalid', array( self::class, 'report' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( FILE ), array( self::class, 'action_links' ) );
 	}
 
 	/**
-	 * The settings page under Dashboard. Hooked on admin_menu.
+	 * Filter for menu_order: the Pergel menu right after Dashboard.
+	 *
+	 * @param mixed $order Menu slugs in order.
+	 * @return mixed
+	 */
+	public static function menu_order( mixed $order ): mixed {
+		if ( ! is_array( $order ) || ! in_array( self::SLUG, $order, true ) ) {
+			return $order;
+		}
+		$order     = array_values( array_diff( $order, array( self::SLUG ) ) );
+		$dashboard = array_search( 'index.php', $order, true );
+		array_splice( $order, false === $dashboard ? 0 : $dashboard + 1, 0, array( self::SLUG ) );
+		return $order;
+	}
+
+	/**
+	 * A menu of its own, right under Dashboard (2), before what plugins put
+	 * at 3 and before the first separator (4). Hooked on admin_menu.
 	 */
 	public static function menu(): void {
-		$hook = add_submenu_page( 'index.php', __( 'Pergel settings', 'pergel-engine' ), 'Pergel', 'manage_options', self::SLUG, array( self::class, 'render' ) );
-		if ( is_string( $hook ) ) {
-			add_action( "load-$hook", array( self::class, 'load' ) );
-		}
+		$hook = add_menu_page(
+			__( 'Pergel settings', 'pergel-engine' ),
+			'Pergel',
+			'manage_options',
+			self::SLUG,
+			array( self::class, 'render' ),
+			self::icon(),
+			2.5
+		);
+		add_submenu_page( self::SLUG, __( 'Pergel settings', 'pergel-engine' ), __( 'Settings', 'pergel-engine' ), 'manage_options', self::SLUG, array( self::class, 'render' ) );
+		add_action( "load-$hook", array( self::class, 'load' ) );
 	}
 
 	/**
@@ -145,7 +172,7 @@ final class Screen {
 		return array(
 			'settings' => sprintf(
 				'<a href="%s">%s</a>',
-				esc_url( admin_url( 'index.php?page=' . self::SLUG ) ),
+				esc_url( admin_url( 'admin.php?page=' . self::SLUG ) ),
 				esc_html__( 'Settings', 'pergel-engine' )
 			),
 		) + $links;
@@ -211,7 +238,7 @@ final class Screen {
 			}
 			printf(
 				'<a href="%1$s" class="nav-tab%2$s"%3$s>%4$s</a>',
-				esc_url( add_query_arg( 'tab', $group, admin_url( 'index.php?page=' . self::SLUG ) ) ),
+				esc_url( add_query_arg( 'tab', $group, admin_url( 'admin.php?page=' . self::SLUG ) ) ),
 				$group === $tab ? ' nav-tab-active' : '',
 				$group === $tab ? ' aria-current="page"' : '',
 				esc_html( $tabs[ $group ]['title'] ?? ucfirst( $group ) )
@@ -439,7 +466,7 @@ final class Screen {
 				'tab'     => self::MENU,
 				'section' => $page,
 			) + $args,
-			admin_url( 'index.php?page=' . self::SLUG )
+			admin_url( 'admin.php?page=' . self::SLUG )
 		);
 	}
 
@@ -920,5 +947,13 @@ final class Screen {
 			$choices[ $current ] = sprintf( __( 'Menu #%d (not found)', 'pergel-engine' ), $current );
 		}
 		return $choices;
+	}
+
+	/**
+	 * Menu icon: a pergola, as a data URI so WordPress can recolor it.
+	 */
+	private static function icon(): string {
+		$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="black" d="M2 3h16v2.5H2zM2 7h16v1.5H2zM3.5 5.5h2V17h-2zM9 5.5h2V17H9zM14.5 5.5h2V17h-2z"/></svg>';
+		return 'data:image/svg+xml;base64,' . base64_encode( $svg ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- menu icon data URI.
 	}
 }

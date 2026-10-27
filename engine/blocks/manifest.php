@@ -15,7 +15,7 @@ return array (
     'title' => 'Frequently bought together',
     'category' => 'pergel',
     'icon' => 'cart',
-    'description' => 'The product and up to three of its cross-sells, each with a checkbox, a live total and one button that adds the chosen ones to the cart. Turn it on under Dashboard → Pergel → Shop; product pages with cross-sells then show it under the add-to-cart button by themselves.',
+    'description' => 'The product and up to three of its cross-sells, each with a checkbox, a live total and one button that adds the chosen ones to the cart. Turn it on under Pergel → Settings → Shop; product pages with cross-sells then show it under the add-to-cart button by themselves.',
     'keywords' => 
     array (
       0 => 'bought together',
@@ -287,7 +287,7 @@ return array (
     'title' => 'Delivery estimate',
     'category' => 'pergel',
     'icon' => 'calendar-alt',
-    'description' => 'The estimated delivery dates of the product, and before the cut-off time that an order ships today. Turn it on under Dashboard → Pergel → Shop; product pages then show it under the add-to-cart button by themselves.',
+    'description' => 'The estimated delivery dates of the product, and before the cut-off time that an order ships today. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves.',
     'keywords' => 
     array (
       0 => 'delivery',
@@ -319,7 +319,7 @@ return array (
     'title' => 'Form',
     'category' => 'pergel',
     'icon' => 'email-alt',
-    'description' => 'A contact or quote request form. Messages are emailed to you and kept under Dashboard → Form messages. Works without JavaScript.',
+    'description' => 'A contact or quote request form. Messages are emailed to you and kept under Pergel → Form messages. Works without JavaScript.',
     'keywords' => 
     array (
       0 => 'contact',
@@ -647,7 +647,7 @@ return array (
     'title' => 'Wishlist and compare buttons',
     'category' => 'pergel',
     'icon' => 'heart',
-    'description' => 'Buttons that add the product to the wishlist or to compare. Turn the lists on under Dashboard → Pergel → Shop; the buttons then appear on product cards and product pages by themselves.',
+    'description' => 'Buttons that add the product to the wishlist or to compare. Turn the lists on under Pergel → Settings → Shop; the buttons then appear on product cards and product pages by themselves.',
     'keywords' => 
     array (
       0 => 'wishlist',
@@ -693,7 +693,7 @@ return array (
     'title' => 'Product summary box',
     'category' => 'pergel',
     'icon' => 'index-card',
-    'description' => 'A box for the product summary: products the visitor may also like, the product\'s facts, or a picture and a line about safe payment. Their content and look are set under Dashboard → Pergel → Shop → Product page.',
+    'description' => 'A box for the product summary: products the visitor may also like, the product\'s facts, or a picture and a line about safe payment. Their content and look are set under Pergel → Settings → Shop → Product page.',
     'keywords' => 
     array (
       0 => 'you may also like',
@@ -813,7 +813,7 @@ return array (
     'title' => 'Recently viewed products',
     'category' => 'pergel',
     'icon' => 'backup',
-    'description' => 'The products a visitor looked at last, kept in their browser; hidden until there are some. Turn it on with "Recently viewed" under Dashboard → Pergel → Shop.',
+    'description' => 'The products a visitor looked at last, kept in their browser; hidden until there are some. Turn it on with "Recently viewed" under Pergel → Settings → Shop.',
     'keywords' => 
     array (
       0 => 'recently viewed',
@@ -862,7 +862,7 @@ return array (
     'title' => 'Running flash sale',
     'category' => 'pergel',
     'icon' => 'megaphone',
-    'description' => 'A running flash sale with its discount, a countdown to the end and some of its products; the one that ends soonest, or a chosen one. Shows nothing while no campaign runs (Dashboard → Pergel → Shop → Flash sales).',
+    'description' => 'A running flash sale with its discount, a countdown to the end and some of its products; the one that ends soonest, or a chosen one. Shows nothing while no campaign runs (Pergel → Settings → Shop → Flash sales).',
     'keywords' => 
     array (
       0 => 'flash sale',
@@ -920,7 +920,7 @@ return array (
     'title' => 'Flash sale dates',
     'category' => 'pergel',
     'icon' => 'clock',
-    'description' => 'A flash sale\'s discount, its dates and a countdown to the start or the end; after the end, that it has ended. For the flash sale templates (Dashboard → Pergel → Shop → Flash sales).',
+    'description' => 'A flash sale\'s discount, its dates and a countdown to the start or the end; after the end, that it has ended. For the flash sale templates (Pergel → Settings → Shop → Flash sales).',
     'keywords' => 
     array (
       0 => 'flash sale',
@@ -971,7 +971,7 @@ return array (
     'title' => 'Wishlist and compare links',
     'category' => 'pergel',
     'icon' => 'heart',
-    'description' => 'Header links to the wishlist and compare pages with the number of products in each. Pergel\'s headers show them by themselves once the pages are set under Dashboard → Pergel → Shop.',
+    'description' => 'Header links to the wishlist and compare pages with the number of products in each. Pergel\'s headers show them by themselves once the pages are set under Pergel → Settings → Shop.',
     'keywords' => 
     array (
       0 => 'wishlist',
@@ -1000,7 +1000,7 @@ return array (
     'title' => 'Wishlist or compare list',
     'category' => 'pergel',
     'icon' => 'list-view',
-    'description' => 'The products a visitor saved to the wishlist or chose to compare. Put it on the page set under Dashboard → Pergel → Shop.',
+    'description' => 'The products a visitor saved to the wishlist or chose to compare. Put it on the page set under Pergel → Settings → Shop.',
     'keywords' => 
     array (
       0 => 'wishlist',
@@ -1047,7 +1047,7 @@ return array (
     'title' => 'Size guide',
     'category' => 'pergel',
     'icon' => 'editor-table',
-    'description' => 'A button that opens the product\'s size guide in a window. The guide is a synced pattern chosen on the product category or the product. Turn it on under Dashboard → Pergel → Shop; product pages then show it above the add-to-cart button by themselves.',
+    'description' => 'A button that opens the product\'s size guide in a window. The guide is a synced pattern chosen on the product category or the product. Turn it on under Pergel → Settings → Shop; product pages then show it above the add-to-cart button by themselves.',
     'keywords' => 
     array (
       0 => 'size',
@@ -1077,7 +1077,7 @@ return array (
     'title' => 'Sticky add-to-cart bar',
     'category' => 'pergel',
     'icon' => 'cart',
-    'description' => 'A bar at the bottom of the screen with the product\'s image, name, price and add-to-cart button, shown while the add-to-cart form is out of view. Turn it on under Dashboard → Pergel → Shop; product pages then show it by themselves.',
+    'description' => 'A bar at the bottom of the screen with the product\'s image, name, price and add-to-cart button, shown while the add-to-cart form is out of view. Turn it on under Pergel → Settings → Shop; product pages then show it by themselves.',
     'keywords' => 
     array (
       0 => 'sticky',
@@ -1109,7 +1109,7 @@ return array (
     'title' => 'Back-in-stock alert',
     'category' => 'pergel',
     'icon' => 'email-alt',
-    'description' => 'A form where visitors leave their email address for a sold-out product or option, and get one email when it is back in stock. Turn it on under Dashboard → Pergel → Shop; product pages then show it under the add-to-cart button by themselves.',
+    'description' => 'A form where visitors leave their email address for a sold-out product or option, and get one email when it is back in stock. Turn it on under Pergel → Settings → Shop; product pages then show it under the add-to-cart button by themselves.',
     'keywords' => 
     array (
       0 => 'stock',

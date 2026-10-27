@@ -77,7 +77,7 @@ final class Form {
 	public static function render( array $attributes, ?\WP_Block $block = null ): string {
 		if ( ! in_array( Module::id(), Plugin::loaded(), true ) ) {
 			return wp_is_serving_rest_request()
-				? '<div ' . get_block_wrapper_attributes() . '><p>' . esc_html__( 'The Forms module is switched off under Dashboard → Pergel → Modules, so this form is not shown.', 'pergel-engine' ) . '</p></div>'
+				? '<div ' . get_block_wrapper_attributes() . '><p>' . esc_html__( 'The Forms module is switched off under Pergel → Settings → Modules, so this form is not shown.', 'pergel-engine' ) . '</p></div>'
 				: '';
 		}
 		$kind     = in_array( $attributes['kind'] ?? null, self::KINDS, true ) ? $attributes['kind'] : 'contact';

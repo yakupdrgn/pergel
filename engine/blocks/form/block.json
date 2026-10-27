@@ -5,7 +5,7 @@
 	"title": "Form",
 	"category": "pergel",
 	"icon": "email-alt",
-	"description": "A contact or quote request form. Messages are emailed to you and kept under Dashboard → Form messages. Works without JavaScript.",
+	"description": "A contact or quote request form. Messages are emailed to you and kept under Pergel → Form messages. Works without JavaScript.",
 	"keywords": [ "contact", "quote", "email", "message", "enquiry" ],
 	"textdomain": "pergel-engine",
 	"usesContext": [ "postId" ],

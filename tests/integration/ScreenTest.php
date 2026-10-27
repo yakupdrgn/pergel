@@ -78,6 +78,16 @@ final class ScreenTest extends TestCase {
 		return $groups;
 	}
 
+	public function test_the_menu_comes_right_after_dashboard(): void {
+		// Another plugin moved its menu under Dashboard; Pergel goes back on top of it.
+		$this->assertSame(
+			array( 'index.php', 'pergel', 'googlesitekit-dashboard', 'separator1', 'edit.php' ),
+			Screen::menu_order( array( 'index.php', 'googlesitekit-dashboard', 'separator1', 'edit.php', 'pergel' ) )
+		);
+		// Without the Pergel menu (no rights) the order stays.
+		$this->assertSame( array( 'index.php', 'edit.php' ), Screen::menu_order( array( 'index.php', 'edit.php' ) ) );
+	}
+
 	public function test_every_field_is_labelled_and_placed_once(): void {
 		foreach ( Schema::groups() as $group => $fields ) {
 			$this->assertArrayHasKey( $group, Labels::tabs(), "Tab title for $group" );
