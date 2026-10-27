@@ -177,6 +177,69 @@
 	padding-inline-start: 4.5em;
 }
 
+/* Subcategories closed under their parent's arrow; a search shows them. */
+.wc-block-product-filters :not(.is-pergel-searching) .wc-block-product-filter-checkbox-list__item[data-pergel-folded] {
+	display: none;
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__item:has(> .pergel-filter-branch) {
+	display: flex;
+	gap: 0.25em;
+	align-items: center;
+}
+
+.wc-block-product-filters .wc-block-product-filter-checkbox-list__item:has(> .pergel-filter-branch) > label {
+	flex: 1;
+	min-width: 0;
+}
+
+/* Options without an arrow keep its room, so the counts line up. */
+.wc-block-product-filters .wc-block-product-filter-checkbox-list:has(.pergel-filter-branch) .wc-block-product-filter-checkbox-list__item:not(:has(> .pergel-filter-branch)) {
+	padding-inline-end: 1.6em;
+}
+
+.wc-block-product-filters .pergel-filter-branch {
+	display: inline-grid;
+	flex: none;
+	place-items: center;
+	width: 1.75em;
+	height: 1.75em;
+	margin-inline-end: -0.4em;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+.wc-block-product-filters .pergel-filter-branch::after {
+	content: "";
+	width: 0.45em;
+	height: 0.45em;
+	border-right: 2px solid currentcolor;
+	border-bottom: 2px solid currentcolor;
+	transform: translateY(-25%) rotate(45deg);
+	transition: transform 0.2s;
+}
+
+.wc-block-product-filters .pergel-filter-branch[aria-expanded="true"]::after {
+	transform: translateY(25%) rotate(-135deg);
+}
+
+.wc-block-product-filters .pergel-filter-branch:hover {
+	background: var(--wp--preset--color--surface, #f0f0f0);
+}
+
+.wc-block-product-filters .pergel-filter-branch:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 0;
+}
+
+.wc-block-product-filters .is-pergel-searching .pergel-filter-branch {
+	visibility: hidden;
+}
+
 /* The icon before the filter box's own title. */
 .wc-block-product-filters .pergel-filters__icon {
 	display: inline-block;
@@ -343,7 +406,7 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.wc-block-product-filters .pergel-filter-toggle::after {
+	.wc-block-product-filters :is(.pergel-filter-toggle, .pergel-filter-branch)::after {
 		transition: none;
 	}
 

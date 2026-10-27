@@ -639,6 +639,12 @@ görünmez (`Settings\Screen::shown`).
   gönderir ama hepsini aynı hizada çizer; `Filters::depth` her seçeneğe (sunucunun çizdiği ve
   `<template>` içindekine) `data-wp-bind--data-pergel-depth="context.item.depth"` bağlar, böylece
   her yeniden çizimde de dolar ve `shop-layout.css` alt kategoriyi 1,5em içeriden başlatır.
+  `shop.filter_tree` alt kategorileri kapalı başlatır: betik WooCommerce'in ilk 15'ten sonraki
+  seçeneklerini de çizdirir (her üst kategori görünsün), alt kategorisi olan seçeneğe bir ok
+  düğmesi (`pergel-filter-branch`, `aria-expanded`) ekler ve kapalı dalın seçeneklerini
+  `data-pergel-folded` ile gizler; işaretli bir alt kategori üstünü açık tutar, arama hepsine
+  bakar, More düğmesi yalnızca görünen satırları sayar. Açık dallar grup adı + değer ile tutulur
+  ve her yeniden çizimde geri konur.
   `shop.filter_title|filter_icon`
   pattern'in `pergel-filters__title` başlığına kendi yazısını ve bir ikon koyar (sunucuda).
   `shop.filter_more: pill` uzun listeleri `filter_rows` satırda keser: gerisi gizlenir
