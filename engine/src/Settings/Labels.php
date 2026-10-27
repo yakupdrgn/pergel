@@ -245,7 +245,7 @@ final class Labels {
 				),
 				'filters' => array(
 					'title'  => __( 'Filters', 'pergel-engine' ),
-					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filter_title', 'filter_icon', 'filters_fold', 'filters_search', 'filter_more', 'filter_rows', 'filter_brand', 'filter_rating' ),
+					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filter_title', 'filter_icon', 'filters_fold', 'filters_search', 'filter_more', 'filter_rows', 'filter_stock', 'filter_brand', 'filter_rating' ),
 				),
 				'refine'  => array(
 					'title'  => __( 'Filter look', 'pergel-engine' ),
@@ -714,6 +714,10 @@ final class Labels {
 					'label' => __( 'Search box in long filter lists', 'pergel-engine' ),
 					'help'  => __( 'Lists with more than eight options, such as categories or brands, get a box that narrows them down as the visitor types.', 'pergel-engine' ),
 				),
+				'filter_stock'       => array(
+					'label' => __( 'Availability filter', 'pergel-engine' ),
+					'help'  => __( 'Filters by stock: in stock, out of stock, on backorder. A shop that only takes quote requests may not need it.', 'pergel-engine' ),
+				),
 				'filter_brand'       => array(
 					'label' => __( 'Brand filter', 'pergel-engine' ),
 					'help'  => __( 'Filters by the WooCommerce brands (Products → Brands). Shown only while brands have products.', 'pergel-engine' ),
@@ -731,7 +735,7 @@ final class Labels {
 				),
 				'filter_more'        => array(
 					'label'   => __( 'Long filter lists', 'pergel-engine' ),
-					'help'    => __( 'With "A few rows and a More button" a long list shows its first rows, fading out, and a rounded More button opens the rest.', 'pergel-engine' ),
+					'help'    => __( 'With "A few rows and a More button" a long list shows its first rows, and a rounded More button below them opens the rest.', 'pergel-engine' ),
 					'choices' => array(
 						'template' => __( 'As the template ("Show more" link)', 'pergel-engine' ),
 						'pill'     => __( 'A few rows and a More button', 'pergel-engine' ),
@@ -756,7 +760,7 @@ final class Labels {
 				),
 				'per_page_menu'      => array(
 					'label' => __( 'Products per page menu', 'pergel-engine' ),
-					'help'  => __( 'Numbers visitors can choose from next to the sorting menu, separated by commas, e.g. 12, 24, 48. Up to six numbers from 1 to 96. Leave empty for no menu.', 'pergel-engine' ),
+					'help'  => __( 'Numbers visitors can choose from next to the sorting menu, separated by commas, e.g. 12, 24, 48. Up to six numbers from 1 to 96. Leave empty for no menu. Not shown while products load as the visitor scrolls.', 'pergel-engine' ),
 				),
 				'paging'             => array(
 					'label'   => __( 'More products', 'pergel-engine' ),

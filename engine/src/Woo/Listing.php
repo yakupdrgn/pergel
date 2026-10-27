@@ -21,7 +21,7 @@ use const Pergel\VERSION;
  * - grid and list buttons beside the sorting menu, the visitor's choice
  *   kept in their browser;
  * - a products per page menu beside the sorting menu (a plain form, like
- *   WooCommerce's sorting);
+ *   WooCommerce's sorting), left out while products load on scrolling;
  * - a "Load more" button, or loading while scrolling, after the products.
  *   The script asks WordPress's Interactivity router for the same page with
  *   more products, so add-to-cart buttons keep working; the page numbers
@@ -164,7 +164,8 @@ final class Listing {
 			return $html;
 		}
 		$parts = array();
-		$menu  = self::menu();
+		// While products load as the visitor scrolls, a per page number means nothing to them.
+		$menu = 'scroll' === Layout::get( 'shop.paging' ) ? array() : self::menu();
 		if ( $menu ) {
 			$parts[] = self::menu_form( $menu );
 		}

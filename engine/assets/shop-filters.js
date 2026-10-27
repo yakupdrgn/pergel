@@ -10,6 +10,11 @@
  * here, so they never show without the script. A search first opens
  * WooCommerce's "show more", so it looks through every option; More opens
  * it too.
+ *
+ * WordPress's router keeps the first page's markup as it was when the
+ * page was ready, with our boxes in it, and puts it back when the filters
+ * are cleared; our own boxes stay too. So only the boxes made here count,
+ * and copies of them go.
  */
 
 const LONG = 8;
@@ -26,6 +31,7 @@ const GROUP = [
 const closed = new Set();
 const opened = new Set();
 const typed = new Map();
+const ours = new WeakSet();
 const ITEM = '.wc-block-product-filter-checkbox-list__item';
 const SHOW_ALL = '.wc-block-product-filter-checkbox-list__show-more-button';
 
@@ -67,9 +73,22 @@ const narrow = ( group, query ) => {
 	}
 };
 
+// The one box or button of ours in a group; copies go.
+const own = ( group, selector ) => {
+	let found = null;
+	for ( const node of group.querySelectorAll( selector ) ) {
+		if ( ours.has( node ) && ! found ) {
+			found = node;
+		} else {
+			node.remove();
+		}
+	}
+	return found;
+};
+
 const addSearch = ( group, label ) => {
 	const list = group.querySelector( '.wc-block-product-filter-checkbox-list' );
-	const existing = group.querySelector( '.pergel-filter-search' );
+	const existing = own( group, '.pergel-filter-search' );
 	if ( existing ) {
 		// The options were redrawn under the box: narrow them again.
 		if ( existing.value ) {
@@ -96,6 +115,7 @@ const addSearch = ( group, label ) => {
 	input.setAttribute( 'aria-label', name ? `${ label }: ${ name }` : label );
 	input.placeholder = label;
 	input.value = typed.get( name ) || '';
+	ours.add( input );
 	input.addEventListener( 'input', () => {
 		typed.set( name, input.value );
 		narrow( group, input.value );
@@ -106,8 +126,8 @@ const addSearch = ( group, label ) => {
 	}
 };
 
-// A long list shows its first rows and the next one fading out; the rest
-// wait behind the More button. A ticked option further down opens it.
+// A long list shows its first rows; the rest wait behind the More button.
+// A ticked option further down opens it.
 const cut = ( group, filters ) => {
 	const list = group.querySelector( '.wc-block-product-filter-checkbox-list' );
 	if ( ! list ) {
@@ -116,12 +136,9 @@ const cut = ( group, filters ) => {
 	const rows = parseInt( filters.dataset.pergelRows, 10 ) || 5;
 	const items = [ ...list.querySelectorAll( ITEM ) ];
 	const rest = list.querySelector( SHOW_ALL );
-	let button = group.querySelector( '.pergel-filter-more' );
+	let button = own( group, '.pergel-filter-more' );
 	if ( items.length <= rows + 1 && ! rest ) {
-		items.forEach( ( item ) => {
-			item.removeAttribute( 'data-pergel-beyond' );
-			item.removeAttribute( 'data-pergel-edge' );
-		} );
+		items.forEach( ( item ) => item.removeAttribute( 'data-pergel-beyond' ) );
 		if ( button ) {
 			button.remove();
 		}
@@ -132,14 +149,14 @@ const cut = ( group, filters ) => {
 		opened.add( name );
 	}
 	const open = opened.has( name );
-	items.forEach( ( item, index ) => {
-		item.toggleAttribute( 'data-pergel-beyond', ! open && index > rows );
-		item.toggleAttribute( 'data-pergel-edge', ! open && index === rows );
-	} );
+	items.forEach( ( item, index ) =>
+		item.toggleAttribute( 'data-pergel-beyond', ! open && index >= rows )
+	);
 	if ( ! button ) {
 		button = document.createElement( 'button' );
 		button.type = 'button';
 		button.className = 'pergel-filter-more';
+		ours.add( button );
 		list.after( button );
 	}
 	const text = open

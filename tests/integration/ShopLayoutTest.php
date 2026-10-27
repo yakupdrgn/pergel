@@ -571,6 +571,47 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringStartsWith( '<div class="pergel-shop-toolbar"><form>sort</form>', $toolbar );
 		$this->assertStringContainsString( '<option value="12">12</option><option value="48">48</option>', $toolbar );
 		$this->assertStringContainsString( 'data-pergel-view="list" aria-pressed="true"', $toolbar );
+
+		// Loading while scrolling: no per page menu, the view buttons stay.
+		Settings::update( array( 'shop' => array( 'paging' => 'scroll' ) ) );
+		$toolbar = Listing::toolbar( '<form>sort</form>' );
+		$this->assertStringNotContainsString( 'pergel-per-page', $toolbar );
+		$this->assertStringContainsString( 'data-pergel-view="list"', $toolbar );
+	}
+
+	public function test_lonely_filter_stock_filter_and_category_depth(): void {
+		$this->go_to( array( 'post_type' => 'product' ) );
+		$found = (int) $GLOBALS['wp_query']->found_posts;
+		$group = static fn ( array $items ): string => '<div class="wp-block-woocommerce-product-filter-taxonomy" data-wp-context="' . esc_attr( (string) wp_json_encode( array( 'items' => $items ) ) ) . '"><h3>Brand</h3></div>';
+
+		// One option every product has filters nothing; ticked, or with fewer products, it stays.
+		$this->assertSame( '', Filters::lonely( $group( array( array( 'value' => 'a', 'count' => $found, 'selected' => false ) ) ) ) );
+		$ticked = $group( array( array( 'value' => 'a', 'count' => $found, 'selected' => true ) ) );
+		$this->assertSame( $ticked, Filters::lonely( $ticked ) );
+		$fewer = $group( array( array( 'value' => 'a', 'count' => $found + 1, 'selected' => false ) ) );
+		$this->assertSame( $fewer, Filters::lonely( $fewer ) );
+		$two = $group(
+			array(
+				array( 'value' => 'a', 'count' => $found ),
+				array( 'value' => 'b', 'count' => 1 ),
+			)
+		);
+		$this->assertSame( $two, Filters::lonely( $two ) );
+
+		// The Availability filter goes only when its setting is off.
+		$stock = '<div class="wp-block-woocommerce-product-filter-status"><h3>Availability</h3></div>';
+		$this->assertSame( $stock, Filters::stock( $stock ) );
+		Settings::update( array( 'shop' => array( 'filter_stock' => false ) ) );
+		$this->assertSame( '', Filters::stock( $stock ) );
+
+		// Category options bind their depth; a flat list stays as it is.
+		$list = '<div class="wc-block-product-filter-checkbox-list"><div class="wc-block-product-filter-checkbox-list__item" data-wp-context=\'{"item":{"depth":1}}\'></div>'
+			. '<template><div class="wc-block-product-filter-checkbox-list__item"></div></template></div>';
+		$html = Filters::depth( $list );
+		$this->assertSame( 2, substr_count( $html, 'data-wp-bind--data-pergel-depth="context.item.depth"' ) );
+		$this->assertTrue( wp_style_is( Layout::STYLE ) );
+		$flat = '<div class="wc-block-product-filter-checkbox-list"><div class="wc-block-product-filter-checkbox-list__item"></div></div>';
+		$this->assertSame( $flat, Filters::depth( $flat ) );
 	}
 
 	public function test_banner_and_category_strip(): void {
