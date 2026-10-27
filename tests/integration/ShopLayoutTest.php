@@ -656,6 +656,41 @@ final class ShopLayoutTest extends TestCase {
 		$flat = '<div class="wc-block-product-filter-checkbox-list"><div class="wc-block-product-filter-checkbox-list__item"></div></div>';
 		$this->assertSame( $flat, Filters::depth( $flat ) );
 
+		// The order of the options reaches the category and attribute filters inside the box.
+		$box = array(
+			'blockName'   => 'woocommerce/product-filters',
+			'attrs'       => array(),
+			'innerBlocks' => array(
+				array(
+					'blockName'   => 'woocommerce/product-filter-taxonomy',
+					'attrs'       => array(),
+					'innerBlocks' => array(),
+				),
+				array(
+					'blockName'   => 'core/group',
+					'attrs'       => array(),
+					'innerBlocks' => array(
+						array(
+							'blockName'   => 'woocommerce/product-filter-attribute',
+							'attrs'       => array( 'attributeId' => 1 ),
+							'innerBlocks' => array(),
+						),
+					),
+				),
+				array(
+					'blockName'   => 'woocommerce/product-filter-status',
+					'attrs'       => array(),
+					'innerBlocks' => array(),
+				),
+			),
+		);
+		$this->assertSame( $box, Filters::block_data( $box ), 'As the template by default.' );
+		Settings::update( array( 'shop' => array( 'filter_order' => 'menu_order' ) ) );
+		$sorted = Filters::block_data( $box );
+		$this->assertSame( 'menu_order-asc', $sorted['innerBlocks'][0]['attrs']['sortOrder'] );
+		$this->assertSame( 'menu_order-asc', $sorted['innerBlocks'][1]['innerBlocks'][0]['attrs']['sortOrder'] );
+		$this->assertSame( array(), $sorted['innerBlocks'][2]['attrs'] );
+
 		// Subcategories closed under an arrow: the script's feature and its label.
 		Settings::update( array( 'shop' => array( 'filter_tree' => true ) ) );
 		$box = Filters::filters( '<div class="wp-block-woocommerce-product-filters"><h2 class="wp-block-heading pergel-filters__title">Filters</h2></div>' );

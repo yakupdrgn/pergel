@@ -195,7 +195,7 @@ const cut = ( group, filters ) => {
 	list.querySelectorAll( `${ ITEM }[data-pergel-folded]` ).forEach( ( item ) =>
 		item.removeAttribute( 'data-pergel-beyond' )
 	);
-	const rest = list.querySelector( SHOW_ALL );
+	const rest = list.querySelector( `${ SHOW_ALL }:not([hidden])` );
 	let button = own( group, '.pergel-filter-more' );
 	if ( items.length <= rows + 1 && ! rest ) {
 		items.forEach( ( item ) => item.removeAttribute( 'data-pergel-beyond' ) );
