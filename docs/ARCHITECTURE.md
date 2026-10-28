@@ -671,7 +671,8 @@ görünmez (`Settings\Screen::shown`).
   `position: static`). Araç çubuğu: `control_height|control_edge|control_edge_color` sıralama ve
   sayfa başına menülerine, görünüm düğmelerine ve araç çubuğundaki arama kutusuna; köşeleri
   `control_radius`. Kategori şeridi: `strip_count` (4–10) satırı paylaşan kutucuk sayısı (tablette en çok
-  6, telefonda 3,4), `strip_picture: square` "Yuvarlak resimler" stilinde kare resim (kart resmi
+  6, telefonda 3,4; kutucuk hiçbir ekranda 6,5rem'den dar olmaz, sığmayanlar yana kayar),
+  `strip_picture: square` "Yuvarlak resimler" stilinde kare resim (kart resmi
   zemini ve köşesiyle). Kartlar: `card_title_lines` ürün adını 1–3 satırda keser.
 - **Görünüm ve sayfalar (`Woo\Listing`):** `shop.view` ana ızgaraya `pergel-shop-grid
   pergel-view-list` sınıfı koyar; liste mümkünse (`view` liste ya da `view_switch` açık) fiyattan

@@ -217,8 +217,10 @@ final class ShopLook {
 		$count = Settings::get( 'shop.strip_count' );
 		$count = is_string( $count ) && ctype_digit( $count ) ? (int) $count : 0;
 		if ( $count > 0 ) {
-			// Fewer on tablets and phones, where the next one peeks in.
-			$tiles   = static fn ( float $n ): string => "$strip>ul{gap:16px;scroll-snap-type:x mandatory}$strip>ul>.pergel-category-card{flex:0 0 calc((100% - " . ( ceil( $n ) - 1 ) . "*16px)/$n);min-width:0;scroll-snap-align:start;transform:none}";
+			// Fewer on tablets and phones, where the next one peeks in. Never
+			// narrower than the block's own card (6.5rem), so a name's longest
+			// word fits on a small phone; more then scroll sideways.
+			$tiles   = static fn ( float $n ): string => "$strip>ul{gap:16px;scroll-snap-type:x mandatory}$strip>ul>.pergel-category-card{flex:0 0 max(6.5rem,calc((100% - " . ( ceil( $n ) - 1 ) . "*16px)/$n));min-width:0;scroll-snap-align:start;transform:none}";
 			$rules[] = $tiles( (float) $count );
 			$rules[] = '@media (max-width:1100px){' . $tiles( (float) min( $count, 6 ) ) . '}';
 			$rules[] = '@media (max-width:781px){' . $tiles( min( (float) $count, 3.4 ) ) . '}';
