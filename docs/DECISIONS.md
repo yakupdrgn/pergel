@@ -1764,6 +1764,23 @@ alan kullanınca kütüphaneye alıyordu; klipler staging'e ve canlıya elle yü
   `_pergel_package_library` işaretini taşır; dışa aktarma bu işaretle geri yazar. `library`'den
   çıkan dosya işaretini kaybeder ve başka alan kullanmıyorsa eskimiş olur.
 
+## Teklif eklentisinin formu: `pergel/woo/quote_url` (28 Ekim 2026, kullanıcı kararı)
+
+Ariumlab'da teklif Divit'e bırakılır ("Teklif kısmını Divit eklentisine bırakmamız gerekiyor").
+Divit'in kendi formu var (Request a Quote sayfası; ürün Odoo aynasındaki referansıyla satıra
+gelir). Pergel'in katlanmış formu ve `QuoteProvider` yolu bu formun yerini tutmaz.
+
+- **Süzgeç:** `pergel/woo/quote_url` (`''`, `WC_Product`) bir ürün için teklif eklentisinin form
+  adresini verir. Boş değilse ürün sayfasındaki teklif düğmesi bu adrese giden bir bağlantıdır
+  (katlanmış form çizilmez) ve kartların "Teklif iste" düğmesi de oraya gider. Yalnızca
+  `http`/`https` adresler kabul edilir. Varsayılan boştur; Pergel'in kendi formu değişmeden kalır.
+- **Divit'in kendi yerleştirmesi kullanılmaz.** Divit düğmesini `woocommerce_*_add_to_cart`
+  kancalarına koyar; Pergel'in ürün şablonu teklif modunda sepet formunu çizmediği için düğme
+  hiç çıkmıyordu. Ayrıca düğmenin genişliği 564 px'ti. Düğmeyi Pergel çizer (temanın düğmesi),
+  adres Divit'ten gelir. Bağlantıyı süzgece Divit değil site (Ariumlab alt teması) bağlar;
+  Pergel Divit'i bilmez.
+- Bağlantı `generate_lead` verir (`lead_source`: `quote_page`), iletişim bağlantıları gibi.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |

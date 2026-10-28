@@ -785,6 +785,7 @@ görünmez (`Settings\Screen::shown`).
   `woocommerce_product_add_to_cart_text`/`_description`/`_url` süzgeçleri düğmeyi "Teklif iste"
   yapar ve ürün sayfasındaki teklif formunun çapasına (`#pergel-quote`, `Cta::QUOTE_ANCHOR`)
   götürür; formun `<details>` öğesi bu çapayla gelindiğinde `callbacks.anchor` ile açılır.
+  `pergel/woo/quote_url` bir adres verirse düğme çapa yerine o adrese gider.
   Kart görünümü (`Woo\CardLook`, "Ürün kartları" sayfasının "Kart görünümü" bölümü): kartlar arası
   boşluk, arka plan, kenarlık kalınlığı ve rengi, köşe, iç boşluk, üzerine gelince görünüm, resim
   arka planı ve köşesi, hiza, ad boyutu ve kalınlığı, kategori/marka rengi, düğme biçimi, rengi,
@@ -1135,11 +1136,13 @@ görünmez (`Settings\Screen::shown`).
 - **Ürün sorusu bloğu (`pergel/product-cta`, `Woo\Cta`):** ürün şablonunda sepet formunun
   altında. Ziyaretçiye satılmayan üründe ne yapabileceğini gösterir: `login` modunda oturumsuz
   ziyaretçiye "Log in to see prices" bağlantısı; `quote` modunda katlanmış bir teklif formu
-  (`<details>`; script'siz gönderimden dönünce açık); satılmayan her üründe WhatsApp
-  (`woo.whatsapp`), telefon (`brand.phone`) ve iletişim sayfası (`woo.contact_url`)
-  bağlantıları. Satılan üründe yalnızca `onSale` açıksa iletişim bağlantılarını gösterir.
-  Bağlantılar `generate_lead` olayı verir (`lead_source`: `whatsapp`, `phone`,
-  `contact_page`). WooCommerce yoksa blok kaydedilmez (`Blocks\Module::SHOP_BLOCKS`).
+  (`<details>`; script'siz gönderimden dönünce açık) ya da bir teklif eklentisinin formu varsa
+  (`pergel/woo/quote_url` süzgeci, `Quote::url()`) oraya giden "Request a quote" bağlantısı;
+  satılmayan her üründe WhatsApp (`woo.whatsapp`), telefon (`brand.phone`) ve iletişim sayfası
+  (`woo.contact_url`) bağlantıları. Satılan üründe yalnızca `onSale` açıksa iletişim
+  bağlantılarını gösterir. Bağlantılar `generate_lead` olayı verir (`lead_source`: `whatsapp`,
+  `phone`, `contact_page`, `quote_page`). WooCommerce yoksa blok kaydedilmez
+  (`Blocks\Module::SHOP_BLOCKS`).
 - **Teklif formu (`Woo\Quote`):** Form bloğunu `kind=quote`, `aboutPost` ile çizer. Konu alanları:
   ürün adı ve SKU, değişken üründe yayımlanmış varyasyonlardan zorunlu seçim (değer
   varyasyonun SKU'suyla saklanır) ve adet (1–999999). Mesaj saklandıktan sonra istek

@@ -385,6 +385,14 @@ final class CardsTest extends TestCase {
 		$this->assertStringContainsString( sprintf( __( 'Request a quote for “%s”', 'pergel-engine' ), 'Card test product' ), $html );
 		$this->assertStringContainsString( 'href="' . $anchor . '"', $html );
 
+		// A quote plugin's own form takes the anchor's place.
+		$page = static fn (): string => 'https://example.invalid/request-a-quote/?plugin_add=CT-1';
+		add_filter( 'pergel/woo/quote_url', $page );
+		$html = do_blocks( $grid );
+		remove_filter( 'pergel/woo/quote_url', $page );
+		$this->assertStringContainsString( 'href="' . esc_url( 'https://example.invalid/request-a-quote/?plugin_add=CT-1' ) . '"', $html );
+		$this->assertStringNotContainsString( '#pergel-quote', $html );
+
 		// A product that sells keeps its own button.
 		Settings::update( array( 'woo' => array( 'sales_mode' => Modes::SALE ) ) );
 		Modes::flush();

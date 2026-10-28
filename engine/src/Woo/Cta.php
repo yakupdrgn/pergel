@@ -71,11 +71,17 @@ final class Cta {
 	 * The quote form about the product, folded under a button. It is open
 	 * when the page comes back with a result (the form sent without
 	 * JavaScript), and when the address ends with its anchor (a card's
-	 * "Request a quote" button).
+	 * "Request a quote" button). When a quote plugin has its own form
+	 * (Quote::url()), the button links there instead.
 	 *
 	 * @param \WC_Product $product Product.
 	 */
 	private static function quote( \WC_Product $product ): string {
+		$url = Quote::url( $product );
+		if ( '' !== $url ) {
+			return '<p class="wp-block-pergel-product-cta__quote-link"><a class="wp-element-button" href="' . esc_url( $url ) . '" '
+				. wp_interactivity_data_wp_context( array( 'source' => 'quote_page' ) ) . ' data-wp-on--click="actions.lead">' . esc_html__( 'Request a quote', 'pergel-engine' ) . '</a></p>';
+		}
 		$form = ( new \WP_Block(
 			array(
 				'blockName'    => 'pergel/form',
