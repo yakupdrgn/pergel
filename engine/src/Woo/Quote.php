@@ -179,6 +179,25 @@ final class Quote {
 	}
 
 	/**
+	 * Address of the page where a quote about the product is asked, when a
+	 * quote plugin keeps its own form there; empty for the quote form of the
+	 * Product enquiry block. The product page then links there instead of
+	 * folding the form, and so do the cards' "Request a quote" buttons.
+	 *
+	 * @param \WC_Product $product Product.
+	 */
+	public static function url( \WC_Product $product ): string {
+		/**
+		 * Filters the address of a quote plugin's form for a product.
+		 *
+		 * @param string      $url     Empty by default: Pergel's own form.
+		 * @param \WC_Product $product Product.
+		 */
+		$url = apply_filters( 'pergel/woo/quote_url', '', $product );
+		return is_string( $url ) ? esc_url_raw( $url, array( 'https', 'http' ) ) : '';
+	}
+
+	/**
 	 * The options of a variable product: labels of its published
 	 * variations by id. Empty for other products.
 	 *

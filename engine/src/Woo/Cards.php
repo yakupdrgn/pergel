@@ -111,14 +111,19 @@ final class Cards {
 	}
 
 	/**
-	 * Filter for woocommerce_product_add_to_cart_url: the quote form on the
-	 * product page, which opens for its anchor.
+	 * Filter for woocommerce_product_add_to_cart_url: a quote plugin's form
+	 * (Quote::url()), or else the quote form on the product page, which
+	 * opens for its anchor.
 	 *
 	 * @param mixed $url     Button address.
 	 * @param mixed $product Product.
 	 */
 	public static function quote_url( mixed $url, mixed $product ): mixed {
-		return self::asks( $product ) ? get_permalink( $product->get_id() ) . '#' . Cta::QUOTE_ANCHOR : $url;
+		if ( ! self::asks( $product ) ) {
+			return $url;
+		}
+		$page = Quote::url( $product );
+		return '' !== $page ? $page : get_permalink( $product->get_id() ) . '#' . Cta::QUOTE_ANCHOR;
 	}
 
 	/**

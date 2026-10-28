@@ -320,6 +320,27 @@ final class ProductCtaTest extends TestCase {
 		$this->assertStringNotContainsString( 'wa.me', $html );
 	}
 
+	public function test_a_quote_plugin_page_replaces_the_form(): void {
+		$this->needs_woocommerce();
+		$this->settings( array( 'sales_mode' => 'quote' ) );
+		$product = $this->simple();
+		$page    = static fn (): string => 'https://example.invalid/request-a-quote/?plugin_add=PT-1';
+		add_filter( 'pergel/woo/quote_url', $page );
+		$html = $this->render( $product->get_id() );
+		remove_filter( 'pergel/woo/quote_url', $page );
+		$this->assertStringContainsString( '<p class="wp-block-pergel-product-cta__quote-link"><a class="wp-element-button" href="https://example.invalid/request-a-quote/?plugin_add=PT-1"', $html );
+		$this->assertStringContainsString( 'quote_page', $html );
+		$this->assertStringNotContainsString( '<details', $html );
+		$this->assertStringNotContainsString( '<form', $html );
+
+		// An address that is not a web page is ignored.
+		$script = static fn (): string => 'javascript:alert(1)';
+		add_filter( 'pergel/woo/quote_url', $script );
+		$html = $this->render( $product->get_id() );
+		remove_filter( 'pergel/woo/quote_url', $script );
+		$this->assertStringContainsString( '<details id="pergel-quote"', $html );
+	}
+
 	public function test_catalog_mode_shows_contacts_only(): void {
 		$this->needs_woocommerce();
 		$this->settings( array( 'contact_url' => 'https://example.invalid/contact/' ) );
