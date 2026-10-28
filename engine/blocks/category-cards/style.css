@@ -60,6 +60,11 @@
 	text-decoration: none;
 }
 
+/* A word longer than the card breaks instead of running into the next one. */
+.pergel-category-card__name {
+	overflow-wrap: anywhere;
+}
+
 .pergel-category-card__link:hover .pergel-category-card__name {
 	text-decoration: underline;
 }
