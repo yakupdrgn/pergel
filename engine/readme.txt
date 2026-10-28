@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.10
+Stable tag: 1.4.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.11 =
+* Shop: a quote plugin with its own form can take over "Request a quote" with the new pergel/woo/quote_url filter. When it gives an address for a product, the Product enquiry block links there instead of folding Pergel's quote form, and the cards' "Request a quote" buttons go there too. Without the filter nothing changes.
 
 = 1.4.10 =
 * Shop: the category strip's cards are never narrower than the Category cards block's own card (6.5rem), so on small phones the names no longer run into each other; fewer show and the rest scroll sideways. A category name with a word longer than its card breaks instead of running out of it.
