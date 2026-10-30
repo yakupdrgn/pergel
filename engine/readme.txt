@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.11
+Stable tag: 1.4.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.12 =
+* Shop: on listing pages the pictures of the first row of products (as many as fit on a phone) load at once with fetchpriority="high" instead of lazily, so the largest picture on the first screen starts loading straight away. Their "sizes" follow the products per row on phones, tablets and wide screens. Other grids and the pictures further down still load lazily.
 
 = 1.4.11 =
 * Shop: a quote plugin with its own form can take over "Request a quote" with the new pergel/woo/quote_url filter. When it gives an address for a product, the Product enquiry block links there instead of folding Pergel's quote form, and the cards' "Request a quote" buttons go there too. Without the filter nothing changes.
