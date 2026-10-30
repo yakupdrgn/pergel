@@ -228,7 +228,9 @@ WebP kopyaları yönetim panelinde ve REST'te yapılan yüklemelerde üretilir; 
   yazılır. Yazılan her kopya geri okunur (`wp_getimagesize` ölçü vermezse silinir, sonuç `failed`).
   `wp_delete_file` filtresi orijinal silinirken kopyasını da siler; bu, ayar kapalıyken de eklidir.
   Sayfa açılırken dosya üretilmez.
-  Ön yüzde `template_redirect` üzerinde `Webp::serve()` üç filtre ekler: `wp_get_attachment_image_src`,
+  Kancaları `Performance\Module` `Webp::class` adıyla ekler; sınıf ancak bir kanca çalışınca
+  yüklenir (görselsiz sayfada `pergel_files` artmaz). Ön yüzde `template_redirect` üzerinde
+  `Module::serve_webp()` üç filtre ekler: `wp_get_attachment_image_src`,
   `wp_calculate_image_srcset` ve `wp_content_img_tag` (blok temada şablon ve şablon parçaları da
   bu yoldan geçer). Kopyası olan yükleme adresi `.webp` ile biten adrese döner; sorgu ve `#` korunur,
   http/https aynı dosya sayılır, yükleme klasörü dışındaki adresler (tema görselleri, CDN) değişmez.

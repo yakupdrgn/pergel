@@ -52,48 +52,12 @@ final class Webp {
 	private static array $exists = array();
 
 	/**
-	 * Upload folder URL and path, set when pages start using the copies.
+	 * Upload folder URL and path, read on the first swap; empty when the
+	 * folder has an error.
 	 *
-	 * @var array{url: string, dir: string}|null
+	 * @var array{url: string, dir: string}|array{}|null
 	 */
 	private static ?array $uploads = null;
-
-	/**
-	 * Hooks that make and delete the copies, on every kind of request.
-	 */
-	public static function register(): void {
-		add_filter( 'wp_update_attachment_metadata', array( self::class, 'on_metadata' ), 20, 2 );
-	}
-
-	/**
-	 * Hooks that delete a copy with its original. Added even while the
-	 * setting is off, so no copy outlives its file.
-	 */
-	public static function register_cleanup(): void {
-		add_filter( 'wp_delete_file', array( self::class, 'on_delete' ) );
-	}
-
-	/**
-	 * Lets the page use the copies. Runs on template_redirect, so the REST
-	 * API, admin-ajax, the admin and feeds keep the original addresses
-	 * (the block editor would otherwise write the copies into content).
-	 */
-	public static function serve(): void {
-		if ( is_feed() || is_embed() ) {
-			return;
-		}
-		$uploads = wp_get_upload_dir();
-		if ( ! empty( $uploads['error'] ) ) {
-			return;
-		}
-		self::$uploads = array(
-			'url' => (string) $uploads['baseurl'],
-			'dir' => (string) $uploads['basedir'],
-		);
-		add_filter( 'wp_get_attachment_image_src', array( self::class, 'image_src' ), 20 );
-		add_filter( 'wp_calculate_image_srcset', array( self::class, 'srcset' ), 20 );
-		add_filter( 'wp_content_img_tag', array( self::class, 'content_img' ), 20 );
-	}
 
 	/**
 	 * The copy's path for a file.
@@ -375,7 +339,18 @@ final class Webp {
 	 * @param string $url Picture address.
 	 */
 	private static function swap( string $url ): string {
-		if ( null === self::$uploads || doing_action( 'wp_head' ) ) {
+		// Module::serve_webp() adds the filters on the front end only.
+		if ( doing_action( 'wp_head' ) || false === has_filter( 'wp_content_img_tag', array( self::class, 'content_img' ) ) ) {
+			return $url;
+		}
+		if ( null === self::$uploads ) {
+			$uploads       = wp_get_upload_dir();
+			self::$uploads = empty( $uploads['error'] ) ? array(
+				'url' => (string) $uploads['baseurl'],
+				'dir' => (string) $uploads['basedir'],
+			) : array();
+		}
+		if ( array() === self::$uploads ) {
 			return $url;
 		}
 		return self::swap_url( $url, self::$uploads['url'], self::$uploads['dir'], array( self::class, 'exists' ) );

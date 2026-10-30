@@ -202,7 +202,7 @@ final class PerformanceTest extends TestCase {
 			$large  = (string) wp_get_attachment_image_url( $id, 'large' );
 			$this->assertStringNotContainsString( '.jpg.webp', $before );
 			$this->assertSame( $large, Webp::url( $large ), 'Before the page starts, addresses stay.' );
-			Webp::serve();
+			Module::serve_webp();
 			$this->assertSame( $large . '.webp', Webp::url( $large ) );
 			$after = wp_get_attachment_image( $id, 'medium_large' );
 			$this->assertMatchesRegularExpression( '/src="[^"]+\.jpg\.webp"/', $after );
