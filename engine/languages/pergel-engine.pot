@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-30T11:34:00+03:00\n"
+"POT-Creation-Date: 2026-10-30T16:25:40+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -438,7 +438,7 @@ msgstr ""
 msgid "Performance"
 msgstr ""
 
-msgid "Front-end changes made while the Performance module is on. The admin area is not affected."
+msgid "Front-end changes made while the Performance module is on. The admin area is not affected, apart from the WebP copies made when pictures are uploaded."
 msgstr ""
 
 msgid "Forms"
@@ -549,6 +549,9 @@ msgstr ""
 msgid "Load early"
 msgstr ""
 
+msgid "Pictures"
+msgstr ""
+
 msgid "Delivery"
 msgstr ""
 
@@ -645,7 +648,7 @@ msgstr ""
 msgid "Hands over to an active SEO plugin and adds the brand details to its data. Without one, Pergel prints the meta tags and structured data itself."
 msgstr ""
 
-msgid "Removes front-end assets that most sites do not need."
+msgid "Removes front-end assets that most sites do not need and shows WebP copies of uploaded pictures."
 msgstr ""
 
 msgid "The contact and quote Form block: messages are emailed and kept in the admin area."
@@ -757,6 +760,12 @@ msgid "Preload the style variation fonts"
 msgstr ""
 
 msgid "The basic Latin files of the body and heading fonts start downloading with the page."
+msgstr ""
+
+msgid "Show WebP copies of uploaded pictures"
+msgstr ""
+
+msgid "Each JPEG or PNG upload gets a smaller WebP copy of every size next to it, and pages show the copy. The originals and their addresses stay as they are, so switching this off brings them back. For pictures uploaded earlier, run \"wp pergel webp make\" once."
 msgstr ""
 
 msgid "Send messages to"

@@ -13,9 +13,9 @@ use Pergel\Core;
 use Pergel\Settings\Settings;
 
 /**
- * Trims front-end output most sites do not need and preloads the fonts of
- * the active style variation. Each part has its own switch in the
- * performance settings.
+ * Trims front-end output most sites do not need, preloads the fonts of
+ * the active style variation and serves WebP copies of uploaded pictures.
+ * Each part has its own switch in the performance settings.
  */
 final class Module implements Core\Module {
 
@@ -30,13 +30,24 @@ final class Module implements Core\Module {
 	 * {@inheritDoc}
 	 */
 	public static function should_load(): bool {
-		return ! is_admin();
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function register(): void {
+		// Uploads happen in the admin and over REST; the copies are made there.
+		Webp::register_cleanup();
+		if ( Settings::get( 'performance.webp' ) ) {
+			Webp::register();
+		}
+		if ( is_admin() ) {
+			return;
+		}
+		if ( Settings::get( 'performance.webp' ) ) {
+			add_action( 'template_redirect', array( Webp::class, 'serve' ) );
+		}
 		if ( Settings::get( 'performance.disable_emoji' ) ) {
 			self::disable_emoji();
 		}

@@ -141,7 +141,7 @@ final class Schema {
 					'default' => false,
 				),
 			),
-			// Front-end trimming, used while the performance module is on.
+			// Front-end trimming and WebP copies, used while the performance module is on.
 			'performance' => array(
 				'disable_emoji'       => array(
 					'type'    => 'bool',
@@ -156,6 +156,10 @@ final class Schema {
 					'default' => true,
 				),
 				'preload_fonts'       => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
+				'webp'                => array(
 					'type'    => 'bool',
 					'default' => true,
 				),

@@ -1795,6 +1795,27 @@ kategori sayfalarının LCP'si 4,0–4,3 s'ydi; LCP öğesi ilk kartın resmiydi
 - `sizes` tahmini büyük tarafta tutulur (küçük tahmin bulanık resim demek); masaüstünde liste
   görünümü mümkünse yarım genişlik varsayılır.
 
+## Yüklenen görsellerin WebP kopyaları (30 Ekim 2026, kullanıcı kararları)
+
+Ariumlab dalga 4 ölçümünde bütün görseller JPEG/PNG'ydi (prova: 1198 görsel eki, 6433 dosya, 223 MB;
+117 sayfanın içeriğinde `.jpg` adresi doğrudan yazılı). Kullanıcı iki yoldan "yanına .webp +
+çıktıda değiştir"i ve biçim olarak yalnızca WebP'yi seçti.
+
+- Çekirdeğin `image_editor_output_format` yolu reddedildi: mevcut ekleri `.webp` olarak yeniden
+  yazar, içerikteki adresler için veritabanında arama-değiştirme ister, geri alması zordur ve canlı
+  geçişte ayrı bir adım olur. Yanındaki kopyada veritabanı değişmez, ayar kapanınca her şey
+  orijinale döner, eski adresler (arama motoru, dış bağlantılar, teklif eklentisi) 404 vermez.
+- Kopya adı dosyanın tam adına eklenir (`.jpg.webp`): aynı adlı JPEG ve PNG çakışmaz, kopyanın hangi
+  dosyadan geldiği adından okunur.
+- AVIF yok: kodlaması paylaşımlı sunucuda çok yavaş, kazancı WebP'nin üstüne %15–20; WebP yedeği
+  için `<picture>` ya da `Accept`'e göre HTML gerekir, ikincisi sayfa önbelleğiyle çatışır.
+- Ayar (`performance.webp`) varsayılan açık: yeni sitede her yükleme kopyasını alır; eski görseller
+  için `wp pergel webp make` bir kez çalışır.
+- Prova denemesi (GD): ilk çalıştırmada 146 paletli PNG bozuk kopya (< 100 bayt) bıraktı, `made`
+  sayıldı. Düzeltme: GD'de PNG'ler gerçek renge çevrilip yazılır, her kopya geri okunur. Sonuç:
+  6361 kopyanın hepsi okunur, 72 dosyanın kopyası orijinalden büyük çıktığı için tutulmadı; kopyalar orijinallerin %35'i
+  (199 MB → 69 MB), 1198 ek için ilk çalıştırma ~1,5 dk.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
