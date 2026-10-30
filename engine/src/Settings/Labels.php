@@ -36,7 +36,7 @@ final class Labels {
 			),
 			'performance' => array(
 				'title'       => __( 'Performance', 'pergel-engine' ),
-				'description' => __( 'Front-end changes made while the Performance module is on. The admin area is not affected.', 'pergel-engine' ),
+				'description' => __( 'Front-end changes made while the Performance module is on. The admin area is not affected, apart from the WebP copies made when pictures are uploaded.', 'pergel-engine' ),
 			),
 			'forms'       => array(
 				'title'       => __( 'Forms', 'pergel-engine' ),
@@ -178,6 +178,10 @@ final class Labels {
 				'load'   => array(
 					'title'  => __( 'Load early', 'pergel-engine' ),
 					'fields' => array( 'preload_fonts' ),
+				),
+				'images' => array(
+					'title'  => __( 'Pictures', 'pergel-engine' ),
+					'fields' => array( 'webp' ),
 				),
 			),
 			'forms'       => array(
@@ -360,7 +364,7 @@ final class Labels {
 				),
 				'performance' => array(
 					'label' => __( 'Performance', 'pergel-engine' ),
-					'help'  => __( 'Removes front-end assets that most sites do not need.', 'pergel-engine' ),
+					'help'  => __( 'Removes front-end assets that most sites do not need and shows WebP copies of uploaded pictures.', 'pergel-engine' ),
 				),
 				'forms'       => array(
 					'label' => __( 'Forms', 'pergel-engine' ),
@@ -443,6 +447,10 @@ final class Labels {
 				'preload_fonts'       => array(
 					'label' => __( 'Preload the style variation fonts', 'pergel-engine' ),
 					'help'  => __( 'The basic Latin files of the body and heading fonts start downloading with the page.', 'pergel-engine' ),
+				),
+				'webp'                => array(
+					'label' => __( 'Show WebP copies of uploaded pictures', 'pergel-engine' ),
+					'help'  => __( 'Each JPEG or PNG upload gets a smaller WebP copy of every size next to it, and pages show the copy. The originals and their addresses stay as they are, so switching this off brings them back. For pictures uploaded earlier, run "wp pergel webp make" once.', 'pergel-engine' ),
 				),
 			),
 			'forms'       => array(

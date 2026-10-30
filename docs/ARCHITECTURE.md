@@ -73,7 +73,7 @@ Planlanan modüller ve yüklenme koşulları:
 | Ai | İsteğe bağlı |
 | Content | Yalnızca açılan içerik türleri |
 | Woo | WooCommerce aktifse |
-| Performance | Ön yüz (`is_admin()` dışı; her parça kendi ayar anahtarıyla) |
+| Performance | Her istekte (yüklemede WebP kopyası ve silme); kırpmalar ve adres değiştirme yalnızca ön yüzde, her parça kendi ayar anahtarıyla |
 | Import / Cli | Yalnızca WP-CLI (`Cli` şu an var; bkz. "WP-CLI") |
 
 ## Ayar modeli (F2)
@@ -199,7 +199,9 @@ WP_DIR=/c/xampp/htdocs/pergel-tema SITE_URL=http://localhost/pergel-tema bash to
 
 ## Performans modülü (F2)
 
-Yalnızca ön yüzde yüklenir; dört anahtarın hepsi varsayılan açıktır (Ayarlar → Performance).
+Beş anahtarın hepsi varsayılan açıktır (Ayarlar → Performance). Modül her istekte yüklenir, çünkü
+WebP kopyaları yönetim panelinde ve REST'te yapılan yüklemelerde üretilir; diğer her şey yalnızca
+ön yüzde (`is_admin()` dışı) çalışır.
 
 - **Emoji:** çekirdeğin emoji algılama script'i, stilleri ve `s.w.org` DNS prefetch'i sayfadan ve
   embed'lerden kalkar. Akışlar ve e-postalar çekirdeğin görsel yedeğini korur.
@@ -212,6 +214,31 @@ Yalnızca ön yüzde yüklenir; dört anahtarın hepsi varsayılan açıktır (A
   temel Latin'i kapsayan woff2 dosyaları `wp_preload_resources` ile önyüklenir. URL'ler çekirdeğin
   `@font-face` adresiyle birebir aynıdır (`file:./` → `get_theme_file_uri()`). Sistem fontlu temel
   temada hiçbir şey önyüklenmez. `pergel/performance/font_preloads` filtresi listeyi değiştirir.
+- **WebP kopyaları (`performance.webp`, `Performance\Webp`):** her JPEG/PNG görsel ekinin tam boyutu
+  ve her alt boyutu yanına dosyanın tam adıyla bir kopya alır (`foto-300x200.jpg` →
+  `foto-300x200.jpg.webp`; aynı adlı JPEG ve PNG çakışmaz). Ek, metadata ve içerik orijinal adları
+  korur; çekirdeğin ölçeklenmemiş `original_image` dosyası kopya almaz. Kopyalar
+  `wp_update_attachment_metadata` (20) sırasında yapılır (yükleme, yeniden üretme, görsel
+  düzenleyici); bir yükleme sırasında her alt boyuttan sonra çağrıldığı için istek içinde denenen
+  dosya bir daha kodlanmaz. Orijinalinden küçük çıkmayan kopya tutulmaz (ince desenli küçük
+  boyutlarda olur), sayfa o boyutta orijinali gösterir. Kalite 82 (`pergel/performance/webp_quality`).
+  GD paletli ve gri PNG'leri paletli görüntü olarak yükler ve bunları WebP yazamaz (uyarı verip
+  bozuk dosya bırakır); bu yüzden düzenleyici GD iken PNG'ler (ad değil ilk 8 bayt bakılır)
+  `imagepalettetotruecolor` ile gerçek renge çevrilip saydamlık korunarak doğrudan `imagewebp` ile
+  yazılır. Yazılan her kopya geri okunur (`wp_getimagesize` ölçü vermezse silinir, sonuç `failed`).
+  `wp_delete_file` filtresi orijinal silinirken kopyasını da siler; bu, ayar kapalıyken de eklidir.
+  Sayfa açılırken dosya üretilmez.
+  Kancaları `Performance\Module` `Webp::class` adıyla ekler; sınıf ancak bir kanca çalışınca
+  yüklenir (görselsiz sayfada `pergel_files` artmaz). Ön yüzde `template_redirect` üzerinde
+  `Module::serve_webp()` üç filtre ekler: `wp_get_attachment_image_src`,
+  `wp_calculate_image_srcset` ve `wp_content_img_tag` (blok temada şablon ve şablon parçaları da
+  bu yoldan geçer). Kopyası olan yükleme adresi `.webp` ile biten adrese döner; sorgu ve `#` korunur,
+  http/https aynı dosya sayılır, yükleme klasörü dışındaki adresler (tema görselleri, CDN) değişmez.
+  `wp_head` sırasında basılan adresler (paylaşım görseli, JSON-LD) orijinal kalır: her sosyal ağ
+  WebP göstermiyor. REST, admin-ajax, yönetim paneli, akış ve embed orijinal adresleri alır (blok
+  editörü kopya adresini içeriğe yazmasın). `Accept` başlığına bakılmaz: sayfa önbelleği aynı
+  HTML'i herkese verir ve WebP'yi bütün güncel tarayıcılar gösterir. Görsel bloğunun lightbox'ı
+  büyük görseli `wp_get_attachment_url` ile alır, o da orijinal kalır; yalnızca tıklanınca yüklenir.
 
 Bütçe bunları denetler: `emoji = 0`, `fontPreloads ≤ 2`, `unusedPreloads = 0` (önyüklenip hiçbir
 `@font-face` kuralınca kullanılmayan dosya), `jsonld ≤ 1`.
@@ -1412,6 +1439,7 @@ Varsayılan olarak kapalıdır (`modules.abilities`, panelde "Yapay zekâ erişi
 | `wp pergel modules list` | Modül, anahtar (`on`/`off`/`always`), bu komutta yüklendi mi |
 | `wp pergel modules enable\|disable <id>...` | Anahtarı olan modülleri açar/kapatır |
 | `wp pergel search status\|reindex\|query <metin>` | İndeksin durumu, hemen yeniden kurulum, deneme araması |
+| `wp pergel webp status\|make [--dry-run] [--force]\|remove [--yes]` | Görsel eklerinin WebP kopyaları: sayım ve boyut, eksik/eski kopyaları üretme (ayar açılmadan önce yüklenen görseller için bir kez), hepsini silme |
 | `wp pergel starter list` | Pergel'le gelen starter'lar |
 | `wp pergel starter install <ad\|klasör> [--dry-run] [--reset]` | Starter'ın sayfalarını, menüsünü, okuma ayarlarını ve (mağaza starter'ında) kategori, öznitelik, ürün ve görsellerini kurar; tekrar çalışınca bir şey değiştirmez |
 | `wp pergel starter remove <ad> [--dry-run] [--yes]` | Starter'ın yaptığı her şeyi kalıcı siler, okuma ayarlarını düzeltir |

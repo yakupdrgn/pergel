@@ -13,9 +13,9 @@ use Pergel\Core;
 use Pergel\Settings\Settings;
 
 /**
- * Trims front-end output most sites do not need and preloads the fonts of
- * the active style variation. Each part has its own switch in the
- * performance settings.
+ * Trims front-end output most sites do not need, preloads the fonts of
+ * the active style variation and serves WebP copies of uploaded pictures.
+ * Each part has its own switch in the performance settings.
  */
 final class Module implements Core\Module {
 
@@ -30,13 +30,26 @@ final class Module implements Core\Module {
 	 * {@inheritDoc}
 	 */
 	public static function should_load(): bool {
-		return ! is_admin();
+		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public function register(): void {
+		// The Webp class loads only when one of its hooks runs (file budget).
+		// A copy goes with its original even while the setting is off.
+		add_filter( 'wp_delete_file', array( Webp::class, 'on_delete' ) );
+		if ( Settings::get( 'performance.webp' ) ) {
+			// Uploads happen in the admin and over REST; the copies are made there.
+			add_filter( 'wp_update_attachment_metadata', array( Webp::class, 'on_metadata' ), 20, 2 );
+		}
+		if ( is_admin() ) {
+			return;
+		}
+		if ( Settings::get( 'performance.webp' ) ) {
+			add_action( 'template_redirect', array( self::class, 'serve_webp' ) );
+		}
 		if ( Settings::get( 'performance.disable_emoji' ) ) {
 			self::disable_emoji();
 		}
@@ -53,6 +66,20 @@ final class Module implements Core\Module {
 		if ( Settings::get( 'performance.preload_fonts' ) ) {
 			add_filter( 'wp_preload_resources', array( self::class, 'preload_fonts' ) );
 		}
+	}
+
+	/**
+	 * Lets the page use the WebP copies. Runs on template_redirect, so the
+	 * REST API, admin-ajax, the admin and feeds keep the original addresses
+	 * (the block editor would otherwise write the copies into content).
+	 */
+	public static function serve_webp(): void {
+		if ( is_feed() || is_embed() ) {
+			return;
+		}
+		add_filter( 'wp_get_attachment_image_src', array( Webp::class, 'image_src' ), 20 );
+		add_filter( 'wp_calculate_image_srcset', array( Webp::class, 'srcset' ), 20 );
+		add_filter( 'wp_content_img_tag', array( Webp::class, 'content_img' ), 20 );
 	}
 
 	/**
