@@ -15,6 +15,7 @@ namespace Pergel\Tests\Integration;
 use Pergel\Settings\Schema;
 use Pergel\Settings\Settings;
 use Pergel\Woo\Filters;
+use Pergel\Woo\FirstCards;
 use Pergel\Woo\Layout;
 use Pergel\Woo\LayoutFields;
 use Pergel\Woo\Listing;
@@ -41,6 +42,13 @@ final class ShopLayoutTest extends TestCase {
 	private const FULL_GRID = '<!-- wp:woocommerce/product-collection {"queryId":0,"query":{"inherit":true,"isProductCollectionBlock":true,"perPage":12,"postType":"product"},"tagName":"div","displayLayout":{"type":"flex","columns":3,"shrinkColumns":true}} -->'
 		. '<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template --><!-- wp:post-title /--><!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /--><!-- /wp:woocommerce/product-template -->'
 		. '<!-- wp:query-pagination --><!-- wp:query-pagination-next /--><!-- /wp:query-pagination --></div>'
+		. '<!-- /wp:woocommerce/product-collection -->';
+
+	/**
+	 * The main grid with product pictures.
+	 */
+	private const IMAGE_GRID = '<!-- wp:woocommerce/product-collection {"queryId":0,"query":{"inherit":true,"isProductCollectionBlock":true,"perPage":12,"postType":"product"},"tagName":"div","displayLayout":{"type":"flex","columns":3,"shrinkColumns":true}} -->'
+		. '<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template --><!-- wp:woocommerce/product-image {"isDescendentOfQueryLoop":true} /--><!-- /wp:woocommerce/product-template --></div>'
 		. '<!-- /wp:woocommerce/product-collection -->';
 
 	/**
@@ -114,6 +122,8 @@ final class ShopLayoutTest extends TestCase {
 			wp_delete_term( $term_id, 'product_cat' );
 		}
 		Layout::flush();
+		FirstCards::flush();
+		wp_high_priority_element_flag( true );
 		wp_dequeue_style( Layout::STYLE );
 		wp_dequeue_script_module( Filters::SCRIPT );
 		wp_dequeue_script_module( Listing::SCRIPT );
@@ -434,6 +444,121 @@ final class ShopLayoutTest extends TestCase {
 		$html = do_blocks( self::COLUMNS );
 		$this->assertStringNotContainsString( 'pergel-shop-layout__filters', $html );
 		$this->assertStringContainsString( 'pergel-shop-layout__products', $html );
+	}
+
+	/**
+	 * Three products with a fake picture each; no file is written.
+	 */
+	private function pictured_products(): void {
+		foreach ( array( 'one', 'two', 'three' ) as $name ) {
+			$id = wp_insert_attachment(
+				array(
+					'post_title'     => $name,
+					'post_mime_type' => 'image/png',
+					'post_status'    => 'inherit',
+				)
+			);
+			update_post_meta( $id, '_wp_attached_file', "pergel-test/$name.png" );
+			wp_update_attachment_metadata(
+				$id,
+				array(
+					'width'  => 1000,
+					'height' => 1000,
+					'file'   => "pergel-test/$name.png",
+					'sizes'  => array(
+						'medium' => array(
+							'file'      => "$name-300x300.png",
+							'width'     => 300,
+							'height'    => 300,
+							'mime-type' => 'image/png',
+						),
+					),
+				)
+			);
+			$this->posts[] = $id;
+			$product       = new \WC_Product_Simple();
+			$product->set_name( 'Pictured ' . $name );
+			$product->set_status( 'publish' );
+			$product->set_regular_price( '10' );
+			$product->set_image_id( $id );
+			$this->posts[] = $product->save();
+		}
+	}
+
+	/**
+	 * The product pictures in rendered HTML, in order.
+	 *
+	 * @param string $html Rendered blocks.
+	 * @return list<\WP_HTML_Tag_Processor> One processor per picture, at its tag.
+	 */
+	private function pictures( string $html ): array {
+		$found = array();
+		preg_match_all( '/<img\b[^>]*data-testid="product-image"[^>]*>/', $html, $tags );
+		foreach ( $tags[0] as $tag ) {
+			$picture = new \WP_HTML_Tag_Processor( $tag );
+			$picture->next_tag();
+			$found[] = $picture;
+		}
+		return $found;
+	}
+
+	public function test_first_row_pictures_load_at_once(): void {
+		$this->pictured_products();
+		Settings::update( array( 'shop' => array( 'columns_phone' => '2' ) ) );
+		$this->go_to(
+			array(
+				'post_type' => 'product',
+				'orderby'   => 'ID',
+			)
+		);
+
+		$pictures = $this->pictures( do_blocks( self::IMAGE_GRID ) );
+
+		$this->assertGreaterThanOrEqual( 3, count( $pictures ) );
+		foreach ( array( 0, 1 ) as $at ) {
+			$this->assertSame( 'eager', $pictures[ $at ]->get_attribute( 'loading' ) );
+			$this->assertSame( 'high', $pictures[ $at ]->get_attribute( 'fetchpriority' ) );
+			$this->assertStringStartsWith( '(max-width: 599px) calc(100vw / 2), (max-width: 1023px) calc(100vw / 2), ', (string) $pictures[ $at ]->get_attribute( 'sizes' ) );
+			$this->assertStringEndsWith( ', calc(100vw / 3)', (string) $pictures[ $at ]->get_attribute( 'sizes' ) );
+		}
+		$this->assertSame( 'lazy', $pictures[2]->get_attribute( 'loading' ) );
+		$this->assertNull( $pictures[2]->get_attribute( 'fetchpriority' ) );
+		$this->assertStringStartsWith( 'auto, ', (string) $pictures[2]->get_attribute( 'sizes' ) );
+
+		// Once per page: a second grid further down stays lazy.
+		foreach ( $this->pictures( do_blocks( self::IMAGE_GRID ) ) as $picture ) {
+			$this->assertSame( 'lazy', $picture->get_attribute( 'loading' ) );
+		}
+	}
+
+	public function test_first_pictures_stay_lazy_off_the_main_grid(): void {
+		$this->pictured_products();
+		$this->go_to( array( 'post_type' => 'product' ) );
+		// A picture higher up the page already asked for high priority.
+		wp_high_priority_element_flag( false );
+		$own = str_replace( '"inherit":true', '"inherit":false', self::IMAGE_GRID );
+		foreach ( $this->pictures( do_blocks( $own ) ) as $picture ) {
+			$this->assertSame( 'lazy', $picture->get_attribute( 'loading' ) );
+		}
+
+		$pictures = $this->pictures( do_blocks( self::IMAGE_GRID ) );
+
+		$this->assertSame( 'eager', $pictures[0]->get_attribute( 'loading' ) );
+		$this->assertNull( $pictures[0]->get_attribute( 'fetchpriority' ) );
+
+		FirstCards::flush();
+		$this->go_to( array( 'post_type' => 'post' ) );
+		foreach ( $this->pictures( do_blocks( self::IMAGE_GRID ) ) as $picture ) {
+			$this->assertSame( 'lazy', $picture->get_attribute( 'loading' ) );
+		}
+	}
+
+	public function test_first_picture_sizes_follow_the_page(): void {
+		Settings::update( array( 'shop' => array( 'width' => 'full' ) ) );
+		$this->go_to( array( 'post_type' => 'product' ) );
+
+		$this->assertSame( '(max-width: 599px) calc(100vw / 2), (max-width: 1023px) calc(100vw / 3), calc(100vw / 4)', FirstCards::sizes( 2, 3, 4 ) );
+		$this->assertSame( '(max-width: 599px) 100vw, (max-width: 1023px) 100vw, 100vw', FirstCards::sizes( 1, 1, 1 ) );
 	}
 
 	public function test_view_and_paging_defaults_change_nothing(): void {

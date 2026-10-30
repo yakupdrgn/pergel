@@ -1781,6 +1781,20 @@ gelir). Pergel'in katlanmış formu ve `QuoteProvider` yolu bu formun yerini tut
   Pergel Divit'i bilmez.
 - Bağlantı `generate_lead` verir (`lead_source`: `quote_page`), iletişim bağlantıları gibi.
 
+## Listede ilk kartların resmi hemen yüklenir (30 Ekim 2026, kullanıcı kararı)
+
+Ariumlab büyüme planı dalga 4'ün ilk ölçümünde (staging, telefon, Slow 4G, CPU 4x) mağaza ve
+kategori sayfalarının LCP'si 4,0–4,3 s'ydi; LCP öğesi ilk kartın resmiydi, `loading="lazy"` ve
+öncelik işareti yoktu. Kullanıcı "hızlı düzeltmeler"i seçti.
+
+- Telefondaki ilk satır `eager` + `fetchpriority="high"`: satırdaki resimler aynı boyutta, hangisi
+  önce boyanırsa LCP o (ölçümde ikinci kart çıktı), o yüzden yalnızca birincisi değil. Masaüstündeki
+  ilk satırın kalanı lazy kalır; telefonda ilk ekranın altına düşüyor.
+- Ayar yok: her listede doğru olan davranış bu. Çekirdeğin kuralı korunur: sayfada daha yukarıda
+  yüksek öncelikli bir resim varsa kartlar öncelik istemez.
+- `sizes` tahmini büyük tarafta tutulur (küçük tahmin bulanık resim demek); masaüstünde liste
+  görünümü mümkünse yarım genişlik varsayılır.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
