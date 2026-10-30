@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.12
+Stable tag: 1.4.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.13 =
+* Performance: each JPEG or PNG upload gets a smaller WebP copy of every size next to it (photo.jpg.webp), and pages show the copy in images, srcset and content. The originals and their addresses stay as they are: the admin area, the REST API, feeds, embeds, the head tags for sharing and the lightbox's full picture still use them, and a copy is deleted with its original. A copy that comes out larger than its original is not kept. New setting "Show WebP copies of uploaded pictures" (on by default); switching it off brings the originals back. For pictures uploaded earlier, run "wp pergel webp make" once; "wp pergel webp status" counts the copies and "wp pergel webp remove" deletes them. Themes can turn an address they print themselves into its copy with Pergel\Performance\Webp::url().
 
 = 1.4.12 =
 * Shop: on listing pages the pictures of the first row of products (as many as fit on a phone) load at once with fetchpriority="high" instead of lazily, so the largest picture on the first screen starts loading straight away. Their "sizes" follow the products per row on phones, tablets and wide screens. Other grids and the pictures further down still load lazily.
