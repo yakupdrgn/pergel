@@ -59,9 +59,12 @@ final class FirstCards {
 			return;
 		}
 		self::$armed = true;
-		$columns     = max( 1, $columns );
-		$list        = Listing::list_possible();
-		$counts      = array();
+		// Hooked here, not at start-up: pages without a main grid never load this class.
+		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'done' ) );
+		add_filter( 'wp_get_attachment_image_attributes', array( self::class, 'attributes' ), 20 );
+		$columns = max( 1, $columns );
+		$list    = Listing::list_possible();
+		$counts  = array();
 		foreach ( array(
 			'phone'  => 'shop.columns_phone',
 			'tablet' => 'shop.columns_tablet',
@@ -160,6 +163,8 @@ final class FirstCards {
 	 * Forgets the page; tests call it.
 	 */
 	public static function flush(): void {
+		remove_filter( 'render_block_woocommerce/product-collection', array( self::class, 'done' ) );
+		remove_filter( 'wp_get_attachment_image_attributes', array( self::class, 'attributes' ), 20 );
 		self::$left  = 0;
 		self::$high  = false;
 		self::$sizes = '';

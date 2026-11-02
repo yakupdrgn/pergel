@@ -742,7 +742,9 @@ görünmez (`Settings\Screen::shown`).
   resimde `sizes="auto"` geçersiz olduğu için `sizes` satırdaki ürün sayısından yazılır: 599px'e
   kadar telefon, 1023px'e kadar tablet sayısı (yoksa en çok 2), üstünde `wideSize` (px ise; tam
   genişlikte değil) ve `shop.columns`; liste mümkünse (%45 resim) ve `view_columns` seçeneklerinde
-  en küçük sayı alınır, yani tahmin büyük tarafta kalır.
+  en küçük sayı alınır, yani tahmin büyük tarafta kalır. İki kanca da `arm()` içinde eklenir: ana
+  ızgarası olmayan sayfa (ürün sayfası, görselli içerik) sınıfı yüklemez (1.4.12–1.4.13 her görselde
+  yüklüyordu; mağaza bütçesinde ürün sayfası `pergel_files` 67 > 65).
 - **Panel genişliği (`Layout::panel_css`):** WooCommerce filtreleri "Filter products" düğmesi + panel
   olarak temanın `settings.viewport` değerine kadar gösterir (tablet → mobile → 782px; Pergel teması
   1024px). Bu genişliğe kadar `.pergel-shop-layout:has(.is-mobile-overlay)` sarılır, sütunlar

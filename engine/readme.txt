@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.13
+Stable tag: 1.4.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.14 =
+* Performance: shop pages send the product filters in fewer bytes. The filter box leaves out the empty space in its markup, draws the option tick once instead of once per option and writes its settings without escaped quotes; the filters look and work the same. New setting "Send the product filters in fewer bytes" (on by default); switched off, the box is exactly as WooCommerce draws it.
+* Shop: pages without a product grid, such as product pages, no longer load the code that makes the first product pictures load at once.
 
 = 1.4.13 =
 * Performance: each JPEG or PNG upload gets a smaller WebP copy of every size next to it (photo.jpg.webp), and pages show the copy in images, srcset and content. The originals and their addresses stay as they are: the admin area, the REST API, feeds, embeds, the head tags for sharing and the lightbox's full picture still use them, and a copy is deleted with its original. A copy that comes out larger than its original is not kept. New setting "Show WebP copies of uploaded pictures" (on by default); switching it off brings the originals back. For pictures uploaded earlier, run "wp pergel webp make" once; "wp pergel webp status" counts the copies and "wp pergel webp remove" deletes them. Themes can turn an address they print themselves into its copy with Pergel\Performance\Webp::url().
