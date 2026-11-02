@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.15
+Stable tag: 1.4.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.16 =
+* Shop: the "This product" note in the product comparison table uses the muted text colour instead of a faded copy of the text colour, so it is readable (4.5:1 contrast or more on every style; 3.7:1 before).
 
 = 1.4.15 =
 * Shop: with "Send the product filters in fewer bytes" on, each option tick keeps its own drawing frame, so it looks exactly as WooCommerce draws it; in 1.4.14 the tip of the tick could differ by a few pixels of smoothing.

@@ -96,7 +96,7 @@
 .pergel-compare__this {
 	display: block;
 	font-size: 0.8125rem;
-	opacity: 0.75;
+	color: var(--wp--preset--color--muted, inherit);
 }
 
 .pergel-compare__discount {
