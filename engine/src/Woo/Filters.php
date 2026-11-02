@@ -67,6 +67,13 @@ final class Filters {
 	private static string $tick = '';
 
 	/**
+	 * The opening <svg> tag each shared tick keeps.
+	 *
+	 * @var string
+	 */
+	private static string $open = '';
+
+	/**
 	 * Filter blocks whose first heading names their group.
 	 */
 	private const GROUPS = array(
@@ -461,24 +468,27 @@ final class Filters {
 
 	/**
 	 * Points every option tick that is drawn like the first one at one
-	 * drawing (a symbol printed in the footer). With fewer than two ticks
+	 * drawing (a group printed in the footer). Each tick keeps its own
+	 * <svg> tag with WooCommerce's viewBox, so the shared lines are drawn
+	 * in the same coordinates, pixel for pixel; a <symbol> with its own
+	 * viewBox moved the anti-aliasing at the tip. With fewer than two ticks
 	 * there is nothing to share.
 	 *
 	 * @param string $html Markup.
 	 */
 	private static function single_marks( string $html ): string {
-		$pattern = '#<svg class="wc-block-product-filter-checkbox-list__mark"([^>]*)>(.*?)</svg>#s';
+		$pattern = '#(<svg class="wc-block-product-filter-checkbox-list__mark"[^>]*>)(.*?)</svg>#s';
 		if ( preg_match_all( $pattern, $html, $ticks, PREG_SET_ORDER ) < 2 ) {
 			return $html;
 		}
 		if ( '' === self::$tick ) {
-			$attributes = (string) preg_replace( '/\s(?:xmlns|class|width|height)="[^"]*"/', '', $ticks[0][1] );
 			self::$tick = $ticks[0][0];
-			self::$mark = '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="' . self::MARK . '"' . $attributes . '>' . $ticks[0][2] . '</symbol></svg>';
+			self::$open = (string) preg_replace( '/\sxmlns="[^"]*"/', '', $ticks[0][1] );
+			self::$mark = '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><g id="' . self::MARK . '">' . $ticks[0][2] . '</g></defs></svg>';
 			add_action( 'wp_footer', array( self::class, 'print_mark' ) );
 		}
 		// Only ticks drawn exactly like the one in the footer.
-		return str_replace( self::$tick, '<svg class="wc-block-product-filter-checkbox-list__mark" aria-hidden="true"><use href="#' . self::MARK . '"/></svg>', $html );
+		return str_replace( self::$tick, self::$open . '<use href="#' . self::MARK . '"/></svg>', $html );
 	}
 
 	/**
@@ -488,6 +498,7 @@ final class Filters {
 		remove_action( 'wp_footer', array( self::class, 'print_mark' ) );
 		self::$mark = '';
 		self::$tick = '';
+		self::$open = '';
 	}
 
 	/**

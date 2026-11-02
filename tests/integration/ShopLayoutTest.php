@@ -815,12 +815,13 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringContainsString( 'data-wp-context="{&quot;it\'s&quot;:2}"', $html, 'A value with a bare apostrophe stays.' );
 		// Every tick, the template's too, points at one drawing in the footer.
 		$this->assertSame( 0, substr_count( $html, '<path' ) );
-		$this->assertSame( 3, substr_count( $html, '<svg class="wc-block-product-filter-checkbox-list__mark" aria-hidden="true"><use href="#' . Filters::MARK . '"/></svg>' ) );
+		// Each tick keeps WooCommerce's own <svg> tag (its viewBox), so the lines are drawn in the same coordinates.
+		$this->assertSame( 3, substr_count( $html, '<svg class="wc-block-product-filter-checkbox-list__mark" viewBox="0 0 10 8" fill="none"><use href="#' . Filters::MARK . '"/></svg>' ) );
 		$this->assertNotFalse( has_action( 'wp_footer', array( Filters::class, 'print_mark' ) ) );
 		ob_start();
 		Filters::print_mark();
 		$footer = (string) ob_get_clean();
-		$this->assertStringContainsString( '<symbol id="' . Filters::MARK . '" viewBox="0 0 10 8" fill="none"><path d="M9.25 1.2 3.75 6.7 1 3.95" stroke="currentColor"/></symbol>', $footer );
+		$this->assertStringContainsString( '<defs><g id="' . Filters::MARK . '"><path d="M9.25 1.2 3.75 6.7 1 3.95" stroke="currentColor"/></g></defs>', $footer );
 
 		// Running it again changes nothing more.
 		$this->assertSame( $html, Filters::lean( $html ) );

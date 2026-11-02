@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.14
+Stable tag: 1.4.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.15 =
+* Shop: with "Send the product filters in fewer bytes" on, each option tick keeps its own drawing frame, so it looks exactly as WooCommerce draws it; in 1.4.14 the tip of the tick could differ by a few pixels of smoothing.
 
 = 1.4.14 =
 * Performance: shop pages send the product filters in fewer bytes. The filter box leaves out the empty space in its markup, draws the option tick once instead of once per option and writes its settings without escaped quotes; the filters look and work the same. New setting "Send the product filters in fewer bytes" (on by default); switched off, the box is exactly as WooCommerce draws it.

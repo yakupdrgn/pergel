@@ -1828,8 +1828,13 @@ Kullanıcı "filtreyi yalınlaştır"ı ve yer olarak Pergel'i seçti (sitelere 
 - Filtreler kaldıkça 120 KB'a inilmez; hedef boşluğu ve yinelemeyi atmak, görünüm ve davranış aynı.
 - Interactivity API yönergeleri `render_block`'ta işlenir; Pergel sonucu 20'de kısaltır, sunucunun
   çizdiği işaretleme ve istemcinin yeniden çizimi aynı kalır.
-- Tik `<symbol>` + `<use>`: `<template>` içindekiler de değişir, sembol belgede durduğu için
-  istemcinin yeniden çizdiği seçenekler de tiki gösterir.
+- Tik `<use>` + `<defs><g>`: `<template>` içindekiler de değişir, çizim belgede durduğu için
+  istemcinin yeniden çizdiği seçenekler de tiki gösterir. 1.4.14'te çizim kendi `viewBox`'ı olan bir
+  `<symbol>` idi; prova denemesinde 17 px'lik tikin ucunda 3 pikselin kenar yumuşatması kaydı.
+  1.4.15'te her tik WooCommerce'in `<svg>` etiketini korur, paylaşılan yalnızca çizgilerdir: ekran
+  görüntüleri yine piksel piksel aynı (prova mağaza ve kategori). Bedeli tik başına ~40 bayt.
+- Prova (Ariumlab verisi, 1.4.15): `/products-list/` 413,5 → 367,4 KB, `magnetic-racks`
+  364,5 → 337,3 KB.
 - Ayar (`performance.lean_filters`) varsayılan açık; kapatınca çıktı birebir WooCommerce'inki.
 - Doğrulama (pergel-shop): 256,1 → 245,5 KB; metin, girdiler ve ayrışmış `data-wp-context`
   değerleri aynı, filtre ve tik ekran görüntüleri piksel piksel aynı, JS hatası yok.
