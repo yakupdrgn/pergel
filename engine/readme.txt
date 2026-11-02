@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.16
+Stable tag: 1.4.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.17 =
+* Shop: the "More" button under a long filter list sits on the surface colour with a thin accent ring instead of a light accent tint, so its accent text is readable (4.5:1 contrast or more on every style; 4.28:1 before on Ariumlab).
 
 = 1.4.16 =
 * Shop: the "This product" note in the product comparison table uses the muted text colour instead of a faded copy of the text colour, so it is readable (4.5:1 contrast or more on every style; 3.7:1 before).
