@@ -154,7 +154,7 @@ final class PerformanceTest extends TestCase {
 		$html = (string) ob_get_clean();
 		unset( $_GET['tab'] );
 
-		foreach ( array( 'disable_emoji', 'remove_oembed_links', 'dequeue_dashicons', 'preload_fonts', 'webp' ) as $key ) {
+		foreach ( array( 'disable_emoji', 'remove_oembed_links', 'dequeue_dashicons', 'preload_fonts', 'webp', 'lean_filters' ) as $key ) {
 			$this->assertStringContainsString( "name=\"pergel_settings[performance][$key]\"", $html );
 		}
 	}

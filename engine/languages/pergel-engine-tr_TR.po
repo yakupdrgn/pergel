@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pergel Engine 1.4.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-10-30 14:24+0000\n"
-"PO-Revision-Date: 2026-10-30 14:24+0000\n"
+"POT-Creation-Date: 2026-11-02 07:53+0000\n"
+"PO-Revision-Date: 2026-11-02 07:53+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -747,6 +747,12 @@ msgstr "Yüklenen resimlerin WebP kopyalarını göster"
 
 msgid "Each JPEG or PNG upload gets a smaller WebP copy of every size next to it, and pages show the copy. The originals and their addresses stay as they are, so switching this off brings them back. For pictures uploaded earlier, run \"wp pergel webp make\" once."
 msgstr "Yüklenen her JPEG ya da PNG resmin her boyutunun yanına daha küçük bir WebP kopyası yazılır ve sayfalar kopyayı gösterir. Orijinaller ve adresleri olduğu gibi kalır, bu yüzden ayar kapatılınca onlar geri gelir. Daha önce yüklenen resimler için \"wp pergel webp make\" komutunu bir kez çalıştırın."
+
+msgid "Send the product filters in fewer bytes"
+msgstr "Ürün filtrelerini daha az baytla gönder"
+
+msgid "Shop pages leave out the empty space in the filter markup and draw the option tick once instead of once per option. The filters look and work the same."
+msgstr "Mağaza sayfaları filtre işaretlemesindeki boşlukları atar ve seçenek tikini her seçenek için ayrı ayrı değil, bir kez çizer. Filtreler aynı görünür ve aynı çalışır."
 
 msgid "Send messages to"
 msgstr "Mesajların gönderileceği adres"

@@ -199,7 +199,7 @@ WP_DIR=/c/xampp/htdocs/pergel-tema SITE_URL=http://localhost/pergel-tema bash to
 
 ## Performans modülü (F2)
 
-Beş anahtarın hepsi varsayılan açıktır (Ayarlar → Performance). Modül her istekte yüklenir, çünkü
+Altı anahtarın hepsi varsayılan açıktır (Ayarlar → Performance). Modül her istekte yüklenir, çünkü
 WebP kopyaları yönetim panelinde ve REST'te yapılan yüklemelerde üretilir; diğer her şey yalnızca
 ön yüzde (`is_admin()` dışı) çalışır.
 
@@ -239,6 +239,16 @@ WebP kopyaları yönetim panelinde ve REST'te yapılan yüklemelerde üretilir; 
   editörü kopya adresini içeriğe yazmasın). `Accept` başlığına bakılmaz: sayfa önbelleği aynı
   HTML'i herkese verir ve WebP'yi bütün güncel tarayıcılar gösterir. Görsel bloğunun lightbox'ı
   büyük görseli `wp_get_attachment_url` ile alır, o da orijinal kalır; yalnızca tıklanınca yüklenir.
+- **Yalın filtre çıktısı (`performance.lean_filters`, `Woo\Filters::lean`):** Product Filters
+  bloğunun HTML'i `render_block_woocommerce/product-filters` 20'de, Interactivity API yönergeleri
+  işlendikten sonra kısalır. Metindeki ve öznitelikler arasındaki 2+ boşluk tek boşluğa (içinde
+  satır sonu varsa tek satır sonuna) iner; tırnaklı değerler ve `script`/`style`/`pre`/`textarea`
+  içi dokunulmaz. Her seçenekte yinelenen tik SVG'si (`wc-block-product-filter-checkbox-list__mark`,
+  `<template>` içindekiler dahil) `<use href="#pergel-filter-mark">` olur; çizim `wp_footer`'da bir
+  kez `<symbol>` olarak basılır, en az iki tik yoksa hiçbir şey değişmez. `data-wp-context`
+  değerleri `&quot;` yerine tek tırnakla yazılır (değerde `'` varsa olduğu gibi kalır). Ayar
+  kapalıyken çıktı WooCommerce'inkiyle birebir aynıdır. pergel-shop mağazasında 256,1 → 245,5 KB;
+  tarayıcıda metin, girdiler, ayrışmış bağlamlar ve ekran görüntüleri aynı.
 
 Bütçe bunları denetler: `emoji = 0`, `fontPreloads ≤ 2`, `unusedPreloads = 0` (önyüklenip hiçbir
 `@font-face` kuralınca kullanılmayan dosya), `jsonld ≤ 1`.
@@ -681,6 +691,7 @@ görünmez (`Settings\Screen::shown`).
   `data-pergel-folded` ile gizler; işaretli bir alt kategori üstünü açık tutar, arama hepsine
   bakar, More düğmesi yalnızca görünen satırları sayar. Açık dallar grup adı + değer ile tutulur
   ve her yeniden çizimde geri konur.
+  Kutunun işaretlemesi `performance.lean_filters` ile kısalır (Performans modülü).
   `shop.filter_title|filter_icon`
   pattern'in `pergel-filters__title` başlığına kendi yazısını ve bir ikon koyar (sunucuda).
   `shop.filter_more: pill` uzun listeleri `filter_rows` satırda keser: gerisi gizlenir

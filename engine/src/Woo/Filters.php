@@ -32,7 +32,8 @@ use const Pergel\VERSION;
  *   and the Availability filter, which can go;
  * - child categories set in under their parent in the category list,
  *   closed under an arrow if wished;
- * - a filter with one option that every product has is left out.
+ * - a filter with one option that every product has is left out;
+ * - the box's markup sent in fewer bytes (performance.lean_filters).
  *
  * Every default leaves the template as it is, like Layout.
  */
@@ -44,6 +45,26 @@ final class Filters {
 	 * The icon before the filter box's title: three sliders.
 	 */
 	private const ICON = '<svg class="pergel-filters__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>';
+
+	/**
+	 * The id of the one drawing of the option tick (performance.lean_filters).
+	 */
+	public const MARK = 'pergel-filter-mark';
+
+	/**
+	 * The drawing of the option tick, printed in the footer once a filter
+	 * box points its ticks at it.
+	 *
+	 * @var string
+	 */
+	private static string $mark = '';
+
+	/**
+	 * WooCommerce's tick as it was drawn, the one the footer drawing copies.
+	 *
+	 * @var string
+	 */
+	private static string $tick = '';
 
 	/**
 	 * Filter blocks whose first heading names their group.
@@ -64,6 +85,9 @@ final class Filters {
 		add_filter( 'render_block_core/column', array( self::class, 'column' ), 10, 2 );
 		add_filter( 'render_block_data', array( self::class, 'block_data' ) );
 		add_filter( 'render_block_woocommerce/product-filters', array( self::class, 'filters' ) );
+		// After the box's own changes and after the Interactivity API has
+		// drawn the options (that happens on render_block, before this).
+		add_filter( 'render_block_woocommerce/product-filters', array( self::class, 'lean' ), 20 );
 		foreach ( self::GROUPS as $block ) {
 			add_filter( "render_block_$block", array( self::class, 'heading' ) );
 		}
@@ -370,6 +394,108 @@ final class Filters {
 		}
 		Layout::style();
 		return $tags->get_updated_html();
+	}
+
+	/**
+	 * Sends the filter box in fewer bytes when performance.lean_filters is
+	 * on; the page looks and works the same. WooCommerce draws every option
+	 * from an indented template (about 1.8 KB each), so a shop with 60
+	 * options sent about 150 KB of filters. Three changes:
+	 *
+	 * - runs of white space outside quoted values, scripts, styles and
+	 *   preformatted text become one space, or one line break when they
+	 *   held one;
+	 * - every option's tick points at one drawing in the footer (`<use>`)
+	 *   instead of carrying its own; the tick stays an `<svg>` with its
+	 *   class, so WooCommerce's and the theme's rules still match;
+	 * - a context whose JSON is written with `&quot;` goes into single
+	 *   quotes with plain `"`. A value that holds a `'` stays as it is.
+	 *
+	 * @param string $html Rendered block.
+	 */
+	public static function lean( string $html ): string {
+		if ( true !== Settings::get( 'performance.lean_filters' ) || '' === $html ) {
+			return $html;
+		}
+		$html = self::squeeze( $html );
+		$html = self::single_marks( $html );
+		return (string) preg_replace_callback(
+			'/ data-wp-context="([^"]*)"/',
+			static fn ( array $found ): string => str_contains( $found[1], '&quot;' ) && ! str_contains( $found[1], "'" )
+				? " data-wp-context='" . str_replace( '&quot;', '"', $found[1] ) . "'"
+				: $found[0],
+			$html
+		);
+	}
+
+	/**
+	 * Runs of white space down to one space, or one line break when the run
+	 * held one. Text and the space between attributes only: quoted values
+	 * and the insides of script, style, pre and textarea stay as they are.
+	 * HTML draws the shorter runs the same.
+	 *
+	 * @param string $html Markup.
+	 */
+	private static function squeeze( string $html ): string {
+		$space = static fn ( string $run ): string => str_contains( $run, "\n" ) ? "\n" : ' ';
+		$out   = preg_replace_callback(
+			'#<(script|style|pre|textarea)\b.*?</\1\s*>|<[^>"\']*(?:(?:"[^"]*"|\'[^\']*\')[^>"\']*)*>|[^<]+#is',
+			static function ( array $found ) use ( $space ): string {
+				$token = $found[0];
+				if ( isset( $found[1] ) ) {
+					return $token;
+				}
+				if ( '<' !== $token[0] ) {
+					return (string) preg_replace_callback( '/\s{2,}/', static fn ( array $run ): string => $space( $run[0] ), $token );
+				}
+				return (string) preg_replace_callback(
+					'/"[^"]*"|\'[^\']*\'|\s{2,}/',
+					static fn ( array $run ): string => '"' === $run[0][0] || "'" === $run[0][0] ? $run[0] : $space( $run[0] ),
+					$token
+				);
+			},
+			$html
+		);
+		return is_string( $out ) ? $out : $html;
+	}
+
+	/**
+	 * Points every option tick that is drawn like the first one at one
+	 * drawing (a symbol printed in the footer). With fewer than two ticks
+	 * there is nothing to share.
+	 *
+	 * @param string $html Markup.
+	 */
+	private static function single_marks( string $html ): string {
+		$pattern = '#<svg class="wc-block-product-filter-checkbox-list__mark"([^>]*)>(.*?)</svg>#s';
+		if ( preg_match_all( $pattern, $html, $ticks, PREG_SET_ORDER ) < 2 ) {
+			return $html;
+		}
+		if ( '' === self::$tick ) {
+			$attributes = (string) preg_replace( '/\s(?:xmlns|class|width|height)="[^"]*"/', '', $ticks[0][1] );
+			self::$tick = $ticks[0][0];
+			self::$mark = '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="' . self::MARK . '"' . $attributes . '>' . $ticks[0][2] . '</symbol></svg>';
+			add_action( 'wp_footer', array( self::class, 'print_mark' ) );
+		}
+		// Only ticks drawn exactly like the one in the footer.
+		return str_replace( self::$tick, '<svg class="wc-block-product-filter-checkbox-list__mark" aria-hidden="true"><use href="#' . self::MARK . '"/></svg>', $html );
+	}
+
+	/**
+	 * Forgets the tick drawing (tests, or a second page in one process).
+	 */
+	public static function flush(): void {
+		remove_action( 'wp_footer', array( self::class, 'print_mark' ) );
+		self::$mark = '';
+		self::$tick = '';
+	}
+
+	/**
+	 * Prints the tick drawing the filter options point at. Hooked on
+	 * wp_footer by lean() when a filter box was made smaller.
+	 */
+	public static function print_mark(): void {
+		echo self::$mark; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from WooCommerce's own rendered tick.
 	}
 
 	/**

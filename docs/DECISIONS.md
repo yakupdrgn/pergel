@@ -1816,6 +1816,24 @@ Ariumlab dalga 4 ölçümünde bütün görseller JPEG/PNG'ydi (prova: 1198 gör
   6361 kopyanın hepsi okunur, 72 dosyanın kopyası orijinalden büyük çıktığı için tutulmadı; kopyalar orijinallerin %35'i
   (199 MB → 69 MB), 1198 ek için ilk çalıştırma ~1,5 dk.
 
+## Yalın filtre çıktısı (2 Kasım 2026, kullanıcı kararı)
+
+Ariumlab dalga 4'te katalog HTML'i staging'de ölçüldü (çözülmüş boyut): `/products-list/` 400 KB
+(gzip 46 KB), `magnetic-racks` kategorisi 352 KB, bir ürün sayfası 269 KB; bütçe sınırı 120 KB.
+Mağaza sayfasının 149 KB'ı filtre sütunuydu: 63 onay kutusu, kutu başına ~1,8 KB; bunun 23 KB'ı
+boşluk, 17 KB'ı her seçenekte yinelenen tik SVG'si, ~13 KB'ı bağlam JSON'undaki `&quot;`. Kalanı:
+`<head>` 89 KB (42 satır içi `<style>`, 75 KB), ürün ızgarası 80 KB, sondaki betikler 48 KB.
+Kullanıcı "filtreyi yalınlaştır"ı ve yer olarak Pergel'i seçti (sitelere özel kod değil).
+
+- Filtreler kaldıkça 120 KB'a inilmez; hedef boşluğu ve yinelemeyi atmak, görünüm ve davranış aynı.
+- Interactivity API yönergeleri `render_block`'ta işlenir; Pergel sonucu 20'de kısaltır, sunucunun
+  çizdiği işaretleme ve istemcinin yeniden çizimi aynı kalır.
+- Tik `<symbol>` + `<use>`: `<template>` içindekiler de değişir, sembol belgede durduğu için
+  istemcinin yeniden çizdiği seçenekler de tiki gösterir.
+- Ayar (`performance.lean_filters`) varsayılan açık; kapatınca çıktı birebir WooCommerce'inki.
+- Doğrulama (pergel-shop): 256,1 → 245,5 KB; metin, girdiler ve ayrışmış `data-wp-context`
+  değerleri aynı, filtre ve tik ekran görüntüleri piksel piksel aynı, JS hatası yok.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
