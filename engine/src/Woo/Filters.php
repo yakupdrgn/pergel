@@ -498,6 +498,7 @@ final class Filters {
 		remove_action( 'wp_footer', array( self::class, 'print_mark' ) );
 		self::$mark = '';
 		self::$tick = '';
+		self::$open = '';
 	}
 
 	/**
