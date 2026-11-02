@@ -163,6 +163,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => true,
 				),
+				'lean_filters'        => array(
+					'type'    => 'bool',
+					'default' => true,
+				),
 			),
 			// Contact and quote forms.
 			'forms'       => array(

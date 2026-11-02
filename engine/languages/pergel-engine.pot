@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-30T17:24:36+03:00\n"
+"POT-Creation-Date: 2026-11-02T10:53:08+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pergel-engine\n"
@@ -766,6 +766,12 @@ msgid "Show WebP copies of uploaded pictures"
 msgstr ""
 
 msgid "Each JPEG or PNG upload gets a smaller WebP copy of every size next to it, and pages show the copy. The originals and their addresses stay as they are, so switching this off brings them back. For pictures uploaded earlier, run \"wp pergel webp make\" once."
+msgstr ""
+
+msgid "Send the product filters in fewer bytes"
+msgstr ""
+
+msgid "Shop pages leave out the empty space in the filter markup and draw the option tick once instead of once per option. The filters look and work the same."
 msgstr ""
 
 msgid "Send messages to"

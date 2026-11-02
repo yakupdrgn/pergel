@@ -173,7 +173,7 @@ final class Labels {
 			'performance' => array(
 				'remove' => array(
 					'title'  => __( 'Remove', 'pergel-engine' ),
-					'fields' => array( 'disable_emoji', 'remove_oembed_links', 'dequeue_dashicons' ),
+					'fields' => array( 'disable_emoji', 'remove_oembed_links', 'dequeue_dashicons', 'lean_filters' ),
 				),
 				'load'   => array(
 					'title'  => __( 'Load early', 'pergel-engine' ),
@@ -451,6 +451,10 @@ final class Labels {
 				'webp'                => array(
 					'label' => __( 'Show WebP copies of uploaded pictures', 'pergel-engine' ),
 					'help'  => __( 'Each JPEG or PNG upload gets a smaller WebP copy of every size next to it, and pages show the copy. The originals and their addresses stay as they are, so switching this off brings them back. For pictures uploaded earlier, run "wp pergel webp make" once.', 'pergel-engine' ),
+				),
+				'lean_filters'        => array(
+					'label' => __( 'Send the product filters in fewer bytes', 'pergel-engine' ),
+					'help'  => __( 'Shop pages leave out the empty space in the filter markup and draw the option tick once instead of once per option. The filters look and work the same.', 'pergel-engine' ),
 				),
 			),
 			'forms'       => array(

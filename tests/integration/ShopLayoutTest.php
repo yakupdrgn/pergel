@@ -787,6 +787,47 @@ final class ShopLayoutTest extends TestCase {
 		$this->assertStringContainsString( 'data-pergel-view="list"', $toolbar );
 	}
 
+	public function test_lean_filters_send_the_same_box_in_fewer_bytes(): void {
+		$tick = '<svg class="wc-block-product-filter-checkbox-list__mark" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.25 1.2 3.75 6.7 1 3.95" stroke="currentColor"/></svg>';
+		$item = static fn ( string $label ): string => "\n\t\t\t<div class=\"wc-block-product-filter-checkbox-list__item\"\n\t\t\t\tdata-wp-context='{\"item\":{\"label\":\"$label\"}}'>\n\t\t\t\t<input type=\"checkbox\">$tick\n\t\t\t\t<span>\n\t\t\t\t\t$label\t\t\t\t</span>\n\t\t\t</div>";
+		$box  = '<div class="wp-block-woocommerce-product-filters" data-wp-context="' . esc_attr( (string) wp_json_encode( array( 'label' => 'Tom & Jerry' ) ) ) . '" data-x="a  b">'
+			. $item( 'Racks' ) . $item( 'Plates' )
+			. "<template>\n\t\t" . $item( '' ) . '</template>'
+			. "<pre>keep\n\t  this</pre><script>var a = '  b';\n\t\tc();</script>"
+			. '<div data-wp-context="{&quot;it&#039;s&quot;:1}"></div><div data-wp-context="{&quot;it\'s&quot;:2}"></div></div>';
+		Filters::flush();
+
+		// Off: the box as WooCommerce drew it.
+		Settings::update( array( 'performance' => array( 'lean_filters' => false ) ) );
+		$this->assertSame( $box, Filters::lean( $box ) );
+
+		Settings::update( array( 'performance' => array( 'lean_filters' => true ) ) );
+		$html = Filters::lean( $box );
+		$this->assertLessThan( strlen( $box ), strlen( $html ) );
+		$this->assertStringNotContainsString( "\t", (string) preg_replace( '#<(pre|script)\b.*?</\1>#s', '', $html ) );
+		$this->assertStringContainsString( "<span>\nRacks </span>", $html );
+		$this->assertStringContainsString( 'data-x="a  b"', $html, 'Quoted values stay.' );
+		$this->assertStringContainsString( "<pre>keep\n\t  this</pre><script>var a = '  b';\n\t\tc();</script>", $html );
+		$this->assertStringContainsString( "data-wp-context='{\"item\":{\"label\":\"Racks\"}}'", $html );
+		// The box's own context in single quotes; its &amp; is still a character reference.
+		$this->assertStringContainsString( "data-wp-context='{\"label\":\"Tom &amp; Jerry\"}'", $html );
+		$this->assertStringContainsString( "data-wp-context='{\"it&#039;s\":1}'", $html );
+		$this->assertStringContainsString( 'data-wp-context="{&quot;it\'s&quot;:2}"', $html, 'A value with a bare apostrophe stays.' );
+		// Every tick, the template's too, points at one drawing in the footer.
+		$this->assertSame( 0, substr_count( $html, '<path' ) );
+		$this->assertSame( 3, substr_count( $html, '<svg class="wc-block-product-filter-checkbox-list__mark" aria-hidden="true"><use href="#' . Filters::MARK . '"/></svg>' ) );
+		$this->assertNotFalse( has_action( 'wp_footer', array( Filters::class, 'print_mark' ) ) );
+		ob_start();
+		Filters::print_mark();
+		$footer = (string) ob_get_clean();
+		$this->assertStringContainsString( '<symbol id="' . Filters::MARK . '" viewBox="0 0 10 8" fill="none"><path d="M9.25 1.2 3.75 6.7 1 3.95" stroke="currentColor"/></symbol>', $footer );
+
+		// Running it again changes nothing more.
+		$this->assertSame( $html, Filters::lean( $html ) );
+		Filters::flush();
+		$this->assertFalse( has_action( 'wp_footer', array( Filters::class, 'print_mark' ) ) );
+	}
+
 	public function test_lonely_filter_stock_filter_and_category_depth(): void {
 		$this->go_to( array( 'post_type' => 'product' ) );
 		$found = (int) $GLOBALS['wp_query']->found_posts;
