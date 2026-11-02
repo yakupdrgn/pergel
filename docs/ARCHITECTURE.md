@@ -244,8 +244,9 @@ WebP kopyaları yönetim panelinde ve REST'te yapılan yüklemelerde üretilir; 
   işlendikten sonra kısalır. Metindeki ve öznitelikler arasındaki 2+ boşluk tek boşluğa (içinde
   satır sonu varsa tek satır sonuna) iner; tırnaklı değerler ve `script`/`style`/`pre`/`textarea`
   içi dokunulmaz. Her seçenekte yinelenen tik SVG'si (`wc-block-product-filter-checkbox-list__mark`,
-  `<template>` içindekiler dahil) `<use href="#pergel-filter-mark">` olur; çizim `wp_footer`'da bir
-  kez `<symbol>` olarak basılır, en az iki tik yoksa hiçbir şey değişmez. `data-wp-context`
+  `<template>` içindekiler dahil) kendi `<svg>` etiketini (`viewBox` ile) korur, içi
+  `<use href="#pergel-filter-mark">` olur; çizgiler `wp_footer`'da bir kez `<defs><g>` içinde basılır,
+  en az iki tik yoksa hiçbir şey değişmez. `data-wp-context`
   değerleri `&quot;` yerine tek tırnakla yazılır (değerde `'` varsa olduğu gibi kalır). Ayar
   kapalıyken çıktı WooCommerce'inkiyle birebir aynıdır. pergel-shop mağazasında 256,1 → 245,5 KB;
   tarayıcıda metin, girdiler, ayrışmış bağlamlar ve ekran görüntüleri aynı.
