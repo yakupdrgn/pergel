@@ -167,8 +167,6 @@ final class Layout {
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
-		add_filter( 'render_block_woocommerce/product-collection', array( FirstCards::class, 'done' ) );
-		add_filter( 'wp_get_attachment_image_attributes', array( FirstCards::class, 'attributes' ), 20 );
 		add_filter( 'body_class', array( self::class, 'body_class' ) );
 	}
 
