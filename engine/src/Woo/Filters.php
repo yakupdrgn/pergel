@@ -22,9 +22,10 @@ use const Pergel\VERSION;
  * - where the filters sit: left, right, behind a "Filter products" button
  *   (the block's own overlay, on every screen), or nowhere;
  * - whether the filter column stays in view or scrolls on its own;
- * - filter headings that open and close their group, a search box in
- *   long lists and long lists cut to a few rows with a More button (a small
- *   script module, loaded only when one is on);
+ * - filter headings that open and close their group, all open at first,
+ *   only the first one, or only those with a ticked option; a search box
+ *   in long lists and long lists cut to a few rows with a More button (a
+ *   small script module, loaded only when one is on);
  * - the filter box's own title, with an icon;
  * - which product attributes the theme's filter pattern filters by, in
  *   which order, and the order of the options in them;
@@ -95,6 +96,10 @@ final class Filters {
 		// After the box's own changes and after the Interactivity API has
 		// drawn the options (that happens on render_block, before this).
 		add_filter( 'render_block_woocommerce/product-filters', array( self::class, 'lean' ), 20 );
+		// On the whole box: WooCommerce draws the groups more than once and
+		// other filters still drop some (Availability, Price when selling
+		// is off) after each group's own render_block.
+		add_filter( 'render_block_woocommerce/product-filters', array( self::class, 'start_closed' ), 15 );
 		foreach ( self::GROUPS as $block ) {
 			add_filter( "render_block_$block", array( self::class, 'heading' ) );
 		}
@@ -359,18 +364,29 @@ final class Filters {
 		if ( ! Layout::listing() || ! $wp_query instanceof \WP_Query ) {
 			return $html;
 		}
-		$tags = new \WP_HTML_Tag_Processor( $html );
-		if ( ! $tags->next_tag() ) {
-			return $html;
-		}
-		$context = $tags->get_attribute( 'data-wp-context' );
-		$context = is_string( $context ) ? json_decode( $context, true ) : null;
-		$items   = is_array( $context ) && isset( $context['items'] ) && is_array( $context['items'] ) ? $context['items'] : array();
+		$items = self::items( $html );
 		if ( 1 !== count( $items ) || ! is_array( $items[0] ) ) {
 			return $html;
 		}
 		$item = $items[0];
 		return empty( $item['selected'] ) && isset( $item['count'] ) && (int) $item['count'] === (int) $wp_query->found_posts ? '' : $html;
+	}
+
+	/**
+	 * The options a filter group sends in its context (category, brand,
+	 * attribute, status and rating filters), as WooCommerce wrote them.
+	 *
+	 * @param string $html Rendered filter group.
+	 * @return list<mixed>
+	 */
+	private static function items( string $html ): array {
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		if ( ! $tags->next_tag() ) {
+			return array();
+		}
+		$context = $tags->get_attribute( 'data-wp-context' );
+		$context = is_string( $context ) ? json_decode( $context, true ) : null;
+		return is_array( $context ) && isset( $context['items'] ) && is_array( $context['items'] ) ? array_values( $context['items'] ) : array();
 	}
 
 	/**
@@ -514,7 +530,7 @@ final class Filters {
 	 * closes the group. Done here, in the server markup, so it survives
 	 * WooCommerce redrawing the filters after each choice; the script only
 	 * listens for clicks. Without the script the button does nothing and
-	 * every group stays open.
+	 * every group stays as drawn (WooCommerce's filters need scripts anyway).
 	 *
 	 * @param string $html Rendered block.
 	 */
@@ -528,5 +544,69 @@ final class Filters {
 			$html,
 			1
 		);
+	}
+
+	/**
+	 * Closes filter groups before the page is drawn, by shop.filters_open:
+	 * all open (nothing to do), only the first group shown open, or none.
+	 * A group with a ticked option, or the price filter with a range
+	 * chosen, stays open. Closed here (class is-pergel-folded and the
+	 * button's aria-expanded), not by the script, so nothing moves when
+	 * the page gets ready; the script keeps what the visitor opens and
+	 * closes from then on.
+	 *
+	 * @param string $html The rendered filter box.
+	 */
+	public static function start_closed( string $html ): string {
+		$mode = Settings::get( 'shop.filters_open' );
+		if ( true !== Settings::get( 'shop.filters_fold' ) || ! in_array( $mode, array( 'first', 'none' ), true ) || ! Layout::listing() ) {
+			return $html;
+		}
+		$tags    = new \WP_HTML_Tag_Processor( $html );
+		$first   = 'first' === $mode;
+		$closing = false;
+		while ( $tags->next_tag() ) {
+			if ( in_array( $tags->get_attribute( 'data-block-name' ), self::GROUPS, true ) ) {
+				$closing = false;
+				// WooCommerce hides a filter with nothing to offer; it is
+				// not the first one.
+				if ( null !== $tags->get_attribute( 'hidden' ) || $tags->has_class( 'wc-block-product-filter--hidden' ) ) {
+					continue;
+				}
+				if ( $first ) {
+					$first = false;
+					continue;
+				}
+				if ( ! self::chosen( $tags ) ) {
+					$tags->add_class( 'is-pergel-folded' );
+					$closing = true;
+				}
+			} elseif ( $closing && 'BUTTON' === $tags->get_tag() && $tags->has_class( 'pergel-filter-toggle' ) ) {
+				$tags->set_attribute( 'aria-expanded', 'false' );
+				$closing = false;
+			}
+		}
+		return $tags->get_updated_html();
+	}
+
+	/**
+	 * Whether the visitor has chosen something in the filter group the
+	 * tag processor stands on: a ticked option, or a price range.
+	 *
+	 * @param \WP_HTML_Tag_Processor $tags On a filter group's outer tag.
+	 */
+	private static function chosen( \WP_HTML_Tag_Processor $tags ): bool {
+		if ( 'woocommerce/product-filter-price' === $tags->get_attribute( 'data-block-name' ) ) {
+			// WooCommerce reads the range from the address too.
+			return isset( $_GET['min_price'] ) || isset( $_GET['max_price'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only reads whether a range is chosen.
+		}
+		$context = $tags->get_attribute( 'data-wp-context' );
+		$context = is_string( $context ) ? json_decode( $context, true ) : null;
+		foreach ( is_array( $context ) && is_array( $context['items'] ?? null ) ? $context['items'] : array() as $item ) {
+			if ( is_array( $item ) && ! empty( $item['selected'] ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

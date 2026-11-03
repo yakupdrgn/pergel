@@ -249,7 +249,7 @@ final class Labels {
 				),
 				'filters' => array(
 					'title'  => __( 'Filters', 'pergel-engine' ),
-					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filter_title', 'filter_icon', 'filters_fold', 'filters_search', 'filter_tree', 'filter_more', 'filter_rows', 'filter_attributes', 'filter_order', 'filter_stock', 'filter_brand', 'filter_rating' ),
+					'fields' => array( 'filters', 'drawer_side', 'filters_sticky', 'filter_title', 'filter_icon', 'filters_fold', 'filters_open', 'filters_search', 'filter_tree', 'filter_more', 'filter_rows', 'filter_attributes', 'filter_order', 'filter_stock', 'filter_brand', 'filter_rating' ),
 				),
 				'refine'  => array(
 					'title'  => __( 'Filter look', 'pergel-engine' ),
@@ -732,7 +732,16 @@ final class Labels {
 				),
 				'filters_fold'       => array(
 					'label' => __( 'Filter groups open and close', 'pergel-engine' ),
-					'help'  => __( 'Each filter heading becomes a button that hides or shows its options. All groups start open.', 'pergel-engine' ),
+					'help'  => __( 'Each filter heading becomes a button that hides or shows its options.', 'pergel-engine' ),
+				),
+				'filters_open'       => array(
+					'label'   => __( 'Filter groups at first', 'pergel-engine' ),
+					'help'    => __( 'Used when "Filter groups open and close" is on. Closed groups make a long filter column much shorter, mostly on phones. A group with a ticked option always starts open.', 'pergel-engine' ),
+					'choices' => array(
+						'all'   => __( 'All open', 'pergel-engine' ),
+						'first' => __( 'Only the first one open', 'pergel-engine' ),
+						'none'  => __( 'All closed', 'pergel-engine' ),
+					),
 				),
 				'filter_tree'        => array(
 					'label' => __( 'Subcategories start closed', 'pergel-engine' ),

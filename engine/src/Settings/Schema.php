@@ -413,6 +413,11 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				'filters_open'       => array(
+					'type'    => 'enum',
+					'options' => array( 'all', 'first', 'none' ),
+					'default' => 'all',
+				),
 				'filters_search'     => array(
 					'type'    => 'bool',
 					'default' => false,

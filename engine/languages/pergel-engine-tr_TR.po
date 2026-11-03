@@ -2,10 +2,10 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pergel Engine 1.4.17\n"
+"Project-Id-Version: Pergel Engine 1.4.18\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pergel-engine\n"
-"POT-Creation-Date: 2026-11-02 13:27+0000\n"
-"PO-Revision-Date: 2026-11-02 13:27+0000\n"
+"POT-Creation-Date: 2026-11-03 08:45+0000\n"
+"PO-Revision-Date: 2026-11-03 08:45+0000\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1093,8 +1093,23 @@ msgstr "Kendi içinde kayar"
 msgid "Filter groups open and close"
 msgstr "Filtre grupları açılıp kapanır"
 
-msgid "Each filter heading becomes a button that hides or shows its options. All groups start open."
-msgstr "Her filtre başlığı, seçeneklerini gizleyen veya gösteren bir düğmeye dönüşür. Bütün gruplar açık başlar."
+msgid "Each filter heading becomes a button that hides or shows its options."
+msgstr "Her filtre başlığı, seçeneklerini gizleyip gösteren bir düğmeye dönüşür."
+
+msgid "Filter groups at first"
+msgstr "Filtre grupları ilk açılışta"
+
+msgid "Used when \"Filter groups open and close\" is on. Closed groups make a long filter column much shorter, mostly on phones. A group with a ticked option always starts open."
+msgstr "\"Filtre grupları açılıp kapanır\" açıkken kullanılır. Kapalı gruplar uzun bir filtre sütununu, özellikle telefonda, çok kısaltır. İşaretli seçeneği olan grup her zaman açık başlar."
+
+msgid "All open"
+msgstr "Hepsi açık"
+
+msgid "Only the first one open"
+msgstr "Yalnızca ilki açık"
+
+msgid "All closed"
+msgstr "Hepsi kapalı"
 
 msgid "Subcategories start closed"
 msgstr "Alt kategoriler kapalı başlasın"
@@ -1581,9 +1596,6 @@ msgstr "Açıklama, teknik özellikler, değerlendirmeler ve aşağıdaki sekmel
 
 msgid "Tabs"
 msgstr "Sekmeler"
-
-msgid "All open"
-msgstr "Hepsi açık"
 
 msgid "Description in sections by its headings"
 msgstr "Açıklama başlıklarına göre bölümlerde"
