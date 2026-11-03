@@ -416,6 +416,60 @@ final class ShopLayoutTest extends TestCase {
 		);
 	}
 
+	public function test_filter_groups_can_start_closed(): void {
+		Settings::update(
+			array(
+				'shop' => array(
+					'filters_fold' => true,
+					'filters_open' => 'first',
+				),
+			)
+		);
+		$this->go_to( array( 'post_type' => 'product' ) );
+		$context = static fn ( bool $ticked ): string => " data-wp-context='" . wp_json_encode( array( 'items' => array( array( 'value' => 'blue' ), array( 'value' => 'white', 'selected' => $ticked ) ) ) ) . "'";
+		$group   = static fn ( string $attrs, string $name, string $hidden = '' ): string => Filters::heading( '<div data-block-name="woocommerce/product-filter-attribute" class="wp-block-woocommerce-product-filter-attribute' . $hidden . '"' . $attrs . '><h3 class="wp-block-heading">' . $name . '</h3><div data-block-name="woocommerce/product-filter-checkbox-list"><button type="button">More</button></div></div>' );
+		$box     = '<div class="wp-block-woocommerce-product-filters">'
+			// Hidden filters (nothing to offer) are not the first one.
+			. $group( ' hidden', 'Price' )
+			. $group( '', 'Rating', ' wc-block-product-filter--hidden' )
+			. $group( $context( false ), 'Features' )
+			. $group( $context( false ), 'Volume' )
+			. $group( $context( true ), 'Color' )
+			. '</div>';
+		$state   = static function ( string $html ): array {
+			$tags  = new \WP_HTML_Tag_Processor( $html );
+			$found = array();
+			$group = '';
+			while ( $tags->next_tag() ) {
+				if ( 'woocommerce/product-filter-attribute' === $tags->get_attribute( 'data-block-name' ) ) {
+					$group = $tags->has_class( 'is-pergel-folded' ) ? 'folded' : 'open';
+				} elseif ( $tags->has_class( 'pergel-filter-toggle' ) ) {
+					$found[] = $group . ' ' . $tags->get_attribute( 'aria-expanded' );
+				}
+			}
+			return $found;
+		};
+
+		$this->assertSame( array( 'open true', 'open true', 'open true', 'folded false', 'open true' ), $state( Filters::start_closed( $box ) ) );
+
+		Settings::update( array( 'shop' => array( 'filters_open' => 'none' ) ) );
+		$this->assertSame( array( 'open true', 'open true', 'folded false', 'folded false', 'open true' ), $state( Filters::start_closed( $box ) ) );
+
+		Settings::update( array( 'shop' => array( 'filters_open' => 'all' ) ) );
+		$this->assertSame( $box, Filters::start_closed( $box ) );
+
+		// Without the open and close buttons nothing starts closed.
+		Settings::update(
+			array(
+				'shop' => array(
+					'filters_fold' => false,
+					'filters_open' => 'none',
+				),
+			)
+		);
+		$this->assertSame( $box, Filters::start_closed( $box ) );
+	}
+
 	public function test_panel_and_no_filters(): void {
 		Settings::update(
 			array(

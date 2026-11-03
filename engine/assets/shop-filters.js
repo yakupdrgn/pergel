@@ -29,6 +29,10 @@ const GROUP = [
 	.join( ',' );
 
 const closed = new Set();
+// Groups met at least once: the first time, a group the server sent closed
+// (Filters::heading, "Filter groups at first") joins `closed`; after that the
+// visitor's own clicks decide, also across the redraws after each choice.
+const seen = new Set();
 const opened = new Set();
 const branches = new Set();
 const typed = new Map();
@@ -234,7 +238,14 @@ const enhance = ( filters ) => {
 	const label = filters.dataset.pergelSearchLabel || '';
 	for ( const group of filters.querySelectorAll( GROUP ) ) {
 		if ( features.includes( 'fold' ) ) {
-			setOpen( group, ! closed.has( nameOf( group ) ) );
+			const name = nameOf( group );
+			if ( ! seen.has( name ) ) {
+				seen.add( name );
+				if ( group.classList.contains( 'is-pergel-folded' ) ) {
+					closed.add( name );
+				}
+			}
+			setOpen( group, ! closed.has( name ) );
 		}
 		if ( features.includes( 'search' ) ) {
 			addSearch( group, label );

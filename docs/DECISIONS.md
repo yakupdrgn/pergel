@@ -1839,6 +1839,23 @@ Kullanıcı "filtreyi yalınlaştır"ı ve yer olarak Pergel'i seçti (sitelere 
 - Doğrulama (pergel-shop): 256,1 → 245,5 KB; metin, girdiler ve ayrışmış `data-wp-context`
   değerleri aynı, filtre ve tik ekran görüntüleri piksel piksel aynı, JS hatası yok.
 
+## Filtre grupları kapalı başlayabilir (3 Kasım 2026, kullanıcı kararı)
+
+Ariumlab dalga 4'te filtre sütunu ölçüldü (prova): telefondaki filtre paneli 10 satırla 1,4–2,6
+ekran, 5 satırla 1,3–1,9 ekran. Kullanıcı "5 satırdan sonra More" ile birlikte "Gruplar kapalı
+başlasın"ı seçti; 1.4.18'de `shop.filters_open` ayarı geldi (all / first / none, varsayılan all,
+yalnızca `filters_fold` açıkken).
+
+- Kapatma sunucuda, kutunun son hâli üzerinde yapılır (`render_block_woocommerce/product-filters`,
+  öncelik 15): grup başına sayaç tutulamaz, çünkü WooCommerce bir sayfada grupları birden çok kez
+  çizer ve Availability (`filter_stock`) ile teklif modunda Price grup çizildikten sonra düşer.
+- Gizli grup (`hidden` ya da `wc-block-product-filter--hidden`) "ilk" sayılmaz. İşaretli seçeneği
+  olan grup ve fiyat aralığı seçilmiş fiyat filtresi her zaman açık başlar.
+- Betik, sunucunun kapattığı grubu ilk gördüğünde kapalılar listesine ekler; sonrasında
+  ziyaretçinin açıp kapatması her seçimden sonraki yeniden çizimde korunur.
+- Prova (Ariumlab verisi, "first", 5 satır): telefon paneli dört sayfada da tek ekran (702 px),
+  masaüstü filtre sütunu 1.226–1.846 px'ten 517–610 px'e; JS hatası yok.
+
 ## Aşamalar ve bitti tanımları
 
 | Aşama | İçerik | Bitti |
