@@ -62,4 +62,18 @@ final class TextTest extends TestCase {
 	public function test_terms_are_limited(): void {
 		$this->assertCount( Text::MAX_TERMS, Text::terms( 'bir iki uc dort bes alti yedi sekiz' ) );
 	}
+
+	public function test_key_terms_leave_filler_words_out(): void {
+		$this->assertSame( array( 'magnetic', 'rack', 'deep', 'well' ), Text::key_terms( 'I need a magnetic rack for deep well' ) );
+		$this->assertSame( array( 'pcr', 'sogutma', 'blogu' ), Text::key_terms( 'PCR için bir soğutma bloğu' ) );
+		$this->assertSame( array( 'rack' ), Text::key_terms( 'the rack', array( 'the' ) ) );
+	}
+
+	public function test_singulars_drop_plural_endings(): void {
+		$this->assertSame( array( 'rack' ), Text::singulars( 'racks' ) );
+		$this->assertSame( array( 'box', 'boxe' ), Text::singulars( 'boxes' ) );
+		$this->assertSame( array( 'raf' ), Text::singulars( 'raflar' ) );
+		$this->assertSame( array(), Text::singulars( 'gas' ) );
+		$this->assertSame( array(), Text::singulars( 'rack' ) );
+	}
 }

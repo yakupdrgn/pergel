@@ -27,7 +27,7 @@ use Pergel\Woo\Modes;
  *
  * @phpstan-type Item array{id: int, title: string, url: string, type: string, image: array{src: string, width: int, height: int}|null, price: string}
  * @phpstan-type Term array{id: int, name: string, url: string, taxonomy: string, count: int}
- * @phpstan-type Answer array{query: string, total: int, items: list<Item>, terms: list<Term>, more: string}
+ * @phpstan-type Answer array{query: string, total: int, items: list<Item>, terms: list<Term>, more: string, closest: bool}
  */
 final class Suggest {
 
@@ -127,11 +127,12 @@ final class Suggest {
 		$terms  = Text::terms( $query );
 		$types  = Query::types( '' === $type ? 'any' : $type );
 		$answer = array(
-			'query' => $query,
-			'total' => 0,
-			'items' => array(),
-			'terms' => array(),
-			'more'  => add_query_arg(
+			'query'   => $query,
+			'total'   => 0,
+			'items'   => array(),
+			'terms'   => array(),
+			'closest' => false,
+			'more'    => add_query_arg(
 				array_filter(
 					array(
 						's'         => rawurlencode( $query ),
@@ -145,7 +146,11 @@ final class Suggest {
 			return $answer;
 		}
 
-		$ids             = array_keys( Query::match( Index::KIND_POST, $terms, $types ) );
+		$ids = array_keys( Query::match( Index::KIND_POST, $terms, $types ) );
+		if ( array() === $ids && Query::closest_on() ) {
+			$ids               = array_keys( Query::closest( Index::KIND_POST, $query, $types ) );
+			$answer['closest'] = array() !== $ids;
+		}
 		$answer['total'] = count( $ids );
 		$limit           = max( 1, (int) Settings::get( 'search.live_limit' ) );
 		$shown           = array_slice( $ids, 0, $limit );

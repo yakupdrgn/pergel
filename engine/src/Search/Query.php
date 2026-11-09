@@ -23,6 +23,11 @@ namespace Pergel\Search;
  * not gathered on its own: it is looked up only on the objects the other
  * terms found, so it costs as much as they do. A query of common terms
  * alone still gathers them.
+ *
+ * A query no result has every term of, often a sentence ("magnetic rack
+ * for deep well"), gets the closest results instead (closest()): the
+ * ones with the most of its words. The query var `pergel_closest` and
+ * the suggestions' `closest` field say so, for a "closest matches" note.
  */
 final class Query {
 
@@ -149,6 +154,85 @@ final class Query {
 	}
 
 	/**
+	 * The closest results for a query no result has every term of: its
+	 * words without the filler ones (Text::key_terms()), a plural with no
+	 * match tried as its singular, and the objects with the most of those
+	 * words, at least half of them. When the best rank holds fewer than
+	 * four objects the next rank joins it. Within a rank a rare word counts
+	 * for more than a common one ("deep" over "well"), then the scores.
+	 *
+	 * Each word is one cached match(), so this costs a few lookups, and
+	 * only runs when the strict search found nothing.
+	 *
+	 * @param int      $kind   Index::KIND_POST or Index::KIND_TERM.
+	 * @param string   $search Visitor input.
+	 * @param string[] $types  Post types to keep (posts only); empty keeps all.
+	 * @return array<int, int> Ids with the number of words they have, best first.
+	 */
+	public static function closest( int $kind, string $search, array $types = array() ): array {
+		/**
+		 * Filters the folded words a sentence search leaves out (see
+		 * Text::FILLER), e.g. to add a site's own language.
+		 *
+		 * @param string[] $filler Folded words.
+		 */
+		$filler = (array) apply_filters( 'pergel/search/filler', Text::FILLER );
+		$terms  = Text::key_terms( $search, array_map( 'strval', $filler ) );
+		$hits   = array();
+		foreach ( $terms as $term ) {
+			$found = self::match( $kind, array( $term ), $types );
+			foreach ( array() === $found ? Text::singulars( $term ) : array() as $stem ) {
+				$found = self::match( $kind, array( $stem ), $types );
+				if ( array() !== $found ) {
+					break;
+				}
+			}
+			$weight = 1 / log( 2 + count( $found ) );
+			foreach ( $found as $id => $score ) {
+				$hits[ $id ] ??= array( 0, 0.0, 0 );
+				++$hits[ $id ][0];
+				$hits[ $id ][1] += $weight;
+				$hits[ $id ][2] += $score;
+			}
+		}
+		if ( array() === $hits ) {
+			return array();
+		}
+
+		$least = max( 1, (int) ceil( count( $terms ) / 2 ) );
+		$best  = max( array_column( $hits, 0 ) );
+		if ( $best < $least ) {
+			return array();
+		}
+		$floor = $best;
+		if ( $best > $least && count( array_filter( $hits, static fn ( array $hit ): bool => $hit[0] === $best ) ) < 4 ) {
+			$floor = $best - 1;
+		}
+		$hits = array_filter( $hits, static fn ( array $hit ): bool => $hit[0] >= $floor );
+		uksort(
+			$hits,
+			static fn ( int $a, int $b ): int => array( $hits[ $b ][0], $hits[ $b ][1], $hits[ $b ][2], $b ) <=> array( $hits[ $a ][0], $hits[ $a ][1], $hits[ $a ][2], $a )
+		);
+		return array_slice( array_map( static fn ( array $hit ): int => $hit[0], $hits ), 0, self::MAX_RESULTS, true );
+	}
+
+	/**
+	 * Whether a search with no full match gets the closest results.
+	 *
+	 * @param \WP_Query|null $query The query, or null for the suggestions.
+	 */
+	public static function closest_on( ?\WP_Query $query = null ): bool {
+		/**
+		 * Filters whether a search no result has every word of shows the
+		 * results with the most of its words instead of none.
+		 *
+		 * @param bool           $on    Default true.
+		 * @param \WP_Query|null $query The query; null for the suggestions.
+		 */
+		return (bool) apply_filters( 'pergel/search/closest', true, $query );
+	}
+
+	/**
 	 * Post types a search query asks for, limited to the indexed ones.
 	 *
 	 * @param mixed $post_type The query's post_type var.
@@ -172,7 +256,12 @@ final class Query {
 		if ( ! is_string( $search ) || '' === trim( $search ) || ! self::applies( $query ) ) {
 			return;
 		}
-		$ids = array_keys( self::match( Index::KIND_POST, Text::terms( $search ), self::types( $query->get( 'post_type' ) ) ) );
+		$types   = self::types( $query->get( 'post_type' ) );
+		$ids     = array_keys( self::match( Index::KIND_POST, Text::terms( $search ), $types ) );
+		$closest = array() === $ids && self::closest_on( $query );
+		if ( $closest ) {
+			$ids = array_keys( self::closest( Index::KIND_POST, $search, $types ) );
+		}
 
 		$within = $query->get( 'post__in' );
 		if ( is_array( $within ) && array() !== $within ) {
@@ -180,6 +269,7 @@ final class Query {
 			$ids    = array_values( array_filter( $ids, static fn ( int $id ): bool => in_array( $id, $within, true ) ) );
 		}
 		$query->set( 'post__in', array() === $ids ? array( 0 ) : $ids );
+		$query->set( 'pergel_closest', $closest && array() !== $ids );
 		$orderby = $query->get( 'orderby' );
 		if ( '' === $orderby || 'relevance' === $orderby || null === $orderby ) {
 			$query->set( 'orderby', 'post__in' );

@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.18
+Stable tag: 1.4.19
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.19 =
+* Search: a search no result has every word of, often a sentence ("magnetic rack for deep well", "I need a cooling block for PCR tubes"), shows the closest results instead of none: the ones with the most of its words, at least half of them. Filler words ("for", "a", "için", "bir") are left out and a plural with no match is tried as its singular. Rare words count for more than common ones. The live suggestions do the same. The query var `pergel_closest` and the suggestions' `closest` field tell a theme to say so; the `pergel/search/closest` filter turns it off and `pergel/search/filler` changes the filler words.
 
 = 1.4.18 =
 * Shop: new setting "Filter groups at first" (under "Filter groups open and close"): all groups open as before, only the first one open, or all closed. A group with a ticked option, or the price filter with a range chosen, always starts open. The groups are closed in the page itself, so nothing moves when it loads, and the visitor's own opening and closing is kept after each choice. On a shop with seven filter groups the phone filter panel goes from about two screens to one.
