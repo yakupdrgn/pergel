@@ -1856,7 +1856,22 @@ yalnızca `filters_fold` açıkken).
 - Prova (Ariumlab verisi, "first", 5 satır): telefon paneli dört sayfada da tek ekran (702 px),
   masaüstü filtre sütunu 1.226–1.846 px'ten 517–610 px'e; JS hatası yok.
 
-## Aşamalar ve bitti tanımları
+## Cümle araması: en yakın sonuçlar (9 Kasım 2026, kullanıcı kararı)
+
+Ariumlab prova'da "magnetic rack for deep well" boş döndü: arama her kelimeyi istiyor, "for" ve
+"well" birlikte hiçbir üründe yok. Kullanıcı önce "doğal cümleyle aramayı iyileştir"i, tema içinde
+denendikten sonra "gevşetmeyi Pergel'e taşı"yı seçti; 1.4.19'da `Query::closest()` geldi.
+
+- Yalnızca sıkı arama boşken çalışır; sıkı sonuç varsa hiçbir şey değişmez.
+- Dolgu kelimeleri (`Text::FILLER`, İngilizce + katlanmış Türkçe) atılır; sonuç bulmayan çoğul
+  bir kez tekil hâliyle denenir (`Text::singulars()`: es, s, lar, ler; en az üç harf kalır).
+- En çok kelimeye sahip sıra alınır, en az yarısı şart; en iyi sırada dörtten az nesne varsa bir
+  alt sıra eklenir. Sıra içinde nadir kelime (`1/ln(2+df)`) önce, sonra puan.
+- Sayfa sorgusu `pergel_closest`, canlı öneriler `closest` alanıyla bildirir; tema "en yakın
+  sonuçlar" notunu buna göre yazar. `pergel/search/closest` kapatır, `pergel/search/filler` listeyi değiştirir.
+- Prova (Ariumlab verisi): "magnetic rack for deep well" 29 sonuç (ilk sıralar deep well magnet
+  plate'ler), "i need a cooling block for pcr tubes" 23, "qwerty asdf" yine 0.
+
 
 | Aşama | İçerik | Bitti |
 | --- | --- | --- |

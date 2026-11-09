@@ -32,6 +32,75 @@ final class Text {
 	public const MAX_TERMS = 6;
 
 	/**
+	 * Words of a sentence that say nothing about what is searched, folded
+	 * (English and Turkish). Query::closest() leaves them out when no result
+	 * has every word: "magnetic rack for deep well", "pcr için soğutma bloğu".
+	 */
+	public const FILLER = array(
+		'a',
+		'an',
+		'and',
+		'any',
+		'are',
+		'at',
+		'be',
+		'by',
+		'can',
+		'do',
+		'for',
+		'from',
+		'have',
+		'in',
+		'into',
+		'is',
+		'it',
+		'looking',
+		'me',
+		'my',
+		'need',
+		'of',
+		'on',
+		'or',
+		'our',
+		'please',
+		'some',
+		'that',
+		'the',
+		'this',
+		'to',
+		'want',
+		'we',
+		'what',
+		'which',
+		'with',
+		'ama',
+		'ariyorum',
+		'bana',
+		'ben',
+		'bir',
+		'bu',
+		'da',
+		'de',
+		'gibi',
+		'icin',
+		'ile',
+		'istiyorum',
+		'lazim',
+		'mi',
+		'mu',
+		'olan',
+		'su',
+		've',
+		'veya',
+		'ya',
+	);
+
+	/**
+	 * Plural endings tried off a word no result has (English, Turkish).
+	 */
+	private const PLURALS = array( 'es', 's', 'lar', 'ler' );
+
+	/**
 	 * Letters that remain after lower-casing and stripping combining marks,
 	 * plus the accented ones for servers without intl.
 	 */
@@ -190,5 +259,37 @@ final class Text {
 			)
 		);
 		return array_slice( $terms, 0, self::MAX_TERMS );
+	}
+
+	/**
+	 * The terms of a query written as a sentence: its words without the
+	 * filler ones, so six terms are still the words that matter.
+	 *
+	 * @param string   $query  Visitor input.
+	 * @param string[] $filler Folded words to leave out.
+	 * @return list<string>
+	 */
+	public static function key_terms( string $query, array $filler = self::FILLER ): array {
+		$words = array_diff( self::tokens( mb_substr( $query, 0, 200, 'UTF-8' ) ), $filler );
+		return self::terms( implode( ' ', $words ) );
+	}
+
+	/**
+	 * A plural term without its ending, for a second try: "racks" → "rack",
+	 * "boxes" → "box" (and "boxe"), "raflar" → "raf". At least three letters
+	 * stay.
+	 *
+	 * @param string $term Folded term.
+	 * @return list<string>
+	 */
+	public static function singulars( string $term ): array {
+		$out = array();
+		foreach ( self::PLURALS as $end ) {
+			$stem = substr( $term, 0, -strlen( $end ) );
+			if ( str_ends_with( $term, $end ) && strlen( $stem ) >= 3 ) {
+				$out[] = $stem;
+			}
+		}
+		return array_values( array_unique( $out ) );
 	}
 }

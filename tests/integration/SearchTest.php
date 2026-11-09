@@ -260,6 +260,39 @@ final class SearchTest extends TestCase {
 			)
 		);
 		$this->assertSame( array(), $none->posts );
+		$this->assertFalse( $none->get( 'pergel_closest' ) );
+	}
+
+	public function test_a_sentence_gets_the_closest_results(): void {
+		$best = $this->post( 'Pergelmanyet pergelraf', 'pergelkuyu' );
+		$next = $this->post( 'Pergelraf pergelkuyu' );
+		$this->post( 'Pergelkapak' );
+		$search = 'a pergelmanyet pergelraflar for pergelkuyu pergelkapak';
+
+		$query = new \WP_Query(
+			array(
+				's'         => $search,
+				'post_type' => 'post',
+				'fields'    => 'ids',
+			)
+		);
+		$this->assertTrue( $query->get( 'pergel_closest' ) );
+		$this->assertSame( array( $best, $next ), array_map( 'intval', $query->posts ) );
+
+		$answer = Suggest::answer( $search );
+		$this->assertTrue( $answer['closest'] );
+		$this->assertSame( 2, $answer['total'] );
+
+		add_filter( 'pergel/search/closest', '__return_false' );
+		$off = new \WP_Query(
+			array(
+				's'      => $search,
+				'fields' => 'ids',
+			)
+		);
+		remove_filter( 'pergel/search/closest', '__return_false' );
+		$this->assertSame( array(), $off->posts );
+		$this->assertFalse( $off->get( 'pergel_closest' ) );
 	}
 
 	public function test_sorting_chosen_by_the_visitor_is_kept(): void {
