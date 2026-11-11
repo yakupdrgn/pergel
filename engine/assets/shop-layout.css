@@ -178,8 +178,10 @@
 	padding-inline-start: 4.5em;
 }
 
-/* Subcategories closed under their parent's arrow; a search shows them. */
-.wc-block-product-filters :not(.is-pergel-searching) .wc-block-product-filter-checkbox-list__item[data-pergel-folded] {
+/* Subcategories closed under their parent's arrow; a search shows them.
+ * The :not() sits on the group itself, as for the long lists above: on a
+ * bare descendant it matched any outer box, so a search never showed one. */
+:is(.wp-block-woocommerce-product-filter-taxonomy, .wp-block-woocommerce-product-filter-status, .wp-block-woocommerce-product-filter-attribute, .wp-block-woocommerce-product-filter-rating):not(.is-pergel-searching) .wc-block-product-filter-checkbox-list__item[data-pergel-folded] {
 	display: none;
 }
 
