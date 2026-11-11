@@ -507,7 +507,8 @@ final class Cards {
 	}
 
 	/**
-	 * Badges on the picture, the second picture, and on the "buttons on
+	 * Badges on the picture, the second picture or the pictures that follow
+	 * the pointer, and on the "buttons on
 	 * the picture" card the wishlist and compare buttons.
 	 *
 	 * @param string    $html     Rendered picture.
@@ -526,6 +527,7 @@ final class Cards {
 			|| true === Settings::get( 'shop.badge_featured' )
 			|| true === Settings::get( 'shop.badge_sold_out' )
 			|| true === Settings::get( 'shop.card_hover' )
+			|| true === Settings::get( 'shop.card_gallery' )
 			|| true === Settings::get( 'shop.card_countdown' );
 		$product = $needed ? self::product( $instance ) : null;
 		// The picture draws its own sale badge when it has no sale badge
@@ -542,7 +544,17 @@ final class Cards {
 			$html    = self::after_opening( $html, 'wc-block-components-product-image__inner-container', $badges );
 			$changed = true;
 		}
-		if ( null !== $product && true === Settings::get( 'shop.card_hover' ) ) {
+		$gallery = null !== $product && true === Settings::get( 'shop.card_gallery' ) ? self::gallery( $product ) : '';
+		if ( '' !== $gallery ) {
+			$tags = new \WP_HTML_Tag_Processor( $html );
+			if ( $tags->next_tag() ) {
+				$tags->add_class( 'has-pergel-gallery' );
+				$tags->set_attribute( 'data-pergel-gallery', $gallery );
+				$html    = $tags->get_updated_html();
+				$changed = true;
+				wp_enqueue_script_module( Layout::CARDS_SCRIPT );
+			}
+		} elseif ( null !== $product && true === Settings::get( 'shop.card_hover' ) ) {
 			$second = self::second_picture( $product );
 			if ( '' !== $second ) {
 				$html    = (string) preg_replace( '#(<img\b[^>]*>)#', '$1' . str_replace( array( '\\', '$' ), array( '\\\\', '\\$' ), $second ), $html, 1 );
@@ -712,6 +724,26 @@ final class Cards {
 			$html .= sprintf( '<span class="pergel-badge is-%1$s">%2$s</span>', esc_attr( $kind ), esc_html( $text ) );
 		}
 		return '<span class="pergel-badges">' . $html . '</span>';
+	}
+
+	/**
+	 * The gallery pictures the card shows as the pointer moves across its
+	 * picture, as JSON for a data attribute: a list of [src, srcset], at
+	 * most four (with the product's own picture, five parts). Nothing is
+	 * loaded until the pointer is over the card.
+	 *
+	 * @param \WC_Product $product Product.
+	 */
+	private static function gallery( \WC_Product $product ): string {
+		$list = array();
+		foreach ( array_slice( $product->get_gallery_image_ids(), 0, (int) apply_filters( 'pergel/cards/gallery_size', 4 ) ) as $id ) {
+			$picture = wp_get_attachment_image_src( (int) $id, 'woocommerce_single' );
+			if ( false === $picture ) {
+				continue;
+			}
+			$list[] = array( $picture[0], (string) wp_get_attachment_image_srcset( (int) $id, 'woocommerce_single' ) );
+		}
+		return array() === $list ? '' : (string) wp_json_encode( $list, JSON_UNESCAPED_SLASHES );
 	}
 
 	/**

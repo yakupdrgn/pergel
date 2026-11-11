@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.21
+Stable tag: 1.4.22
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.22 =
+* Shop: new card setting "Pictures follow the pointer" (Product cards). Moving the mouse across a card's picture shows the product's gallery pictures (up to four, `pergel/cards/gallery_size` changes it), one strip of the picture for each, with a row of marks under them and the one in view filled. Back to the product's own picture when the mouse leaves. Nothing loads before the mouse is over a card; not on touch screens; it takes the place of the second picture. The marks' colours are `--pergel-gallery-mark` and `--pergel-gallery-mark-on`.
 
 = 1.4.21 =
 * Shop: a search in a category filter now shows the subcategories it finds even when they are closed under their parent's arrow. Before, the closed ones stayed hidden, so a search for a subcategory's name showed nothing.

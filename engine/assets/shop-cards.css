@@ -8,6 +8,7 @@
 /* Picture: room for badges, the second picture and the buttons. */
 .pergel-cards .wc-block-components-product-image,
 .wc-block-product .has-pergel-second-picture,
+.wc-block-product .has-pergel-gallery,
 .wc-block-product .wc-block-components-product-image:has(.pergel-badges, .pergel-card-actions, .pergel-countdown) {
 	position: relative;
 }
@@ -66,6 +67,41 @@
 	.wc-block-product .pergel-second-picture {
 		display: none;
 	}
+}
+
+/* Pictures that follow the pointer: a mark for each picture under them,
+   the one in view filled. The script adds the marks on the first visit. */
+.wc-block-product .pergel-gallery-marks {
+	position: absolute;
+	inset-inline: var(--pergel-gallery-inset, 12px);
+	inset-block-end: var(--pergel-gallery-inset, 12px);
+	z-index: 2;
+	display: flex;
+	gap: 4px;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
+.wc-block-product .is-pergel-browsing .pergel-gallery-marks {
+	opacity: 1;
+}
+
+.wc-block-product .pergel-gallery-marks > span {
+	flex: 1;
+	block-size: 3px;
+	border-radius: 2px;
+	background: var(--pergel-gallery-mark, var(--wp--preset--color--contrast));
+	opacity: 0.2;
+}
+
+.wc-block-product .pergel-gallery-marks > .is-on {
+	background: var(--pergel-gallery-mark-on, var(--wp--preset--color--accent));
+	opacity: 1;
+}
+
+.wc-block-product .has-pergel-swatch .pergel-gallery-marks {
+	display: none;
 }
 
 /* Brand, category, rating, discount and stock. */
@@ -560,6 +596,7 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.wc-block-product .pergel-second-picture,
+	.wc-block-product .pergel-gallery-marks,
 	.wc-block-product .pergel-card-actions,
 	.pergel-card-boxed .wc-block-product {
 		transition: none;
