@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.19
+Stable tag: 1.4.20
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.20 =
+* Tokens: a brand colour below 4.5:1 on white (such as a teal at 4.12:1) can now be the accent. Add a `color.accent-text` token for small accent words: the accent then needs 3:1 (large text, marks and fills) and accent-text needs 4.5:1. White on the accent still needs 4.5:1 unless the token file sets large buttons (24px, or 18.66px at weight 700). Links, card meta, the product category, the coupon and share buttons, tab labels and outline or text buttons use accent-text when the theme has it; nothing changes for themes without it.
 
 = 1.4.19 =
 * Search: a search no result has every word of, often a sentence ("magnetic rack for deep well", "I need a cooling block for PCR tubes"), shows the closest results instead of none: the ones with the most of its words, at least half of them. Filler words ("for", "a", "için", "bir") are left out and a plural with no match is tried as its singular. Rare words count for more than common ones. The live suggestions do the same. The query var `pergel_closest` and the suggestions' `closest` field tell a theme to say so; the `pergel/search/closest` filter turns it off and `pergel/search/filler` changes the filler words.

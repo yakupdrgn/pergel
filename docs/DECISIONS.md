@@ -1884,6 +1884,26 @@ denendikten sonra "gevşetmeyi Pergel'e taşı"yı seçti; 1.4.19'da `Query::clo
 | F6 | Tam test matrisi, güvenlik incelemesi, çeviriler, WP 7.2 uyumu (7.2 beta'sı çıkmadığı için 7.1.x ile) | Tüm kontroller yeşil, v1.0.0 |
 | F7 | ariumlab.com: içerik, staging, geçiş, 30 gün izleme | Yeni site yayında |
 
+## Büyük yazı vurgusu: `accent-text` (11 Kasım 2026, kullanıcı kararı)
+
+Ariumlab'ın yeni kurumsal rengi datasheet'teki teal #0F8B8D: beyazda 4,12:1, beyaz yazıyla da
+4,12:1. Derleyici `accent`'ı 4,5:1 ile denediği için token derlemesi reddediyordu; tema
+theme.json'u elle yazmak zorunda kaldı. Kullanıcı A seçeneğini seçti (yalnızca PDF renkleri; teal
+yazı yalnızca 19 px kalın ve üstü, bağlantılar lacivert + teal alt çizgi) ve ardından "Pergel teal
+desteği"ni istedi; 1.4.20'de isteğe bağlı `color.accent-text` geldi.
+
+- `color.accent-text` varsa vurgu "büyük yazı vurgusu"dur: `accent` zemine karşı 3:1 ister (WCAG
+  1.4.3 büyük yazı, 1.4.11 işaretler), `accent-text` base ve surface'a karşı 4,5:1 ister.
+- `on-accent` üstünde `accent` yine 4,5:1 ister; token dosyasının `styles.elements.button.typography`
+  değeri büyük yazıysa (24 px, ya da 700 ağırlıkta 18,66 px; preset'in akışkan alt sınırı sayılır)
+  3:1 yeter. Ölçü okunamazsa büyük sayılmaz.
+- Pergel'in küçük vurgu yazıları (bağlantılar, kart üst bilgisi, ürün kategorisi, kupon ve paylaş
+  düğmeleri, sekme yazısı, çerçeveli ve yazı biçimli kart/ürün düğmeleri)
+  `var(--wp--preset--color--accent-text, var(--wp--preset--color--accent))` kullanır; token yoksa
+  hiçbir şey değişmez. Dolgular, kenarlar ve odak halkası `accent`'ta kalır.
+- Vurgu dolgusunda küçük beyaz yazı (sayfa numarası, dolgulu kart düğmesi) tema ya da panel rengiyle
+  çözülür; derleyici bunları denetlemez.
+
 ## Bilinen açık işler
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).

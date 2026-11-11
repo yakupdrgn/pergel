@@ -183,7 +183,7 @@
 }
 
 .pergel-product-category a {
-	color: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--accent-text, var(--wp--preset--color--accent));
 	text-decoration: none;
 }
 
@@ -363,7 +363,7 @@
 	border: 1px solid currentcolor;
 	border-radius: 999px;
 	background: transparent;
-	color: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--accent-text, var(--wp--preset--color--accent));
 	font: inherit;
 	font-size: var(--wp--preset--font-size--small);
 	font-weight: 600;
@@ -419,7 +419,7 @@
 
 .pergel-share__link.is-copied {
 	border-color: var(--wp--preset--color--accent);
-	color: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--accent-text, var(--wp--preset--color--accent));
 }
 
 .pergel-buy-now:focus-visible,

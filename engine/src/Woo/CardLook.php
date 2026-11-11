@@ -176,11 +176,13 @@ final class CardLook {
 		$button = "$link,$card .pergel-card-button";
 		$rules  = array();
 		$color  = self::color( 'card_button_color' );
-		$color  = '' === $color ? 'var(--wp--preset--color--accent)' : $color;
-		$look   = match ( Settings::get( 'shop.card_button' ) ) {
+		// Words in the accent colour take accent-text when the theme has one (a large-text accent).
+		$text  = '' === $color ? 'var(--wp--preset--color--accent-text,var(--wp--preset--color--accent))' : $color;
+		$color = '' === $color ? 'var(--wp--preset--color--accent)' : $color;
+		$look  = match ( Settings::get( 'shop.card_button' ) ) {
 			'filled'  => array( "background:$color;color:var(--wp--preset--color--on-accent);border:2px solid $color", 'filter:brightness(.92)' ),
-			'outline' => array( "background:transparent;color:$color;border:2px solid $color", "background:$color;color:var(--wp--preset--color--on-accent)" ),
-			'text'    => array( "background:none;color:$color;border:0;padding-inline:0;min-height:0", 'text-decoration:underline' ),
+			'outline' => array( "background:transparent;color:$text;border:2px solid $color", "background:$color;color:var(--wp--preset--color--on-accent)" ),
+			'text'    => array( "background:none;color:$text;border:0;padding-inline:0;min-height:0", 'text-decoration:underline' ),
 			default   => array(),
 		};
 		$own = array();

@@ -229,7 +229,7 @@ final class ProductLayoutTest extends TestCase {
 		$this->assertStringContainsString( '__image--is-active{outline:2px solid var(--wp--preset--color--accent)', $css );
 		$this->assertStringContainsString( 'h1.wp-block-post-title{font-weight:700}', $css );
 		$this->assertStringContainsString( ':not([data-is-descendent-of-query-loop]) .wc-block-components-product-price{color:#ff0000}', $css, 'Only the product\'s own price.' );
-		$this->assertStringContainsString( 'background:transparent;color:var(--wp--preset--color--accent);border:2px solid var(--wp--preset--color--accent)', $css );
+		$this->assertStringContainsString( 'background:transparent;color:var(--wp--preset--color--accent-text,var(--wp--preset--color--accent));border:2px solid var(--wp--preset--color--accent)', $css );
 		$this->assertStringContainsString( '.pergel-buy-now){border-radius:999px;box-sizing:border-box;min-height:50px', $css, 'Shape and height for both buttons.' );
 		$this->assertStringContainsString( '__quantity-selector{box-sizing:border-box;height:50px}', $css );
 		$this->assertStringContainsString( '__button--minus{border-radius:0 0 0 0}', $css );
