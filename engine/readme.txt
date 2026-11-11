@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.20
+Stable tag: 1.4.21
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.21 =
+* Shop: a search in a category filter now shows the subcategories it finds even when they are closed under their parent's arrow. Before, the closed ones stayed hidden, so a search for a subcategory's name showed nothing.
 
 = 1.4.20 =
 * Tokens: a brand colour below 4.5:1 on white (such as a teal at 4.12:1) can now be the accent. Add a `color.accent-text` token for small accent words: the accent then needs 3:1 (large text, marks and fills) and accent-text needs 4.5:1. White on the accent still needs 4.5:1 unless the token file sets large buttons (24px, or 18.66px at weight 700). Links, card meta, the product category, the coupon and share buttons, tab labels and outline or text buttons use accent-text when the theme has it; nothing changes for themes without it.
