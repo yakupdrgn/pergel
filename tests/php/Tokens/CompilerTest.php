@@ -167,6 +167,102 @@ final class CompilerTest extends TestCase {
 		$this->assertStringContainsString( 'color.accent on color.surface', $problems );
 	}
 
+	/**
+	 * A teal accent (#0f8b8d: 4.12:1 on white) with optional accent-text and button style.
+	 *
+	 * @param string|null          $text   accent-text value, or null for none.
+	 * @param array<string, mixed> $button Button typography in the token file's styles.
+	 * @return array<string, mixed>
+	 */
+	private static function teal( ?string $text, array $button = array() ): array {
+		$tree                              = self::minimal();
+		$tree['color']['accent']['$value'] = '#0f8b8d';
+		if ( null !== $text ) {
+			$tree['color']['accent-text'] = array( '$value' => $text );
+		}
+		if ( array() !== $button ) {
+			$tree['$extensions'] = array( Compiler::EXT => array( 'styles' => array( 'elements' => array( 'button' => array( 'typography' => $button ) ) ) ) );
+		}
+		return $tree;
+	}
+
+	public function test_accent_below_aa_fails_without_accent_text(): void {
+		$problems = implode(
+			'
+',
+			self::problems( self::teal( null ) )
+		);
+
+		$this->assertStringContainsString( 'color.accent on color.base is 4.12:1, needs 4.5:1', $problems );
+		$this->assertStringContainsString( 'color.on-accent on color.accent is 4.12:1, needs 4.5:1 (WCAG AA)', $problems );
+		$this->assertStringNotContainsString( 'with color.accent-text set', $problems, 'No hint before the theme opts in.' );
+	}
+
+	public function test_large_text_accent_passes_with_accent_text_and_large_buttons(): void {
+		$tree = self::teal(
+			'#0e2a47',
+			array(
+				'fontSize'   => '1.1875rem',
+				'fontWeight' => '700',
+			)
+		);
+
+		$this->assertSame( array(), self::problems( $tree ) );
+		$this->assertContains( 'accent-text', array_column( Compiler::compile( $tree, 't.json' )['color']['palette'], 'slug' ) );
+	}
+
+	public function test_small_buttons_on_a_large_text_accent_still_need_aa(): void {
+		$problems = self::problems( self::teal( '#0e2a47', array( 'fontSize' => '1rem' ) ) );
+
+		$this->assertCount( 1, $problems );
+		$this->assertStringContainsString( 'color.on-accent on color.accent is 4.12:1, needs 4.5:1 (WCAG AA); with color.accent-text set', $problems[0] );
+	}
+
+	public function test_large_buttons_by_size_alone_or_by_preset(): void {
+		$this->assertSame( array(), self::problems( self::teal( '#0e2a47', array( 'fontSize' => '24px' ) ) ), '24px at any weight.' );
+		$this->assertSame(
+			array(),
+			self::problems(
+				self::teal(
+					'#0e2a47',
+					array(
+						'fontSize'   => 'var(--wp--preset--font-size--x-large)',
+						'fontWeight' => 600,
+					)
+				)
+			),
+			'A 2rem preset.'
+		);
+
+		$tree                                        = self::teal( '#0e2a47', array( 'fontSize' => 'var(--wp--preset--font-size--x-large)' ) );
+		$tree['font-size']['x-large']['$extensions'] = array( Compiler::EXT => array( 'fluid' => array( 'min' => '1rem' ) ) );
+		$this->assertCount( 1, self::problems( $tree ), 'A fluid preset counts at its smallest size.' );
+	}
+
+	public function test_accent_text_needs_aa_and_accent_still_needs_three_to_one(): void {
+		$tree                               = self::teal( '#5b8fa0', array( 'fontSize' => '24px' ) );
+		$tree['color']['surface']['$value'] = '#f5f8fa';
+		$problems                           = implode(
+			'
+',
+			self::problems( $tree )
+		);
+		$this->assertStringContainsString( 'color.accent-text on color.base', $problems );
+		$this->assertStringContainsString( 'color.accent-text on color.surface', $problems );
+		$this->assertStringNotContainsString( 'color.accent on', $problems, 'Teal passes 3:1 on both grounds.' );
+
+		$tree                              = self::teal( '#0e2a47', array( 'fontSize' => '24px' ) );
+		$tree['color']['accent']['$value'] = '#7fc8c9';
+		$this->assertStringContainsString(
+			'needs 3.0:1',
+			implode(
+				'
+',
+				self::problems( $tree )
+			)
+		);
+	}
+
 	public function test_missing_required_token_and_bad_alias_are_all_reported(): void {
 		$tree = self::minimal();
 		unset( $tree['spacing']['80'] );

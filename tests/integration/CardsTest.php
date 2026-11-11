@@ -430,7 +430,7 @@ final class CardsTest extends TestCase {
 		$this->assertStringContainsString( '.pergel-cards.pergel-cards .wc-block-product{box-sizing:border-box;border:2px solid var(--wp--preset--color--line);border-radius:12px}', $css );
 		$this->assertStringContainsString( '.wc-block-components-product-image{background:#f0f0f0}', $css );
 		$this->assertStringContainsString( '.wp-block-post-title{font-weight:500}', $css );
-		$this->assertStringContainsString( 'background:transparent;color:var(--wp--preset--color--accent);border:2px solid var(--wp--preset--color--accent);border-radius:999px;width:100%', $css );
+		$this->assertStringContainsString( 'background:transparent;color:var(--wp--preset--color--accent-text,var(--wp--preset--color--accent));border:2px solid var(--wp--preset--color--accent);border-radius:999px;width:100%', $css );
 		$this->assertStringNotContainsString( 'padding:', $css, 'Space inside is not set.' );
 		$this->assertStringNotContainsString( '.wc-block-product:hover', $css, 'No card rule for the pointer without a hover look.' );
 		$this->assertStringContainsString( $css, implode( '', (array) wp_styles()->get_data( Layout::CARD_STYLE, 'after' ) ) );

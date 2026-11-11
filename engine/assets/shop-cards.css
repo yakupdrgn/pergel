@@ -74,7 +74,7 @@
 	flex-wrap: wrap;
 	gap: 0 0.5em;
 	margin-block-end: 0.25rem;
-	color: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--accent-text, var(--wp--preset--color--accent));
 	font-size: var(--wp--preset--font-size--small);
 	font-weight: 600;
 }

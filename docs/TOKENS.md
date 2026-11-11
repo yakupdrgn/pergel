@@ -141,5 +141,31 @@ listeler.
 | accent | surface |
 | on-accent | accent (butonlar) |
 
+### Büyük yazı vurgusu (`accent-text`)
+
+Marka rengi beyazda 4,5:1'e ulaşmıyorsa (ör. teal #0f8b8d, 4,12:1) isteğe bağlı `color.accent-text`
+token'ı eklenir. Küçük vurgu yazıları (bağlantılar, kart üst bilgisi, çerçeveli düğme yazısı) bu
+rengi alır; `accent` dolgu, işaret ve büyük yazı için kalır. Bu durumda denetim şöyledir:
+
+| Metin | Zemin | Alt sınır |
+| --- | --- | --- |
+| accent | base, surface | 3:1 |
+| accent-text | base, surface | 4,5:1 |
+| on-accent | accent | 4,5:1; buton yazısı büyükse 3:1 |
+
+Buton yazısı, token dosyasının `$extensions."com.ariumlab.pergel".styles.elements.button.typography`
+değerinde 24 px ya da 700 ağırlıkta en az 18,66 px (14 pt) ise büyük sayılır. `fontSize` px/rem
+ya da `var(--wp--preset--font-size--<slug>)` olabilir; akışkan preset'te alt sınır sayılır.
+
+```json
+"color": {
+	"accent": { "$value": "#0f8b8d" },
+	"accent-text": { "$value": "#0e2a47" }
+},
+"$extensions": { "com.ariumlab.pergel": { "styles": { "elements": { "button": {
+	"typography": { "fontSize": "1.1875rem", "fontWeight": "700" }
+} } } } }
+```
+
 CI iki şeyi doğrular. `php tools/tokens.php --check` çıktının token'larla aynı olduğunu
 denetler. `composer test` ise derleyicinin birim testlerini çalıştırır.

@@ -30,7 +30,7 @@
 
 .pergel-details-tab[aria-selected="true"] {
 	border-bottom-color: var(--pergel-tab-active, var(--wp--preset--color--accent, currentColor));
-	color: var(--pergel-tab-active, var(--wp--preset--color--accent, currentColor));
+	color: var(--pergel-tab-active, var(--wp--preset--color--accent-text, var(--wp--preset--color--accent, currentColor)));
 }
 
 .pergel-details-tab:focus-visible {
@@ -198,7 +198,7 @@
 
 .pergel-side-tab[aria-selected="true"] {
 	border-bottom-color: var(--pergel-tab-active, var(--wp--preset--color--accent, currentColor));
-	color: var(--pergel-tab-active, var(--wp--preset--color--accent, currentColor));
+	color: var(--pergel-tab-active, var(--wp--preset--color--accent-text, var(--wp--preset--color--accent, currentColor)));
 }
 
 .pergel-side-tab:focus-visible {

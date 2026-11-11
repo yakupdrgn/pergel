@@ -68,6 +68,17 @@ final class Compiler {
 	);
 
 	/**
+	 * Large text (WCAG 1.4.3) and marks (1.4.11) need 3:1 instead of 4.5:1.
+	 */
+	private const LARGE_CONTRAST = 3.0;
+
+	/**
+	 * Large text: 18pt (24px) at any weight, or 14pt (18.66px) bold.
+	 */
+	private const LARGE_PX      = 24.0;
+	private const LARGE_BOLD_PX = 18.66;
+
+	/**
 	 * Viewport range for fluid spacing: from this width up to the wide layout size.
 	 */
 	private const FLUID_MIN_VIEWPORT = 360.0;
@@ -262,14 +273,14 @@ final class Compiler {
 			}
 		}
 
-		foreach ( self::CONTRAST as [ $fg, $bg, $min ] ) {
+		foreach ( self::contrast_pairs( $tree, $tokens ) as [ $fg, $bg, $min, $hint ] ) {
 			if ( ! isset( $values[ "color.$fg" ], $values[ "color.$bg" ] ) ) {
 				continue;
 			}
 			try {
 				$ratio = Css::contrast( $values[ "color.$fg" ], $values[ "color.$bg" ] );
 				if ( $ratio < $min ) {
-					$problems[] = sprintf( '%s: contrast of color.%s on color.%s is %.2f:1, needs %.1f:1 (WCAG AA)', $label, $fg, $bg, $ratio, $min );
+					$problems[] = sprintf( '%s: contrast of color.%s on color.%s is %.2f:1, needs %.1f:1 (WCAG AA)%s', $label, $fg, $bg, $ratio, $min, $hint );
 				}
 			} catch ( \InvalidArgumentException $e ) {
 				$problems[] = "$label: color.$fg on color.$bg: " . $e->getMessage();
@@ -280,6 +291,72 @@ final class Compiler {
 			throw new Invalid( $problems );
 		}
 		return $settings;
+	}
+
+	/**
+	 * Contrast pairs for a token set.
+	 *
+	 * With a `color.accent-text` token the accent is a large-text accent (docs/TOKENS.md): small
+	 * accent text takes accent-text (4.5:1), so the accent itself only needs 3:1 for large text,
+	 * marks and fills. White on such an accent still needs 4.5:1 unless the token file's button
+	 * style is large text (24px, or 18.66px at weight 700 or more).
+	 *
+	 * @param array<string, mixed>        $tree   Token tree.
+	 * @param array<string, array<mixed>> $tokens Collected tokens by dotted path.
+	 * @return list<array{0: string, 1: string, 2: float, 3: string}> Text, ground, minimum, hint.
+	 */
+	private static function contrast_pairs( array $tree, array $tokens ): array {
+		$large   = isset( $tokens['color.accent-text'] );
+		$buttons = $large && self::large_buttons( $tree, $tokens );
+		$pairs   = array();
+		foreach ( self::CONTRAST as [ $fg, $bg, $min ] ) {
+			$hint = '';
+			if ( $large && 'accent' === $fg ) {
+				$min = self::LARGE_CONTRAST;
+			} elseif ( $large && 'on-accent' === $fg ) {
+				if ( $buttons ) {
+					$min = self::LARGE_CONTRAST;
+				} else {
+					$hint = '; with color.accent-text set, a button style of 24px, or 18.66px at weight 700, needs only 3:1';
+				}
+			}
+			$pairs[] = array( $fg, $bg, $min, $hint );
+		}
+		if ( $large ) {
+			$pairs[] = array( 'accent-text', 'base', 4.5, '' );
+			$pairs[] = array( 'accent-text', 'surface', 4.5, '' );
+		}
+		return $pairs;
+	}
+
+	/**
+	 * Whether the token file styles buttons as large text: `$extensions.<EXT>.styles.elements.button.typography`
+	 * with a px/rem font size (or a font-size preset, its fluid minimum counted) and a numeric weight.
+	 *
+	 * @param array<string, mixed>        $tree   Token tree.
+	 * @param array<string, array<mixed>> $tokens Collected tokens by dotted path.
+	 */
+	private static function large_buttons( array $tree, array $tokens ): bool {
+		$type = $tree['$extensions'][ self::EXT ]['styles']['elements']['button']['typography'] ?? null;
+		if ( ! is_array( $type ) || ! is_string( $type['fontSize'] ?? null ) ) {
+			return false;
+		}
+		try {
+			$size = $type['fontSize'];
+			if ( 1 === preg_match( '/^var\(--wp--preset--font-size--([a-z0-9-]+)\)$/', $size, $m ) ) {
+				$token = $tokens[ 'font-size.' . $m[1] ] ?? null;
+				if ( null === $token ) {
+					return false;
+				}
+				$size = $token['$extensions'][ self::EXT ]['fluid']['min'] ?? self::resolve( 'font-size.' . $m[1], $tokens, array() );
+			}
+			$px = Css::to_px( $size );
+		} catch ( \InvalidArgumentException $e ) {
+			return false;
+		}
+		$weight = $type['fontWeight'] ?? 400;
+		$weight = is_numeric( $weight ) ? (float) $weight : ( 'bold' === $weight ? 700.0 : 400.0 );
+		return $px >= self::LARGE_PX || ( $px >= self::LARGE_BOLD_PX && $weight >= 700 );
 	}
 
 	/**

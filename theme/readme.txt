@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.19
+Stable tag: 1.4.20
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,9 @@ layers, WooCommerce features and content types come from the companion
 Pergel Engine plugin, so changing the theme never loses content.
 
 == Changelog ==
+
+= 1.4.20 =
+* Links use the new `accent-text` colour when the active tokens have one (see Pergel Engine 1.4.20), otherwise the accent as before.
 
 = 1.4.19 =
 * Released with Pergel Engine 1.4.19; no change in the theme.
