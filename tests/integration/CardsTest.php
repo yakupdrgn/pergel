@@ -244,6 +244,41 @@ final class CardsTest extends TestCase {
 		$this->assertStringNotContainsString( 'pergel-stock-bar', $html );
 	}
 
+	public function test_pictures_follow_the_pointer(): void {
+		$picture = wp_insert_attachment(
+			array(
+				'post_title'     => 'Side picture',
+				'post_mime_type' => 'image/png',
+				'post_status'    => 'inherit',
+				'guid'           => 'https://example.org/side.png',
+			)
+		);
+		$product = wc_get_product( $this->product );
+		$this->assertInstanceOf( \WC_Product::class, $product );
+		$product->set_gallery_image_ids( array( $picture ) );
+		$product->save();
+		Settings::update(
+			array(
+				'shop' => array(
+					'card_hover'   => true,
+					'card_gallery' => true,
+				),
+			)
+		);
+
+		$html = do_blocks( self::GRID );
+
+		Settings::update( array( 'shop' => array( 'card_gallery' => false ) ) );
+		$second = do_blocks( self::GRID );
+		wp_delete_post( $picture, true );
+
+		$this->assertMatchesRegularExpression( '#<div[^>]*class="[^"]*\bhas-pergel-gallery\b[^"]*"[^>]*data-pergel-gallery="\[\[&quot;[^"]*side\.png&quot;#', $html );
+		$this->assertStringNotContainsString( 'pergel-second-picture', $html, 'The gallery takes the place of the second picture.' );
+		$this->assertTrue( wp_style_is( Layout::CARD_STYLE ) );
+		$this->assertStringNotContainsString( 'data-pergel-gallery', $second );
+		$this->assertStringContainsString( 'pergel-second-picture', $second );
+	}
+
 	public function test_quick_view_route(): void {
 		$server = rest_get_server();
 		$this->assertArrayNotHasKey( '/pergel/v1/quick-view', $server->get_routes( 'pergel/v1' ), 'Off by default.' );

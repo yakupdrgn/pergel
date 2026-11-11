@@ -1904,6 +1904,22 @@ desteği"ni istedi; 1.4.20'de isteğe bağlı `color.accent-text` geldi.
 - Vurgu dolgusunda küçük beyaz yazı (sayfa numarası, dolgulu kart düğmesi) tema ya da panel rengiyle
   çözülür; derleyici bunları denetlemez.
 
+## Kart resimleri imleci izler (11 Kasım 2026, kullanıcı isteği)
+
+Kullanıcı büyük bir mağaza temasındaki ürün listesini gösterdi: imleç kart resminin üzerinde yatay
+gezdikçe ürünün öteki resimleri geliyor, altta her resim için bir çizgi var. Davranış ölçüldü
+(şerit sayısı = resim sayısı, imlecin x konumu şeridi seçer, çıkınca ilk resim); kod, CSS ve görsel
+alınmadı. 1.4.22'de `shop.card_gallery` ("Pictures follow the pointer") geldi.
+
+- Galeri, resim sarmalayıcısında `data-pergel-gallery` olarak JSON gelir (en çok dört resim,
+  `pergel/cards/gallery_size`); her biri `woocommerce_single` src + srcset. Sayfa yüklenirken hiçbir
+  resim indirilmez; kart üzerine ilk gelişte indirilir ve çizgiler o an çizilir.
+- Yalnızca `(hover: hover) and (pointer: fine)` ve `pointerType === 'mouse'`; dokunmatikte hiçbir şey
+  değişmez. Tek bir belge düzeyi `pointermove` dinleyicisi var (yeni yüklenen kartlarda da çalışır);
+  kutu ölçüsü girişte ve kaydırmada alınır, resim yalnızca şerit değişince değişir.
+- Renk seçeneği (swatch) basılıyken galeri durur; ikisi de ürünün kendi resmini aynı
+  `data-pergel-own-src` alanında saklar. Ayar açıkken ikinci resim çizilmez.
+
 ## Bilinen açık işler
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).

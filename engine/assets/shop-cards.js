@@ -1,6 +1,7 @@
 /**
  * Product card extras (Pergel\Woo\Cards): the sale countdown, the quick
- * view window and the colour options.
+ * view window, the colour options and the pictures that follow the
+ * pointer.
  *
  * The countdown boxes come with the page; this updates them every second,
  * also in products drawn later ("Load more", filters). The quick view
@@ -145,6 +146,14 @@ const show = async ( button ) => {
 
 /* Colours: an option's picture on the card; pressed again, the product's. */
 
+/* The card's own picture, kept before an option or a gallery picture replaces it. */
+const own = ( image ) => {
+	if ( ! image.dataset.pergelOwnSrc ) {
+		image.dataset.pergelOwnSrc = image.currentSrc || image.src;
+		image.dataset.pergelOwnSrcset = image.getAttribute( 'srcset' ) || '';
+	}
+};
+
 const swatch = ( button ) => {
 	const card = button.closest( 'li' );
 	const box = card && card.querySelector( '.wc-block-components-product-image' );
@@ -152,10 +161,7 @@ const swatch = ( button ) => {
 	if ( ! image ) {
 		return;
 	}
-	if ( ! image.dataset.pergelOwnSrc ) {
-		image.dataset.pergelOwnSrc = image.currentSrc || image.src;
-		image.dataset.pergelOwnSrcset = image.getAttribute( 'srcset' ) || '';
-	}
+	own( image );
 	const pressed = 'true' === button.getAttribute( 'aria-pressed' );
 	for ( const other of card.querySelectorAll( '.pergel-card-swatch[aria-pressed]' ) ) {
 		other.setAttribute( 'aria-pressed', 'false' );
@@ -180,3 +186,120 @@ document.addEventListener( 'click', ( event ) => {
 		swatch( option );
 	}
 } );
+
+/*
+ * Pictures that follow the pointer: the picture is split into as many
+ * strips as the product has pictures, and the one under the pointer shows.
+ * Only with a mouse; nothing loads before the pointer is over a card. The
+ * gallery pictures load then, and the marks under them are drawn once.
+ */
+
+let active = null;
+let parts = null;
+let shown = 0;
+let rect = null;
+
+const turn = ( index ) => {
+	const image = active.querySelector( 'img:not(.pergel-second-picture)' );
+	if ( ! image || index === shown ) {
+		return;
+	}
+	own( image );
+	const [ src, srcset ] = index > 0
+		? parts[ index - 1 ]
+		: [ image.dataset.pergelOwnSrc, image.dataset.pergelOwnSrcset ];
+	image.srcset = srcset || '';
+	image.src = src;
+	shown = index;
+	const marks = active.querySelector( '.pergel-gallery-marks' );
+	if ( marks ) {
+		for ( const [ at, mark ] of [ ...marks.children ].entries() ) {
+			mark.classList.toggle( 'is-on', at === shown );
+		}
+	}
+};
+
+const leave = () => {
+	if ( active ) {
+		if ( ! active.classList.contains( 'has-pergel-swatch' ) ) {
+			turn( 0 );
+		}
+		active.classList.remove( 'is-pergel-browsing' );
+	}
+	active = null;
+	parts = null;
+	shown = 0;
+};
+
+const enter = ( target ) => {
+	try {
+		parts = JSON.parse( target.dataset.pergelGallery || '[]' );
+	} catch {
+		parts = [];
+	}
+	if ( ! Array.isArray( parts ) || ! parts.length ) {
+		return;
+	}
+	active = target;
+	shown = 0;
+	rect = active.getBoundingClientRect();
+	if ( ! active.querySelector( '.pergel-gallery-marks' ) ) {
+		const image = active.querySelector( 'img:not(.pergel-second-picture)' );
+		for ( const [ src, srcset ] of parts ) {
+			const next = new Image();
+			next.decoding = 'async';
+			if ( image && image.sizes ) {
+				next.sizes = image.sizes;
+			}
+			next.srcset = srcset || '';
+			next.src = src;
+		}
+		const marks = document.createElement( 'span' );
+		marks.className = 'pergel-gallery-marks';
+		marks.setAttribute( 'aria-hidden', 'true' );
+		for ( let at = 0; at <= parts.length; at++ ) {
+			marks.append( document.createElement( 'span' ) );
+		}
+		marks.firstChild.classList.add( 'is-on' );
+		active.append( marks );
+	}
+	active.classList.add( 'is-pergel-browsing' );
+};
+
+if ( window.matchMedia( '(hover: hover) and (pointer: fine)' ).matches ) {
+	document.addEventListener(
+		'pointermove',
+		( event ) => {
+			if ( 'mouse' !== event.pointerType ) {
+				return;
+			}
+			const target =
+				event.target instanceof Element &&
+				event.target.closest( '[data-pergel-gallery]' );
+			if ( target !== active ) {
+				leave();
+				if ( target ) {
+					enter( target );
+				}
+			}
+			if ( ! active || active.classList.contains( 'has-pergel-swatch' ) ) {
+				return;
+			}
+			const across = ( event.clientX - rect.left ) / ( rect.width || 1 );
+			const index = Math.min( parts.length, Math.max( 0, Math.floor( across * ( parts.length + 1 ) ) ) );
+			turn( index );
+		},
+		{ passive: true }
+	);
+	document.addEventListener( 'pointerout', ( event ) => {
+		if ( active && ! ( event.relatedTarget instanceof Node && active.contains( event.relatedTarget ) ) ) {
+			leave();
+		}
+	} );
+	// The picture may have moved (scrolling, a layout change) since the pointer came in.
+	window.addEventListener( 'scroll', () => {
+		if ( active ) {
+			rect = active.getBoundingClientRect();
+		}
+	}, { passive: true } );
+}

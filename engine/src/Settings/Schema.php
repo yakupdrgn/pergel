@@ -536,6 +536,10 @@ final class Schema {
 					'type'    => 'bool',
 					'default' => false,
 				),
+				'card_gallery'       => array(
+					'type'    => 'bool',
+					'default' => false,
+				),
 				'card_countdown'     => array(
 					'type'    => 'bool',
 					'default' => false,

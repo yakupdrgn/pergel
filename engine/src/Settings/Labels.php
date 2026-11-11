@@ -289,7 +289,7 @@ final class Labels {
 				),
 				'cards'   => array(
 					'title'  => __( 'Product cards', 'pergel-engine' ),
-					'fields' => array( 'card_style', 'card_items', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches', 'card_actions', 'card_quote' ),
+					'fields' => array( 'card_style', 'card_items', 'card_category', 'card_brand', 'card_rating', 'card_discount', 'card_stock', 'card_hover', 'card_gallery', 'card_countdown', 'card_stock_bar', 'quick_view', 'card_swatches', 'card_actions', 'card_quote' ),
 				),
 				'look'    => array(
 					'title'  => __( 'Card look', 'pergel-engine' ),
@@ -862,6 +862,10 @@ final class Labels {
 				'card_hover'         => array(
 					'label' => __( 'Second picture', 'pergel-engine' ),
 					'help'  => __( 'The first gallery picture shows while the pointer is over the card. Not on touch screens.', 'pergel-engine' ),
+				),
+				'card_gallery'       => array(
+					'label' => __( 'Pictures follow the pointer', 'pergel-engine' ),
+					'help'  => __( "Moving the pointer across the picture shows the product's gallery pictures, up to four, with a mark for each one under them. Back to the product's own picture when the pointer leaves. Not on touch screens. Takes the place of the second picture.", 'pergel-engine' ),
 				),
 				'card_countdown'     => array(
 					'label' => __( 'Sale countdown', 'pergel-engine' ),
