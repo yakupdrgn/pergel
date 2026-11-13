@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.23
+Stable tag: 1.4.24
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.24 =
+* Shop: filter pages. A product category can give chosen filters a page of its own for search results, e.g. "SBS-format cooling blocks" at /product-category/cooling-blocks/sbs-format/ for the category filtered by Features: SBS format. Each page has its own title, heading, meta description and intro (Filter pages, in the category's edit form), is listed in the sitemap and gets a step in the breadcrumb, with Pergel's own head tags and with Rank Math, Yoast SEO, All in One SEO, SEOPress and The SEO Framework. The same choice made with the filters on the category has the page as its canonical address; every other filter combination gets "noindex, follow". Ticking the filters shows the page's heading, and its address when the theme marks its listing head (`FilterPages::attributes()` and `marker()`). New filter `pergel/seo/page` for Pergel's own page data.
 
 = 1.4.23 =
 * Shop: loading more products while scrolling keeps the visitor's place. A quick scroll into a footer taller than the screen during a load no longer pushes the page past the new products, and a load button left above the screen loads the next products too, so the list no longer stops part way.

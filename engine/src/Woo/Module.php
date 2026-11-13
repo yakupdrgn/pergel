@@ -49,6 +49,7 @@ final class Module implements Core\Module {
 		Modes::register();
 		Fields::register();
 		Layout::register();
+		FilterPages::register();
 		Selling::register();
 		Pages::register();
 		MiniCart::register();

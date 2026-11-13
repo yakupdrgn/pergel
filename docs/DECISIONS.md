@@ -1934,6 +1934,29 @@ Kullanıcı, kaydırınca ürün yüklenen listede "her defasında başa dönüy
   sürerken `body` üzerinde `overflow-anchor: none` (iki kare sonra geri alınır) ve ekranın üstünde
   kalmış düğme de yükler.
 
+## Filtre sayfaları: seçilmiş filtreler indekslenir, gerisi noindex (13 Kasım 2026, kullanıcı kararı)
+
+Kullanıcı `products-list/?filter_features=automation-sbs%2Ccap-holder&query_type_features=or`
+gibi filtre adreslerinin SEO'ya uygun olmadığını söyledi; önce çözüm anlatıldı, kullanıcı
+"Pergel açılış sayfaları", adres "kategori altında" ve "metinleri sen çıkar, ben onaylayayım"
+seçti; Ariumlab için 7 sayfa onaylandı.
+
+- Her filtre bileşimini indekslemek sonsuz sayıda ince/kopya sayfa üretir; hiçbirini
+  indekslememek ("Cooling blocks for SBS" gibi gerçek aramaları kaçırır). Karar: kategori başına
+  elle seçilmiş birkaç filtre sayfası (kendi adresi, başlığı, H1'i, açıklaması, giriş metni,
+  site haritası kaydı); diğer bütün filtreli listeler "noindex, follow". robots.txt'deki
+  `Disallow: /*?filter_` kaldırılmalı, yoksa Google noindex'i göremez.
+- Adres kategori altında (`/product-category/<kategori>/<slug>/`) ve `request` süzgeciyle
+  karşılanıyor: rewrite kuralı eklemek flush gerektirir ve her kategori için kural demektir.
+  Alt kategoriyle çakışmada alt kategori kazanır; `page` slug'ı sayfa numaralarına ayrılmış.
+- Aynı seçimin filtre adresi sayfanın kopyası değil, kendisi: canonical sayfaya gider, başlık
+  da onunki olur. Ziyaretçi filtreyi işaretleyince adres çubuğu da sayfanın adresini gösterir
+  (tema bölgeyi işaretlerse), geri tuşu çalışır.
+- WooCommerce'in sayım/işaret kodu (`WC_Query`, Product Filters bloğu) filtreyi `$_GET` ve
+  `REQUEST_URI`'den okuyor; sayfa adresinde bunlar doğrudan doldurulur, blok çizilirken adres
+  geçici olarak değiştirilip geri konur. Sorgu değişkeni yetmedi: yalnızca onunla 19 yerine 25
+  ürün listelendi.
+
 ## Bilinen açık işler
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
