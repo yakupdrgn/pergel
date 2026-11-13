@@ -253,6 +253,17 @@ final class CardsTest extends TestCase {
 				'guid'           => 'https://example.org/side.png',
 			)
 		);
+		// A file and its size: WordPress gives no picture address without them.
+		update_post_meta( $picture, '_wp_attached_file', 'side.png' );
+		update_post_meta(
+			$picture,
+			'_wp_attachment_metadata',
+			array(
+				'width'  => 600,
+				'height' => 600,
+				'file'   => 'side.png',
+			)
+		);
 		$product = wc_get_product( $this->product );
 		$this->assertInstanceOf( \WC_Product::class, $product );
 		$product->set_gallery_image_ids( array( $picture ) );
@@ -272,7 +283,9 @@ final class CardsTest extends TestCase {
 		$second = do_blocks( self::GRID );
 		wp_delete_post( $picture, true );
 
-		$this->assertMatchesRegularExpression( '#<div[^>]*class="[^"]*\bhas-pergel-gallery\b[^"]*"[^>]*data-pergel-gallery="\[\[&quot;[^"]*side\.png&quot;#', $html );
+		// Attribute order is the HTML API's business, so look at the tag as a whole.
+		$this->assertSame( 1, preg_match( '#<div\b[^>]*\bhas-pergel-gallery\b[^>]*>#', $html, $tag ) );
+		$this->assertMatchesRegularExpression( '#data-pergel-gallery="\[\[&quot;[^"]*side\.png&quot;#', $tag[0] );
 		$this->assertStringNotContainsString( 'pergel-second-picture', $html, 'The gallery takes the place of the second picture.' );
 		$this->assertTrue( wp_style_is( Layout::CARD_STYLE ) );
 		$this->assertStringNotContainsString( 'data-pergel-gallery', $second );
