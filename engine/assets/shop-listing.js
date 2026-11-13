@@ -143,6 +143,10 @@ const more = async ( link, auto = false ) => {
 	}
 	busy = true;
 	root.classList.add( 'pergel-more-busy' );
+	// The page stays where it is and the new products come in below. With
+	// scroll anchoring the browser would keep a footer in view in place and
+	// push the page down past the new products.
+	document.body.style.overflowAnchor = 'none';
 	say( link.dataset.pergelBusy || '' );
 	const url = new URL( window.location.href );
 	url.pathname = url.pathname.replace( /\/page\/\d+\/?$/, '/' );
@@ -163,6 +167,12 @@ const more = async ( link, auto = false ) => {
 	} finally {
 		busy = false;
 		root.classList.remove( 'pergel-more-busy' );
+		// Anchoring comes back once the new products have been laid out.
+		requestAnimationFrame( () =>
+			requestAnimationFrame( () =>
+				document.body.style.removeProperty( 'overflow-anchor' )
+			)
+		);
 	}
 	say( '' );
 	const target = first && first.querySelector( 'a' );
@@ -192,7 +202,9 @@ document.addEventListener( 'click', ( event ) => {
 } );
 
 /* Load while scrolling: the button loads when it nears the screen, and
- * stays for keyboard users. */
+ * stays for keyboard users. A button already above the screen loads too: a
+ * quick scroll during a load can end in a footer taller than the screen,
+ * and the new button, drawn above it, would never come into view. */
 
 let observer;
 
@@ -206,7 +218,12 @@ const watch = () => {
 	}
 	observer = new IntersectionObserver(
 		( entries ) => {
-			if ( entries.some( ( entry ) => entry.isIntersecting ) ) {
+			if (
+				entries.some(
+					( entry ) =>
+						entry.isIntersecting || entry.boundingClientRect.bottom < 0
+				)
+			) {
 				more( link, true );
 			}
 		},
