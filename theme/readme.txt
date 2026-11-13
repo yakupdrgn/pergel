@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.24
+Stable tag: 1.4.25
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,8 +18,10 @@ Pergel Engine plugin, so changing the theme never loses content.
 
 == Changelog ==
 
-= 1.4.24 =
-* Released with Pergel Engine 1.4.24; no change in the theme.
+= 1.4.25 =
+* Released with Pergel Engine 1.4.25; no change in the theme.
+
+= 1.4.24 =* Released with Pergel Engine 1.4.24; no change in the theme.
 
 = 1.4.23 =
 * Released with Pergel Engine 1.4.23; no change in the theme.
