@@ -493,6 +493,25 @@ final class FilterPagesTest extends TestCase {
 		$this->assertContains( $url, array_column( (array) FilterPages::sitemap_entries( array() ), 'loc' ) );
 	}
 
+	public function test_core_sitemap_provider_joins_only_on_a_sitemap_address(): void {
+		$server = wp_sitemaps_get_server();
+		// Start from a registry without ours (it keeps providers by name).
+		$property = new \ReflectionProperty( \WP_Sitemaps_Registry::class, 'providers' );
+		$list     = $property->getValue( $server->registry );
+		unset( $list[ FilterPages::SITEMAP ] );
+		$property->setValue( $server->registry, $list );
+
+		$page             = new \WP();
+		$page->query_vars = array( 'pagename' => 'about' );
+		FilterPages::sitemap_request( $page );
+		$this->assertArrayNotHasKey( FilterPages::SITEMAP, $server->registry->get_providers(), 'Not on an ordinary page.' );
+
+		$map             = new \WP();
+		$map->query_vars = array( 'sitemap' => 'index' );
+		FilterPages::sitemap_request( $map );
+		$this->assertArrayHasKey( FilterPages::SITEMAP, $server->registry->get_providers() );
+	}
+
 	public function test_products_of_a_page(): void {
 		$term  = $this->with_page();
 		$child = $this->category( 'Child', $term->term_id );

@@ -226,7 +226,9 @@ final class FilterPages {
 			add_filter( $hook, array( self::class, $method ), $priority, $args );
 		}
 		if ( '' === $plugin ) {
-			add_action( 'wp_sitemaps_init', array( self::class, 'core_sitemap' ) );
+			// Core starts its sitemaps on every request; the provider (a file
+			// of its own) only joins on a sitemap address.
+			add_action( 'parse_request', array( self::class, 'sitemap_request' ) );
 		}
 	}
 
@@ -888,6 +890,18 @@ final class FilterPages {
 			);
 		}
 		return $entries;
+	}
+
+	/**
+	 * Adds the filter pages to core's sitemap when a sitemap is asked for.
+	 * Action for `parse_request`; core draws it on template_redirect.
+	 *
+	 * @param \WP $wp The request.
+	 */
+	public static function sitemap_request( \WP $wp ): void {
+		if ( ! empty( $wp->query_vars['sitemap'] ) && function_exists( 'wp_sitemaps_get_server' ) ) {
+			self::core_sitemap( wp_sitemaps_get_server() );
+		}
 	}
 
 	/**
