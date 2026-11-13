@@ -1171,6 +1171,25 @@ görünmez (`Settings\Screen::shown`).
   ve yetki callback'iyle kayıtlıdır (`edit_products`, `manage_product_terms`).
 - **Yol (`Woo\Trail`):** `pergel/seo/crumbs` süzgeciyle ürün ve ürün kategorisi yoluna mağaza
   sayfası ve kategori zinciri girer (`Seo\Head::term_trail`).
+- **Filtre sayfaları (`Woo\FilterPages`, `Woo\FilterPagesFields`, `Woo\FilterPagesSitemap`):**
+  ürün kategorisi formunda (term meta `pergel_filter_pages`) seçilen filtrelere kendi adresi,
+  başlığı ve açıklaması olan sayfa verilir: `/product-category/cooling-blocks/sbs-format/` =
+  Cooling Blocks + `filter_features=automation-sbs`. Adres `request` süzgecinde karşılanır (yeni
+  rewrite kuralı yok, flush yok); aynı adlı alt kategori kendi adresini korur. Karşılanınca
+  filtreler hem sorgu değişkenine hem `$_GET`'e yazılır (WooCommerce'in katmanlı gezinme sayımı
+  `$_GET`'i okur). Aynı seçim kategoride filtreyle yapılınca (sıra ve AND/OR fark etmez) aynı
+  sayfa sayılır: başlık/H1/açıklama/giriş onun olur, canonical sayfanın adresine gider. Diğer
+  bütün filtre bileşimleri ve sayfa adresine eklenen ek filtreler `pergel/seo/noindex` ile
+  "noindex, follow" alır. Başlık, açıklama, canonical, yol ve site haritası Pergel'in kendi başlık
+  etiketlerinde (`pre_get_document_title`, yeni `pergel/seo/page` süzgeci, çekirdek site haritası
+  sağlayıcısı `filterpages`) ve Rank Math / Yoast / AIOSEO / SEOPress / TSF'de ayrı ayrı bağlanır
+  (`seo( Detect::active() )`). Product Filters bloğu çizilirken `REQUEST_URI` geçici olarak
+  "kategori?filtreler" yapılır: blok seçimi işaretli gösterir, kaldırma ve sıfırlama kategoriye
+  döner. Kendi liste başını çizen tema `FilterPages::attributes()`'ı o kutuya, `marker()`'ı içine
+  koyar: kutu ürünlerle birlikte yönlendirici bölgesi olarak yeniden çizilir ve
+  `assets/filter-pages.js` adres çubuğuna sayfanın kendi adresini yazar (`replaceState`,
+  `per_page` gibi filtre dışı parametreler kalır). `FilterPages::products()` sayfanın ürün
+  kimliklerini verir (en çok 500, istatistik için).
 - **İşaretleme düzeltmeleri (`Woo\Markup`, yalnızca ön yüz):** varyasyon özniteliklerine
   `role="listitem"`; `data-wp-class--disabled` taşıyan ürün düğmesine aynı duruma bağlı
   `aria-disabled` (`data-wp-bind--aria-disabled`).

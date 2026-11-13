@@ -251,6 +251,21 @@ final class Head {
 			$page['image'] = self::attachment( (int) Settings::get( 'seo.og_image' ) );
 		}
 
+		/**
+		 * Filters the data of the current page before its trail is filtered:
+		 * address, name, description and trail, e.g. of a page that query
+		 * variables make of an archive. Other keys are not taken.
+		 *
+		 * @param array<string, mixed> $page Page data.
+		 */
+		$filtered = apply_filters( 'pergel/seo/page', $page );
+		if ( is_array( $filtered ) ) {
+			$page['url']         = is_string( $filtered['url'] ?? null ) ? $filtered['url'] : $page['url'];
+			$page['name']        = is_string( $filtered['name'] ?? null ) ? $filtered['name'] : $page['name'];
+			$page['description'] = is_string( $filtered['description'] ?? null ) ? $filtered['description'] : $page['description'];
+			$page['crumbs']      = is_array( $filtered['crumbs'] ?? null ) ? Trail::clean( $filtered['crumbs'] ) : $page['crumbs'];
+		}
+
 		if ( array() !== $page['crumbs'] ) {
 			/**
 			 * Filters Pergel's own breadcrumb trail of the current page, the

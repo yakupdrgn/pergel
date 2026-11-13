@@ -19,6 +19,7 @@ use Pergel\Starters\Starter;
 use Pergel\Woo\Cards;
 use Pergel\Woo\CouponField;
 use Pergel\Woo\Delivery;
+use Pergel\Woo\FilterPages;
 use Pergel\Woo\FlashSalePrices;
 use Pergel\Woo\FlashSales;
 use Pergel\Woo\Layout;
@@ -80,7 +81,7 @@ final class Uninstall {
 		CouponField::META,
 	);
 
-	private const TERM_META = array( Modes::TERM_META, Delivery::META, SizeGuide::META, Starter::META, Starter::META_KEY, Layout::TERM_META );
+	private const TERM_META = array( Modes::TERM_META, Delivery::META, SizeGuide::META, Starter::META, Starter::META_KEY, Layout::TERM_META, FilterPages::META );
 
 	private const USER_META = array( Lists::META );
 
