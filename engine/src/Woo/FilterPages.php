@@ -248,7 +248,7 @@ final class FilterPages {
 		$slug   = substr( $path, $cut + 1 );
 		$parent = substr( $path, 0, $cut );
 		$term   = get_term_by( 'slug', wp_basename( $parent ), 'product_cat' );
-		if ( ! $term instanceof \WP_Term || ! self::at( $term, $parent ) || term_exists( $slug, 'product_cat', $term->term_id ) ) {
+		if ( ! $term instanceof \WP_Term || ! self::at( $term, $parent ) || self::has_child( $term, $slug ) ) {
 			return $vars;
 		}
 		$page = self::find( $term->term_id, $slug );
@@ -268,6 +268,29 @@ final class FilterPages {
 			$_GET[ $key ] = $value;
 		}
 		return $vars;
+	}
+
+	/**
+	 * Whether a category has a subcategory with this slug, whose address
+	 * would then be taken. By slug only: term_exists() also matches names,
+	 * so a hidden subcategory named "96-Well" (slug 96-well-levitation-plates)
+	 * kept the filter page "96-well" from its address.
+	 *
+	 * @param \WP_Term $term Category.
+	 * @param string   $slug Filter page slug.
+	 */
+	private static function has_child( \WP_Term $term, string $slug ): bool {
+		$found = get_terms(
+			array(
+				'taxonomy'   => 'product_cat',
+				'slug'       => $slug,
+				'parent'     => $term->term_id,
+				'hide_empty' => false,
+				'fields'     => 'ids',
+				'number'     => 1,
+			)
+		);
+		return is_array( $found ) && array() !== $found;
 	}
 
 	/**

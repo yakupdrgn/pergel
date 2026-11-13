@@ -352,6 +352,20 @@ final class FilterPagesTest extends TestCase {
 		$this->assertSame( 'Category', FilterPages::heading( 'Category' ) );
 	}
 
+	public function test_child_category_named_like_the_slug_does_not_take_the_address(): void {
+		$term = $this->with_page();
+		// A subcategory named as the page's slug but stored under another slug (as WordPress makes
+		// "96-well-levitation-plates" when "96-well" is taken elsewhere).
+		$made = wp_insert_term( 'SBS-Format', 'product_cat', array( 'parent' => $term->term_id, 'slug' => 'sbs-format-' . strtolower( wp_generate_password( 6, false ) ) ) );
+		$this->assertIsArray( $made );
+		$this->terms[] = (int) $made['term_id'];
+
+		$vars = $this->visit( $term->slug . '/sbs-format' );
+
+		$this->assertSame( $term->slug, $vars['product_cat'], 'Only a subcategory slug takes the address, not its name.' );
+		$this->assertSame( 'sbs', $vars[ $this->param() ] );
+	}
+
 	public function test_page_address_with_more_filters_is_not_the_page(): void {
 		$term = $this->with_page();
 		$this->tick( array( 'filter_size' => 'large' ) );
