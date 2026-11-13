@@ -1920,6 +1920,20 @@ alınmadı. 1.4.22'de `shop.card_gallery` ("Pictures follow the pointer") geldi.
 - Renk seçeneği (swatch) basılıyken galeri durur; ikisi de ürünün kendi resmini aynı
   `data-pergel-own-src` alanında saklar. Ayar açıkken ikinci resim çizilmez.
 
+## Kaydırınca yükleme yerini korur (13 Kasım 2026, kullanıcı isteği)
+
+Kullanıcı, kaydırınca ürün yüklenen listede "her defasında başa dönüyoruz" dedi. İki sebep ölçüldü:
+
+- Ürün şablonunda etkileşim desteği bildirmeyen bir blok (temanın kendi bloğu) varsa WooCommerce
+  `core/router` için `clientNavigationDisabled` koyar; `navigate()` tam sayfa yüklemesine döner ve
+  sayfa en üstten açılır. Bu temanın işi: ürün şablonundaki her blok
+  `supports.interactivity.clientNavigation` bildirmeli. Motor tarafında değişiklik gerekmedi.
+- Yükleme sürerken hızlı kaydırma ekrandan uzun bir footer'da bitince tarayıcının kaydırma
+  sabitlemesi (scroll anchoring) sayfayı yeni ürünlerin boyu kadar aşağı itiyordu; yeni düğme
+  ekranın üstünde kalıyor, gözlemci hiç tetiklenmiyor, liste yarıda duruyordu. 1.4.23'te yükleme
+  sürerken `body` üzerinde `overflow-anchor: none` (iki kare sonra geri alınır) ve ekranın üstünde
+  kalmış düğme de yükler.
+
 ## Bilinen açık işler
 
 - ~~Anasayfa (blog listesi) şu an H1 içermiyor~~ → F1'de çözüldü (`home.html` + bütçe `h1 = 1`).
