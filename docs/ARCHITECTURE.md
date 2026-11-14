@@ -174,6 +174,14 @@ katman çalışır.
   soruyu kendisi sorar (`Module::noindex()`); `Robots` yalnızca dışarıda tutulan sayfada yüklenir
   (`pergel_files` bütçesi). SEO panelindeki "arama motorlarından gizle" yedek katmanın işidir ve
   `Head` üzerinden kalır.
+- `Seo\Paging` — son sayfanın ötesindeki liste sayfası (ürünleri artık iki sayfaya sığan
+  kategorinin arama sonuçlarında ya da bağlantılarda kalmış `/page/3/` adresi) 404 yerine 301 ile
+  son sayfaya gider; filtreler ve arama sözcükleri adreste kalır. SEO eklentisi olsun olmasın
+  geçerlidir; eklentinin yönlendirmeleri (`wp` üzerinde) önce çalışır. Çekirdek son sayfanın
+  ötesinde `found_posts`'u saymadığı için aynı sorgu `paged` 1 ve yalnızca kimliklerle bir kez
+  daha çalışır. `Seo\Module` `template_redirect` (9) üzerinde yalnızca `paged` > 1 olan 404'te
+  sınıfı yükler (`pergel_files` bütçesi). `pergel/seo/past_last_page` filtresi hedef adresi
+  değiştirir; boş dizge 404'ü bırakır.
 - `Seo\Meta` — `_pergel_seo_title`, `_pergel_seo_description`, `_pergel_seo_noindex`
   (REST'te, `edit_post` yetkisiyle) ve editörde build'siz "SEO" paneli
   (`engine/assets/seo-panel.js`).
