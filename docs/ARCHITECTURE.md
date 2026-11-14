@@ -769,8 +769,20 @@ görünmez (`Settings\Screen::shown`).
   sayfalar `noindex, follow`. `shop.paging` more/scroll sayfa numaralarından sonra sonraki sayfaya
   giden gerçek bir bağlantı ekler; `assets/shop-listing.js` bunu Interactivity router'ın
   `navigate()`'iyle aynı sayfayı daha büyük `per_page` ile istemeye çevirir (sepet düğmeleri
-  çalışır kalır), ilk yeni ürüne odaklanır; kaydırma modu IntersectionObserver kullanır ve
-  sayfadan kendiliğinden çıkmaz. Yalnızca ilk sayfa büyür, 96'dan sonra bağlantı izlenir.
+  çalışır kalır), düğmeye basılınca ilk yeni ürüne odaklanır (kaydırarak yüklenince odak yerinde
+  kalır: resmin çevresinde odak halkası çizilmesin); kaydırma modu IntersectionObserver kullanır ve
+  sayfadan kendiliğinden çıkmaz. İlk kaydırmadan önce düğme 400px yakındayken yükler (uzun ekran
+  kendi kendine yüklemesin); ilk kaydırmadan sonra 1,5 ekran kala yükler ve 4 ekran kala sonraki
+  sayfayı router'ın `actions.prefetch()`'iyle önceden ister, `navigate()` aynı önbelleği kullanır
+  (her parti tek istek). Yalnızca ilk sayfa büyür, 96'dan sonra bağlantı izlenir.
+- **Kart durumu (`Woo\Hydration`, 1.4.28):** WooCommerce ürün blokları her kartın ürününü
+  Interactivity durumuna sunucuda bir Store API yanıtıyla koyar; bu yanıt ürünün bütün
+  açıklamasını blok çizicisinden geçirip atıyordu (durumda açıklama yok; uzun açıklamalarla liste
+  sunucu süresinin yarısı, 90 ürün 4,1 s → 2,2 s, kullanılmayan blok stilleri de sayfaya
+  giriyordu). `woocommerce_hydration_dispatch_request` (sonuç `null` ve yol
+  `/wc/store(/vN)/products/<id>`) ile `woocommerce_hydration_request_after_callbacks` arasında
+  `woocommerce_product(_variation)_get_description` (999) boş döner; ürün sayfaları, bloklar ve HTTP
+  üzerinden Store API değişmez.
   `navigate()`'in sözü directive dışında çağrılınca tamamlanmadığı için betik yeni ürünleri
   MutationObserver ile bekler. WooCommerce ürün koleksiyonunda `clientNavigation` desteği
   bildirmeyen bir blok varsa istemci gezinmesini sayfa için kapatır; bu yüzden

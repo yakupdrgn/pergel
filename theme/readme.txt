@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.27
+Stable tag: 1.4.28
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,9 @@ layers, WooCommerce features and content types come from the companion
 Pergel Engine plugin, so changing the theme never loses content.
 
 == Changelog ==
+
+= 1.4.28 =
+* Released with Pergel Engine 1.4.28 (faster loading of more products and lighter listing pages); no theme changes.
 
 = 1.4.27 =
 * Released with Pergel Engine 1.4.27; no change in the theme.

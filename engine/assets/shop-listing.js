@@ -125,16 +125,46 @@ const arrival = ( region, before ) =>
 		watcher.observe( document.body, { childList: true, subtree: true } );
 	} );
 
-const more = async ( link, auto = false ) => {
-	if ( busy ) {
-		return;
-	}
+// What loading more asks for: this page with `step` more products per
+// page. `url` is empty when the router cannot load them in place.
+const next = ( link ) => {
 	const holder = link.closest( '[data-wp-router-region]' );
 	const region = holder ? holder.dataset.wpRouterRegion : '';
 	const step = Number( link.dataset.pergelStep );
 	const before = region ? items( region ).length : 0;
 	const wanted = before + step;
 	if ( ! region || ! step || wanted > Number( link.dataset.pergelMost ) ) {
+		return { region, before, url: '' };
+	}
+	const url = new URL( window.location.href );
+	url.pathname = url.pathname.replace( /\/page\/\d+\/?$/, '/' );
+	url.searchParams.delete( 'paged' );
+	url.searchParams.set( 'per_page', String( wanted ) );
+	return { region, before, url: url.toString() };
+};
+
+// Fetches the next products ahead of time, so they are ready when the
+// visitor reaches the end of the list: the router keeps the page and
+// navigate() draws it without asking the server again.
+const prefetch = async ( link ) => {
+	const { url } = next( link );
+	if ( ! url ) {
+		return;
+	}
+	try {
+		const { actions } = await import( '@wordpress/interactivity-router' );
+		Promise.resolve( actions.prefetch( url ) ).catch( () => {} );
+	} catch {
+		// Loading more falls back to the link.
+	}
+};
+
+const more = async ( link, auto = false ) => {
+	if ( busy ) {
+		return;
+	}
+	const { region, before, url } = next( link );
+	if ( ! url ) {
 		// Scrolling never leaves the page by itself.
 		if ( ! auto ) {
 			window.location.assign( link.href );
@@ -148,10 +178,6 @@ const more = async ( link, auto = false ) => {
 	// push the page down past the new products.
 	document.body.style.overflowAnchor = 'none';
 	say( link.dataset.pergelBusy || '' );
-	const url = new URL( window.location.href );
-	url.pathname = url.pathname.replace( /\/page\/\d+\/?$/, '/' );
-	url.searchParams.delete( 'paged' );
-	url.searchParams.set( 'per_page', String( wanted ) );
 	let first;
 	try {
 		const { actions } = await import( '@wordpress/interactivity-router' );
@@ -159,7 +185,7 @@ const more = async ( link, auto = false ) => {
 		// not settle when it is called outside a directive: wait for the
 		// new products instead.
 		const drawn = arrival( region, before );
-		Promise.resolve( actions.navigate( url.toString() ) ).catch( () => {} );
+		Promise.resolve( actions.navigate( url ) ).catch( () => {} );
 		first = await drawn;
 	} catch {
 		window.location.assign( link.href );
@@ -175,7 +201,10 @@ const more = async ( link, auto = false ) => {
 		);
 	}
 	say( '' );
-	const target = first && first.querySelector( 'a' );
+	// A press of the button moves focus to the first new product, so a
+	// keyboard user goes on from there. Scrolling leaves focus where it is:
+	// moved there, it would draw a focus ring around a product picture.
+	const target = ! auto && first && first.querySelector( 'a' );
 	if ( target ) {
 		target.focus( { preventScroll: true } );
 	}
@@ -204,19 +233,20 @@ document.addEventListener( 'click', ( event ) => {
 /* Load while scrolling: the button loads when it nears the screen, and
  * stays for keyboard users. A button already above the screen loads too: a
  * quick scroll during a load can end in a footer taller than the screen,
- * and the new button, drawn above it, would never come into view. */
+ * and the new button, drawn above it, would never come into view.
+ *
+ * Before the first scroll "near" is 400px, so a tall screen does not load
+ * by itself. Once the visitor scrolls, the button loads a screen and a half
+ * away, and the next products are fetched while it is still four screens
+ * away, so the list grows without a wait at its end. */
 
 let observer;
+let ahead;
+let scrolled = false;
 
-const watch = () => {
-	const link = document.querySelector( '[data-pergel-more="scroll"]' );
-	if ( observer ) {
-		observer.disconnect();
-	}
-	if ( ! link || ! ( 'IntersectionObserver' in window ) ) {
-		return;
-	}
-	observer = new IntersectionObserver(
+// Calls `then` when the link is within `margin` below the screen, or above it.
+const near = ( link, margin, then ) => {
+	const seen = new IntersectionObserver(
 		( entries ) => {
 			if (
 				entries.some(
@@ -224,12 +254,42 @@ const watch = () => {
 						entry.isIntersecting || entry.boundingClientRect.bottom < 0
 				)
 			) {
-				more( link, true );
+				then();
 			}
 		},
-		{ rootMargin: '0px 0px 400px 0px' }
+		{ rootMargin: `0px 0px ${ margin } 0px` }
 	);
-	observer.observe( link );
+	seen.observe( link );
+	return seen;
+};
+
+const watch = () => {
+	const link = document.querySelector( '[data-pergel-more="scroll"]' );
+	observer?.disconnect();
+	ahead?.disconnect();
+	if ( ! link || ! ( 'IntersectionObserver' in window ) ) {
+		return;
+	}
+	observer = near( link, scrolled ? '150%' : '400px', () =>
+		more( link, true )
+	);
+	if ( scrolled ) {
+		ahead = near( link, '400%', () => {
+			ahead.disconnect();
+			prefetch( link );
+		} );
+	}
 };
 
 watch();
+
+if ( document.querySelector( '[data-pergel-more="scroll"]' ) ) {
+	window.addEventListener(
+		'scroll',
+		() => {
+			scrolled = true;
+			watch();
+		},
+		{ once: true, passive: true }
+	);
+}
