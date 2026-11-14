@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.26
+Stable tag: 1.4.27
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.27 =
+* Shop: on touch screens the heading of a filter group that opens and closes is a target at least 24px high (WCAG 2.5.8 Target Size); the layout does not move.
 
 = 1.4.26 =
 * SEO: a listing page past the last one (/page/3/ of a category whose products now fit on two pages, an old address still in search results or links) goes to the last page with a 301 instead of a 404, with or without an SEO plugin; filters and search terms in the address are kept. Redirects of an SEO plugin still come first. New filter `pergel/seo/past_last_page` (return an empty string to keep the 404).
