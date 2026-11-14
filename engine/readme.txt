@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.25
+Stable tag: 1.4.26
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,10 +28,14 @@ pages, products, menus, terms and media stay. Add
 
 == Changelog ==
 
+= 1.4.26 =
+* SEO: a listing page past the last one (/page/3/ of a category whose products now fit on two pages, an old address still in search results or links) goes to the last page with a 301 instead of a 404, with or without an SEO plugin; filters and search terms in the address are kept. Redirects of an SEO plugin still come first. New filter `pergel/seo/past_last_page` (return an empty string to keep the 404).
+
 = 1.4.25 =
 * Shop: a filter page reaches its address when its category has a hidden subcategory of the same name but another slug (a "96-Well" subcategory stored as 96-well-levitation-plates no longer keeps the filter page "96-well" from its address). Only a subcategory with the same slug takes the address.
 
-= 1.4.24 =* Shop: filter pages. A product category can give chosen filters a page of its own for search results, e.g. "SBS-format cooling blocks" at /product-category/cooling-blocks/sbs-format/ for the category filtered by Features: SBS format. Each page has its own title, heading, meta description and intro (Filter pages, in the category's edit form), is listed in the sitemap and gets a step in the breadcrumb, with Pergel's own head tags and with Rank Math, Yoast SEO, All in One SEO, SEOPress and The SEO Framework. The same choice made with the filters on the category has the page as its canonical address; every other filter combination gets "noindex, follow". Ticking the filters shows the page's heading, and its address when the theme marks its listing head (`FilterPages::attributes()` and `marker()`). New filter `pergel/seo/page` for Pergel's own page data.
+= 1.4.24 =
+* Shop: filter pages. A product category can give chosen filters a page of its own for search results, e.g. "SBS-format cooling blocks" at /product-category/cooling-blocks/sbs-format/ for the category filtered by Features: SBS format. Each page has its own title, heading, meta description and intro (Filter pages, in the category's edit form), is listed in the sitemap and gets a step in the breadcrumb, with Pergel's own head tags and with Rank Math, Yoast SEO, All in One SEO, SEOPress and The SEO Framework. The same choice made with the filters on the category has the page as its canonical address; every other filter combination gets "noindex, follow". Ticking the filters shows the page's heading, and its address when the theme marks its listing head (`FilterPages::attributes()` and `marker()`). New filter `pergel/seo/page` for Pergel's own page data.
 
 = 1.4.23 =
 * Shop: loading more products while scrolling keeps the visitor's place. A quick scroll into a footer taller than the screen during a load no longer pushes the page past the new products, and a load button left above the screen loads the next products too, so the list no longer stops part way.

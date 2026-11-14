@@ -76,6 +76,16 @@ final class Module implements Core\Module {
 		$plugin = Detect::active();
 		self::faq( $plugin );
 		self::robots( $plugin );
+		// A listing page past the last one goes to the last page; Paging loads only on that 404.
+		add_action(
+			'template_redirect',
+			static function (): void {
+				if ( is_404() && (int) get_query_var( 'paged' ) > 1 ) {
+					Paging::redirect();
+				}
+			},
+			9
+		);
 		if ( '' !== $plugin ) {
 			Integrations::register( $plugin );
 			Trail::register( $plugin );
