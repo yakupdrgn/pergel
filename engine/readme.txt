@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.27
+Stable tag: 1.4.28
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.28 =
+* Shop: loading more products while scrolling waits less. Once the visitor scrolls, the next products are fetched while the end of the list is still four screens away and drawn a screen and a half before it; nothing is fetched before the first scroll. Products loaded by scrolling leave focus where it is (no focus ring around a product picture); the "Load more" button still moves focus to the first new product.
+* Shop: listing pages render in about half the server time with long product descriptions. WooCommerce formatted each product's full description for the Interactivity state and then dropped it; during that server-side hydration the description now reads as empty (90 products: 4.1 s → 2.2 s). Product pages, product blocks and the Store API over HTTP are unchanged.
 
 = 1.4.27 =
 * Shop: on touch screens the heading of a filter group that opens and closes is a target at least 24px high (WCAG 2.5.8 Target Size); the layout does not move.
