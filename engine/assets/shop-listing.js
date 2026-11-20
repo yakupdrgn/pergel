@@ -604,6 +604,75 @@ const perPage = async ( select ) => {
 	}
 };
 
+/* After a filter changes the list while its head is above the screen (a
+ * filter low in a long sidebar, or a list of one product that leaves the
+ * visitor at the footer), the head of the list (how many products, the
+ * sorting menu) comes back into view. A filter tried with the head in view
+ * moves nothing. Themes with a sticky header set scroll-margin-top on
+ * .wc-block-product-results-count. */
+
+// What counts as a filter change: options ticked, the price, a chip
+// removed, "Clear filters". Opening a group or typing in its search does not.
+const FILTER_CHANGE =
+	'input[type="checkbox"], input[type="radio"], select, .wc-block-product-filter-price-slider input';
+const FILTER_CLICK =
+	'.wc-block-product-filter-removable-chips__remove, .wp-block-woocommerce-product-filter-clear-button :is(a, button)';
+
+let lifting = false;
+
+const lift = ( event ) => {
+	const target = event.target;
+	if (
+		lifting ||
+		busy ||
+		! ( target instanceof Element ) ||
+		! target.closest( 'change' === event.type ? FILTER_CHANGE : FILTER_CLICK )
+	) {
+		return;
+	}
+	const holder = document
+		.querySelector( '.wc-block-product-template' )
+		?.closest( '[data-wp-router-region]' );
+	if ( ! holder ) {
+		return;
+	}
+	lifting = true;
+	redrawn( holder )
+		.then(
+			() =>
+				new Promise( ( resolve ) => {
+					// After the browser lays the new list out.
+					window.requestAnimationFrame( () => {
+						const head =
+							document.querySelector( '.wc-block-product-results-count' ) ||
+							document.querySelector( '.wc-block-catalog-sorting' ) ||
+							holder;
+						if ( head.getBoundingClientRect().top < 0 ) {
+							head.scrollIntoView( {
+								block: 'start',
+								behavior: window.matchMedia( '(prefers-reduced-motion: reduce)' )
+									.matches
+									? 'auto'
+									: 'smooth',
+							} );
+						}
+						resolve();
+					} );
+				} )
+		)
+		.catch( () => {} )
+		.finally( () => {
+			lifting = false;
+		} );
+};
+
+for ( const filters of document.querySelectorAll(
+	'.wp-block-woocommerce-product-filters'
+) ) {
+	filters.addEventListener( 'change', lift );
+	filters.addEventListener( 'click', lift );
+}
+
 back()
 	.then( ( drawn ) => drawn || own() )
 	.finally( () => {

@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.31
+Stable tag: 1.4.32
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.32 =
+* Shop: after a filter changes the list while the head of the list (results count, sorting) is above the screen, the head scrolls back into view, smoothly unless the visitor asks for less motion; a filter tried with the head in view moves nothing. Themes with a sticky header set scroll-margin-top on .wc-block-product-results-count (24px by default).
+* Shop filters: the search box in an option list shows only when some options are out of view (cut, folded or past the list's own scroll); a list seen whole hides it, measured again when the list shows or changes size. A box with text in it or in use stays.
 
 = 1.4.31 =
 * Shop: choosing the products per page (Show 24/36/48) draws the list again in place, like the filters and the sorting menu, instead of reloading the page. Filters and sorting are kept, the list starts from its first page and the address shows the number; without the Interactivity router the form still sends itself.

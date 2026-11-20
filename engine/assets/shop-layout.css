@@ -587,3 +587,9 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 		animation-duration: 2.4s, 0s;
 	}
 }
+
+/* The head of the list a filter brings back into view (shop-listing.js)
+   stops a little below the top of the screen. */
+.wc-block-product-results-count {
+	scroll-margin-top: 24px;
+}
