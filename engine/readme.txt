@@ -28,6 +28,9 @@ pages, products, menus, terms and media stay. Add
 
 == Changelog ==
 
+= 1.4.29 =
+* Shop: after "Load more" the address shows the page reached (/page/3/), not ?per_page=45, and loading more replaces the history entry instead of adding one, so Back leaves the listing. Reloading that address shows that page. The products are still fetched with per_page; sorting and filters after a load start from the first page without it.
+
 = 1.4.28 =
 * Shop: loading more products while scrolling waits less. Once the visitor scrolls, the next products are fetched while the end of the list is still four screens away and drawn a screen and a half before it; nothing is fetched before the first scroll. Products loaded by scrolling leave focus where it is (no focus ring around a product picture); the "Load more" button still moves focus to the first new product.
 * Shop: listing pages render in about half the server time with long product descriptions. WooCommerce formatted each product's full description for the Interactivity state and then dropped it; during that server-side hydration the description now reads as empty (90 products: 4.1 s → 2.2 s). Product pages, product blocks and the Store API over HTTP are unchanged.
