@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.30
+Stable tag: 1.4.31
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.31 =
+* Shop: choosing the products per page (Show 24/36/48) draws the list again in place, like the filters and the sorting menu, instead of reloading the page. Filters and sorting are kept, the list starts from its first page and the address shows the number; without the Interactivity router the form still sends itself.
 
 = 1.4.30 =
 * Shop: Back to a listing that loaded more products draws all of them again and returns to the same place, instead of showing only the first page.
