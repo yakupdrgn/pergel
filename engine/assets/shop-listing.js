@@ -77,7 +77,8 @@ for ( const group of document.querySelectorAll( '.pergel-view-switch' ) ) {
 	} );
 }
 
-/* Products per page: the form sends itself, like the sorting menu, and the
+/* Products per page: the list is drawn again in place, like the filters and
+ * the sorting menu (the form sends itself when the router cannot), and the
  * number is kept for the visitor's next lists (see own() below). */
 
 const PER_PAGE = 'pergel-shop-per-page';
@@ -97,7 +98,7 @@ for ( const select of document.querySelectorAll( '.pergel-per-page select' ) ) {
 		} catch {
 			// Storage may be blocked; the number then lasts for this list.
 		}
-		select.form.requestSubmit();
+		perPage( select ).catch( () => select.form.requestSubmit() );
 	} );
 }
 
@@ -523,21 +524,81 @@ const own = async () => {
 		).catch( () => {} );
 		await drawn;
 		select.value = String( wanted );
-		// The sorting menu, outside the redrawn region, keeps the number.
-		for ( const sorting of document.querySelectorAll(
-			'.woocommerce-ordering'
-		) ) {
-			let field = sorting.querySelector( `input[name="${ PER_PAGE_ARG }"]` );
-			if ( ! field ) {
-				field = document.createElement( 'input' );
-				field.type = 'hidden';
-				field.name = PER_PAGE_ARG;
-				sorting.append( field );
-			}
-			field.value = String( wanted );
-		}
+		keepPerPage( String( wanted ) );
 	} catch {
 		// The list stays as the server drew it.
+	} finally {
+		busy = false;
+	}
+};
+
+// The sorting menus, outside the redrawn region, send the number along.
+const keepPerPage = ( value ) => {
+	for ( const sorting of document.querySelectorAll( '.woocommerce-ordering' ) ) {
+		let field = sorting.querySelector( `input[name="${ PER_PAGE_ARG }"]` );
+		if ( ! value ) {
+			field?.remove();
+			continue;
+		}
+		if ( ! field ) {
+			field = document.createElement( 'input' );
+			field.type = 'hidden';
+			field.name = PER_PAGE_ARG;
+			sorting.append( field );
+		}
+		field.value = value;
+	}
+};
+
+// Once the region holding `holder` changes (products, numbers, the load more
+// button); rejects after ten seconds.
+const redrawn = ( holder ) =>
+	new Promise( ( resolve, reject ) => {
+		const watcher = new MutationObserver( () => {
+			watcher.disconnect();
+			clearTimeout( timer );
+			resolve();
+		} );
+		const timer = setTimeout( () => {
+			watcher.disconnect();
+			reject( new Error( 'timeout' ) );
+		}, 10000 );
+		watcher.observe( holder, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			characterData: true,
+		} );
+	} );
+
+// Draws the list again with the products per page `select` says: its first
+// page, filters and sorting kept. Rejects when the router cannot, and the
+// form then sends itself.
+const perPage = async ( select ) => {
+	const holder = document
+		.querySelector( '.wc-block-product-template' )
+		?.closest( '[data-wp-router-region]' );
+	if ( ! holder || busy ) {
+		throw new Error( 'no region' );
+	}
+	const value =
+		select.value === select.form.dataset.pergelDefault ? '' : select.value;
+	const url = new URL( window.location.href );
+	url.pathname = url.pathname.replace( /\/page\/\d+\/?$/, '/' );
+	url.searchParams.delete( 'paged' );
+	if ( value ) {
+		url.searchParams.set( PER_PAGE_ARG, value );
+	} else {
+		url.searchParams.delete( PER_PAGE_ARG );
+	}
+	busy = true;
+	try {
+		const { actions } = await import( '@wordpress/interactivity-router' );
+		const drawn = redrawn( holder );
+		Promise.resolve( actions.navigate( url.toString() ) ).catch( () => {} );
+		await drawn;
+		keepPerPage( value );
+		say( select.selectedOptions[ 0 ]?.textContent.trim() || '' );
 	} finally {
 		busy = false;
 	}
