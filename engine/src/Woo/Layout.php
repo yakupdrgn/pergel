@@ -165,6 +165,7 @@ final class Layout {
 		add_action( 'rest_api_init', array( self::class, 'quick_view' ) );
 		add_action( 'rest_api_init', array( self::class, 'recently_viewed' ) );
 		add_filter( 'loop_shop_per_page', array( self::class, 'per_page' ), 20 );
+		add_filter( 'redirect_canonical', array( self::class, 'first_page' ), 10, 2 );
 		add_filter( 'render_block_context', array( self::class, 'context' ), 10, 3 );
 		add_filter( 'render_block_woocommerce/product-collection', array( self::class, 'grid' ), 10, 2 );
 		add_filter( 'body_class', array( self::class, 'body_class' ) );
@@ -233,6 +234,7 @@ final class Layout {
 			VERSION,
 			array( 'fetchpriority' => 'low' )
 		);
+		add_filter( 'script_module_data_' . self::LISTING_SCRIPT, array( Listing::class, 'script_data' ) );
 	}
 
 	/**
@@ -258,6 +260,42 @@ final class Layout {
 			return $html;
 		}
 		return ShopHeader::before( $html );
+	}
+
+	/**
+	 * Answers a listing address with "paged=1" as it is. The sorting menu
+	 * asks for the first page that way, and WordPress sent it on to the
+	 * address without it: every sorting cost a second request and a second
+	 * page built. The page's canonical link names the address without it.
+	 *
+	 * @param mixed  $redirect  Address WordPress would send the visitor to.
+	 * @param string $requested Address asked for.
+	 * @return mixed
+	 */
+	public static function first_page( mixed $redirect, string $requested = '' ): mixed {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only compares the page number.
+		if ( ! is_string( $redirect ) || '' === $requested || '1' !== ( $_GET['paged'] ?? '' ) || ! self::listing() ) {
+			return $redirect;
+		}
+		return self::same_address( remove_query_arg( 'paged', $requested ), $redirect ) ? false : $redirect;
+	}
+
+	/**
+	 * Whether two addresses name the same page: path and arguments alike,
+	 * in any order.
+	 *
+	 * @param string $a One address.
+	 * @param string $b The other.
+	 */
+	private static function same_address( string $a, string $b ): bool {
+		$parts = array();
+		foreach ( array( $a, $b ) as $url ) {
+			$args = array();
+			wp_parse_str( (string) wp_parse_url( $url, PHP_URL_QUERY ), $args );
+			ksort( $args );
+			$parts[] = array( untrailingslashit( (string) wp_parse_url( $url, PHP_URL_PATH ) ), $args );
+		}
+		return $parts[0] === $parts[1];
 	}
 
 	/**

@@ -96,8 +96,22 @@ final class Listing {
 			if ( ! has_action( 'wp_head', array( self::class, 'back' ) ) ) {
 				add_action( 'wp_head', array( self::class, 'back' ), 1 );
 			}
-			wp_enqueue_script_module( self::SCRIPT );
 		}
+		// The script also shows the list loading while the filters, the
+		// sorting menu or the page numbers draw it again.
+		wp_enqueue_script_module( self::SCRIPT );
+	}
+
+	/**
+	 * Data for the listing script: the words said while the list loads.
+	 * Layout adds it to the script's data.
+	 *
+	 * @param array $data Data printed with the script.
+	 * @phpstan-param array<string, mixed> $data
+	 * @return array<string, mixed>
+	 */
+	public static function script_data( array $data ): array {
+		return $data + array( 'loading' => __( 'Loading products…', 'pergel-engine' ) );
 	}
 
 	/**

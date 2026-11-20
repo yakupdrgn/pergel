@@ -550,6 +550,44 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 	animation: pergel-spin 0.8s linear infinite, pergel-hide 0s 4s forwards;
 }
 
+/* While the filters, the sorting menu, the products per page or a page
+ * number draw the list again (shop-listing.js loading()): the products dim
+ * and a ring turns in the middle of the part of them on the screen. Both
+ * wait 150ms, so a quick answer shows nothing. Themes can draw their own
+ * from .pergel-loading, --pergel-loading-y and --pergel-loading-label. */
+.pergel-loading .wc-block-product-template {
+	position: relative;
+	pointer-events: none;
+}
+
+.pergel-loading .wc-block-product-template > li {
+	opacity: 0.4;
+	transition: opacity 0.2s ease 0.15s;
+}
+
+.pergel-loading .wc-block-product-template::after {
+	content: "";
+	position: absolute;
+	z-index: 2;
+	top: var(--pergel-loading-y, 50%);
+	left: 50%;
+	box-sizing: border-box;
+	width: 28px;
+	height: 28px;
+	margin: -14px 0 0 -14px;
+	border: 2px solid currentcolor;
+	border-right-color: transparent;
+	border-radius: 50%;
+	opacity: 0;
+	animation: pergel-spin 0.8s linear infinite, pergel-appear 0.2s 0.15s forwards;
+}
+
+@keyframes pergel-appear {
+	to {
+		opacity: 0.6;
+	}
+}
+
 @keyframes pergel-show {
 	to {
 		visibility: visible;
@@ -585,6 +623,10 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 
 	.pergel-redraw .wp-block-woocommerce-product-collection::before {
 		animation-duration: 2.4s, 0s;
+	}
+
+	.pergel-loading .wc-block-product-template::after {
+		animation-duration: 2.4s, 0.2s;
 	}
 }
 

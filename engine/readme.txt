@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.32
+Stable tag: 1.4.33
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.33 =
+* Shop: while the filters, the sorting menu, the products per page or the page numbers draw the list again, the list shows it is loading: aria-busy, the products dimmed and a ring (themes restyle .pergel-loading .wc-block-product-template::after; --pergel-loading-y keeps it in the visible part of the list, --pergel-loading-label holds the translated "Loading products…"), announced to screen readers and cleared once the new list is drawn.
+* Shop: sorting asks the server once. The sorting menu asks for the first page with "paged=1", which WordPress redirected to the address without it, so every sorting built the page twice; listing addresses with "paged=1" are now answered as they are (the canonical link still names the address without it).
 
 = 1.4.32 =
 * Shop: after a filter changes the list while the head of the list (results count, sorting) is above the screen, the head scrolls back into view, smoothly unless the visitor asks for less motion; a filter tried with the head in view moves nothing. Themes with a sticky header set scroll-margin-top on .wc-block-product-results-count (24px by default).

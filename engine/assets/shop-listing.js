@@ -1,6 +1,8 @@
 /**
  * Product listing extras (Pergel\Woo\Listing): list and grid buttons, the
- * products per page menu, and loading more products on the same page.
+ * products per page menu, loading more products on the same page, and the
+ * loading state while the filters, sorting or page numbers draw the list
+ * again.
  *
  * The view is a data attribute on <html>, so WooCommerce redrawing the
  * products keeps it; an inline script in the head sets it from the
@@ -121,6 +123,11 @@ document.addEventListener(
 		if ( path !== url.pathname ) {
 			url.pathname = path;
 			window.history.replaceState( window.history.state, '', url );
+		}
+		// The sorting menu's own handler stops the event: the list shows it
+		// loads from here.
+		if ( ! busy ) {
+			loading();
 		}
 	},
 	true
@@ -571,6 +578,90 @@ const redrawn = ( holder ) =>
 		} );
 	} );
 
+/* Loading: while the filters, the sorting menu, the products per page or a
+ * page number draw the list again, the region of the products says so:
+ * aria-busy and the pergel-loading class, with --pergel-loading-y (the
+ * middle of the part of the products on the screen, from their top) and
+ * --pergel-loading-label for themes. shop-layout.css dims the products and
+ * turns a ring there. It ends once the products change or the address does
+ * (the router changes it after drawing, also when the products stay the
+ * same), or after ten seconds. */
+
+const DATA = ( () => {
+	try {
+		return (
+			JSON.parse(
+				document.getElementById(
+					'wp-script-module-data-pergel/shop-listing'
+				)?.textContent || '{}'
+			) || {}
+		);
+	} catch {
+		return {};
+	}
+} )();
+
+const productRegion = () =>
+	document
+		.querySelector( '.wc-block-product-template' )
+		?.closest( '[data-wp-router-region]' );
+
+let stopLoading;
+
+const loading = () => {
+	const holder = productRegion();
+	const grid = holder?.querySelector( '.wc-block-product-template' );
+	if ( ! grid ) {
+		return;
+	}
+	// A second change while the first loads waits for its own list.
+	stopLoading?.( false );
+	const from = window.location.href;
+	const box = grid.getBoundingClientRect();
+	const top = Math.max( box.top, 0 );
+	const bottom = Math.min( box.bottom, window.innerHeight );
+	const middle =
+		bottom > top ? ( top + bottom ) / 2 - box.top : box.height / 2;
+	const y = Math.min( Math.max( middle, 48 ), Math.max( box.height - 48, 48 ) );
+	holder.style.setProperty( '--pergel-loading-y', `${ Math.round( y ) }px` );
+	if ( DATA.loading ) {
+		holder.style.setProperty(
+			'--pergel-loading-label',
+			JSON.stringify( String( DATA.loading ) )
+		);
+	}
+	holder.classList.add( 'pergel-loading' );
+	holder.setAttribute( 'aria-busy', 'true' );
+	say( DATA.loading || '' );
+	const moved = () => {
+		if ( window.location.href !== from ) {
+			stop();
+		}
+	};
+	const watcher = new MutationObserver( () => stop() );
+	const timer = setTimeout( () => stop(), 10000 );
+	const stop = ( done = true ) => {
+		watcher.disconnect();
+		clearTimeout( timer );
+		window.navigation?.removeEventListener( 'currententrychange', moved );
+		window.removeEventListener( 'popstate', moved );
+		stopLoading = null;
+		if ( done ) {
+			holder.classList.remove( 'pergel-loading' );
+			holder.removeAttribute( 'aria-busy' );
+			say( '' );
+		}
+	};
+	stopLoading = stop;
+	watcher.observe( holder, {
+		childList: true,
+		subtree: true,
+		characterData: true,
+	} );
+	window.navigation?.addEventListener( 'currententrychange', moved );
+	window.addEventListener( 'popstate', moved );
+};
+
 // Draws the list again with the products per page `select` says: its first
 // page, filters and sorting kept. Rejects when the router cannot, and the
 // form then sends itself.
@@ -592,6 +683,7 @@ const perPage = async ( select ) => {
 		url.searchParams.delete( PER_PAGE_ARG );
 	}
 	busy = true;
+	loading();
 	try {
 		const { actions } = await import( '@wordpress/interactivity-router' );
 		const drawn = redrawn( holder );
@@ -620,20 +712,9 @@ const FILTER_CLICK =
 
 let lifting = false;
 
-const lift = ( event ) => {
-	const target = event.target;
-	if (
-		lifting ||
-		busy ||
-		! ( target instanceof Element ) ||
-		! target.closest( 'change' === event.type ? FILTER_CHANGE : FILTER_CLICK )
-	) {
-		return;
-	}
-	const holder = document
-		.querySelector( '.wc-block-product-template' )
-		?.closest( '[data-wp-router-region]' );
-	if ( ! holder ) {
+const lift = () => {
+	const holder = productRegion();
+	if ( lifting || ! holder ) {
 		return;
 	}
 	lifting = true;
@@ -666,12 +747,47 @@ const lift = ( event ) => {
 		} );
 };
 
+const filtered = ( event ) => {
+	if (
+		busy ||
+		! ( event.target instanceof Element ) ||
+		! event.target.closest(
+			'change' === event.type ? FILTER_CHANGE : FILTER_CLICK
+		)
+	) {
+		return;
+	}
+	loading();
+	lift();
+};
+
 for ( const filters of document.querySelectorAll(
 	'.wp-block-woocommerce-product-filters'
 ) ) {
-	filters.addEventListener( 'change', lift );
-	filters.addEventListener( 'click', lift );
+	filters.addEventListener( 'change', filtered );
+	filters.addEventListener( 'click', filtered );
 }
+
+// The page numbers of the list (the sorting menu shows it loads from its
+// capture listener above).
+document.addEventListener( 'click', ( event ) => {
+	const link =
+		event.target instanceof Element &&
+		event.target.closest( '.wp-block-query-pagination a[href]' );
+	if (
+		! link ||
+		busy ||
+		event.button !== 0 ||
+		event.metaKey ||
+		event.ctrlKey ||
+		event.shiftKey ||
+		event.altKey ||
+		link.closest( '[data-wp-router-region]' ) !== productRegion()
+	) {
+		return;
+	}
+	loading();
+} );
 
 back()
 	.then( ( drawn ) => drawn || own() )
