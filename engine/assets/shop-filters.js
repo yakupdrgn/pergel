@@ -9,7 +9,8 @@
  * put back after each redraw. The search box and the More button are added
  * here, so they never show without the script. A search first opens
  * WooCommerce's "show more", so it looks through every option; More opens
- * it too.
+ * it too. The search box stands only where some options are out of view
+ * (cut, folded or past the list's own scroll); a list seen whole needs none.
  *
  * WordPress's router keeps the first page's markup as it was when the
  * page was ready, with our boxes in it, and puts it back when the filters
@@ -91,6 +92,70 @@ const own = ( group, selector ) => {
 	return found;
 };
 
+// Whether every option of a list is in view: none hidden, nothing left
+// behind WooCommerce's "show more" and no list that scrolls. Null while the
+// list itself is out of sight (a closed group, the closed filter drawer on a
+// phone): it is measured again when it shows.
+const whole = ( list ) => {
+	if ( ! list.getClientRects().length ) {
+		return null;
+	}
+	if ( list.querySelector( `${ SHOW_ALL }:not([hidden])` )?.getClientRects().length ) {
+		return false;
+	}
+	for ( const item of list.querySelectorAll( ITEM ) ) {
+		if ( ! item.getClientRects().length ) {
+			return false;
+		}
+	}
+	for ( const box of [ list, ...list.querySelectorAll( '.wc-block-product-filter-checkbox-list__items' ) ] ) {
+		if ( box.scrollHeight > box.clientHeight + 1 ) {
+			return false;
+		}
+	}
+	return true;
+};
+
+// The search box hides over a list seen whole, unless something is typed in
+// it or it is in use.
+const fit = ( input ) => {
+	const list = input.nextElementSibling;
+	if ( input.value || input.ownerDocument.activeElement === input || ! list?.matches( '.wc-block-product-filter-checkbox-list' ) ) {
+		input.hidden = false;
+		return;
+	}
+	const seen = whole( list );
+	if ( null !== seen ) {
+		input.hidden = seen;
+	}
+};
+
+// Lists change size when they first show, when a group opens or closes and
+// when the layout changes width; their box is measured again then.
+const watched = new WeakMap();
+const sizes = new ResizeObserver( ( entries ) => {
+	for ( const entry of entries ) {
+		const input = entry.target.previousElementSibling;
+		if ( input && ours.has( input ) ) {
+			fit( input );
+		}
+	}
+} );
+const watch = ( input ) => {
+	const list = input.nextElementSibling;
+	const before = watched.get( input );
+	if ( before === list ) {
+		return;
+	}
+	if ( before ) {
+		sizes.unobserve( before );
+	}
+	if ( list ) {
+		watched.set( input, list );
+		sizes.observe( list );
+	}
+};
+
 const addSearch = ( group, label ) => {
 	const list = group.querySelector( '.wc-block-product-filter-checkbox-list' );
 	const existing = own( group, '.pergel-filter-search' );
@@ -99,6 +164,8 @@ const addSearch = ( group, label ) => {
 		if ( existing.value ) {
 			narrow( group, existing.value );
 		}
+		watch( existing );
+		fit( existing );
 		return;
 	}
 	if ( ! list ) {
@@ -129,6 +196,8 @@ const addSearch = ( group, label ) => {
 	if ( input.value ) {
 		narrow( group, input.value );
 	}
+	watch( input );
+	fit( input );
 };
 
 const depthOf = ( item ) => parseInt( item.dataset.pergelDepth || '0', 10 );
