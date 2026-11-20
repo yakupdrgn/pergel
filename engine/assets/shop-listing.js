@@ -83,6 +83,30 @@ for ( const select of document.querySelectorAll( '.pergel-per-page select' ) ) {
 	select.addEventListener( 'change', () => select.form.requestSubmit() );
 }
 
+/* Sorting from a /page/N/ address (the one loading more leaves): the
+ * sorting menu keeps the address and asks for page 1 with "paged=1", so
+ * the list would say /page/N/?paged=1. Back to the list's own address
+ * first, before the menu reads it. */
+
+document.addEventListener(
+	'change',
+	( event ) => {
+		if (
+			! ( event.target instanceof HTMLSelectElement ) ||
+			! event.target.closest( '.wc-block-catalog-sorting' )
+		) {
+			return;
+		}
+		const url = new URL( window.location.href );
+		const path = url.pathname.replace( /\/page\/\d+\/?$/, '/' );
+		if ( path !== url.pathname ) {
+			url.pathname = path;
+			window.history.replaceState( window.history.state, '', url );
+		}
+	},
+	true
+);
+
 /* Load more. */
 
 let busy = false;
@@ -143,6 +167,22 @@ const next = ( link ) => {
 	return { region, before, url: url.toString() };
 };
 
+// The address the list shows once `count` products are on it: the page the
+// last of them is on, /page/N/ as the page numbers link it (page 1 is the
+// list's own address). Reloading it shows that page; the products per page
+// in the address that loaded them never show.
+const address = ( count, step ) => {
+	const url = new URL( window.location.href );
+	const page = Math.ceil( count / step );
+	url.pathname = url.pathname.replace( /\/page\/\d+\/?$/, '/' );
+	if ( page > 1 ) {
+		url.pathname = url.pathname.replace( /\/?$/, `/page/${ page }/` );
+	}
+	url.searchParams.delete( 'paged' );
+	url.searchParams.delete( 'per_page' );
+	return url.toString();
+};
+
 // Fetches the next products ahead of time, so they are ready when the
 // visitor reaches the end of the list: the router keeps the page and
 // navigate() draws it without asking the server again.
@@ -184,9 +224,27 @@ const more = async ( link, auto = false ) => {
 		// The router draws the new page, but the promise of navigate() does
 		// not settle when it is called outside a directive: wait for the
 		// new products instead.
+		// Loading more is not a new step back: it replaces the entry.
 		const drawn = arrival( region, before );
-		Promise.resolve( actions.navigate( url ) ).catch( () => {} );
+		Promise.resolve( actions.navigate( url, { replace: true } ) ).catch(
+			() => {}
+		);
 		first = await drawn;
+		const step = Number( link.dataset.pergelStep );
+		const count = items( region ).length;
+		window.history.replaceState(
+			window.history.state,
+			'',
+			address( count, step )
+		);
+		// The new button's own link goes on from that page too, for a new
+		// tab or a page without the script.
+		const after = document.querySelector(
+			`[data-wp-router-region="${ CSS.escape( region ) }"] [data-pergel-more]`
+		);
+		if ( after ) {
+			after.href = address( count + step, step );
+		}
 	} catch {
 		window.location.assign( link.href );
 		return;

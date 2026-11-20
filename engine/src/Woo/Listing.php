@@ -87,6 +87,36 @@ final class Listing {
 				add_filter( "render_block_$name", array( self::class, $method ), 10, $args );
 			}
 		}
+		if ( self::loads_more() && ! has_filter( 'script_module_data_@wordpress/interactivity', array( self::class, 'filter_address' ) ) ) {
+			add_filter( 'script_module_data_@wordpress/interactivity', array( self::class, 'filter_address' ), 20 );
+		}
+	}
+
+	/**
+	 * The address the Product Filters block builds its links from, without
+	 * the products per page "Load more" asked for: after loading more the
+	 * list shows /page/N/ (shop-listing.js), and a filter would bring the
+	 * number back into it. A visitor's choice from the menu stays.
+	 *
+	 * @param array $data Interactivity data printed with the page.
+	 * @phpstan-param array<string, mixed> $data
+	 * @return array<string, mixed>
+	 */
+	public static function filter_address( array $data ): array {
+		$config = $data['config']['woocommerce/product-filters'] ?? null;
+		$url    = is_array( $config ) ? ( $config['canonicalUrl'] ?? null ) : null;
+		if ( ! is_string( $url ) ) {
+			return $data;
+		}
+		$query = array();
+		wp_parse_str( (string) wp_parse_url( $url, PHP_URL_QUERY ), $query );
+		$asked = $query[ self::ARG ] ?? null;
+		if ( ! is_string( $asked ) || in_array( (int) $asked, self::menu(), true ) ) {
+			return $data;
+		}
+		$config['canonicalUrl']                        = remove_query_arg( self::ARG, $url );
+		$data['config']['woocommerce/product-filters'] = $config;
+		return $data;
 	}
 
 	/**

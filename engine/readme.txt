@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.28
+Stable tag: 1.4.29
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.29 =
+* Shop: after "Load more" the address shows the page reached (/page/3/), not ?per_page=45, and loading more replaces the history entry instead of adding one, so Back leaves the listing. Reloading that address shows that page. The products are still fetched with per_page; sorting and filters after a load start from the first page without it.
 
 = 1.4.28 =
 * Shop: loading more products while scrolling waits less. Once the visitor scrolls, the next products are fetched while the end of the list is still four screens away and drawn a screen and a half before it; nothing is fetched before the first scroll. Products loaded by scrolling leave focus where it is (no focus ring around a product picture); the "Load more" button still moves focus to the first new product.
