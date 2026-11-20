@@ -77,10 +77,28 @@ for ( const group of document.querySelectorAll( '.pergel-view-switch' ) ) {
 	} );
 }
 
-/* Products per page: the form sends itself, like the sorting menu. */
+/* Products per page: the form sends itself, like the sorting menu, and the
+ * number is kept for the visitor's next lists (see own() below). */
+
+const PER_PAGE = 'pergel-shop-per-page';
+const PER_PAGE_ARG = 'per_page';
 
 for ( const select of document.querySelectorAll( '.pergel-per-page select' ) ) {
-	select.addEventListener( 'change', () => select.form.requestSubmit() );
+	select.addEventListener( 'change', () => {
+		try {
+			if (
+				! select.value ||
+				select.value === select.form.dataset.pergelDefault
+			) {
+				window.localStorage.removeItem( PER_PAGE );
+			} else {
+				window.localStorage.setItem( PER_PAGE, select.value );
+			}
+		} catch {
+			// Storage may be blocked; the number then lasts for this list.
+		}
+		select.form.requestSubmit();
+	} );
 }
 
 /* Sorting from a /page/N/ address (the one loading more leaves): the
@@ -142,6 +160,24 @@ const arrival = ( region, before ) =>
 			}
 		};
 		const watcher = new MutationObserver( done );
+		const timer = setTimeout( () => {
+			watcher.disconnect();
+			reject( new Error( 'timeout' ) );
+		}, 10000 );
+		watcher.observe( document.body, { childList: true, subtree: true } );
+	} );
+
+// Once the products of the grid are no longer `before` in number; rejects
+// after ten seconds.
+const recount = ( region, before ) =>
+	new Promise( ( resolve, reject ) => {
+		const watcher = new MutationObserver( () => {
+			if ( items( region ).length !== before ) {
+				watcher.disconnect();
+				clearTimeout( timer );
+				resolve();
+			}
+		} );
 		const timer = setTimeout( () => {
 			watcher.disconnect();
 			reject( new Error( 'timeout' ) );
@@ -361,7 +397,7 @@ const watch = () => {
  * scrolled. Back from a product (when the browser does not keep the page
  * in memory) or a reload of the entry draws them all again and scrolls
  * there. An inline script in the head hides the products until then
- * (pergel-more-back); shop-layout.css shows them after a few seconds
+ * (pergel-redraw); shop-layout.css shows them after a few seconds
  * whatever happens. A link opened anew has no entry and shows the page. */
 
 // Where the page is scrolled, kept in the entry once scrolling rests and
@@ -370,7 +406,7 @@ const watch = () => {
 // short page would overwrite the place to go back to.
 const keep = () => {
 	const saved = window.history.state?.pergelMore;
-	if ( saved && ! root.classList.contains( 'pergel-more-back' ) ) {
+	if ( saved && ! root.classList.contains( 'pergel-redraw' ) ) {
 		window.history.replaceState(
 			{
 				...window.history.state,
@@ -417,8 +453,7 @@ const back = async () => {
 		! ( saved.count > before ) ||
 		! ( saved.step > 0 )
 	) {
-		root.classList.remove( 'pergel-more-back' );
-		return;
+		return false;
 	}
 	const url = new URL( address( 0, saved.step ) );
 	url.searchParams.set( 'per_page', String( saved.count ) );
@@ -433,13 +468,87 @@ const back = async () => {
 		// The page reached stays, with its page numbers.
 	} finally {
 		busy = false;
-		root.classList.remove( 'pergel-more-back' );
+		root.classList.remove( 'pergel-redraw' );
 		root.style.removeProperty( '--pergel-back-height' );
 		document.body.style.removeProperty( 'overflow-anchor' );
 	}
+	return true;
 };
 
-back().then( watch );
+/* The products per page a visitor picked from the menu, on their next
+ * lists: a list reached without a number of its own (a category from the
+ * menu, a new visit) is drawn again with it. Only its first page, and not
+ * when all its products are already on it. The inline script in the head
+ * hides the products until then (Listing::remembered()). */
+
+const own = async () => {
+	const form = document.querySelector( '.pergel-per-page' );
+	const select = form && form.querySelector( 'select' );
+	const holder = document
+		.querySelector( '.wc-block-product-template' )
+		?.closest( '[data-wp-router-region]' );
+	let wanted = 0;
+	try {
+		wanted = Number( window.localStorage.getItem( PER_PAGE ) );
+	} catch {
+		return;
+	}
+	const url = new URL( window.location.href );
+	const region = holder ? holder.dataset.wpRouterRegion : '';
+	const before = region ? items( region ).length : 0;
+	const menu = select
+		? [ ...select.options ].map( ( option ) => Number( option.value ) )
+		: [];
+	const more = !! holder?.querySelector(
+		'[data-pergel-more], .wp-block-query-pagination-next'
+	);
+	if (
+		! region ||
+		! menu.includes( wanted ) ||
+		wanted === Number( form.dataset.pergelDefault ) ||
+		( wanted > before && ! more ) ||
+		url.searchParams.has( PER_PAGE_ARG ) ||
+		url.searchParams.has( 'paged' ) ||
+		/\/page\/\d+\/?$/.test( url.pathname )
+	) {
+		return;
+	}
+	url.searchParams.set( PER_PAGE_ARG, String( wanted ) );
+	busy = true;
+	try {
+		const { actions } = await import( '@wordpress/interactivity-router' );
+		const drawn = recount( region, before );
+		Promise.resolve(
+			actions.navigate( url.toString(), { replace: true } )
+		).catch( () => {} );
+		await drawn;
+		select.value = String( wanted );
+		// The sorting menu, outside the redrawn region, keeps the number.
+		for ( const sorting of document.querySelectorAll(
+			'.woocommerce-ordering'
+		) ) {
+			let field = sorting.querySelector( `input[name="${ PER_PAGE_ARG }"]` );
+			if ( ! field ) {
+				field = document.createElement( 'input' );
+				field.type = 'hidden';
+				field.name = PER_PAGE_ARG;
+				sorting.append( field );
+			}
+			field.value = String( wanted );
+		}
+	} catch {
+		// The list stays as the server drew it.
+	} finally {
+		busy = false;
+	}
+};
+
+back()
+	.then( ( drawn ) => drawn || own() )
+	.finally( () => {
+		root.classList.remove( 'pergel-redraw' );
+		watch();
+	} );
 
 if ( document.querySelector( '[data-pergel-more="scroll"]' ) ) {
 	window.addEventListener(

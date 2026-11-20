@@ -243,6 +243,10 @@ final class Listing {
 		$menu = 'scroll' === Layout::get( 'shop.paging' ) ? array() : self::menu();
 		if ( $menu ) {
 			$parts[] = self::menu_form( $menu );
+			// Block themes draw the template before the head.
+			if ( ! has_action( 'wp_head', array( self::class, 'remembered' ) ) ) {
+				add_action( 'wp_head', array( self::class, 'remembered' ), 1 );
+			}
 		}
 		if ( true === Settings::get( 'shop.view_switch' ) ) {
 			$parts[] = self::buttons();
@@ -279,13 +283,14 @@ final class Listing {
 			: '';
 		$url  = explode( '?', (string) get_pagenum_link( 1, false ), 2 )[0];
 		return sprintf(
-			'<form class="pergel-per-page" method="get" action="%1$s"><label for="pergel-per-page">%2$s</label><select id="pergel-per-page" name="%3$s">%4$s</select>%5$s<noscript><button type="submit">%6$s</button></noscript></form>',
+			'<form class="pergel-per-page" method="get" action="%1$s" data-pergel-default="%7$d"><label for="pergel-per-page">%2$s</label><select id="pergel-per-page" name="%3$s">%4$s</select>%5$s<noscript><button type="submit">%6$s</button></noscript></form>',
 			esc_url( $url ),
 			esc_html__( 'Show', 'pergel-engine' ),
 			esc_attr( self::ARG ),
 			$options,
 			$keep,
-			esc_html__( 'Apply', 'pergel-engine' )
+			esc_html__( 'Apply', 'pergel-engine' ),
+			self::$step
 		);
 	}
 
@@ -477,7 +482,25 @@ final class Listing {
 	 */
 	public static function back(): void {
 		wp_print_inline_script_tag(
-			'try{var s=history.state,m=s&&s.pergelMore,n=performance.getEntriesByType("navigation")[0],d=document.documentElement;if(m&&n&&n.type!=="navigate"){d.classList.add("pergel-more-back");if(m.y>0){d.style.setProperty("--pergel-back-height",m.y+innerHeight+"px")}}}catch(e){}'
+			'try{var s=history.state,m=s&&s.pergelMore,n=performance.getEntriesByType("navigation")[0],d=document.documentElement;if(m&&n&&n.type!=="navigate"){d.classList.add("pergel-redraw");if(m.y>0){d.style.setProperty("--pergel-back-height",m.y+innerHeight+"px")}}}catch(e){}'
+		);
+	}
+
+	/**
+	 * Hides the products before the page draws when the visitor picked
+	 * another number of products per page on an earlier list and this one
+	 * came without a number of its own: shop-listing.js own() draws it
+	 * again with theirs. Only first pages, as the script.
+	 */
+	public static function remembered(): void {
+		wp_print_inline_script_tag(
+			sprintf(
+				'try{var k=+localStorage.getItem(%1$s),u=new URL(location.href);if(%2$s.indexOf(k)>-1&&k!==%3$d&&!u.searchParams.has(%4$s)&&!u.searchParams.has("paged")&&!/\/page\/\d+\/?$/.test(u.pathname)){document.documentElement.classList.add("pergel-redraw")}}catch(e){}',
+				wp_json_encode( 'pergel-shop-per-page' ),
+				wp_json_encode( self::menu() ),
+				self::$step,
+				wp_json_encode( self::ARG )
+			)
 		);
 	}
 
