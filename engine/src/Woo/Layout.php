@@ -273,8 +273,7 @@ final class Layout {
 	 * @return mixed
 	 */
 	public static function first_page( mixed $redirect, string $requested = '' ): mixed {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only compares the page number.
-		if ( ! is_string( $redirect ) || '' === $requested || '1' !== ( $_GET['paged'] ?? '' ) || ! self::listing() ) {
+		if ( ! is_string( $redirect ) || '' === $requested || 1 !== (int) get_query_var( 'paged' ) || ! self::listing() ) {
 			return $redirect;
 		}
 		return self::same_address( remove_query_arg( 'paged', $requested ), $redirect ) ? false : $redirect;
