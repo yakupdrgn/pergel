@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.29
+Stable tag: 1.4.30
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.30 =
+* Shop: Back to a listing that loaded more products draws all of them again and returns to the same place, instead of showing only the first page.
+* Shop: the products-per-page choice (Show 15/25/35) is remembered in the browser; the next listing opens with that number. A small script in the head marks the grid before it paints, so the redraw shows a short spinner instead of a jump.
 
 = 1.4.29 =
 * Shop: after "Load more" the address shows the page reached (/page/3/), not ?per_page=45, and loading more replaces the history entry instead of adding one, so Back leaves the listing. Reloading that address shows that page. The products are still fetched with per_page; sorting and filters after a load start from the first page without it.
