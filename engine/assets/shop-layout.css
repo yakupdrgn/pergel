@@ -522,6 +522,46 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 	animation: pergel-spin 0.8s linear infinite;
 }
 
+/* Back to a list that loaded more (shop-listing.js back()): the products
+ * wait hidden while all of them are drawn again, with a spinner in the
+ * middle of their column on the screen, and show after four seconds
+ * whatever happens. */
+.pergel-more-back .wp-block-woocommerce-product-collection {
+	min-height: var(--pergel-back-height, 0);
+	visibility: hidden;
+	animation: pergel-show 0s 4s forwards;
+}
+
+.pergel-more-back .wp-block-woocommerce-product-collection::before {
+	content: "";
+	display: block;
+	position: sticky;
+	z-index: 1;
+	top: calc(50vh - 14px);
+	box-sizing: border-box;
+	width: 28px;
+	height: 28px;
+	margin: 0 auto -28px;
+	border: 2px solid currentcolor;
+	border-right-color: transparent;
+	border-radius: 50%;
+	opacity: 0.5;
+	visibility: visible;
+	animation: pergel-spin 0.8s linear infinite, pergel-hide 0s 4s forwards;
+}
+
+@keyframes pergel-show {
+	to {
+		visibility: visible;
+	}
+}
+
+@keyframes pergel-hide {
+	to {
+		visibility: hidden;
+	}
+}
+
 @keyframes pergel-spin {
 	to {
 		transform: rotate(360deg);
@@ -541,5 +581,9 @@ html[data-pergel-view="list"] .pergel-shop-grid .pergel-list-summary {
 
 	.pergel-more-busy .pergel-load-more__button::after {
 		animation-duration: 2.4s;
+	}
+
+	.pergel-more-back .wp-block-woocommerce-product-collection::before {
+		animation-duration: 2.4s, 0s;
 	}
 }

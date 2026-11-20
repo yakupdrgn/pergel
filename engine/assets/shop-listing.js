@@ -199,6 +199,41 @@ const prefetch = async ( link ) => {
 	}
 };
 
+// Draws `url` (the list with more products per page) in place of the
+// region and waits for product number `before` + 1. The address then shows
+// the page reached, and the history entry keeps how many products are on
+// the list, so coming back to it draws them all again (see back()).
+const draw = async ( region, before, url, step ) => {
+	const { actions } = await import( '@wordpress/interactivity-router' );
+	// The router draws the new page, but the promise of navigate() does
+	// not settle when it is called outside a directive: wait for the
+	// new products instead.
+	// Loading more is not a new step back: it replaces the entry.
+	const drawn = arrival( region, before );
+	Promise.resolve( actions.navigate( url, { replace: true } ) ).catch(
+		() => {}
+	);
+	const first = await drawn;
+	const count = items( region ).length;
+	window.history.replaceState(
+		{
+			...( window.history.state || {} ),
+			pergelMore: { region, count, step },
+		},
+		'',
+		address( count, step )
+	);
+	// The new button's own link goes on from that page too, for a new
+	// tab or a page without the script.
+	const after = document.querySelector(
+		`[data-wp-router-region="${ CSS.escape( region ) }"] [data-pergel-more]`
+	);
+	if ( after ) {
+		after.href = address( count + step, step );
+	}
+	return first;
+};
+
 const more = async ( link, auto = false ) => {
 	if ( busy ) {
 		return;
@@ -220,31 +255,12 @@ const more = async ( link, auto = false ) => {
 	say( link.dataset.pergelBusy || '' );
 	let first;
 	try {
-		const { actions } = await import( '@wordpress/interactivity-router' );
-		// The router draws the new page, but the promise of navigate() does
-		// not settle when it is called outside a directive: wait for the
-		// new products instead.
-		// Loading more is not a new step back: it replaces the entry.
-		const drawn = arrival( region, before );
-		Promise.resolve( actions.navigate( url, { replace: true } ) ).catch(
-			() => {}
+		first = await draw(
+			region,
+			before,
+			url,
+			Number( link.dataset.pergelStep )
 		);
-		first = await drawn;
-		const step = Number( link.dataset.pergelStep );
-		const count = items( region ).length;
-		window.history.replaceState(
-			window.history.state,
-			'',
-			address( count, step )
-		);
-		// The new button's own link goes on from that page too, for a new
-		// tab or a page without the script.
-		const after = document.querySelector(
-			`[data-wp-router-region="${ CSS.escape( region ) }"] [data-pergel-more]`
-		);
-		if ( after ) {
-			after.href = address( count + step, step );
-		}
 	} catch {
 		window.location.assign( link.href );
 		return;
@@ -339,7 +355,91 @@ const watch = () => {
 	}
 };
 
-watch();
+/* Coming back to a list that loaded more. Its address is the page reached
+ * (/page/3/), which on its own shows that page only; the history entry
+ * remembers how many products were on the list and where the page was
+ * scrolled. Back from a product (when the browser does not keep the page
+ * in memory) or a reload of the entry draws them all again and scrolls
+ * there. An inline script in the head hides the products until then
+ * (pergel-more-back); shop-layout.css shows them after a few seconds
+ * whatever happens. A link opened anew has no entry and shows the page. */
+
+// Where the page is scrolled, kept in the entry once scrolling rests and
+// when a link is followed (a reload does not keep what pagehide writes).
+// Not while the list is being drawn again: the browser's own scroll on a
+// short page would overwrite the place to go back to.
+const keep = () => {
+	const saved = window.history.state?.pergelMore;
+	if ( saved && ! root.classList.contains( 'pergel-more-back' ) ) {
+		window.history.replaceState(
+			{
+				...window.history.state,
+				pergelMore: { ...saved, y: Math.round( window.scrollY ) },
+			},
+			''
+		);
+	}
+};
+
+let resting;
+window.addEventListener(
+	'scroll',
+	() => {
+		clearTimeout( resting );
+		resting = setTimeout( keep, 250 );
+	},
+	{ passive: true }
+);
+window.addEventListener( 'pagehide', keep );
+document.addEventListener(
+	'click',
+	( event ) => {
+		if ( event.target instanceof Element && event.target.closest( 'a[href]' ) ) {
+			keep();
+		}
+	},
+	true
+);
+
+const back = async () => {
+	const saved = window.history.state?.pergelMore;
+	const entry = performance.getEntriesByType?.( 'navigation' )[ 0 ];
+	const holder =
+		saved &&
+		document.querySelector(
+			`[data-wp-router-region="${ CSS.escape( String( saved.region ) ) }"]`
+		);
+	const before = holder ? items( saved.region ).length : 0;
+	if (
+		! holder ||
+		! entry ||
+		entry.type === 'navigate' ||
+		! ( saved.count > before ) ||
+		! ( saved.step > 0 )
+	) {
+		root.classList.remove( 'pergel-more-back' );
+		return;
+	}
+	const url = new URL( address( 0, saved.step ) );
+	url.searchParams.set( 'per_page', String( saved.count ) );
+	busy = true;
+	document.body.style.overflowAnchor = 'none';
+	try {
+		await draw( saved.region, before, url.toString(), saved.step );
+		if ( Number.isFinite( saved.y ) ) {
+			window.scrollTo( 0, saved.y );
+		}
+	} catch {
+		// The page reached stays, with its page numbers.
+	} finally {
+		busy = false;
+		root.classList.remove( 'pergel-more-back' );
+		root.style.removeProperty( '--pergel-back-height' );
+		document.body.style.removeProperty( 'overflow-anchor' );
+	}
+};
+
+back().then( watch );
 
 if ( document.querySelector( '[data-pergel-more="scroll"]' ) ) {
 	window.addEventListener(

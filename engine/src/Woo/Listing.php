@@ -87,8 +87,16 @@ final class Listing {
 				add_filter( "render_block_$name", array( self::class, $method ), 10, $args );
 			}
 		}
-		if ( self::loads_more() && ! has_filter( 'script_module_data_@wordpress/interactivity', array( self::class, 'filter_address' ) ) ) {
-			add_filter( 'script_module_data_@wordpress/interactivity', array( self::class, 'filter_address' ), 20 );
+		if ( self::loads_more() ) {
+			if ( ! has_filter( 'script_module_data_@wordpress/interactivity', array( self::class, 'filter_address' ) ) ) {
+				add_filter( 'script_module_data_@wordpress/interactivity', array( self::class, 'filter_address' ), 20 );
+			}
+			// Coming back to a list that loaded more draws its products again,
+			// also on the last page, which has no button.
+			if ( ! has_action( 'wp_head', array( self::class, 'back' ) ) ) {
+				add_action( 'wp_head', array( self::class, 'back' ), 1 );
+			}
+			wp_enqueue_script_module( self::SCRIPT );
 		}
 	}
 
@@ -457,6 +465,19 @@ final class Listing {
 				'try{var v=localStorage.getItem(%s);if(/^(grid|list|grid-[2-6])$/.test(v)){document.documentElement.dataset.pergelView=v}}catch(e){}',
 				wp_json_encode( self::STORE )
 			)
+		);
+	}
+
+	/**
+	 * Hides the products before the page draws when the visitor comes back
+	 * (Back or a reload) to a list that had loaded more: shop-listing.js
+	 * draws them all again and shows them. shop-layout.css shows them after
+	 * a few seconds in any case. The list keeps the height it had down to
+	 * the place the visitor left, so the page does not jump to its footer.
+	 */
+	public static function back(): void {
+		wp_print_inline_script_tag(
+			'try{var s=history.state,m=s&&s.pergelMore,n=performance.getEntriesByType("navigation")[0],d=document.documentElement;if(m&&n&&n.type!=="navigate"){d.classList.add("pergel-more-back");if(m.y>0){d.style.setProperty("--pergel-back-height",m.y+innerHeight+"px")}}}catch(e){}'
 		);
 	}
 
