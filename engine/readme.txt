@@ -3,7 +3,7 @@ Contributors: ariumlab
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.4.33
+Stable tag: 1.4.34
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ pages, products, menus, terms and media stay. Add
 `define( 'PERGEL_KEEP_DATA', true );` to wp-config.php to keep everything.
 
 == Changelog ==
+
+= 1.4.34 =
+* Shop filters: lists fetched ahead. When the pointer rests on a filter option, a chip's remove button or "Clear filters" (90 ms), the keyboard reaches it, or a finger touches it, the interactivity router fetches the list that click would draw, at the address the Product Filters block builds; the click then draws it without waiting for the server. One fetch at a time, at most 30 a page view, each address once; not with Save-Data or on 2G, nor while a list is loading.
+* Shop filters: "Clear filters" draws at once. The list without filters is fetched once the visitor reaches the filters while some are on (pointer, touch, keyboard), and after each filter change: one address whatever is ticked, so one fetch a page view at most, none when the page opened without filters.
 
 = 1.4.33 =
 * Shop: while the filters, the sorting menu, the products per page or the page numbers draw the list again, the list shows it is loading: aria-busy, the products dimmed and a ring (themes restyle .pergel-loading .wc-block-product-template::after; --pergel-loading-y keeps it in the visible part of the list, --pergel-loading-label holds the translated "Loading products…"), announced to screen readers and cleared once the new list is drawn.
