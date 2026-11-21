@@ -757,15 +757,375 @@ const filtered = ( event ) => {
 	) {
 		return;
 	}
+	// An option fetched ahead (see below) draws at once: no fetch for it now.
+	clearTimeout( aheadTimer );
 	loading();
 	lift();
+	const holder = productRegion();
+	if ( holder ) {
+		redrawn( holder )
+			.then( () => window.setTimeout( clearAhead, 300 ) )
+			.catch( () => {} );
+	}
+};
+
+// Before the filters' own handlers: a list fetched ahead is drawn, and the
+// address changed, before the event would bubble up here.
+for ( const filters of document.querySelectorAll(
+	'.wp-block-woocommerce-product-filters'
+) ) {
+	filters.addEventListener( 'change', filtered, true );
+	filters.addEventListener( 'click', filtered, true );
+}
+
+/* Filter options fetched ahead. When the pointer rests on an option, a
+ * chip's remove button or "Clear filters", the keyboard reaches it, or a
+ * finger touches it, the router fetches the list that control would draw. A
+ * click then draws it without waiting for the server.
+ *
+ * The list with no filters is fetched before that: once the visitor reaches
+ * the filters while some are on, and after each filter change. It is the
+ * same address whatever is ticked, so one fetch a page view at most (none
+ * when the page opened without filters: the router keeps that page).
+ *
+ * The address must be the one the Product Filters block (WooCommerce) asks
+ * for, or the router fetches it again. So it is built the way that block's
+ * actions.navigate() builds it, from the same pieces:
+ *  - its config's canonicalUrl;
+ *  - the params and active filters in its server context;
+ *  - the option, from its filter's items.
+ *
+ * Limits:
+ *  - not with Save-Data or on 2G;
+ *  - not while a list is loading;
+ *  - one fetch at a time, at most AHEAD_MOST per page view. */
+
+const FILTERS = 'woocommerce/product-filters';
+const FILTER_OPTION = '.wc-block-product-filter-checkbox-list__item';
+const AHEAD_REST = 90;
+const AHEAD_MOST = 30;
+
+const CHIP_REMOVE = '.wc-block-product-filter-removable-chips__remove';
+const CLEAR_ALL = '.wp-block-woocommerce-product-filter-clear-button :is(a, button)';
+const AHEAD_CONTROL = `${ FILTER_OPTION }, ${ CHIP_REMOVE }, ${ CLEAR_ALL }`;
+
+const aheadDone = new Set();
+let aheadCount = 0;
+let aheadRunning = false;
+let aheadNext = null;
+let aheadTimer;
+let restingOn = null;
+
+const contextOf = ( element ) => {
+	try {
+		return JSON.parse( element.getAttribute( 'data-wp-context' ) || 'null' );
+	} catch {
+		return null;
+	}
+};
+
+// The nearest context above `element` that has `key`.
+const contextWith = ( element, key ) => {
+	for (
+		let node = element.closest( '[data-wp-context]' );
+		node;
+		node = node.parentElement?.closest( '[data-wp-context]' )
+	) {
+		const context = contextOf( node );
+		if ( context && key in context ) {
+			return context;
+		}
+	}
+	return null;
+};
+
+// The option of `input` ticked or unticked: toggle() of the block's store.
+// Null when the option is not one to fetch for.
+const optionChange = ( input ) => {
+	// The options are drawn from their filter's items, without a context of
+	// their own on the page.
+	const items = contextWith( input, 'items' )?.items;
+	const item = Array.isArray( items )
+		? items.find( ( one ) => one?.id === input.id ) ||
+		  items.find( ( one ) => one?.value === input.value )
+		: null;
+	if (
+		! item ||
+		'string' !== typeof item.type ||
+		! item.type ||
+		'string' !== typeof item.value ||
+		! item.value
+	) {
+		return null;
+	}
+	const same = ( filter ) =>
+		filter.type === item.type && filter.value === item.value;
+	return ( active ) => {
+		if ( active.some( same ) ) {
+			return active.filter( ( filter ) => ! same( filter ) );
+		}
+		const template = contextWith( input, 'activeLabelTemplate' );
+		const label =
+			'string' === typeof ( item.ariaLabel ?? item.label ) &&
+			( item.ariaLabel ?? item.label ).length > 0
+				? item.ariaLabel ?? item.label
+				: item.value;
+		const added = {
+			value: item.value,
+			type: item.type,
+			activeLabel: String(
+				template?.activeLabelTemplate ?? '{{label}}'
+			).replace( '{{label}}', label ),
+		};
+		if ( item.attributeQueryType ) {
+			added.attributeQueryType = item.attributeQueryType;
+		}
+		return [ ...active.filter( ( filter ) => ! same( filter ) ), added ];
+	};
+};
+
+// A chip's filter taken off: remove() of the block's store. The chips have
+// no context of their own on the page; the filter is the one whose label the
+// chip shows.
+const chipChange = ( button ) => {
+	const label = button
+		.closest( '.wc-block-product-filter-removable-chips__item' )
+		?.querySelector( '.wc-block-product-filter-removable-chips__label' )
+		?.textContent.trim();
+	if ( ! label ) {
+		return null;
+	}
+	return ( active ) => {
+		const gone = active.find(
+			( filter ) => String( filter.activeLabel ).trim() === label
+		);
+		return gone
+			? active.filter(
+					( filter ) =>
+						! ( filter.type === gone.type && filter.value === gone.value )
+			  )
+			: null;
+	};
+};
+
+// What a click on `control` does to the active filters.
+const changeOf = ( control ) => {
+	if ( control.matches( CLEAR_ALL ) ) {
+		return () => []; // removeAll()
+	}
+	return control.matches( CHIP_REMOVE )
+		? chipChange( control )
+		: optionChange( control );
+};
+
+// The address a click on `control` goes to, or '' when there is none to
+// fetch. Mirrors navigate() of the block's store.
+const filterAddress = async ( control ) => {
+	const change = changeOf( control );
+	const server = contextWith( control, 'activeFilters' );
+	if ( ! change || ! server ) {
+		return '';
+	}
+	const { getConfig } = await import( '@wordpress/interactivity' );
+	const config = getConfig( FILTERS ) || {};
+	const reload =
+		'boolean' === typeof server.forcePageReload
+			? server.forcePageReload
+			: config.forcePageReload;
+	if ( reload || ! config.canonicalUrl ) {
+		return '';
+	}
+	const active = change(
+		Array.isArray( server.activeFilters ) ? server.activeFilters : []
+	);
+	if ( ! Array.isArray( active ) ) {
+		return '';
+	}
+	const params = {};
+	const add = ( key, value ) => {
+		params[ key ] =
+			key in params && params[ key ].length > 0
+				? `${ params[ key ] },${ value }`
+				: value;
+	};
+	const taxonomies = config.taxonomyParamsMap || {};
+	active
+		.filter( ( filter ) => !! filter.value )
+		.sort( ( a, b ) =>
+			String( a.activeLabel )
+				.toLowerCase()
+				.localeCompare( String( b.activeLabel ).toLowerCase() )
+		)
+		.forEach( ( { type, value, attributeQueryType } ) => {
+			if ( 'price' === type ) {
+				const [ min, max ] = value.split( '|' );
+				if ( min ) {
+					params.min_price = min;
+				}
+				if ( max ) {
+					params.max_price = max;
+				}
+			}
+			if ( 'status' === type ) {
+				add( 'filter_stock_status', value );
+			}
+			if ( 'rating' === type ) {
+				add( 'rating_filter', value );
+			}
+			if ( type.includes( 'attribute' ) ) {
+				const [ , slug ] = type.split( '/' );
+				add( `filter_${ slug }`, value );
+				params[ `query_type_${ slug }` ] = attributeQueryType || 'or';
+			}
+			if ( type.includes( 'taxonomy' ) ) {
+				const [ , taxonomy ] = type.split( '/' );
+				add( taxonomies[ taxonomy ], value );
+			}
+		} );
+	const url = new URL( config.canonicalUrl );
+	for ( const key in server.params || {} ) {
+		url.searchParams.delete( key );
+	}
+	for ( const key in params ) {
+		let value = params[ key ];
+		try {
+			value = decodeURIComponent( value );
+		} catch {
+			// The block sends it as it is too.
+		}
+		url.searchParams.set( key, value );
+	}
+	return url.href === window.location.href ? '' : url.href;
+};
+
+const slowLine = () => {
+	const line = navigator.connection;
+	return !! line && ( line.saveData || /2g$/.test( line.effectiveType || '' ) );
+};
+
+const fetchAhead = async ( input ) => {
+	if (
+		input.disabled ||
+		busy ||
+		aheadCount >= AHEAD_MOST ||
+		slowLine() ||
+		productRegion()?.classList.contains( 'pergel-loading' )
+	) {
+		return;
+	}
+	if ( aheadRunning ) {
+		aheadNext = input;
+		return;
+	}
+	aheadRunning = true;
+	try {
+		const url = await filterAddress( input );
+		if ( url && ! aheadDone.has( url ) ) {
+			aheadDone.add( url );
+			aheadCount++;
+			const { actions } = await import( '@wordpress/interactivity-router' );
+			await actions.prefetch( url );
+		}
+	} catch {
+		// A click asks for the list itself.
+	} finally {
+		aheadRunning = false;
+	}
+	const next = aheadNext;
+	aheadNext = null;
+	if ( next && next !== input && next.matches( ':hover, :focus' ) ) {
+		fetchAhead( next );
+	}
+};
+
+// The control under `target` whose list can be fetched ahead: an option's
+// checkbox, a chip's remove button, "Clear filters".
+const aheadControl = ( target ) => {
+	if ( ! ( target instanceof Element ) ) {
+		return null;
+	}
+	const option = target.closest( FILTER_OPTION );
+	return option
+		? option.querySelector( 'input[type="checkbox"]' )
+		: target.closest( `${ CHIP_REMOVE }, ${ CLEAR_ALL }` );
+};
+
+// The list with no filters, once the visitor reaches the filters while some
+// are on (see above).
+let clearFor = '';
+const clearAhead = () => {
+	if ( clearFor === window.location.href ) {
+		return;
+	}
+	const button = document.querySelector(
+		`.wp-block-woocommerce-product-filters ${ CLEAR_ALL }`
+	);
+	const server = button && contextWith( button, 'activeFilters' );
+	if ( ! server?.activeFilters?.length ) {
+		return;
+	}
+	clearFor = window.location.href;
+	fetchAhead( button );
+};
+
+// Fetches for `input` once the pointer or focus has rested on it.
+const rest = ( input ) => {
+	clearTimeout( aheadTimer );
+	if ( input ) {
+		aheadTimer = setTimeout( () => fetchAhead( input ), AHEAD_REST );
+	}
 };
 
 for ( const filters of document.querySelectorAll(
 	'.wp-block-woocommerce-product-filters'
 ) ) {
-	filters.addEventListener( 'change', filtered );
-	filters.addEventListener( 'click', filtered );
+	// Only a pointer that moves: when a list is drawn the options shift, and
+	// the one landing under a still pointer is not one the visitor chose.
+	filters.addEventListener( 'pointermove', ( event ) => {
+		if (
+			'touch' === event.pointerType ||
+			( ! event.movementX && ! event.movementY )
+		) {
+			return;
+		}
+		clearAhead();
+		const input = aheadControl( event.target );
+		if ( input !== restingOn ) {
+			restingOn = input;
+			rest( input );
+		}
+	} );
+	filters.addEventListener( 'pointerout', ( event ) => {
+		const from = event.target instanceof Element && event.target.closest( AHEAD_CONTROL );
+		if ( from && ! from.contains( event.relatedTarget ) ) {
+			clearTimeout( aheadTimer );
+			restingOn = null;
+		}
+	} );
+	// A touch changes the option a moment later: no wait.
+	filters.addEventListener(
+		'pointerdown',
+		( event ) => {
+			if ( 'touch' !== event.pointerType ) {
+				return;
+			}
+			const input = aheadControl( event.target );
+			if ( input ) {
+				fetchAhead( input );
+			} else {
+				clearAhead();
+			}
+		},
+		{ passive: true }
+	);
+	filters.addEventListener( 'focusin', ( event ) => {
+		const control = aheadControl( event.target );
+		if ( control && control === event.target ) {
+			rest( control );
+		} else {
+			clearAhead();
+		}
+	} );
 }
 
 // The page numbers of the list (the sorting menu shows it loads from its

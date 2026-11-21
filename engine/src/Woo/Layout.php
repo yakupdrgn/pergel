@@ -230,6 +230,10 @@ final class Layout {
 					'id'     => '@wordpress/interactivity-router',
 					'import' => 'dynamic',
 				),
+				array(
+					'id'     => '@wordpress/interactivity',
+					'import' => 'dynamic',
+				),
 			),
 			VERSION,
 			array( 'fetchpriority' => 'low' )
